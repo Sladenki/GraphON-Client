@@ -1,0 +1,48 @@
+// Названия вкладок
+.text{
+    font-family: 'Roboto', sans-serif;
+    color: var(--main-text);
+    font-weight: 300;
+    font-size: 18px;
+}
+
+// Название + иконка - не нажатый
+.listLine{
+    margin-left:5px;
+    text-align: center;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+    border-radius: 30px;
+
+    .icon{
+        display: flex;
+        width: 50px;
+        height: 50px;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        background-color: var(--light-main);
+    }
+
+
+    &:hover{
+        background-color: rgba(var(--main-Color), .1);
+    }
+}
+
+// Название + иконка - нажатый
+.listLineActive {
+    @extend .listLine; 
+
+    .icon{
+        background-color: transparent;
+    }
+
+    .text {
+      color: rgb(var(--main-Color));
+    }
+
+}

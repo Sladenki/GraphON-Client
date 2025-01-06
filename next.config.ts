@@ -1,7 +1,24 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  output: 'export', // Указываем использование статической генерации
+  swcMinify: true,
+  experimental: {
+    images: {
+      unoptimized: true,
+    },
+  },
+  // Разрешаем загрузку изображений с любого домена 
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

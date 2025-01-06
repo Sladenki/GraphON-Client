@@ -1,0 +1,23 @@
+.PostWrapper{
+
+    .userPart{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    border: 1px solid red;
+
+    font-family: 'Roboto', sans-serif;
+    color: var(--main-text);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 27px;
+
+    .reactionList{
+        display: flex;
+        flex-direction: row;
+        grid-gap: 5px;
+
+    }
+}

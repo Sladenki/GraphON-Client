@@ -1,0 +1,38 @@
+.BottomSidebarWrapper{
+    background-color: var(--block-color);
+    // border-top: 1px solid rgb(var(--main-Color));
+    border-radius: 20px 20px 0 0;
+    width: 100vw;
+    padding: 5px 0 5px 0;
+    // height: 53px;
+    box-shadow: 0px 0px 28px 15px rgba(var(--main-Color), 0.05);
+
+
+    .listMenu{
+        font-family: 'Roboto', sans-serif;
+        font-weight: 300;
+        display: flex;
+        flex-direction: row;
+        grid-gap: 40px;
+        justify-content: center;
+
+        .listLine{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            stroke: rgb(var(--main-Color));
+            color: var(--main-text);
+            
+            .active{
+                color: rgb(var(--main-Color));
+            }
+
+        }
+    }
+
+
+    
+}
+
+
+

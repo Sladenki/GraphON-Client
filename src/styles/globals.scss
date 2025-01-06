@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --main-Color: 106, 87, 232;
+  --light-main: rgba(var(--main-Color), .1);
+}
+
+// html[data-theme="light"] {
+  
+//   --background-color: #F8FAFF;
+//   --block-color: #FFFFFF;
+//   --main-text: #474545;
+
+// }
+
+// html[data-theme="dark"] {
+
+//   --background-color: #2D2F34;
+//   --block-color: #383B40;
+//   --main-text: #B9BABD;
+
+// }
+
+html,
+body {
+  transition: 1s all ease;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: var(--background-color);
+}
+
+// Цвет выделения текста 
+::selection {
+  background-color: var(--light-main);
+  color: var(--main-text); /* Цвет текста при выделении */
+}
+
+/* Scrollbar - Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 11px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgb(var(--block-color));
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(var(--main-Color), 0.4);
+  border-radius: 14px;
+  border: 3px solid rgb(var(--block-color));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--main-Color), 0.2);
+}
+  

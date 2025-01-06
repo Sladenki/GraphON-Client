@@ -1,0 +1,64 @@
+// Больше 1000px
+@media only screen and (min-width: 680px) {
+  .wrapper{
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+
+    // Основной контент
+    .main {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      .roundCorners{
+        background-color: var(--block-color);
+        width: 4%;
+        border-radius: 60px 0 0 60px;
+        max-height: 100vh;
+        box-shadow: -16px 0px 28px 0px rgba(var(--main-Color), 0.03);
+      }
+
+      .square{
+        background-color: var(--block-color);
+        width: 100%;
+        height: 100vh;
+        overflow-y: auto;
+      }
+    }
+
+    .profileCorner{
+      margin: 10px;
+      margin-right: 15px;
+      position: absolute;
+      top: 0; 
+      right: 0; 
+    }
+
+
+    .BottomMenu{
+      display: none;
+    }
+      
+  }
+ 
+}
+
+// Меньше 1000Px
+@media only screen and (max-width: 680px) {
+
+  .BottomMenu{
+    z-index: 10;
+    display: block;
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    float: none;
+  }
+    
+}
+
+
+
+
+
