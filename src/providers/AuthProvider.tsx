@@ -1,7 +1,5 @@
 'use client';
 import { createContext, useState, useEffect, useContext } from 'react';
-import { usePathname } from 'next/navigation';
-import Cookies from 'js-cookie';
 
 interface AuthContextType {
     isLoggedIn: boolean;
@@ -44,6 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     if (storedToken) {
                         try {
                             const decodedToken = JSON.parse(atob(storedToken.split('.')[1]));
+                            // const decodedToken = JSON.parse(storedToken);
                             if (decodedToken && decodedToken.sub) { // Проверяем наличие sub
                                 await fetchUserData(decodedToken.sub, storedToken); // Вызываем функцию получения данных
                             } else {
@@ -124,7 +123,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return (
         // @ts-expect-error 123
         <AuthContext value={value}>
-            {loading ? <div>Загрузка...</div> : children} {/* Отображаем индикатор загрузки */}
+            {loading ? <div style={{ color: 'red'}}>Загрузка...</div> : children} {/* Отображаем индикатор загрузки */}
         </AuthContext>
     );
 };

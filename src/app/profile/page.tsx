@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useAuth } from '@/providers/AuthProvider';
+import { useRouter } from 'next/router';
 
 export default function Profile() {
     const { isLoggedIn, user, logout, loading, error } = useAuth();
@@ -21,6 +22,7 @@ export default function Profile() {
 
     return (
         <div>
+            Профиль
             {user && ( // Отображаем данные из user
                 <div>
                     {/* @ts-ignore 123 */}

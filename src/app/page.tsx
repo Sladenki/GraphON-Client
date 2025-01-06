@@ -10,7 +10,7 @@ const Homepage = () => {
 
   return (
     <>
-    123
+      <p>Homepage 2 - ниже посты</p>
       <PostFeed serverRequest={serverRequest} isLoggedIn={isLoggedIn} />
     </>
   );

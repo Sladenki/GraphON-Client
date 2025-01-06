@@ -3,21 +3,24 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export const useFetchBunchData = (serverRequest: string, initialPosts: any[], isLoggedIn: boolean) => {
+  console.log('isLoggedIn', isLoggedIn)
   const [allPosts, setAllPosts] = useState<any[]>(initialPosts);
   const [skip, setSkip] = useState<number>(initialPosts.length);
   const [isEndPosts, setIsEndPosts] = useState<boolean>(false);
   const [isPostsFetching, setIsPostFetching] = useState<boolean>(false);
+  const [error, setError] = useState<any | null>(null);
 
   const loaderRef = useRef(null);
 
   const fetchPosts = async () => {
     if (isPostsFetching || isEndPosts) return; // Останавливаем, если идет загрузка или достигли конца
     setIsPostFetching(true);
+    setError(null);
 
     try {
       const axiosInstance = isLoggedIn ? axiosAuth : axiosClassic; // Выбор экземпляра axios
-
-      const res = await axiosInstance.get(`${serverRequest}?skip=${skip}`);
+      console.log('axiosInstance', axiosInstance)
+      const res = await axiosAuth.get(`${serverRequest}?skip=${skip}`);
       const data = res.data;
 
       if (data.length === 0) {
@@ -28,6 +31,7 @@ export const useFetchBunchData = (serverRequest: string, initialPosts: any[], is
       }
     } catch (err) {
       console.error(err);
+      setError(err);
     } finally {
       setIsPostFetching(false);
     }
@@ -48,5 +52,5 @@ export const useFetchBunchData = (serverRequest: string, initialPosts: any[], is
     };
   }, [skip, isEndPosts]); // Добавляем зависимости
 
-  return { allPosts, isPostsFetching, isEndPosts, loaderRef };
+  return { allPosts, isPostsFetching, isEndPosts, loaderRef, error  };
 };

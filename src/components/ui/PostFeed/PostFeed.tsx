@@ -13,7 +13,7 @@ interface PostFeedProps {
 
 const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
 
-  const { allPosts, isPostsFetching, isEndPosts, loaderRef } = useFetchBunchData(serverRequest, [], isLoggedIn);
+  const { allPosts, isPostsFetching, isEndPosts, loaderRef, error } = useFetchBunchData(serverRequest, [], isLoggedIn);
 
   console.log('allPosts', allPosts)
 
@@ -22,6 +22,13 @@ return (
       {
         allPosts && allPosts.length > 0 && (
           <PostsList allPosts={allPosts}/>
+        )
+      }
+
+
+      {
+        error && (
+          <div>Загрузка постов: {error.message || 'Произошла ошибка при загрузке данных'}</div>
         )
       }
   

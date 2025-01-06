@@ -21,6 +21,24 @@ export const axiosAuth = axios.create({
     headers: getContentType()
 })
 
+axiosAuth.interceptors.request.use(
+    async (config) => {
+        // Получаем токен из localStorage
+        const token = localStorage.getItem('accessToken');
+
+        console.log('token', token)
+
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+
 // axiosAuth.interceptors.request.use(async (config) => {
 //     const session = await getSession();
 //     const accessToken = session?.accessToken 
