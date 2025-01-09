@@ -4,6 +4,6 @@ import React from 'react'
 
 export default function NotFound() {
   return (
-    <div>это че за негатив</div>
+    <div>Это страница not found - потом сделаю</div>
   )
 }

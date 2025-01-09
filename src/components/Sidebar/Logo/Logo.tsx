@@ -26,7 +26,7 @@ const Logo: React.FC<{small: boolean}> = ({small}) => {
 
   return (
     <div style={{ margin: '5px 0 10px 0' }}>
-        <Link key={4} href={"/"}>
+        <Link href={"/"}>
             <Image src={logoSrc} alt="Логотип" {...getLogoSize()} />
         </Link>
     </div>

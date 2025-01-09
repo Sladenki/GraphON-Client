@@ -10,9 +10,9 @@ export const AllProvers = ({ children }: { children: React.ReactNode }) => {
   return (
     <AuthProvider>
         <ReactQueryProvider>
-            {/* <ThemeProviders> */}
+            <ThemeProviders>
                 {children}
-            {/* </ThemeProviders> */}
+            </ThemeProviders>
         </ReactQueryProvider>
     </AuthProvider>
   )

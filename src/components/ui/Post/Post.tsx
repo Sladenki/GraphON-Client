@@ -105,7 +105,7 @@ const Post: FC<IPostClient> = ({ id, graphId, content, imgPath, user, createdAt,
     <div className={styles.PostWrapper} key={id}>
 
       <div className={styles.userPart}>
-        {/* <Image src={user.avaPath} className={styles.imgUser} alt='Аватарка' width={70} height={70} /> */}
+        <Image src={user.avaPath} className={styles.imgUser} alt='Аватарка' width={70} height={70} />
         <span>{user.name}</span>
         <span>{time2TimeAgo(createdAt)}</span>
 

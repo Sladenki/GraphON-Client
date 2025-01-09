@@ -7,21 +7,21 @@
   --light-main: rgba(var(--main-Color), .1);
 }
 
-// html[data-theme="light"] {
+html[data-theme="light"] {
   
-//   --background-color: #F8FAFF;
-//   --block-color: #FFFFFF;
-//   --main-text: #474545;
+  --background-color: #F8FAFF;
+  --block-color: #FFFFFF;
+  --main-text: #474545;
 
-// }
+}
 
-// html[data-theme="dark"] {
+html[data-theme="dark"] {
 
-//   --background-color: #2D2F34;
-//   --block-color: #383B40;
-//   --main-text: #B9BABD;
+  --background-color: #2D2F34;
+  --block-color: #383B40;
+  --main-text: #B9BABD;
 
-// }
+}
 
 html,
 body {
@@ -30,6 +30,11 @@ body {
   margin: 0;
   box-sizing: border-box;
   background-color: var(--background-color);
+
+}
+
+*{
+  text-decoration: none;
 }
 
 // Цвет выделения текста 

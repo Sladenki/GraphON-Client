@@ -8,9 +8,9 @@ import LoginButton from './LoginButton/LoginButton';
 export const ProfileCorner = () => {
     const { isLoggedIn, user, logout, loading, error } = useAuth(); // Используем useContext для доступа к контексту
     
-    if (loading) {
-        return <div>Загрузка...</div>;
-    }
+    // if (loading) {
+    //     return <div>Загрузка...</div>;
+    // }
 
     if (error) {
         return <div>ProfileCorner - {error}</div>; // Отображаем сообщение об ошибке в компоненте

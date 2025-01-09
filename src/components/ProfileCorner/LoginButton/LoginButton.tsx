@@ -405,11 +405,11 @@
         // export default LoginButton;
 
         
-        
+        // -------------------------------------- 
 
-        import { App } from '@capacitor/app';
-        import { Browser } from '@capacitor/browser';
-        import React, { useEffect } from 'react';
+        // import { App } from '@capacitor/app';
+        // import { Browser } from '@capacitor/browser';
+        // import React, { useEffect } from 'react';
         
         // const useGoogleAuth = () => {
         //     useEffect(() => {
@@ -451,19 +451,97 @@
         //     }, []);
         // };
         
+        // const LoginButton = () => {
+        //     const handleLogin = async () => {
+        //         const redirectUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+        //         // await Browser.open({ url: redirectUrl });
+        //         window.location.href = redirectUrl;
+        //     };
+        
+        //     // useGoogleAuth();
+        
+        //     return <button onClick={handleLogin}>Sign in with Google</button>;
+        // };
+        
+        // export default LoginButton;
+
+
+
+
+
+        // -----------------------------------------------
+
+        import React, { useState } from 'react';
+        import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+        
         const LoginButton = () => {
+            const [user, setUser] = useState(null);
+            const [isLoading, setIsLoading] = useState(false);
+        
             const handleLogin = async () => {
-                const redirectUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
-                // await Browser.open({ url: redirectUrl });
+
+                const redirectUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/google?isCapacitor=false`;
+
                 window.location.href = redirectUrl;
+
+                // try {
+                //     setIsLoading(true);
+        
+                //     // Инициализация Google Auth
+                //     const googleUser = await GoogleAuth.signIn();
+        
+                //     if (googleUser) {
+                //         // @ts-expect-error 123
+                //         const { idToken, email, name, imageUrl } = googleUser;
+        
+                //         // Сохраняем токен локально
+                //         localStorage.setItem('idToken', idToken);
+        
+                //         // Обновляем состояние пользователя
+                //         // @ts-expect-error 123
+                //         setUser({ email, name, imageUrl });
+        
+                //         console.log('User Info:', googleUser);
+                //     }
+                // } catch (error) {
+                //     console.error('Ошибка входа через Google:', error);
+                // } finally {
+                //     setIsLoading(false);
+                // }
             };
         
-            // useGoogleAuth();
+            // const handleLogout = async () => {
+            //     try {
+            //         await GoogleAuth.signOut();
+            //         setUser(null);
+            //         localStorage.removeItem('idToken');
+            //         console.log('Выход выполнен.');
+            //     } catch (error) {
+            //         console.error('Ошибка выхода из Google:', error);
+            //     }
+            // };
         
-            return <button onClick={handleLogin}>Sign in with Google</button>;
+            return (
+                <div>
+                    {user ? (
+                        <div>
+                            {/* @ts-expect-error 123 */}
+                            <img src={user.imageUrl} alt={user.name} style={{ borderRadius: '50%', width: 50 }} />
+                             {/* @ts-expect-error 123 */}
+                            <p>Добро пожаловать, {user.name}</p>
+                            {/* <button onClick={handleLogout}>Выйти</button> */}
+                        </div>
+                    ) : (
+                        <button onClick={handleLogin} disabled={isLoading}>
+                            {isLoading ? 'Загрузка...' : 'Войти с гугла 2'}
+                        </button>
+                    )}
+                </div>
+            );
         };
         
         export default LoginButton;
+        
         
         
         

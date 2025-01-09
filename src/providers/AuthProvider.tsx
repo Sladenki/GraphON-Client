@@ -123,7 +123,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return (
         // @ts-expect-error 123
         <AuthContext value={value}>
-            {loading ? <div style={{ color: 'red'}}>Загрузка...</div> : children} {/* Отображаем индикатор загрузки */}
+            {!loading && children} {/* Отображаем индикатор загрузки */}
         </AuthContext>
     );
 };
