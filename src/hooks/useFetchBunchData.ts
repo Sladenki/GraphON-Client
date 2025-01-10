@@ -19,8 +19,8 @@ export const useFetchBunchData = (serverRequest: string, initialPosts: any[], is
 
     try {
       const axiosInstance = isLoggedIn ? axiosAuth : axiosClassic; // Выбор экземпляра axios
-      console.log('axiosInstance', axiosInstance)
-      const res = await axiosAuth.get(`${serverRequest}?skip=${skip}`);
+      console.log('axiosInstance', axiosInstance.toString())
+      const res = await axiosInstance.get(`${serverRequest}?skip=${skip}`);
       const data = res.data;
 
       if (data.length === 0) {

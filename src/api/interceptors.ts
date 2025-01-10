@@ -39,16 +39,5 @@ axiosAuth.interceptors.request.use(
 );
 
 
-// axiosAuth.interceptors.request.use(async (config) => {
-//     const session = await getSession();
-//     const accessToken = session?.accessToken 
-
-//     if (config.headers && accessToken) {
-//         config.headers.Authorization = `Bearer ${accessToken}`;
-//     }
-
-//     return config;
-// });
-
 
 

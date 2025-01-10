@@ -8,6 +8,12 @@ const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
 
   // console.log('allPosts', allPosts)
 
+  // {
+  //   allPosts.map((post: IPost) => 
+  //     console.log('post', post.reactions[0].isReacted)
+  //   )
+  // }
+
   return (
     <div>
       {allPosts.map((post: IPostServer) => (
@@ -20,7 +26,7 @@ const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
             user={post.user}
             createdAt={post.createdAt}
             reactions={post.reactions}
-            isReacted={post.isReacted}
+            isReacted={post.reactions[0].isReacted}
             keywords={post.keywords} 
           />
         </div>

@@ -15,7 +15,7 @@ const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
 
   const { allPosts, isPostsFetching, isEndPosts, loaderRef, error } = useFetchBunchData(serverRequest, [], isLoggedIn);
 
-  console.log('allPosts', allPosts)
+  // console.log('allPosts', allPosts)
 
 return (
   <div className=''>
