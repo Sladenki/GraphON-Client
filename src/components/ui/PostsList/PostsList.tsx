@@ -6,7 +6,7 @@ import { IPost, IPostServer } from '@/types/post.interface'
 
 const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
 
-  // console.log('allPosts', allPosts)
+  console.log('allPosts', allPosts)
 
   // {
   //   allPosts.map((post: IPost) => 
@@ -20,7 +20,7 @@ const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
         <div key={post._id}>
           <Post 
             id={post._id}
-            graphId={post.graphId}
+            graph={post.graphId}
             content={post.content} 
             imgPath={post.imgPath}
             user={post.user}

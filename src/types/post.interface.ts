@@ -1,5 +1,11 @@
 import { IUser } from "./user.interface";
 
+
+export interface graphId {
+    _id: string,
+    name: string
+}
+
 // Из чего состоит публикация 
 export interface IPost {
     // id: string,
@@ -10,7 +16,7 @@ export interface IPost {
     createdAt: string;
     reactions: any[],
     isReacted: boolean
-    graphId: string
+    graph: graphId
 }
 
 export interface IPostClient extends IPost {

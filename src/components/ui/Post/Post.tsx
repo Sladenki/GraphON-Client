@@ -13,14 +13,16 @@ import { useRouter } from 'next/navigation'
 //  ССылка на S3 Yandex
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
-const Post: FC<IPostClient> = ({ id, graphId, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted, keywords }) => {
+const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted, keywords }) => {
+
+  console.log('graph', graph)
 
   const { isLoggedIn } = useAuth();
 
   const router = useRouter(); // Хук для работы с маршрутизатором
 
   // Функция для обработки клика по реакции
-  const handleClick = (reactionId, postId) => {
+  const handleClick = (reactionId: string, postId: string) => {
     if (!isLoggedIn) {
       // Если не авторизован, редиректим на /signIn
       router.push('/signIn');
@@ -127,6 +129,8 @@ const Post: FC<IPostClient> = ({ id, graphId, content, imgPath, user, createdAt,
         <span>{user.name}</span>
         <span>{time2TimeAgo(createdAt)}</span>
 
+        <p>Граф - {graph.name}</p>
+
         {/* Кнопка для открытия pop-up окна */}
         <button onClick={handleGraphButtonClick} className={styles.graphButton}>
           Система графов
@@ -150,7 +154,7 @@ const Post: FC<IPostClient> = ({ id, graphId, content, imgPath, user, createdAt,
 
       {isGraphPopupOpen && (
         <GraphPopUp 
-          graphId={graphId} 
+          graphId={graph._id} 
           isGraphPopupOpen={isGraphPopupOpen}
           closeGraphPopup={closeGraphPopup}
         />
