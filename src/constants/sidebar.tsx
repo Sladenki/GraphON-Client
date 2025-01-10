@@ -1,19 +1,19 @@
 import { CircleUserRound, Handshake, House, Menu, MessageCircle, Newspaper, Pencil, Settings, Sheet } from 'lucide-react'
 
 // @ts-expect-error решить поебень с типизацией
-const createSidebarItem = (id, icon, title, notAuthAllow, path) => ({
+const createSidebarItem = (id, icon, title, forAuthUsers, path) => ({
   id,
   icon,
   title,
-  notAuthAllow,
+  forAuthUsers,
   path,
 });
 
 export const sidebar = [
-  createSidebarItem(1, <House color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Главная', true, '/'),
-  createSidebarItem(2, <Sheet color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Расписание', false, '/conversations'),
-  createSidebarItem(3, <Handshake color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Подписки', false, '/bookmarks'),
-  createSidebarItem(4, <Pencil color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Создать пост', false, '/createPost'),
+  createSidebarItem(1, <House color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Главная', false, '/'),
+  createSidebarItem(2, <Sheet color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Расписание', true, '/conversations'),
+  createSidebarItem(3, <Handshake color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Подписки', true, '/bookmarks'),
+  createSidebarItem(4, <Pencil color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Создать пост', true, '/createPost'),
 ];
 
 export const sidebarTwo = [

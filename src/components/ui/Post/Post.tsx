@@ -3,190 +3,101 @@ import styles from './Post.module.scss'
 import { IPost, IPostClient } from '@/types/post.interface'
 import Image from 'next/image'
 import { time2TimeAgo } from '@/utils/convertData'
-import { UserPostReactionService } from '@/services/userPostReaction.service'
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import GraphPopUp from './GraphPopUp/GraphPopUp'
-import { useAuth } from '@/providers/AuthProvider'
-import { useRouter } from 'next/navigation'
+import { useReaction } from './useReaction'
+import { useAuthRedirect } from './useAuthRedirect'
+import { useGraphPopup } from './useGraphPopup'
+import { useMutation } from '@tanstack/react-query'
+import { GraphSubsService } from '@/services/graphSubs.service'
 
 
 //  ССылка на S3 Yandex
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
-const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted, keywords }) => {
+const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted }) => {
+  const { isReacted, reactionsState, handleReactionClick } = useReaction(id, initialIsReacted, reactions);
+  const handleClick = useAuthRedirect();
+  const { isGraphPopupOpen, handleGraphButtonClick, closeGraphPopup } = useGraphPopup();
 
-  console.log('graph', graph)
-
-  const { isLoggedIn } = useAuth();
-
-  const router = useRouter(); // Хук для работы с маршрутизатором
-
-  // Функция для обработки клика по реакции
-  const handleClick = (reactionId: string, postId: string) => {
-    if (!isLoggedIn) {
-      // Если не авторизован, редиректим на /signIn
-      router.push('/signIn');
-    } else {
-      // Если авторизован, вызываем handleReactionClick
-      handleReactionClick(reactionId, postId);
-    }
-  };
-
-  // Фото поста
   const fullImageUrl = `${BASE_S3_URL}/${imgPath}`;
 
-  const [isReacted, setIsReacted] = useState(initialIsReacted);
-  const [reactionsState, setReactionsState] = useState(reactions || []);
 
-  const queryClient = useQueryClient();
 
+
+
+  // Состояние для отслеживания загрузки и ошибки
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  // Мутация для подписки через GraphSubsService
   const mutation = useMutation({
-
-    mutationFn: ({ reactionId, postId, isReacted }: { reactionId: string, postId: string, isReacted: boolean }) => {
-      return UserPostReactionService.createUserAndReactionConnection(reactionId, postId, isReacted);
+    mutationFn: (graphId: string) => GraphSubsService.toggleGraphSub(graphId),
+    onMutate: () => {
+      setIsSubscribing(true);  // Начинаем процесс подписки
     },
-
-      // Оптимистичное обновление перед отправкой запроса
-      onMutate: async ({ reactionId, isReacted }) => {
-        await queryClient.cancelQueries({ queryKey: ['reactions', id] });
-
-        // Сохраняем предыдущие данные для отката при ошибке
-        const previousReactions = queryClient.getQueryData(['reactions', id]);
-
-        // Оптимистично обновляем данные
-        queryClient.setQueryData(['reactions', id], (oldReactions: any) => {
-          if (!oldReactions) {
-            return []; // Возвращаем пустой массив, если данных нет
-          }
-        
-          return oldReactions.map((reaction: any) => {
-            if (reaction._id === reactionId) {
-              return {
-                ...reaction,
-                clickNum: isReacted ? reaction.clickNum - 1 : reaction.clickNum + 1,
-              };
-            }
-            return reaction;
-          });
-        });
-
-        // Обновляем локальное состояние
-        setReactionsState((prevReactions) =>
-          prevReactions.map((reaction) =>
-            reaction._id === reactionId
-              ? { ...reaction, clickNum: isReacted ? reaction.clickNum - 1 : reaction.clickNum + 1 }
-              : reaction
-          )
-        );
-
-        setIsReacted(!isReacted); // Оптимистично инвертируем флаг
-
-        // Возвращаем данные для потенциального отката
-        return { previousReactions };
-      },
-
-
-      // Откат изменений при ошибке
-      onError: (error, _, context) => {
-        console.error('Ошибка при обновлении реакции:', error);
-        if (context?.previousReactions) {
-          queryClient.setQueryData(['reactions', id], context.previousReactions);
-        }
-        setIsReacted(isReacted); // Возвращаем исходное значение
-      },
-      onSuccess: () => {
-        // Локальное состояние уже обновлено, кэш можно оставить как есть или дополнительно обновить
-        queryClient.invalidateQueries({ queryKey: ['reactions', id] });
-      },
-
+    onError: (error) => {
+      console.error('Ошибка при подписке на граф:', error);
+      setIsSubscribing(false);
+    },
+    onSuccess: () => {
+      setIsSubscribing(false);  // Завершаем процесс подписки
+      // Можете обновить UI, например, показать уведомление о успешной подписке
     }
-  );
+  });
 
-  // Функция для обработки клика на реакцию
-  const handleReactionClick = useCallback((reactionId: string, postId: string) => {
-    if (!mutation.isPending) {
-      mutation.mutate({ reactionId, postId, isReacted });
+  // Функция обработки клика по кнопке
+  const handleSubscribeClick = () => {
+    if (graph && graph._id) {
+      mutation.mutate(graph._id);  // Отправляем запрос на подписку
     }
-  }, [isReacted, mutation]);
-
-
-  // PopUp Для графа
-  const [isGraphPopupOpen, setGraphPopupOpen] = useState(false);
-
-  const handleGraphButtonClick = () => {
-    setGraphPopupOpen(true);
   };
 
-  const closeGraphPopup = () => {
-    setGraphPopupOpen(false);
-  };
+
+
+
+  
 
   return (
     <div className={styles.PostWrapper} key={id}>
-
       <div className={styles.userPart}>
-        <Image src={user.avaPath} className={styles.imgUser} alt='Аватарка' width={70} height={70} />
+        <Image src={user.avaPath} className={styles.imgUser} alt="Аватарка" width={70} height={70} />
         <span>{user.name}</span>
         <span>{time2TimeAgo(createdAt)}</span>
-
         <p>Граф - {graph.name}</p>
 
-        {/* Кнопка для открытия pop-up окна */}
+        <button onClick={handleSubscribeClick} disabled={isSubscribing || mutation.isLoading}>
+          {isSubscribing || mutation.isLoading ? 'Подписка...' : 'Подписаться на граф'}
+        </button>
+
         <button onClick={handleGraphButtonClick} className={styles.graphButton}>
           Система графов
         </button>
-
       </div>
 
       {content}
 
       {imgPath && (
         <div className={styles.imageContainer}>
-          <Image
-            src={fullImageUrl}
-            alt='Post Image'
-            width={600}
-            height={400}
-            className={styles.postImage}
-          />
+          <Image src={fullImageUrl} alt="Post Image" width={600} height={400} className={styles.postImage} />
         </div>
       )}
 
-      {isGraphPopupOpen && (
-        <GraphPopUp 
-          graphId={graph._id} 
-          isGraphPopupOpen={isGraphPopupOpen}
-          closeGraphPopup={closeGraphPopup}
-        />
-      )}
+      {isGraphPopupOpen && <GraphPopUp graphId={graph._id} isGraphPopupOpen={isGraphPopupOpen} closeGraphPopup={closeGraphPopup} />}
 
       <div className={styles.reactionList}>
-        {reactionsState && reactionsState.length > 0 && reactionsState.map((reaction) => (
-          <div
-            key={reaction._id}
-            className={styles.reactionBlock}
-            onClick={() => handleClick(reaction._id, id)}
-          >
-            {isReacted ? (
-              <span style={{ color: '#D8BFD8' }}>
-                оп {reaction.emoji}
-              </span>
-            ) : (
-              <span>
-                не-оп {reaction.emoji}
-              </span>
-            )}
-            <span>{reaction.clickNum}</span>
-            <span>{reaction.text}</span>
-          </div>
-        ))}
+        {reactionsState.length > 0 &&
+          reactionsState.map((reaction) => (
+            <div key={reaction._id} className={styles.reactionBlock} onClick={() => handleClick(reaction._id, id, handleReactionClick)}>
+              <span style={{ color: isReacted ? '#D8BFD8' : 'inherit' }}>{isReacted ? 'оп' : 'не-оп'} {reaction.emoji}</span>
+              <span>{reaction.clickNum}</span>
+              <span>{reaction.text}</span>
+            </div>
+          ))}
       </div>
-
-
     </div>
   );
 };
 
 export default Post;
+
 
 

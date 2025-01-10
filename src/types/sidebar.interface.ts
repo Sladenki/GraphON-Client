@@ -5,6 +5,6 @@ export interface IArrayItem {
     id: number
     icon: JSX.Element
     title: string
-    notAuthAllow: boolean
+    forAuthUsers: boolean
     path: string
 }

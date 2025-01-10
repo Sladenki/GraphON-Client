@@ -27,7 +27,6 @@ const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
             createdAt={post.createdAt}
             reactions={post.reactions}
             isReacted={post.reactions[0].isReacted}
-            keywords={post.keywords} 
           />
         </div>
 

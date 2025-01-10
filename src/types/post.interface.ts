@@ -8,10 +8,8 @@ export interface graphId {
 
 // Из чего состоит публикация 
 export interface IPost {
-    // id: string,
     content: string,
     imgPath?: string,
-    keywords: string[],
     user: IUser;
     createdAt: string;
     reactions: any[],
