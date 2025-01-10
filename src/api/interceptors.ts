@@ -26,7 +26,7 @@ axiosAuth.interceptors.request.use(
         // Получаем токен из localStorage
         const token = localStorage.getItem('accessToken');
 
-        console.log('token', token)
+        // console.log('token', token)
 
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;

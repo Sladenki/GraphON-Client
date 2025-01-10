@@ -6,11 +6,29 @@ import { time2TimeAgo } from '@/utils/convertData'
 import { UserPostReactionService } from '@/services/userPostReaction.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import GraphPopUp from './GraphPopUp/GraphPopUp'
+import { useAuth } from '@/providers/AuthProvider'
+import { useRouter } from 'next/navigation'
+
 
 //  ССылка на S3 Yandex
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
 const Post: FC<IPostClient> = ({ id, graphId, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted, keywords }) => {
+
+  const { isLoggedIn } = useAuth();
+
+  const router = useRouter(); // Хук для работы с маршрутизатором
+
+  // Функция для обработки клика по реакции
+  const handleClick = (reactionId, postId) => {
+    if (!isLoggedIn) {
+      // Если не авторизован, редиректим на /signIn
+      router.push('/signIn');
+    } else {
+      // Если авторизован, вызываем handleReactionClick
+      handleReactionClick(reactionId, postId);
+    }
+  };
 
   // Фото поста
   const fullImageUrl = `${BASE_S3_URL}/${imgPath}`;
@@ -143,7 +161,7 @@ const Post: FC<IPostClient> = ({ id, graphId, content, imgPath, user, createdAt,
           <div
             key={reaction._id}
             className={styles.reactionBlock}
-            onClick={() => handleReactionClick(reaction._id, id)}
+            onClick={() => handleClick(reaction._id, id)}
           >
             {isReacted ? (
               <span style={{ color: '#D8BFD8' }}>
@@ -159,6 +177,8 @@ const Post: FC<IPostClient> = ({ id, graphId, content, imgPath, user, createdAt,
           </div>
         ))}
       </div>
+
+
     </div>
   );
 };

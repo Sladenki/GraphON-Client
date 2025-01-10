@@ -9,7 +9,7 @@ export default function Profile() {
     const { isLoggedIn, user, logout, loading, error } = useAuth();
    
 
-    console.log('user', user)
+    // console.log('user', user)
 
 
     if(loading) {

@@ -3,7 +3,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export const useFetchBunchData = (serverRequest: string, initialPosts: any[], isLoggedIn: boolean) => {
-  console.log('isLoggedIn', isLoggedIn)
+  // console.log('isLoggedIn', isLoggedIn)
   const [allPosts, setAllPosts] = useState<any[]>(initialPosts);
   const [skip, setSkip] = useState<number>(initialPosts.length);
   const [isEndPosts, setIsEndPosts] = useState<boolean>(false);
@@ -19,7 +19,7 @@ export const useFetchBunchData = (serverRequest: string, initialPosts: any[], is
 
     try {
       const axiosInstance = isLoggedIn ? axiosAuth : axiosClassic; // Выбор экземпляра axios
-      console.log('axiosInstance', axiosInstance.toString())
+      // console.log('axiosInstance', axiosInstance.toString())
       const res = await axiosInstance.get(`${serverRequest}?skip=${skip}`);
       const data = res.data;
 
