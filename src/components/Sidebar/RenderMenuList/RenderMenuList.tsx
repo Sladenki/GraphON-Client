@@ -20,7 +20,9 @@ const RenderMenuList: React.FC<{arrayItems: IArrayItem[], small: boolean}> = ({ 
       {arrayItems.map(({ id, icon, title, forAuthUsers, path }) => {
         const isActive = pathname === path;
 
-        const shouldRender = !!isLoggedIn || forAuthUsers;
+        // const shouldRender = isLoggedIn === forAuthUsers;
+
+        const shouldRender = true
 
         return shouldRender ? (
           <MenuItem key={id} id={id} icon={icon} title={title} path={path} isActive={isActive} small={small} />

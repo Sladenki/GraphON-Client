@@ -1,5 +1,4 @@
 import { axiosAuth, axiosClassic } from "@/api/interceptors";
-import { useAuth } from "@/providers/AuthProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export const useFetchBunchData = (serverRequest: string, initialPosts: any[], isLoggedIn: boolean) => {
@@ -19,7 +18,6 @@ export const useFetchBunchData = (serverRequest: string, initialPosts: any[], is
 
     try {
       const axiosInstance = isLoggedIn ? axiosAuth : axiosClassic; // Выбор экземпляра axios
-      // console.log('axiosInstance', axiosInstance.toString())
       const res = await axiosInstance.get(`${serverRequest}?skip=${skip}`);
       const data = res.data;
 
