@@ -9,6 +9,9 @@ import { useAuthRedirect } from './useAuthRedirect'
 import { useGraphPopup } from './useGraphPopup'
 import { useMutation } from '@tanstack/react-query'
 import { GraphSubsService } from '@/services/graphSubs.service'
+import { ScheduleService } from '@/services/schedule.service'
+import { useScheduleByDays } from '@/hooks/useScheduleByDays'
+import ScheduleItem from '../ScheduleItem/ScheduleItem'
 
 
 //  ССылка на S3 Yandex
@@ -52,9 +55,22 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
   };
 
 
+  // --- Расписание --- 
+  const { mutate, data, isError, error } = useMutation({
+    mutationFn: (graphId: string) => ScheduleService.getWeeklyScheduleByGraphId(graphId),
+  });
 
+  const handleButtonClick = () => {
+    console.log('graph._id', graph._id)
+    mutate(graph._id); // Передаём ID графа в мутацию
+  };
 
-  
+  console.log('data', data)
+
+  const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница'];
+
+  const scheduleByDays = useScheduleByDays(data?.data);
+
 
   return (
     <div className={styles.PostWrapper} key={id}>
@@ -67,6 +83,38 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
         <button onClick={handleSubscribeClick} disabled={isSubscribing || mutation.isLoading}>
           {isSubscribing || mutation.isLoading ? 'Подписка...' : 'Подписаться на граф'}
         </button>
+
+        <button onClick={handleButtonClick}>
+          Узнать расписание графа
+        </button>
+
+        {data && (
+          <div>
+            <h2>Расписание</h2>
+            <div>
+              {daysOfWeek.map((day, index) => (
+                <div key={index} style={{ marginBottom: '20px' }}>
+                  <h3>{day}</h3>
+                  {scheduleByDays[index]?.length > 0 ? (
+                  <ul>
+                    {scheduleByDays[index].map((item) => (
+                      <ScheduleItem
+                        key={item._id}
+                        name={item.name}
+                        timeFrom={item.timeFrom}
+                        timeTo={item.timeTo}
+                        roomNumber={item.roomNumber}
+                      />
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Нет мероприятий</p>
+                )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <button onClick={handleGraphButtonClick} className={styles.graphButton}>
           Система графов
