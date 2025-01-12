@@ -5,7 +5,7 @@ import { useAuth } from "@/providers/AuthProvider";
 
 
 
-export default async function Subs() {
+const Subs = () => {
     const { isLoggedIn } = useAuth();
 
     const serverRequest = 'graphSubs/getSubsPosts'
@@ -17,3 +17,5 @@ export default async function Subs() {
         </>
     );
 }
+
+export default Subs

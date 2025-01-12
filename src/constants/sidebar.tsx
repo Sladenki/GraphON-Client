@@ -11,7 +11,7 @@ const createSidebarItem = (id, icon, title, forAuthUsers, path) => ({
 
 export const sidebar = [
   createSidebarItem(1, <House color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Главная', false, '/'),
-  createSidebarItem(2, <Sheet color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Расписание', true, '/shedule'),
+  createSidebarItem(2, <Sheet color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Расписание', true, '/schedule'),
   createSidebarItem(3, <Handshake color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Подписки', true, '/subs'),
   createSidebarItem(4, <Pencil color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Создать пост', true, '/createPost'),
 ];
