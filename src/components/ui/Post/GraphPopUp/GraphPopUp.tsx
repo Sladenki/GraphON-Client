@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react'
 import styles from './GraphPopUp.module.scss'
 import { useQuery } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
+import PopUpWrapper from '../../PopUpWrapper/PopUpWrapper';
 
 const GraphPopUp: FC<{graphId: string, isGraphPopupOpen: boolean, closeGraphPopup: any}> = ({ graphId, isGraphPopupOpen, closeGraphPopup }) => {
 
@@ -63,9 +64,7 @@ const GraphPopUp: FC<{graphId: string, isGraphPopupOpen: boolean, closeGraphPopu
 
 
   return (
-    <div className={styles.popupOverlay}>
-      <div className={styles.popupContent}>
-        <button onClick={closeGraphPopup} className={styles.closeButton}>Закрыть</button>
+    <PopUpWrapper isOpen={isGraphPopupOpen} onClose={closeGraphPopup}>
         {isPending && <p>Загрузка...</p>}
         {isError && <p>Ошибка при загрузке данных графа.</p>}
 
@@ -144,8 +143,7 @@ const GraphPopUp: FC<{graphId: string, isGraphPopupOpen: boolean, closeGraphPopu
 
           </div>
         )}
-      </div>
-    </div>
+     </PopUpWrapper>
   )
 }
 

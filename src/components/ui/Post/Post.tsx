@@ -9,9 +9,8 @@ import { useAuthRedirect } from './useAuthRedirect'
 import { useGraphPopup } from './useGraphPopup'
 import { useMutation } from '@tanstack/react-query'
 import { GraphSubsService } from '@/services/graphSubs.service'
-import { ScheduleService } from '@/services/schedule.service'
-import { useScheduleByDays } from '@/hooks/useScheduleByDays'
-import ScheduleItem from '../ScheduleItem/ScheduleItem'
+import { useSchedulePopup } from './useSchedulePopup'
+import SchedulePopUp from './SchedulePopUp/SchedulePopUp'
 
 
 //  ССылка на S3 Yandex
@@ -21,11 +20,9 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
   const { isReacted, reactionsState, handleReactionClick } = useReaction(id, initialIsReacted, reactions);
   const handleClick = useAuthRedirect();
   const { isGraphPopupOpen, handleGraphButtonClick, closeGraphPopup } = useGraphPopup();
+  const { isSchedulePopupOpen, handleScheduleButtonClick, closeSchedulePopup } = useSchedulePopup();
 
   const fullImageUrl = `${BASE_S3_URL}/${imgPath}`;
-
-
-
 
 
   // Состояние для отслеживания загрузки и ошибки
@@ -43,7 +40,6 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
     },
     onSuccess: () => {
       setIsSubscribing(false);  // Завершаем процесс подписки
-      // Можете обновить UI, например, показать уведомление о успешной подписке
     }
   });
 
@@ -54,26 +50,10 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
     }
   };
 
-
-  // --- Расписание --- 
-  const { mutate, data, isError, error } = useMutation({
-    mutationFn: (graphId: string) => ScheduleService.getWeeklyScheduleByGraphId(graphId),
-  });
-
-  const handleButtonClick = () => {
-    console.log('graph._id', graph._id)
-    mutate(graph._id); // Передаём ID графа в мутацию
-  };
-
-  console.log('data', data)
-
-  const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница'];
-
-  const scheduleByDays = useScheduleByDays(data?.data);
-
-
   return (
     <div className={styles.PostWrapper} key={id}>
+
+      {/* Шапка */}
       <div className={styles.userPart}>
         <Image src={user.avaPath} className={styles.imgUser} alt="Аватарка" width={70} height={70} />
         <span>{user.name}</span>
@@ -84,39 +64,11 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
           {isSubscribing || mutation.isLoading ? 'Подписка...' : 'Подписаться на граф'}
         </button>
 
-        <button onClick={handleButtonClick}>
+        <button onClick={handleScheduleButtonClick}>
           Узнать расписание графа
         </button>
 
-        {data && (
-          <div>
-            <h2>Расписание</h2>
-            <div>
-              {daysOfWeek.map((day, index) => (
-                <div key={index} style={{ marginBottom: '20px' }}>
-                  <h3>{day}</h3>
-                  {scheduleByDays[index]?.length > 0 ? (
-                  <ul>
-                    {scheduleByDays[index].map((item) => (
-                      <ScheduleItem
-                        key={item._id}
-                        name={item.name}
-                        timeFrom={item.timeFrom}
-                        timeTo={item.timeTo}
-                        roomNumber={item.roomNumber}
-                      />
-                    ))}
-                  </ul>
-                ) : (
-                  <p>Нет мероприятий</p>
-                )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <button onClick={handleGraphButtonClick} className={styles.graphButton}>
+        <button onClick={handleGraphButtonClick} >
           Система графов
         </button>
       </div>
@@ -131,6 +83,8 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
 
       {isGraphPopupOpen && <GraphPopUp graphId={graph._id} isGraphPopupOpen={isGraphPopupOpen} closeGraphPopup={closeGraphPopup} />}
 
+      {isSchedulePopupOpen && <SchedulePopUp graph={graph} isSchedulePopupOpen={isSchedulePopupOpen} closeSchedulePopup={closeSchedulePopup} />}
+
       <div className={styles.reactionList}>
         {reactionsState.length > 0 &&
           reactionsState.map((reaction) => (
@@ -141,6 +95,7 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
             </div>
           ))}
       </div>
+
     </div>
   );
 };
