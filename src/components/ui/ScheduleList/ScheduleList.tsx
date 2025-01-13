@@ -9,6 +9,7 @@ interface ScheduleDisplayProps {
 const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница'];
 
 const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, title }) => {
+
   return (
     <div>
       {title && <h2>{title}</h2>}
@@ -17,7 +18,7 @@ const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, title })
           <div key={index} style={{ marginBottom: '20px' }}>
             <h3>{day}</h3>
             {scheduleByDays[index]?.length > 0 ? (
-              <ul>
+              <div>
                 {scheduleByDays[index].map((item) => (
                   <ScheduleItem
                     key={item._id}
@@ -26,9 +27,10 @@ const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, title })
                     timeFrom={item.timeFrom}
                     timeTo={item.timeTo}
                     roomNumber={item.roomNumber}
+                    type={item.type}
                   />
                 ))}
-              </ul>
+              </div>
             ) : (
               <p>Нет мероприятий</p>
             )}

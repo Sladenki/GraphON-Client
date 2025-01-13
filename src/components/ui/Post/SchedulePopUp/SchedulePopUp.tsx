@@ -1,6 +1,6 @@
 import { ScheduleService } from '@/services/schedule.service';
 import { useMutation } from '@tanstack/react-query';
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import ScheduleList from '../../ScheduleList/ScheduleList';
 import { useScheduleByDays } from '@/hooks/useScheduleByDays';
 import PopUpWrapper from '../../PopUpWrapper/PopUpWrapper';
@@ -12,21 +12,20 @@ const SchedulePopUp: FC<{graph: any, isSchedulePopupOpen: boolean, closeSchedule
         mutationFn: (graphId: string) => ScheduleService.getWeeklyScheduleByGraphId(graphId),
     });
 
-    const handleButtonClick = () => {
-        mutate(graph._id); // Передаём ID графа в мутацию
-    };
+    useEffect(() => {
+        // Вызовите мутацию сразу при монтировании компонента
+        if (graph?._id) {
+            mutate(graph._id); 
+        }
+    }, [graph, mutate]); // зависимость от graph и mutate, чтобы вызвать мутацию каждый раз, когда graph изменится
 
     console.log('data', data)
 
     const scheduleByDays = useScheduleByDays(data?.data);
 
     return (
-        <PopUpWrapper isOpen={isSchedulePopupOpen} onClose={closeSchedulePopup} >
+        <PopUpWrapper isOpen={isSchedulePopupOpen} onClose={closeSchedulePopup} width={800}>
             <div>SchedulePopUp</div>
-
-            <button onClick={handleButtonClick}>
-            Узнать расписание графа
-            </button>
 
             {data && (
                 <ScheduleList

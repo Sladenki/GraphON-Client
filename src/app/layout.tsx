@@ -11,11 +11,6 @@ import BottomMenu from "@/components/Sidebar/BottomMenu/BottomMenu";
 import { AllProvers } from "@/providers/main";
 import { ProfileCorner } from "@/components/ProfileCorner/ProfileCorner";
 
-import { CapacitorRedirectHandler } from "@/hooks/useAppUrlOpen";
-import { useEffect } from "react";
-import { Capacitor } from "@capacitor/core";
-import { App } from "@capacitor/app";
-import LoginButton from "@/components/ProfileCorner/LoginButton/LoginButton";
 
 // export const metadata: Metadata = {
 //   title: "Sendler",
@@ -23,19 +18,6 @@ import LoginButton from "@/components/ProfileCorner/LoginButton/LoginButton";
 // };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-
-  // useEffect(() => {
-  //   App.addListener('appUrlOpen', data => {
-  //       const url = new URL(data.url);
-  //       const accessToken = url.searchParams.get('accessToken');
-  //       if (accessToken) {
-  //           // Обработка accessToken, например, сохранение в localStorage
-  //           localStorage.setItem('accessToken', accessToken);
-  //           // Перенаправление на нужную страницу
-  //           window.location.href = `/profile?accessToken=${accessToken}`;
-  //       }
-  //   });
-  // }, []);
 
   return (
     <html lang="en">

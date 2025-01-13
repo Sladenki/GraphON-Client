@@ -118,8 +118,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const value = { isLoggedIn, user, login, logout, loading, error }; // Передаем loading в контекст
 
-    // console.log('value', value)
-
     return (
         // @ts-expect-error 123
         <AuthContext value={value}>

@@ -1,0 +1,29 @@
+.ScheduleItemWrapper {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.ScheduleItem{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.mainInfo{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    // div:nth-child(2){
+    //  font-size: 20px;
+    // }
+}
+
+.room{
+    padding: 5px 10px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background-color: #f4f4f4;
+    text-align: center;
+}

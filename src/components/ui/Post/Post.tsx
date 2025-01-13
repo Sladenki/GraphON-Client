@@ -50,6 +50,8 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
     }
   };
 
+  console.log('graph', graph)
+
   return (
     <div className={styles.PostWrapper} key={id}>
 
@@ -68,9 +70,12 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
           Узнать расписание графа
         </button>
 
-        <button onClick={handleGraphButtonClick} >
-          Система графов
-        </button>
+        {graph && (
+          <button onClick={handleGraphButtonClick} >
+            Система графов
+          </button>
+        )}
+
       </div>
 
       {content}
@@ -81,7 +86,7 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
         </div>
       )}
 
-      {isGraphPopupOpen && <GraphPopUp graphId={graph._id} isGraphPopupOpen={isGraphPopupOpen} closeGraphPopup={closeGraphPopup} />}
+      {isGraphPopupOpen && <GraphPopUp parentGraph={graph} isGraphPopupOpen={isGraphPopupOpen} closeGraphPopup={closeGraphPopup} />}
 
       {isSchedulePopupOpen && <SchedulePopUp graph={graph} isSchedulePopupOpen={isSchedulePopupOpen} closeSchedulePopup={closeSchedulePopup} />}
 
