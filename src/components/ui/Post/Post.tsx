@@ -11,6 +11,7 @@ import { useMutation } from '@tanstack/react-query'
 import { GraphSubsService } from '@/services/graphSubs.service'
 import { useSchedulePopup } from './useSchedulePopup'
 import SchedulePopUp from './SchedulePopUp/SchedulePopUp'
+import { useSubscription } from './useSubscription'
 
 
 //  ССылка на S3 Yandex
@@ -25,32 +26,7 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
   const fullImageUrl = `${BASE_S3_URL}/${imgPath}`;
 
 
-  // Состояние для отслеживания загрузки и ошибки
-  const [isSubscribing, setIsSubscribing] = useState(false);
-
-  // Мутация для подписки через GraphSubsService
-  const mutation = useMutation({
-    mutationFn: (graphId: string) => GraphSubsService.toggleGraphSub(graphId),
-    onMutate: () => {
-      setIsSubscribing(true);  // Начинаем процесс подписки
-    },
-    onError: (error) => {
-      console.error('Ошибка при подписке на граф:', error);
-      setIsSubscribing(false);
-    },
-    onSuccess: () => {
-      setIsSubscribing(false);  // Завершаем процесс подписки
-    }
-  });
-
-  // Функция обработки клика по кнопке
-  const handleSubscribeClick = () => {
-    if (graph && graph._id) {
-      mutation.mutate(graph._id);  // Отправляем запрос на подписку
-    }
-  };
-
-  console.log('graph', graph)
+  const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, graph?._id || '');
 
   return (
     <div className={styles.PostWrapper} key={id}>
@@ -62,11 +38,9 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
         <span>{time2TimeAgo(createdAt)}</span>
         <p>Граф - {graph.name}</p>
 
-          {/* @ts-expect-error mutation.isLoading  */}
-        <button onClick={handleSubscribeClick} disabled={isSubscribing || mutation.isLoading}>
-          {
-            isSubToGraph ? 'Отписаться' : 'Подписаться'
-          }
+
+        <button onClick={toggleSubscription} disabled={isLoading}>
+          {isSubscribed ? 'Отписаться' : 'Подписаться'}
         </button>
 
         <button onClick={handleScheduleButtonClick}>
