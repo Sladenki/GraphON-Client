@@ -12,21 +12,30 @@ import { GraphSubsService } from '@/services/graphSubs.service'
 import { useSchedulePopup } from './useSchedulePopup'
 import SchedulePopUp from './SchedulePopUp/SchedulePopUp'
 import { useSubscription } from './useSubscription'
+import { useAuth } from '@/providers/AuthProvider'
 
 
 //  ССылка на S3 Yandex
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
 const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted, isSubToGraph }) => {
+
+  const { isLoggedIn } = useAuth();
+
+  // Реакция 
   const { isReacted, reactionsState, handleReactionClick } = useReaction(id, initialIsReacted, reactions);
   const handleClick = useAuthRedirect();
-  const { isGraphPopupOpen, handleGraphButtonClick, closeGraphPopup } = useGraphPopup();
+
+  // Подписка на граф
+  const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, graph?._id || '');
+
+  // Расписание
   const { isSchedulePopupOpen, handleScheduleButtonClick, closeSchedulePopup } = useSchedulePopup();
 
+  // Система графов
+  const { isGraphPopupOpen, handleGraphButtonClick, closeGraphPopup } = useGraphPopup();
   const fullImageUrl = `${BASE_S3_URL}/${imgPath}`;
 
-
-  const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, graph?._id || '');
 
   return (
     <div className={styles.PostWrapper} key={id}>
@@ -38,11 +47,12 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
         <span>{time2TimeAgo(createdAt)}</span>
         <p>Граф - {graph.name}</p>
 
-
-        <button onClick={toggleSubscription} disabled={isLoading}>
-          {isSubscribed ? 'Отписаться' : 'Подписаться'}
-        </button>
-
+        {isLoggedIn && (
+          <button onClick={toggleSubscription} disabled={isLoading}>
+            {isSubscribed ? 'Отписаться' : 'Подписаться'}
+          </button>
+        )}
+       
         <button onClick={handleScheduleButtonClick}>
           Узнать расписание графа
         </button>
@@ -62,9 +72,11 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
           <Image src={fullImageUrl} alt="Post Image" width={600} height={400} className={styles.postImage} />
         </div>
       )}
-
+      
+      {/* Система графов */}
       {isGraphPopupOpen && <GraphPopUp parentGraph={graph} isGraphPopupOpen={isGraphPopupOpen} closeGraphPopup={closeGraphPopup} />}
 
+      {/* Расписание */}
       {isSchedulePopupOpen && <SchedulePopUp graph={graph} isSchedulePopupOpen={isSchedulePopupOpen} closeSchedulePopup={closeSchedulePopup} />}
 
       <div className={styles.reactionList}>

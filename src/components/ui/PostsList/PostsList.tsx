@@ -6,18 +6,19 @@ import { IPost, IPostServer } from '@/types/post.interface'
 
 const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
 
-  console.log('allPosts', allPosts)
+  // console.log('allPosts', allPosts)
 
-  {
-    allPosts.map((post: IPost) => 
-      console.log('post', post)
-    )
-  }
+  // {
+  //   allPosts.map((post: IPost) => 
+  //     console.log('post', post)
+  //   )
+  // }
 
   return (
     <div>
       {allPosts.map((post: IPostServer) => (
         <div key={post._id}>
+          {/* @ts-expect-error похер потом   */}
           <Post 
             id={post._id}
             // @ts-expect-error похер потом 

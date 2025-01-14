@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import styles from "./PopUpWrapper.module.scss";
+import { X } from 'lucide-react';
 
 interface PopUpWrapperProps {
   isOpen: boolean; // Управляет открытием/закрытием попапа
@@ -32,7 +33,7 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
         style={{ width, height }}
       >
         <button onClick={onClose} className={styles.closeButton}>
-          Закрыть
+          <X size={24} /> 
         </button>
         {children}
       </div>

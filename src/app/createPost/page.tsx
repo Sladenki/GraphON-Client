@@ -19,7 +19,7 @@ const CreatePost = () => {
 
     const [selectedTopic, setSelectedTopic] = useState('');
 
-    console.log('selectedTopic', selectedTopic)
+    // console.log('selectedTopic', selectedTopic)
 
     const [childrenTopic, setChildrenTopic] = useState('')
 
@@ -32,7 +32,7 @@ const CreatePost = () => {
     if (isPending) return <p>Загрузка...</p>;
     if (isError) return <p>Ошибка: {error.message}</p>;
 
-    console.log('mainTopics', mainTopics.data)
+    // console.log('mainTopics', mainTopics.data)
 
     const handleImageChange = (file: File) => setImgPath(file);
 
