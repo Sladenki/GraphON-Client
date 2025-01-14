@@ -16,7 +16,7 @@ import SchedulePopUp from './SchedulePopUp/SchedulePopUp'
 //  ССылка на S3 Yandex
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
-const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted }) => {
+const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted, isSubToGraph }) => {
   const { isReacted, reactionsState, handleReactionClick } = useReaction(id, initialIsReacted, reactions);
   const handleClick = useAuthRedirect();
   const { isGraphPopupOpen, handleGraphButtonClick, closeGraphPopup } = useGraphPopup();
@@ -62,8 +62,11 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
         <span>{time2TimeAgo(createdAt)}</span>
         <p>Граф - {graph.name}</p>
 
+          {/* @ts-expect-error mutation.isLoading  */}
         <button onClick={handleSubscribeClick} disabled={isSubscribing || mutation.isLoading}>
-          {isSubscribing || mutation.isLoading ? 'Подписка...' : 'Подписаться на граф'}
+          {
+            isSubToGraph ? 'Отписаться' : 'Подписаться'
+          }
         </button>
 
         <button onClick={handleScheduleButtonClick}>
@@ -92,7 +95,7 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
 
       <div className={styles.reactionList}>
         {reactionsState.length > 0 &&
-          reactionsState.map((reaction) => (
+          reactionsState.map((reaction: any) => (
             <div key={reaction._id} className={styles.reactionBlock} onClick={() => handleClick(reaction._id, id, handleReactionClick)}>
               <span style={{ color: isReacted ? '#D8BFD8' : 'inherit' }}>{isReacted ? 'оп' : 'не-оп'} {reaction.emoji}</span>
               <span>{reaction.clickNum}</span>

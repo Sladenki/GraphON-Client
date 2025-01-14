@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserPostReactionService } from '@/services/userPostReaction.service';
 
 
-export const useReaction = (id: string, initialIsReacted: boolean, reactions: IReaction[]) => {
+export const useReaction = (id: string, initialIsReacted: boolean, reactions: any) => {
   const [isReacted, setIsReacted] = useState(initialIsReacted);
   const [reactionsState, setReactionsState] = useState(reactions);
   const queryClient = useQueryClient();
@@ -29,8 +29,8 @@ export const useReaction = (id: string, initialIsReacted: boolean, reactions: IR
         });
       });
 
-      setReactionsState((prevReactions) =>
-        prevReactions.map((reaction) =>
+      setReactionsState((prevReactions: any) =>
+        prevReactions.map((reaction: any) =>
           reaction._id === reactionId
             ? { ...reaction, clickNum: isReacted ? reaction.clickNum - 1 : reaction.clickNum + 1 }
             : reaction

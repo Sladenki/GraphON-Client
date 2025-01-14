@@ -8,11 +8,11 @@ const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
 
   console.log('allPosts', allPosts)
 
-  // {
-  //   allPosts.map((post: IPost) => 
-  //     console.log('post', post.reactions[0].isReacted)
-  //   )
-  // }
+  {
+    allPosts.map((post: IPost) => 
+      console.log('post', post)
+    )
+  }
 
   return (
     <div>
@@ -20,6 +20,7 @@ const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
         <div key={post._id}>
           <Post 
             id={post._id}
+            // @ts-expect-error похер потом 
             graph={post.graphId}
             content={post.content} 
             imgPath={post.imgPath}
@@ -27,6 +28,7 @@ const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
             createdAt={post.createdAt}
             reactions={post.reactions}
             isReacted={post.reactions[0].isReacted}
+            isSubToGraph={post.isSubscribed}
           />
         </div>
 

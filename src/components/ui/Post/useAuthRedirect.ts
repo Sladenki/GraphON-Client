@@ -1,6 +1,7 @@
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 
+
 export const useAuthRedirect = () => {
   const { isLoggedIn } = useAuth();
   const router = useRouter();

@@ -15,10 +15,12 @@ export interface IPost {
     reactions: any[],
     isReacted: boolean
     graph: graphId
+    isSubscribed: boolean
 }
 
 export interface IPostClient extends IPost {
     id: string,
+    isSubToGraph: boolean
 }
 
 export interface IPostServer extends IPost {

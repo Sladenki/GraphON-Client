@@ -26,6 +26,7 @@ const eslintConfig = [
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       "@next/next/no-img-element": "off",
+      "@typescript-eslint/no-unsafe-function-type": "off",
       // Добавляйте сюда другие правила, если нужно
     },
   },
