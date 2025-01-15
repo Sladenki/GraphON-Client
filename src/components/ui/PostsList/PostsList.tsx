@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import Post from '../Post/Post'
 import { IPost, IPostServer } from '@/types/post.interface'
+import styles from './PostsList.module.scss'
 
 
 
@@ -15,7 +16,7 @@ const PostsList: FC<{ allPosts: any}> = ({ allPosts }) => {
   // }
 
   return (
-    <div>
+    <div className={styles.PostsListWrapper}>
       {allPosts.map((post: IPostServer) => (
         <div key={post._id}>
           {/* @ts-expect-error похер потом   */}

@@ -2,6 +2,7 @@
 
 import PostFeed from "@/components/ui/PostFeed/PostFeed";
 import { useAuth } from "@/providers/AuthProvider";
+import styles from './page.module.scss'
 
 const Homepage = () => {
   const { isLoggedIn } = useAuth();
@@ -12,7 +13,10 @@ const Homepage = () => {
   return (
     <>
       <p>Homepage 2 - ниже посты</p>
-      <PostFeed serverRequest={serverRequest} isLoggedIn={isLoggedIn} />
+      <div className={styles.PostFeedWrapper}>
+        <PostFeed serverRequest={serverRequest} isLoggedIn={isLoggedIn} />
+      </div>
+      
     </>
   );
 };

@@ -1,21 +1,13 @@
 'use client'
 
-import type { Metadata } from "next";
-import '../styles/globals.scss'
-
 import Sidebar from "@/components/Sidebar/Sidebar";
-
 import styles from './layout.module.scss'
-
 import BottomMenu from "@/components/Sidebar/BottomMenu/BottomMenu";
 import { AllProvers } from "@/providers/main";
 import { ProfileCorner } from "@/components/ProfileCorner/ProfileCorner";
 
+import '../styles/globals.scss'
 
-// export const metadata: Metadata = {
-//   title: "Sendler",
-//   description: "Social media app built with Next.js",
-// };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
@@ -23,8 +15,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={styles.wrapper}>
         <AllProvers>
-          {/* <CapacitorRedirectHandler /> */}
-
+          
           {/* Sidebar */}
           <div className={styles.sidebar}>
               <Sidebar/>

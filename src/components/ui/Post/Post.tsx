@@ -13,6 +13,7 @@ import { useSchedulePopup } from './useSchedulePopup'
 import SchedulePopUp from './SchedulePopUp/SchedulePopUp'
 import { useSubscription } from './useSubscription'
 import { useAuth } from '@/providers/AuthProvider'
+import { CalendarCheck, GitFork } from 'lucide-react'
 
 
 //  ССылка на S3 Yandex
@@ -41,44 +42,47 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
     <div className={styles.PostWrapper} key={id}>
 
       {/* Шапка */}
-      <div className={styles.userPart}>
-        <Image src={user.avaPath} className={styles.imgUser} alt="Аватарка" width={70} height={70} />
-        <span>{user.name}</span>
-        <span>{time2TimeAgo(createdAt)}</span>
-        <p>Граф - {graph.name}</p>
+      <div className={styles.header}>
 
-        {isLoggedIn && (
-          <button onClick={toggleSubscription} disabled={isLoading}>
-            {isSubscribed ? 'Отписаться' : 'Подписаться'}
-          </button>
-        )}
-       
-        <button onClick={handleScheduleButtonClick}>
-          Узнать расписание графа
-        </button>
+        <div className={styles.whoPosted}>
+          <span>{graph.name}</span>
+          <span>{time2TimeAgo(createdAt)}</span>
+        </div>
 
-        {graph && (
-          <button onClick={handleGraphButtonClick} >
-            Система графов
-          </button>
-        )}
+        <div className={styles.buttons}>
+          {isLoggedIn && (
+            <button onClick={toggleSubscription} disabled={isLoading}>
+              {isSubscribed ? 'Отписаться' : 'Подписаться'}
+            </button>
+          )}
+        
+          <CalendarCheck onClick={handleScheduleButtonClick}/>
+        
+          {graph && (
+            <GitFork onClick={handleGraphButtonClick} />
+          )}
+        </div>
 
       </div>
-
-      {content}
-
-      {imgPath && (
-        <div className={styles.imageContainer}>
-          <Image src={fullImageUrl} alt="Post Image" width={600} height={400} className={styles.postImage} />
-        </div>
-      )}
       
+      {/* Основной пост */}
+      <div className={styles.body}>
+        <span>{content}</span>
+
+        {imgPath && (
+          <div className={styles.imageContainer}>
+            <Image src={fullImageUrl} alt="Post Image" width={500} height={300} className={styles.postImage} />
+          </div>
+        )}
+      </div>
+
       {/* Система графов */}
       {isGraphPopupOpen && <GraphPopUp parentGraph={graph} isGraphPopupOpen={isGraphPopupOpen} closeGraphPopup={closeGraphPopup} />}
 
       {/* Расписание */}
       {isSchedulePopupOpen && <SchedulePopUp graph={graph} isSchedulePopupOpen={isSchedulePopupOpen} closeSchedulePopup={closeSchedulePopup} />}
-
+      
+      {/* Реакции */}
       <div className={styles.reactionList}>
         {reactionsState.length > 0 &&
           reactionsState.map((reaction: any) => (
