@@ -7,8 +7,6 @@ import GraphPopUp from './GraphPopUp/GraphPopUp'
 import { useReaction } from './useReaction'
 import { useAuthRedirect } from './useAuthRedirect'
 import { useGraphPopup } from './useGraphPopup'
-import { useMutation } from '@tanstack/react-query'
-import { GraphSubsService } from '@/services/graphSubs.service'
 import { useSchedulePopup } from './useSchedulePopup'
 import SchedulePopUp from './SchedulePopUp/SchedulePopUp'
 import { useSubscription } from './useSubscription'
@@ -44,22 +42,38 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
       {/* Шапка */}
       <div className={styles.header}>
 
-        <div className={styles.whoPosted}>
-          <span>{graph.name}</span>
-          <span>{time2TimeAgo(createdAt)}</span>
-        </div>
+        <div className={styles.leftPart}>
+          <div className={styles.whoPosted}>
+            <span>{graph.name}</span>
+            <span>{time2TimeAgo(createdAt)}</span>
+          </div>
 
-        <div className={styles.buttons}>
           {isLoggedIn && (
             <button onClick={toggleSubscription} disabled={isLoading}>
               {isSubscribed ? 'Отписаться' : 'Подписаться'}
             </button>
           )}
-        
-          <CalendarCheck onClick={handleScheduleButtonClick}/>
+        </div>
+
+
+        <div className={styles.buttons}>
+          <div className={styles.iconBlock} onClick={handleScheduleButtonClick}>
+            <CalendarCheck 
+              color="rgb(var(--main-Color))" 
+              size={26} 
+              strokeWidth={0.9} 
+            />
+          </div>
+
         
           {graph && (
-            <GitFork onClick={handleGraphButtonClick} />
+            <div className={styles.iconBlock} onClick={handleGraphButtonClick} >
+              <GitFork 
+                color="rgb(var(--main-Color))" 
+                size={26} 
+                strokeWidth={0.9}
+              />
+            </div>
           )}
         </div>
 
@@ -71,7 +85,7 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
 
         {imgPath && (
           <div className={styles.imageContainer}>
-            <Image src={fullImageUrl} alt="Post Image" width={500} height={300} className={styles.postImage} />
+            <Image src={fullImageUrl} alt="Post Image" width={450} height={300} className={styles.postImage} />
           </div>
         )}
       </div>

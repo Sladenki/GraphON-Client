@@ -23,6 +23,6 @@ export const sidebarTwo = [
 export const sidebarMobile = [
   createSidebarItem(1, <CircleUserRound color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Профиль', false, '/profile'),
   createSidebarItem(2, <House color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Главная', true, '/'),
-  createSidebarItem(3, <Handshake color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Подписки', false, '/conversations'),
-  createSidebarItem(4, <CalendarCheck color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Расписание', true, '/'),
+  createSidebarItem(3, <Handshake color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Подписки', false, '/subs'),
+  createSidebarItem(4, <CalendarCheck color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Расписание', true, '/schedule'),
 ];
