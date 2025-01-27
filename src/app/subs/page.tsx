@@ -11,12 +11,9 @@ const Subs = () => {
     const serverRequest = 'graphSubs/getSubsPosts'
 
     return (
-        <>
-            <div className={styles.SubsWrapper}>
-                <PostFeed serverRequest={serverRequest} isLoggedIn={isLoggedIn} />
-            </div>
-            
-        </>
+        <div className={styles.SubsWrapper}>
+            <PostFeed serverRequest={serverRequest} isLoggedIn={isLoggedIn} />
+        </div>
     );
 }
 

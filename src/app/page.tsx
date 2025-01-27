@@ -12,7 +12,7 @@ const Homepage = () => {
 
   return (
     <>
-      <p>Homepage 2 - ниже посты</p>
+      {/* <p>Homepage 2 - ниже посты</p> */}
       <div className={styles.PostFeedWrapper}>
         <PostFeed serverRequest={serverRequest} isLoggedIn={isLoggedIn} />
       </div>

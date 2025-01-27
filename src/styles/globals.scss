@@ -5,6 +5,9 @@
 :root {
   --main-Color: 106, 87, 232;
   --light-main: rgba(var(--main-Color), .1);
+
+  --parent-node: rgb(106, 87, 232); /* Основной цвет для родительского узла */
+  --child-node: rgba(106, 87, 232, 0.1);
 }
 
 html[data-theme="light"] {

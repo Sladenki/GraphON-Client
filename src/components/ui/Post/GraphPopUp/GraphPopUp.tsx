@@ -1,10 +1,9 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react'
 import styles from './GraphPopUp.module.scss'
 import { useQuery } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
 import PopUpWrapper from '../../PopUpWrapper/PopUpWrapper';
-import { Controls, Edge, MiniMap, ReactFlow, ReactFlowProvider } from '@xyflow/react';
-import CustomNode from './CustomNode';
+import { ForceGraph2D } from 'react-force-graph';
 
 interface GraphPopUpProps {
   parentGraph: {
@@ -15,84 +14,15 @@ interface GraphPopUpProps {
   closeGraphPopup: () => void;
 }
 
-// const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeGraphPopup }) => {
-//   const [childrenGraphs, setChildrenGraphs] = useState<any[]>([]);
-
-//   const { data: allChildrenGraphs, isLoading: isChildrenLoading, isError: isChildrenError } = useQuery({
-//       queryKey: ['childrenGraphs', parentGraph?._id], // Используем optional chaining
-//       queryFn: () => GraphService.getAllChildrenGraphs(parentGraph!._id), // Используем non-null assertion, так как enabled гарантирует наличие parentGraph._id
-//       enabled: !!parentGraph?._id, // Проверяем наличие parentGraph и _id
-//   });
-
-//   useEffect(() => {
-//       if (allChildrenGraphs) {
-//           setChildrenGraphs(allChildrenGraphs.data);
-//       }
-//   }, [allChildrenGraphs]);
-
-//   let defaultNodes: Node[] = [];
-//   let defaultEdges: Edge[] = [];
-
-//   if (parentGraph) { // Проверяем, существует ли parentGraph
-//       defaultNodes = [
-//           {
-//               id: parentGraph._id,
-//               data: { label: parentGraph.name },
-//               position: { x: 250, y: 100 },
-//               type: 'default',
-//           },
-//           ...childrenGraphs.map((child, index) => ({
-//               id: child._id,
-//               data: { label: child.name },
-//               position: {
-//                   x: 250 + Math.cos((index / childrenGraphs.length) * 2 * Math.PI) * 200,
-//                   y: 100 + Math.sin((index / childrenGraphs.length) * 2 * Math.PI) * 200,
-//               },
-//               type: 'default',
-//           })),
-//       ] ;
-
-//       defaultEdges = childrenGraphs.map(child => ({
-//           id: `e${parentGraph._id}-${child._id}`,
-//           source: parentGraph._id,
-//           target: child._id,
-//           animated: true,
-//           style: { stroke: '#007BFF', strokeWidth: 2 },
-//       }));
-//   }
-
-
-
-//   return (
-//       <PopUpWrapper isOpen={isGraphPopupOpen} onClose={closeGraphPopup} width={800} height={600}>
-          
-//               <ReactFlow
-//                 style={{ }}
-//                   nodes={defaultNodes}
-//                   edges={defaultEdges}
-//                   style={{ height: '500px', width: '100%', backgroundColor: "#F7F9FB" , border: '1px solid red' }}
-//                   nodeTypes={{ custom: CustomNode }}
-//               >
-//               </ReactFlow>
-
-//       </PopUpWrapper>
-//   );
-// };
-
-// export default GraphPopUp;
-
-
-
-
 
 
 const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeGraphPopup }) => {
 
-  // Дочерние графы от родительского
-  const [childrenGraphs, setChildrenGraphs] = useState<any[]>([]);
+  const graphRef = useRef(null);
 
-  // Флаг отображения дочерних графов
-  const [showChildren, setShowChildren] = useState(false);
+  console.log('parentGraph', parentGraph)
+
+
 
   // Запрос для получения всех дочерних графов, если родительский граф найден
   const { data: allChildrenGraphs, isPending: isChildrenLoading, isError: isChildrenError } = useQuery({
@@ -101,111 +31,92 @@ const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeG
     enabled: !!parentGraph.name, // Запрашиваем дочерние графы только если родительский граф существует
   });
 
+  console.log('allChildrenGraphs', allChildrenGraphs?.data)
 
-  useEffect(() => {
-    if (allChildrenGraphs) {
-      setChildrenGraphs(allChildrenGraphs.data);
-    }
-  }, [allChildrenGraphs]);
+  // Генерация данных для графа
+  const generateGraphData = () => {
+    if (!allChildrenGraphs?.data) return { nodes: [], links: [] };
 
-  useEffect(() => {
-    // Обработчик события прокрутки колёсика мышки
-    const handleWheel = (event: WheelEvent) => {
-      if (event.deltaY > 0) {
-        // Скролл вниз: показываем дочерние графы
-        setShowChildren(true);
-      } else if (event.deltaY < 0) {
-        // Скролл вверх: скрываем дочерние графы
-        setShowChildren(false);
-      }
-    };
+    const nodes = [
+      {
+        id: parentGraph._id,
+        name: parentGraph.name,
+        isParent: true,
+      },
+      ...allChildrenGraphs.data.map((child: any) => ({
+        id: child._id,
+        name: child.name,
+        isParent: false,
+      })),
+    ];
 
-    window.addEventListener('wheel', handleWheel);
+    const links = allChildrenGraphs.data.map((child: any) => ({
+      source: parentGraph._id,
+      target: child._id,
+    }));
 
-    return () => {
-      window.removeEventListener('wheel', handleWheel);
-    };
-  }, []);
+    return { nodes, links };
+  };
 
+  const graphData = generateGraphData();
 
-
-  return (
-    <PopUpWrapper isOpen={isGraphPopupOpen} onClose={closeGraphPopup}>
   
-      {parentGraph && (
-        <div>
-          {/* SVG для отображения графа */}
-          <div className={styles.graphContainer}>
-            <svg
-              viewBox="0 0 100 100"
-              className={styles.graphSvg}
-            >
-              <path
-                d="M10,30 Q40,5 70,30 T90,70 Q60,95 30,70 T10,30"
-                fill="none"
-                stroke="#007BFF"
-                strokeWidth="2"
-              />
-              <text
-                x="50%"
-                y="50%"
-                textAnchor="middle"
-                fill="#007BFF"
-                fontSize="10"
-                dy=".3em"
-              >
-                {parentGraph.name}
-              </text>
-            </svg>
-          </div>
+  if (isChildrenLoading) {
+    return (
+      <PopUpWrapper isOpen={isGraphPopupOpen} onClose={closeGraphPopup} width={800} height={600}>
+        <div>Loading...</div>
+      </PopUpWrapper>
+    );
+  }
 
-          {/* Отображение дочерних графов при необходимости */}
-          {showChildren && childrenGraphs.length > 0 && (
-            <div className={styles.graphContainer}>
-              {childrenGraphs.map((childGraph, index) => {
-                const angle = (index / childrenGraphs.length) * 2 * Math.PI;
-                const radius = 50;
-                const x = 50 + Math.cos(angle) * radius;
-                const y = 50 + Math.sin(angle) * radius;
-
-                return (
-                  <svg
-                    key={childGraph.id}
-                    viewBox="0 0 100 100"
-                    className={styles.graphSvg}
-                    style={{
-                      position: 'absolute',
-                      left: `${x}%`,
-                      top: `${y}%`,
-                      transform: 'translate(-50%, -50%) scale(0.7)',
-                    }}
-                  >
-                    <path
-                      d="M10,30 Q40,5 70,30 T90,70 Q60,95 30,70 T10,30"
-                      fill="none"
-                      stroke="#FF5733"
-                      strokeWidth="2"
-                    />
-                    <text
-                      x="50%"
-                      y="50%"
-                      textAnchor="middle"
-                      fill="#FF5733"
-                      fontSize="10"
-                      dy=".3em"
-                    >
-                      {childGraph.name}
-                    </text>
-                  </svg>
-                );
-              })}
-            </div>
-          )}
-
-          </div>
-        )}
-     </PopUpWrapper>
-  )
+  if (isChildrenError) {
+    return (
+      <PopUpWrapper isOpen={isGraphPopupOpen} onClose={closeGraphPopup} width={800} height={600}>
+        <div>Error...</div>
+      </PopUpWrapper>
+    );
+  }
+  
+  return (
+    <PopUpWrapper isOpen={isGraphPopupOpen} onClose={closeGraphPopup} width={800} height={600}>
+      <div className={styles.graphContainer}>
+        <ForceGraph2D
+          // @ts-expect-error пока похуй
+          ref={graphRef}
+          graphData={graphData}
+          width={800}
+          height={500}
+          nodeLabel={(node: any) => node.name} // Отображаем имя узла при наведении
+          nodeCanvasObject={(node: any, ctx, globalScale) => {
+            const label = node.name;
+            const fontSize = 12 / globalScale;
+            ctx.font = `${fontSize}px Sans-Serif`;
+          
+            // Извлекаем цвет узла из CSS-переменной
+            const color = node.isParent 
+              ? getComputedStyle(document.documentElement).getPropertyValue('--parent-node') 
+              : getComputedStyle(document.documentElement).getPropertyValue('--child-node');
+              
+            ctx.fillStyle = color.trim(); // Устанавливаем цвет узла
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.isParent ? 12 : 8, 0, 2 * Math.PI, false);
+            ctx.fill();
+          
+            // Текстовая подпись для узла
+            ctx.fillStyle = 'black'; // Цвет текста
+            ctx.fillText(label, node.x + 15, node.y + 5);
+          }}
+          linkWidth={1.5}
+          linkColor={() => 'gray'} // Линии серого цвета
+          enableNodeDrag={true} // Разрешаем перетаскивание узлов
+          enableZoomPanInteraction={true} // Зум и панорамирование
+          onNodeClick={(node: any) => {
+            alert(`Вы нажали на узел: ${node.name}`);
+          }}
+        />
+      </div>
+    </PopUpWrapper>
+  );
 }
 
 export default GraphPopUp

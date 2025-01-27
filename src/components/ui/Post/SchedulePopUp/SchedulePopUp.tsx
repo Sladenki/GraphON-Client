@@ -19,13 +19,13 @@ const SchedulePopUp: FC<{graph: any, isSchedulePopupOpen: boolean, closeSchedule
         }
     }, [graph, mutate]); // зависимость от graph и mutate, чтобы вызвать мутацию каждый раз, когда graph изменится
 
-    console.log('data', data)
+    // console.log('data', data)
 
     const scheduleByDays = useScheduleByDays(data?.data);
 
     return (
         <PopUpWrapper isOpen={isSchedulePopupOpen} onClose={closeSchedulePopup} width={800}>
-            <div>SchedulePopUp</div>
+            {/* <div>SchedulePopUp</div> */}
 
             {data && (
                 <ScheduleList

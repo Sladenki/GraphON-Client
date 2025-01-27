@@ -3,6 +3,7 @@
 import { FC, useEffect, useRef, useState } from "react";
 import PostsList from "../PostsList/PostsList";
 import { useFetchBunchData } from "@/hooks/useFetchBunchData";
+import { SpinnerLoader } from "../SpinnerLoader/SpinnerLoader";
 
 
 interface PostFeedProps {
@@ -32,7 +33,7 @@ const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
         }
     
         {
-          isPostsFetching && !isEndPosts && <p>Гружу</p>
+          isPostsFetching && !isEndPosts && <SpinnerLoader/>
         }
 
         {isEndPosts && (
