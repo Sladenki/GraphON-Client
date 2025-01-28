@@ -1,17 +1,18 @@
-import React, { FC, useCallback, useOptimistic, useState } from 'react'
+import React, { FC } from 'react'
 import styles from './Post.module.scss'
 import { IPost, IPostClient } from '@/types/post.interface'
 import Image from 'next/image'
 import { time2TimeAgo } from '@/utils/convertData'
-import GraphPopUp from './GraphPopUp/GraphPopUp'
 import { useReaction } from './useReaction'
 import { useAuthRedirect } from './useAuthRedirect'
 import { useGraphPopup } from './useGraphPopup'
 import { useSchedulePopup } from './useSchedulePopup'
-import SchedulePopUp from './SchedulePopUp/SchedulePopUp'
 import { useSubscription } from './useSubscription'
 import { useAuth } from '@/providers/AuthProvider'
 import { CalendarCheck, GitFork } from 'lucide-react'
+
+const GraphPopUp = React.lazy(() => import('./GraphPopUp/GraphPopUp'));
+const SchedulePopUp = React.lazy(() => import('./SchedulePopUp/SchedulePopUp'));
 
 
 //  ССылка на S3 Yandex
@@ -49,8 +50,14 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
           </div>
 
           {isLoggedIn && (
-            <button onClick={toggleSubscription} disabled={isLoading}>
-              {isSubscribed ? 'Отписаться' : 'Подписаться'}
+            <button
+              onClick={toggleSubscription}
+              disabled={isLoading}
+              className={`${styles.subscriptionButton} ${
+                isSubscribed ? styles.subscribed : styles.unsubscribed
+              }`}
+            >
+              {isLoading ? 'Загрузка...' : isSubscribed ? 'Подписаться' : 'Отписаться'}
             </button>
           )}
         </div>
@@ -100,10 +107,14 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
       <div className={styles.reactionList}>
         {reactionsState.length > 0 &&
           reactionsState.map((reaction: any) => (
-            <div key={reaction._id} className={styles.reactionBlock} onClick={() => handleClick(reaction._id, id, handleReactionClick)}>
-              <span style={{ color: isReacted ? '#D8BFD8' : 'inherit' }}>{isReacted ? 'оп' : 'не-оп'} {reaction.emoji}</span>
-              <span>{reaction.clickNum}</span>
-              <span>{reaction.text}</span>
+            <div
+              key={reaction._id}
+              className={`${styles.reactionBlock} ${isReacted ? styles.active : styles.inactive}`}
+              onClick={() => handleClick(reaction._id, id, handleReactionClick)}
+            >
+              <span className={styles.reactionEmoji}>{reaction.emoji}</span>
+              <span className={styles.reactionCount}>{reaction.clickNum}</span>
+              <span className={styles.reactionText}>{reaction.text}</span>
             </div>
           ))}
       </div>

@@ -6,6 +6,8 @@ import { useScheduleByDays } from "@/hooks/useScheduleByDays";
 import { GraphSubsService } from "@/services/graphSubs.service";
 import { useQuery } from "@tanstack/react-query";
 
+import styles from './Schedule.module.scss'
+
 const Schedule = () => {
 
   // Запрос данных через useQuery
@@ -25,14 +27,14 @@ const Schedule = () => {
 
 
   return (
-    <>
+    <div className={styles.ScheduleWrapper}>
       {data && (
         <ScheduleList
           scheduleByDays={scheduleByDays}
-          title="Расписание страница целая"
+          title="Расписание на неделю"
         />
       )}
-    </>
+    </div>
   );
 }
 

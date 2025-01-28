@@ -33,6 +33,51 @@
                     font-size: 15px;
                 }
             }
+
+            // Кнопка подписаться \ отписаться
+            .subscriptionButton {
+                padding: 8px 16px; 
+                border: none; 
+                border-radius: 6px; 
+                font-size: 14px; 
+                font-weight: 500; 
+                cursor: pointer; 
+                transition: background-color 0.3s ease, transform 0.2s ease; // Плавные переходы
+                
+                // Подписаться
+                &.subscribed {
+                  background-color: rgba(var(--main-Color), 0.7); // Основной цвет
+                  color: white;
+              
+                  &:hover {
+                    background-color: rgba(var(--main-Color), 0.9); // Темнее при наведении
+                  }
+              
+                  &:active {
+                    transform: scale(0.98); // Уменьшение при нажатии
+                  }
+                }
+                
+                // Отписаться
+                &.unsubscribed {
+                  background-color: var(--light-main); // Светлый оттенок
+                  color: rgba(var(--main-Color), 1);
+              
+                  &:hover {
+                    background-color: rgba(var(--main-Color), 0.2); // Чуть темнее при наведении
+                  }
+              
+                  &:active {
+                    transform: scale(0.98); // Уменьшение при нажатии
+                  }
+                }
+              
+                &:disabled {
+                  background-color: #e0e0e0; // Серый цвет
+                  color: #a0a0a0; // Светло-серый текст
+                  cursor: not-allowed; // Отключенный курсор
+                }
+            }
         }
         
 
@@ -56,32 +101,102 @@
     }
 
     .body{
-        margin: 20px 0 30px 0;
+      margin: 20px 0 30px 0;
 
-        span{
-            font-size: 21px;
-        }
+      span{
+          font-size: 21px;
+      }
     }
 
     .imageContainer {
-        margin-top: 15px;
-        width: 100%; 
-        overflow: hidden;
-        text-align: center; 
+      margin-top: 15px;
+      width: 100%; 
+      overflow: hidden;
+      text-align: center; 
     }
     
     .postImage {
-        max-width: 100%; 
-        height: auto; 
-        display: block; 
-        margin: 0 auto; 
-        border-radius: 25px;
+      max-width: 100%; 
+      height: auto; 
+      display: block; 
+      margin: 0 auto; 
+      border-radius: 25px;
     }
 
     .reactionList{
-        display: flex;
-        flex-direction: row;
-        grid-gap: 5px;
+      display: flex;
+      flex-direction: row;
+      grid-gap: 5px;
 
+      .reactionBlock {
+        display: flex;
+        align-items: center;
+        gap: 6px; 
+        padding: 8px 12px; 
+        // border: 1px solid rgba(var(--main-Color), 0.2);
+        border-radius: 12px; 
+        background-color: var(--light-main);
+        transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
+        cursor: pointer;
+      
+        &:hover {
+          transform: scale(1.05);
+          border-color: rgba(var(--main-Color), 0.5);
+        }
+      
+        &.active {
+          background-color: rgba(var(--main-Color), 0.25); /* Чуть более яркий фон */
+          border-color: rgba(var(--main-Color), 0.8);
+      
+          .reactionEmoji {
+            color: rgb(var(--main-Color));
+          }
+      
+          .reactionCount {
+            font-weight: bold;
+            color: rgb(var(--main-Color));
+          }
+      
+          .reactionText {
+            color: rgb(var(--main-Color));
+          }
+        }
+      
+        &.inactive {
+          background-color: var(--light-main);
+          border-color: rgba(var(--main-Color), 0.2);
+      
+          .reactionEmoji {
+            color: inherit;
+          }
+      
+          .reactionCount {
+            color: rgba(var(--main-Color), 0.6);
+          }
+      
+          .reactionText {
+            color: rgba(var(--main-Color), 0.8);
+          }
+        }
+      }
+      
+      .reactionEmoji {
+        font-size: 18px;
+        transition: color 0.3s;
+      }
+      
+      .reactionCount {
+        font-size: 16px; 
+        color: rgba(var(--main-Color), 0.6);
+        transition: color 0.3s, font-weight 0.3s;
+      }
+      
+      .reactionText {
+        font-size: 14px; /* Увеличен размер текста */
+        color: rgba(var(--main-Color), 0.8);
+        transition: color 0.3s;
+      }
+      
+      
     }
 }

@@ -19,8 +19,6 @@ const SchedulePopUp: FC<{graph: any, isSchedulePopupOpen: boolean, closeSchedule
         }
     }, [graph, mutate]); // зависимость от graph и mutate, чтобы вызвать мутацию каждый раз, когда graph изменится
 
-    // console.log('data', data)
-
     const scheduleByDays = useScheduleByDays(data?.data);
 
     return (
@@ -30,7 +28,7 @@ const SchedulePopUp: FC<{graph: any, isSchedulePopupOpen: boolean, closeSchedule
             {data && (
                 <ScheduleList
                     scheduleByDays={scheduleByDays}
-                    title="Расписание"
+                    title={`Расписание графа - ${graph.name}`}
                 />
             )}
         </PopUpWrapper>

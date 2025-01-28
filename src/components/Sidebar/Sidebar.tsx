@@ -8,7 +8,6 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { sidebar, sidebarTwo } from '@/constants/sidebar';
 
 import RenderMenuList from './RenderMenuList/RenderMenuList';
-import Logo from './Logo/Logo';
 
 
 const Sidebar: React.FC<{}> = ({}) => {
@@ -17,8 +16,6 @@ const Sidebar: React.FC<{}> = ({}) => {
 
   return (
     <div className={styles.sidebar}>
-
-      <Logo small={small} />
         
       <RenderMenuList arrayItems={sidebar} small={small}  />
 
