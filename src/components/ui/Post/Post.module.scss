@@ -176,7 +176,8 @@
           }
       
           .reactionText {
-            color: rgba(var(--main-Color), 0.8);
+            color: rgb(var(--main-text));
+            font-size: 17px;
           }
         }
       }

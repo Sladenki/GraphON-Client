@@ -110,6 +110,9 @@ const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeG
           linkColor={() => 'gray'} // Линии серого цвета
           enableNodeDrag={true} // Разрешаем перетаскивание узлов
           enableZoomPanInteraction={true} // Зум и панорамирование
+          onNodeClick={(node: any) => {
+            alert(`Вы нажали на соединение: ${node.name}`);
+          }}
           onLinkClick={(node: any) => {
             alert(`Вы нажали на граф: ${node.name}`);
           }}

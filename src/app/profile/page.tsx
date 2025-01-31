@@ -4,11 +4,10 @@ import { useAuth } from '@/providers/AuthProvider';
 import styles from './Profile.module.scss'
 import { SpinnerLoader } from '@/components/ui/SpinnerLoader/SpinnerLoader';
 import { IUser } from '@/types/user.interface';
+import LoginButton from '@/components/ProfileCorner/LoginButton/LoginButton';
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
-   
-    // console.log('user', user)
 
     if(loading) {
       return <SpinnerLoader/>
@@ -22,7 +21,7 @@ export default function Profile() {
 
     return (
         <div className={styles.profileWrapper}>
-            {typedUser && (
+            {typedUser ? (
                 <>
                     <div className={styles.header}>
                         <img src={typedUser.avaPath} className={styles.avatar} alt="Аватар" />
@@ -31,7 +30,7 @@ export default function Profile() {
                   
                     <span className={styles.text}>Количество постов: {typedUser.postsNum}</span>
                 </>
-            )}
+            ) : <LoginButton/>}
         </div>
     );
 }

@@ -9,14 +9,16 @@ import React, { useState } from 'react'
 import SelectTopics from './SelectTopics/SelectTopics';
 import EmojiPicker from './EmojiPicker/EmojiPicker';
 import styles from './createPage.module.scss'
+import { SpinnerLoader } from '@/components/ui/SpinnerLoader/SpinnerLoader';
 
 const CreatePost = () => {
+    const { push } = useRouter();
+
     const [content, setContent] = useState('');
     const [imgPath, setImgPath] = useState<File | null>(null);
     const [emoji, setEmoji] = useState(''); // Поле для эмодзи
     const [text, setText] = useState('');   // Поле для текста
     const [showEmojiPicker, setShowEmojiPicker] = useState(false); // Показать или скрыть выбор эмодзи
-    const { push } = useRouter();
 
     const [selectedTopic, setSelectedTopic] = useState('');
 
@@ -26,9 +28,8 @@ const CreatePost = () => {
         queryFn: () => GraphService.getParentGraphs(),
     });
 
-    if (isPending) return <p>Загрузка...</p>;
+    if (isPending) return <SpinnerLoader/>;
     if (isError) return <p>Ошибка: {error.message}</p>;
-
 
     const handleImageChange = (file: File) => setImgPath(file);
 
@@ -68,8 +69,6 @@ const CreatePost = () => {
         setShowEmojiPicker(false); // Закрываем меню выбора эмодзи
     };
 
-
-
   return (
     <div className={styles.createPostWrapper}>
         {/* Поиск по существующим графам + Создание нового графа + Список доступных графов */}
@@ -91,7 +90,7 @@ const CreatePost = () => {
         />
         <span>Количество введенных символов: {content.length} / 800</span>
 
-        <UploadForm handleImageChange={(e: string) => console.log(e)} />
+        <UploadForm handleImageChange={handleImageChange} />
 
         <div className={styles.emojiContainer}>
             <input
