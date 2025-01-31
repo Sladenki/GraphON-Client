@@ -24,13 +24,13 @@ const CreateNewTopic: FC<CreateNewTopicProps> = ({onClose, isOpen}) => {
   });
     
   return (
-    <PopUpWrapper onClose={onClose} isOpen={isOpen}>
+    <PopUpWrapper onClose={onClose} isOpen={isOpen} width={400} height={300}>
       <div className={styles.createTopicWrapper}>
         <h2 className={styles.title}>Создать новый граф</h2>
         <input
           type="text"
           className={styles.input}
-          placeholder="Введите название..."
+          placeholder="Название графа"
           value={graphName}
           onChange={(e) => setGraphName(e.target.value)}
         />

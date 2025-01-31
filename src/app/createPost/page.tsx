@@ -72,6 +72,7 @@ const CreatePost = () => {
 
   return (
     <div className={styles.createPostWrapper}>
+        {/* Поиск по существующим графам + Создание нового графа + Список доступных графов */}
         {mainTopics && (
             <SelectTopics
                 mainTopics={mainTopics.data}
@@ -88,6 +89,7 @@ const CreatePost = () => {
             onChange={(e) => setContent(e.target.value)}
             value={content}
         />
+        <span>Количество введенных символов: {content.length} / 800</span>
 
         <UploadForm handleImageChange={(e: string) => console.log(e)} />
 

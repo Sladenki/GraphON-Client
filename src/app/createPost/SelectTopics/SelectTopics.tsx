@@ -27,25 +27,29 @@ const SelectTopics = ({ mainTopics, selectedTopic, setSelectedTopic }) => {
       <div className={styles.selectTopicsWrapper}>
         {!selectedTopic && (
           <>
-            <input
-              type="text"
-              className={styles.searchInput}
-              placeholder="Поиск по существующим графам..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
+            <div className={styles.searchAndCreate}>
+              <input
+                  type="text"
+                  className={styles.searchInput}
+                  placeholder="Поиск по существующим графам..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
 
-            <button
-              className={styles.createNewGraphButton}
-              onClick={() => setOpenCreateNewTopic(true)}
-            >
-              Создать новый граф!
-            </button>
+                <button
+                  className={styles.createNewGraphButton}
+                  onClick={() => setOpenCreateNewTopic(true)}
+                >
+                  Создать новый граф!
+                </button>
+            </div>
 
             <CreateNewTopic
               onClose={() => setOpenCreateNewTopic(false)}
               isOpen={openCreateNewTopic}
             />
+
+            <span>Существующие графы:</span>
 
             <ul className={styles.topicsList}>
               {filteredTopics.map((topic: any) => (
