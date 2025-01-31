@@ -3,28 +3,17 @@
 import React from 'react'
 import { useTheme } from 'next-themes';
 
-import Link from 'next/link';
-import { useAuth } from '@/providers/AuthProvider';
-
 import styles from './Settings.module.scss'
-import { useRouter } from 'next/navigation';
 
+const LogOut = React.lazy(() => import('@/components/LogOut/LogOut'));
 
 const Settings = () => {
-  const { push } = useRouter();
 
   const { setTheme, theme } = useTheme();
-  const { logout } = useAuth();
-
+  
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
-
-  const handleLogout = async () => {
-    await logout();
-    push("/"); // Перенаправление на главную страницу после выхода
-  };
-
 
   return (
     <div className={styles.settingsWrapper}>
@@ -34,11 +23,9 @@ const Settings = () => {
           <input type="checkbox" onChange={toggleTheme} checked={theme === "dark"} />
           <span className={styles.slider}></span>
         </label>
-      </div>
 
-      <Link href="#" onClick={handleLogout} className={styles.logoutLink}>
-        Выйти
-      </Link>
+        <LogOut/>
+      </div>
     </div>
   )
 }

@@ -7,9 +7,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import SelectTopics from './SelectTopics/SelectTopics';
-import EmojiPicker from './EmojiPicker/EmojiPicker';
 import styles from './createPage.module.scss'
 import { SpinnerLoader } from '@/components/ui/SpinnerLoader/SpinnerLoader';
+
+
+const EmojiPicker = React.lazy(() => import('./EmojiPicker/EmojiPicker'));
 
 const CreatePost = () => {
     const { push } = useRouter();
@@ -105,7 +107,7 @@ const CreatePost = () => {
 
             {showEmojiPicker && (
                 <div className={styles.emojiPicker}>
-                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                    <EmojiPicker onEmojiClick={handleEmojiClick} />
                 </div>
             )}
 

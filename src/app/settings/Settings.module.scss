@@ -70,15 +70,4 @@
     }
 }
 
-.logoutLink {
-    font-size: 16px;
-    color: rgb(var(--main-Color));
-    text-decoration: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s;
 
-    &:hover {
-        color: rgba(var(--main-Color), 0.7);
-    }
-}

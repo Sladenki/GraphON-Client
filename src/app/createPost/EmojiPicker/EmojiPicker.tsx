@@ -4,7 +4,7 @@ import React from 'react';
 
 const EmojiPicker = ({ onEmojiClick }) => {
   // Список доступных эмодзи
-  const emojis = ['👍', '❤️', '😂', '😮', '😢', '😡'];
+  const emojis = ['👍', '❤️', '😂', '😮', '😢', '👻'];
 
   return (
     <div style={{
