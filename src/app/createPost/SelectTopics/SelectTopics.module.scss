@@ -1,69 +1,66 @@
+.selectTopicsWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  border-radius: 10px;
+}
 
-  .selectTopicsWrapper {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 400px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
+.searchInput {
+  width: 100%;
+  padding: 8px;
+  border: 2px solid rgba(var(--main-Color), 0.5);
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 10px;
   
-  .searchInput {
-    width: 100%;
-    padding: 8px;
-    border: 2px solid rgba(var(--main-Color), 0.5);
-    border-radius: 5px;
-    font-size: 16px;
-    outline: none;
-    margin-bottom: 10px;
-    
-    &:focus {
-      border-color: rgb(var(--main-Color));
-    }
+  &:focus {
+    border-color: rgb(var(--main-Color));
   }
-  
-  .createNewGraphButton {
-    width: 100%;
-    padding: 10px;
-    background: rgb(var(--main-Color));
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-bottom: 10px;
-  
-    &:hover {
-      background: rgba(var(--main-Color), 0.8);
-    }
+}
+
+.createNewGraphButton {
+  width: 100%;
+  padding: 10px;
+  background: rgb(var(--main-Color));
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-bottom: 10px;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.8);
   }
+}
+
+.topicsList {
+  list-style: none;
+  padding: 0;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  border-radius: 5px;
+}
+
+.topicItem {
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
   
-  .topicsList {
-    list-style: none;
-    padding: 0;
-    border: 1px solid #ccc;
-    max-height: 150px;
-    overflow-y: auto;
-    border-radius: 5px;
+  &:hover {
+    background: var(--light-main);
   }
-  
-  .topicItem {
-    padding: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-    
-    &:hover {
-      background: var(--light-main);
-    }
-  }
-  
-  .selectedTopic {
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: rgb(var(--main-Color));
-  }
+}
+
+.selectedTopic {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgb(var(--main-Color));
+}
   

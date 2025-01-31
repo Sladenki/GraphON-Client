@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
 import PopUpWrapper from '../../PopUpWrapper/PopUpWrapper';
 import { ForceGraph2D } from 'react-force-graph';
+import { SpinnerLoader } from '../../SpinnerLoader/SpinnerLoader';
 
 interface GraphPopUpProps {
   parentGraph: {
@@ -23,8 +24,7 @@ const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeG
   console.log('parentGraph', parentGraph)
 
 
-
-  // Запрос для получения всех дочерних графов, если родительский граф найден
+  // --- Запрос для получения всех дочерних графов, если родительский граф найден ---
   const { data: allChildrenGraphs, isPending: isChildrenLoading, isError: isChildrenError } = useQuery({
     queryKey: ['childrenGraphs', parentGraph._id],
     queryFn: () => GraphService.getAllChildrenGraphs(parentGraph._id),
@@ -33,7 +33,7 @@ const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeG
 
   console.log('allChildrenGraphs', allChildrenGraphs?.data)
 
-  // Генерация данных для графа
+  // --- Генерация данных для графа --- 
   const generateGraphData = () => {
     if (!allChildrenGraphs?.data) return { nodes: [], links: [] };
 
@@ -64,7 +64,7 @@ const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeG
   if (isChildrenLoading) {
     return (
       <PopUpWrapper isOpen={isGraphPopupOpen} onClose={closeGraphPopup} width={800} height={600}>
-        <div>Loading...</div>
+        <SpinnerLoader/>
       </PopUpWrapper>
     );
   }
@@ -89,7 +89,7 @@ const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeG
           nodeLabel={(node: any) => node.name} // Отображаем имя узла при наведении
           nodeCanvasObject={(node: any, ctx, globalScale) => {
             const label = node.name;
-            const fontSize = 12 / globalScale;
+            const fontSize = 17 / globalScale;
             ctx.font = `${fontSize}px Sans-Serif`;
           
             // Извлекаем цвет узла из CSS-переменной
@@ -103,15 +103,15 @@ const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeG
             ctx.fill();
           
             // Текстовая подпись для узла
-            ctx.fillStyle = 'black'; // Цвет текста
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--main-text');; // Цвет текста
             ctx.fillText(label, node.x + 15, node.y + 5);
           }}
           linkWidth={1.5}
           linkColor={() => 'gray'} // Линии серого цвета
           enableNodeDrag={true} // Разрешаем перетаскивание узлов
           enableZoomPanInteraction={true} // Зум и панорамирование
-          onNodeClick={(node: any) => {
-            alert(`Вы нажали на узел: ${node.name}`);
+          onLinkClick={(node: any) => {
+            alert(`Вы нажали на граф: ${node.name}`);
           }}
         />
       </div>

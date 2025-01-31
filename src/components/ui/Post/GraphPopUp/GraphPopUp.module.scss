@@ -1,9 +1,12 @@
 .graphContainer {
-  // border: 1px solid green;
+  height: 95%;
+  border: 1px dashed rgb(var(--main-Color));
+  border-radius: 20px;
   margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 // .parent-node{

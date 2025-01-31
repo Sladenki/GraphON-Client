@@ -1,0 +1,18 @@
+.ScheduleListWrapper{
+    .dayBlock{
+        margin-bottom: 30px;
+
+        .dayofWeek{
+            font-family: 'Roboto', sans-serif;
+            color: var(--main-text);
+            font-weight: 500;
+            font-size: 18px;
+        }
+
+        .scheduleItem{
+            margin-top: 10px;
+        }
+    }
+
+  
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import ScheduleItem from "@/components/ui/ScheduleItem/ScheduleItem";
+import styles from './ScheduleList.module.scss'
 
 interface ScheduleDisplayProps {
   scheduleByDays: { [key: number]: any[] }; // Типизируйте точнее, если известно содержимое расписания
@@ -11,14 +12,14 @@ const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', '�
 const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, title }) => {
 
   return (
-    <div>
+    <div className={styles.ScheduleListWrapper}>
       {title && <h2>{title}</h2>}
-      <div>
+      <>
         {daysOfWeek.map((day, index) => (
-          <div key={index} style={{ marginBottom: '20px' }}>
-            <h3>{day}</h3>
+          <div key={index} className={styles.dayBlock}>
+            <span className={styles.dayofWeek}>{day}</span>
             {scheduleByDays[index]?.length > 0 ? (
-              <div>
+              <div className={styles.scheduleItem}>
                 {scheduleByDays[index].map((item) => (
                   <ScheduleItem
                     key={item._id}
@@ -36,7 +37,7 @@ const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, title })
             )}
           </div>
         ))}
-      </div>
+      </>
     </div>
   );
 };
