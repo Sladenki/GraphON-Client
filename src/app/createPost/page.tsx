@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import SelectTopics from './SelectTopics/SelectTopics';
 import EmojiPicker from './EmojiPicker/EmojiPicker';
+import styles from './createPage.module.scss'
 
 const CreatePost = () => {
     const [content, setContent] = useState('');
@@ -19,10 +20,6 @@ const CreatePost = () => {
 
     const [selectedTopic, setSelectedTopic] = useState('');
 
-    // console.log('selectedTopic', selectedTopic)
-
-    const [childrenTopic, setChildrenTopic] = useState('')
-
     // Получение главных графов
     const { isPending, isError, data: mainTopics, error } = useQuery({
         queryKey: ['graph/getParentGraphs'],
@@ -32,7 +29,6 @@ const CreatePost = () => {
     if (isPending) return <p>Загрузка...</p>;
     if (isError) return <p>Ошибка: {error.message}</p>;
 
-    // console.log('mainTopics', mainTopics.data)
 
     const handleImageChange = (file: File) => setImgPath(file);
 
@@ -50,7 +46,6 @@ const CreatePost = () => {
         formData.append('reaction', JSON.stringify(reaction)); // Преобразуем в строку
         // @ts-expect-error 123
         formData.append('selectedTopic', selectedTopic._id); 
-        formData.append('childrenTopic', childrenTopic); 
 
         try {
             const response = await PostService.createPost(formData);
@@ -76,60 +71,57 @@ const CreatePost = () => {
 
 
   return (
-      <div>
-
-        {mainTopics && 
-            <SelectTopics 
-                mainTopics={mainTopics.data} 
+    <div className={styles.createPostWrapper}>
+        {mainTopics && (
+            <SelectTopics
+                mainTopics={mainTopics.data}
                 selectedTopic={selectedTopic}
                 setSelectedTopic={setSelectedTopic}
             />
-        }
+        )}
 
-        <textarea 
+        <textarea
             id="textField"
-            placeholder="Введите текст поста"
+            className={styles.textarea}
+            placeholder="Введите текст поста..."
             maxLength={800}
             onChange={(e) => setContent(e.target.value)}
-            value={content} 
+            value={content}
         />
 
-        <input 
-            type="text"
-            maxLength={10} 
-            placeholder="Подтематика"
-            value={childrenTopic}
-            onChange={(e) => setChildrenTopic(e.target.value)}
-        />
+        <UploadForm handleImageChange={(e: string) => console.log(e)} />
 
-        <UploadForm handleImageChange={handleImageChange} />
-
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', position: 'relative' }}>
-            <input 
+        <div className={styles.emojiContainer}>
+            <input
                 type="text"
-                maxLength={1} // Максимум один символ для эмодзи
-                placeholder="Эмодзи"
+                maxLength={1}
+                placeholder="😊"
                 value={emoji}
-                onFocus={() => setShowEmojiPicker(true)} // Открываем меню при фокусе
+                onFocus={() => setShowEmojiPicker(true)}
                 onChange={(e) => setEmoji(e.target.value)}
-                style={{ width: '50px', marginRight: '10px' }} // Ширина поля эмодзи
+                className={styles.emojiInput}
             />
 
-            {/* Меню выбора эмодзи */}
-            {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
+            {showEmojiPicker && (
+                <div className={styles.emojiPicker}>
+                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                </div>
+            )}
 
-            <input 
+            <input
                 type="text"
-                maxLength={10} // Максимум 10 символов для текста
+                maxLength={10}
                 placeholder="Текст реакции"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                style={{ flex: 1 }} // Поле текста занимает оставшееся пространство
+                className={styles.reactionInput}
             />
         </div>
 
-        <button onClick={handleSubmit}>Create Post</button>
-      </div>
+        <button className={styles.createButton} onClick={handleSubmit}>
+            Создать пост
+        </button>
+    </div>
   );
 };
 

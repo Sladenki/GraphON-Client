@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import styles from './UploadForm.module.scss'
 
 export default function UploadForm({ handleImageChange }: any) {
   const [file, setFile] = useState<File | null>(null);
@@ -12,8 +13,17 @@ export default function UploadForm({ handleImageChange }: any) {
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleFileChange} />
+    <div className={styles.uploadWrapper}>
+      <label htmlFor="fileInput" className={styles.uploadLabel}>
+        {file ? "Выбран файл: " + file.name : "Загрузите изображение"}
+      </label>
+      <input
+        id="fileInput"
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className={styles.uploadInput}
+      />
     </div>
   );
 }

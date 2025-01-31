@@ -5,7 +5,6 @@ import Link from "next/link";
 import styles from './ProfileUser.module.scss'
 
 import { FC, useState } from "react";
-import ProfilePopUp from "@/components/ProfileCorner/ProfileUser/ProfilePopUp/ProfilePopUp";
 import { ISessionUser, IUser } from "@/types/user.interface";
 
 
@@ -28,13 +27,7 @@ const ProfileUser: FC<{user: IUser}> = ({ user }) => {
             </Link>
             
 
-            {
-                isHovering && (
-                    <div onMouseLeave={onMouseLeave}>
-                        <ProfilePopUp/>
-                    </div>
-                )
-            }
+
         </>
 
 

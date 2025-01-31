@@ -1,6 +1,11 @@
-import { axiosClassic } from "@/api/interceptors"
+import { axiosAuth, axiosClassic } from "@/api/interceptors"
 
 export const GraphService = {
+
+    // --- Создание графа ---
+    async createGraph(name: string) {
+        return axiosAuth.post(`/graph`, { name })
+    },
 
     // --- Получение графа по id ---
     async getGraphById(graphId: any) {

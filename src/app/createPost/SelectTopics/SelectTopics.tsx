@@ -1,4 +1,7 @@
 import { useState } from "react";
+import CreateNewTopic from "../CreateNewTopic/CreateNewTopic";
+
+import styles from './SelectTopics.module.scss'
 
 // @ts-expect-error 123
 const SelectTopics = ({ mainTopics, selectedTopic, setSelectedTopic }) => {
@@ -17,24 +20,39 @@ const SelectTopics = ({ mainTopics, selectedTopic, setSelectedTopic }) => {
     const filteredTopics = mainTopics.filter((topic: any) =>
       topic.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const [openCreateNewTopic, setOpenCreateNewTopic] = useState(false);
   
     return (
-      <div>
+      <div className={styles.selectTopicsWrapper}>
         {!selectedTopic && (
           <>
             <input
               type="text"
-              placeholder="Поиск..."
+              className={styles.searchInput}
+              placeholder="Поиск по существующим графам..."
               value={searchTerm}
               onChange={handleSearchChange}
-              style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
             />
-            <ul style={{ border: '1px solid #ccc', padding: '10px', maxHeight: '150px', overflowY: 'auto' }}>
+
+            <button
+              className={styles.createNewGraphButton}
+              onClick={() => setOpenCreateNewTopic(true)}
+            >
+              Создать новый граф!
+            </button>
+
+            <CreateNewTopic
+              onClose={() => setOpenCreateNewTopic(false)}
+              isOpen={openCreateNewTopic}
+            />
+
+            <ul className={styles.topicsList}>
               {filteredTopics.map((topic: any) => (
                 <li
                   key={topic._id}
+                  className={styles.topicItem}
                   onClick={() => handleItemSelect(topic)}
-                  style={{ cursor: 'pointer', padding: '5px' }}
                 >
                   {topic.name}
                 </li>
@@ -43,8 +61,8 @@ const SelectTopics = ({ mainTopics, selectedTopic, setSelectedTopic }) => {
           </>
         )}
         {selectedTopic && (
-          <div>
-            <p>Вы выбрали: {selectedTopic.name}</p>
+          <div className={styles.selectedTopic}>
+            <p>Вы выбрали: <strong>{selectedTopic.name}</strong></p>
           </div>
         )}
       </div>

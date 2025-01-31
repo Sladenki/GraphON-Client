@@ -1,0 +1,44 @@
+.profileWrapper{
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+
+    .header{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 30px;
+
+        .avatar{
+            height: 120px;
+            width: 120px;
+            min-height: 120px;
+            min-width: 120px;
+            border-radius: 50%;
+            
+        
+            img{
+                object-fit: cover;
+                border-radius: 50%;
+            }
+        }
+
+        .name{
+            font-family: 'Roboto', sans-serif;
+            color: var(--main-text);
+            font-weight: 300;
+            font-size: 30px;
+        }
+    }
+
+    .text{
+        font-family: 'Roboto', sans-serif;
+        color: var(--main-text);
+        font-weight: 300;
+        font-size: 27px;
+    }
+}
+

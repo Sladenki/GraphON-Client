@@ -14,4 +14,5 @@ export interface ISessionUser extends IGoogleAuthUser {
 export interface IUser {
     name: string
     avaPath: string
+    postsNum: number
 }

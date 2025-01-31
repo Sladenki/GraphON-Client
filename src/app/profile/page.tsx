@@ -1,40 +1,36 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
-import Cookies from 'js-cookie';
+
 import { useAuth } from '@/providers/AuthProvider';
-import { useRouter } from 'next/router';
+import styles from './Profile.module.scss'
+import { SpinnerLoader } from '@/components/ui/SpinnerLoader/SpinnerLoader';
+import { IUser } from '@/types/user.interface';
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
    
-
     // console.log('user', user)
 
-
     if(loading) {
-      return <div>Loading...</div>
+      return <SpinnerLoader/>
     }
 
     if(error) {
       return <div>{error}</div>
     }
 
+    const typedUser = user as IUser | null;
+
     return (
-        <div>
-            Профиль
-            {user && ( // Отображаем данные из user
-                <div>
-                    {/* @ts-ignore 123 */}
-                    <p>Email: {user.email}</p>
-                    {/* @ts-ignore 123 */}
-                    <p>Имя: {user.name}</p>
-                    {/* @ts-ignore 123 */}
-                    <p>Аватар: <img src={user.avaPath} alt="Аватар" /></p>
-                    {/* @ts-ignore 123 */}
-                    <p>Количество постов: {user.postsNum}</p>
-                    {/* @ts-ignore 123 */}
-                </div>
+        <div className={styles.profileWrapper}>
+            {typedUser && (
+                <>
+                    <div className={styles.header}>
+                        <img src={typedUser.avaPath} className={styles.avatar} alt="Аватар" />
+                        <span className={styles.name}>{typedUser.name}</span>
+                    </div>
+                  
+                    <span className={styles.text}>Количество постов: {typedUser.postsNum}</span>
+                </>
             )}
         </div>
     );

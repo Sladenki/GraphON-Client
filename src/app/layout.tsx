@@ -7,12 +7,18 @@ import { AllProvers } from "@/providers/main";
 import { ProfileCorner } from "@/components/ProfileCorner/ProfileCorner";
 
 import '../styles/globals.scss'
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
+  const small = useMediaQuery(650)
+
   return (
     <html lang="en">
+      <head>
+        <title>GraphON</title>
+      </head>
       <body className={styles.wrapper}>
         <AllProvers>
           
@@ -33,9 +39,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </div>
           
           {/* Ава в углу */}
-          <div className={styles.profileCorner}>
-            <ProfileCorner/>
-          </div>
+          {!small && (
+            <div className={styles.profileCorner}>
+              <ProfileCorner/>
+            </div>
+          )}
 
           <div className={styles.BottomMenu}>
             <BottomMenu/>

@@ -4,6 +4,7 @@
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr 4.5fr;
+    overflow: hidden;
 
     // Основной контент
     .main {
@@ -24,6 +25,7 @@
         width: 100%;
         height: 100vh;
         overflow-y: auto;
+    
       }
     }
 
