@@ -6,7 +6,7 @@ import LoginButton from "@/components/ProfileCorner/LoginButton/LoginButton";
 const Signin = () => {
   return (
     <>
-      <h1>SignIn</h1>
+      <h1>Авторизация</h1>
       <LoginButton/>
     </>
   );

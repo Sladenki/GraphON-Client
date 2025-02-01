@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 
+import styles from './LoginButton.module.scss'
+
 const LoginButton = () => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -15,18 +17,18 @@ const LoginButton = () => {
 
 
     return (
-        <div>
+        <div className={styles.loginButtonWrapper}>
             {user ? (
-                <div>
+                <div className={styles.userInfo}>
                     {/* @ts-expect-error 123 */}
-                    <img src={user.imageUrl} alt={user.name} style={{ borderRadius: '50%', width: 50 }} />
-                        {/* @ts-expect-error 123 */}
-                    <p>Добро пожаловать, {user.name}</p>
-                    {/* <button onClick={handleLogout}>Выйти</button> */}
+                    <img src={user.imageUrl} alt={user.name} className={styles.userAvatar} />
+                    {/* @ts-expect-error 123 */}
+                    <p className={styles.welcomeText}>Добро пожаловать, {user.name}</p>
                 </div>
             ) : (
-                <button onClick={handleLogin} disabled={isLoading}>
-                    {isLoading ? 'Загрузка...' : 'Войти с гугла 2'}
+                <button onClick={handleLogin} disabled={isLoading} className={styles.googleButton}>
+                    <img src="/google.svg" alt="Google" className={styles.googleIcon} />
+                    {isLoading ? "Загрузка..." : "Войти с Google"}
                 </button>
             )}
         </div>
