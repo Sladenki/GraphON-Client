@@ -9,7 +9,8 @@ import { useGraphPopup } from './useGraphPopup'
 import { useSchedulePopup } from './useSchedulePopup'
 import { useSubscription } from './useSubscription'
 import { useAuth } from '@/providers/AuthProvider'
-import { CalendarCheck, GitFork } from 'lucide-react'
+import { CalendarCheck, GitFork, Power } from 'lucide-react'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 const GraphPopUp = React.lazy(() => import('./GraphPopUp/GraphPopUp'));
 const SchedulePopUp = React.lazy(() => import('./SchedulePopUp/SchedulePopUp'));
@@ -21,6 +22,8 @@ const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted, isSubToGraph }) => {
 
   const { isLoggedIn } = useAuth();
+
+  const isMobile = useMediaQuery(500)
 
   // Реакция 
   const { isReacted, reactionsState, handleReactionClick } = useReaction(id, initialIsReacted, reactions);
@@ -37,6 +40,7 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
   const fullImageUrl = `${BASE_S3_URL}/${imgPath}`;
 
 
+
   return (
     <div className={styles.PostWrapper} key={id}>
 
@@ -45,20 +49,29 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
 
         <div className={styles.leftPart}>
           <div className={styles.whoPosted}>
-            <span>{graph.name}</span>
+            <span className={isMobile ? styles.mobileGraphName : ""}>{graph.name}</span>
             <span>{time2TimeAgo(createdAt)}</span>
           </div>
 
-          {isLoggedIn && (
-            <button
+          {isLoggedIn && 
+            !isMobile ? (
+              <button
               onClick={toggleSubscription}
               disabled={isLoading}
-              className={`${styles.subscriptionButton} ${
+               className={`${styles.subscriptionButton} ${
                 isSubscribed ? styles.subscribed : styles.unsubscribed
               }`}
             >
               {isLoading ? 'Загрузка...' : isSubscribed ? 'Подписаться' : 'Отписаться'}
             </button>
+            ) : (
+              <div className={styles.iconBlock} onClick={toggleSubscription}>
+                <Power 
+                  color="rgb(var(--main-Color))" 
+                  size={20} 
+                  strokeWidth={0.9} 
+                />
+              </div>
           )}
         </div>
 
@@ -67,21 +80,19 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
           <div className={styles.iconBlock} onClick={handleScheduleButtonClick}>
             <CalendarCheck 
               color="rgb(var(--main-Color))" 
-              size={26} 
+              size={isMobile ? 20 : 26} 
               strokeWidth={0.9} 
             />
           </div>
 
-        
-          {graph && (
-            <div className={styles.iconBlock} onClick={handleGraphButtonClick} >
-              <GitFork 
-                color="rgb(var(--main-Color))" 
-                size={26} 
-                strokeWidth={0.9}
-              />
-            </div>
-          )}
+          <div className={styles.iconBlock} onClick={handleGraphButtonClick} >
+            <GitFork 
+              color="rgb(var(--main-Color))" 
+              size={isMobile ? 20 : 26} 
+              strokeWidth={0.9}
+            />
+          </div>
+          
         </div>
 
       </div>

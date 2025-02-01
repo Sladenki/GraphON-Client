@@ -13,7 +13,7 @@
         font-weight: 300;
         display: flex;
         flex-direction: row;
-        grid-gap: 40px;
+        grid-gap: 25px;
         justify-content: center;
 
         .listLine{
@@ -22,6 +22,7 @@
             align-items: center;
             stroke: rgb(var(--main-Color));
             color: var(--main-text);
+            font-size: 13px;
             
             .active{
                 color: rgb(var(--main-Color));

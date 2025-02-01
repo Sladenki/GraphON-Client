@@ -4,7 +4,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import styles from './Profile.module.scss'
 import { SpinnerLoader } from '@/components/ui/SpinnerLoader/SpinnerLoader';
 import { IUser } from '@/types/user.interface';
-import LoginButton from '@/components/ProfileCorner/LoginButton/LoginButton';
+import LoginButton from '@/components/ProfileCorner/LoginButton/LoginButton';;
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
@@ -18,7 +18,7 @@ export default function Profile() {
     }
 
     const typedUser = user as IUser | null;
-
+  
     return (
         <div className={styles.profileWrapper}>
             {typedUser ? (

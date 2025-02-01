@@ -4,11 +4,12 @@ import React, { FC, useEffect } from 'react'
 import ScheduleList from '../../ScheduleList/ScheduleList';
 import { useScheduleByDays } from '@/hooks/useScheduleByDays';
 import PopUpWrapper from '../../PopUpWrapper/PopUpWrapper';
+import { SpinnerLoader } from '../../SpinnerLoader/SpinnerLoader';
 
 const SchedulePopUp: FC<{graph: any, isSchedulePopupOpen: boolean, closeSchedulePopup: () => void}> = ({ graph, isSchedulePopupOpen, closeSchedulePopup }) => {
 
     // --- Расписание --- 
-    const { mutate, data, isError, error } = useMutation({
+    const { mutate, data, isPending } = useMutation({
         mutationFn: (graphId: string) => ScheduleService.getWeeklyScheduleByGraphId(graphId),
     });
 
@@ -20,6 +21,10 @@ const SchedulePopUp: FC<{graph: any, isSchedulePopupOpen: boolean, closeSchedule
     }, [graph, mutate]); // зависимость от graph и mutate, чтобы вызвать мутацию каждый раз, когда graph изменится
 
     const scheduleByDays = useScheduleByDays(data?.data);
+
+    if(isPending) {
+        <SpinnerLoader/>
+    }
 
     return (
         <PopUpWrapper isOpen={isSchedulePopupOpen} onClose={closeSchedulePopup} width={800}>
