@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import styles from './Post.module.scss'
 import { IPost, IPostClient } from '@/types/post.interface'
 import Image from 'next/image'
@@ -40,6 +40,9 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
   const fullImageUrl = `${BASE_S3_URL}/${imgPath}`;
 
 
+  const [isActive, setIsActive] = useState(false);
+
+
 
   return (
     <div className={styles.PostWrapper} key={id}>
@@ -77,7 +80,9 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
 
 
         <div className={styles.buttons}>
-          <div className={styles.iconBlock} onClick={handleScheduleButtonClick}>
+          <div 
+          className={`${styles.iconBlock} ${isActive ? styles.active : ''}`}  
+          onClick={handleScheduleButtonClick}>
             <CalendarCheck 
               color="rgb(var(--main-Color))" 
               size={isMobile ? 20 : 26} 
@@ -85,7 +90,9 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
             />
           </div>
 
-          <div className={styles.iconBlock} onClick={handleGraphButtonClick} >
+          <div 
+          className={`${styles.iconBlock} ${isActive ? styles.active : ''}`}  
+          onClick={handleGraphButtonClick} >
             <GitFork 
               color="rgb(var(--main-Color))" 
               size={isMobile ? 20 : 26} 
