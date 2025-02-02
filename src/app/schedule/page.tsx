@@ -16,6 +16,8 @@ const Schedule = () => {
     queryFn: () => GraphSubsService.getSubsSchedule(),
   });
 
+  console.log('data', data)
+
   // Преобразуем расписание по дням
   const scheduleByDays = useScheduleByDays(data?.data);
 

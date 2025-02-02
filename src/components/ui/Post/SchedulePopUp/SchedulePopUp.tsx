@@ -10,7 +10,7 @@ const SchedulePopUp: FC<{graph: any, isSchedulePopupOpen: boolean, closeSchedule
 
     // --- Расписание --- 
     const { mutate, data, isPending } = useMutation({
-        mutationFn: (graphId: string) => ScheduleService.getWeeklyScheduleByGraphId(graphId),
+        mutationFn: (graphId: string) => ScheduleService.getFullScheduleByGraphId(graphId),
     });
 
     useEffect(() => {
@@ -20,7 +20,7 @@ const SchedulePopUp: FC<{graph: any, isSchedulePopupOpen: boolean, closeSchedule
         }
     }, [graph, mutate]); // зависимость от graph и mutate, чтобы вызвать мутацию каждый раз, когда graph изменится
 
-    const scheduleByDays = useScheduleByDays(data?.data);
+    const scheduleByDays = useScheduleByDays(data?.data?.schedule);
 
     if(isPending) {
         <SpinnerLoader/>
@@ -28,11 +28,10 @@ const SchedulePopUp: FC<{graph: any, isSchedulePopupOpen: boolean, closeSchedule
 
     return (
         <PopUpWrapper isOpen={isSchedulePopupOpen} onClose={closeSchedulePopup} width={800}>
-            {/* <div>SchedulePopUp</div> */}
-
             {data && (
                 <ScheduleList
                     scheduleByDays={scheduleByDays}
+                    events={data?.data?.events}
                     title={`Расписание графа - ${graph.name}`}
                 />
             )}

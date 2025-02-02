@@ -2,9 +2,12 @@ import { useState } from "react";
 import CreateNewTopic from "../CreateNewTopic/CreateNewTopic";
 
 import styles from './SelectTopics.module.scss'
+import EventForm from "../EventCreate/EventCreate";
 
 // @ts-expect-error 123
 const SelectTopics = ({ mainTopics, selectedTopic, setSelectedTopic }) => {
+    console.log('selectedTopic', selectedTopic)
+  
     const [searchTerm, setSearchTerm] = useState('');
   
     const handleSearchChange = (e: any) => {
@@ -69,6 +72,12 @@ const SelectTopics = ({ mainTopics, selectedTopic, setSelectedTopic }) => {
             <p>Вы выбрали: <strong>{selectedTopic.name}</strong></p>
           </div>
         )}
+
+        {
+          selectedTopic._id && (
+            <EventForm graphId={selectedTopic._id} />
+          ) 
+        }
       </div>
     );
   };
