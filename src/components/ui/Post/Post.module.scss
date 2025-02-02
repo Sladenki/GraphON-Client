@@ -122,7 +122,7 @@
       margin: 20px 0 30px 0;
 
       span{
-          font-size: 21px;
+        font-size: 21px;
       }
     }
 
@@ -193,10 +193,6 @@
             color: rgba(var(--main-Color), 0.6);
           }
       
-          .reactionText {
-            color: rgb(var(--main-text));
-            font-size: 17px;
-          }
         }
       }
       
@@ -211,12 +207,55 @@
         transition: color 0.3s, font-weight 0.3s;
       }
       
-      .reactionText {
-        font-size: 14px; /* Увеличен размер текста */
-        color: rgba(var(--main-Color), 0.8);
-        transition: color 0.3s;
-      }
       
       
     }
+}
+
+@media only screen and (max-width: 800px) {
+  .PostWrapper{
+    .body{ 
+      span{
+        font-size: 19px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .PostWrapper{
+    .body{
+      span{
+        font-size: 17px;
+      }
+    }
+  }
+}
+
+// Блок реакции
+@media only screen and (max-width: 600px) {
+  .PostWrapper{
+    .reactionList{
+      .reactionBlock{
+        padding: 4px 10px; 
+
+        &.active{
+          .reactionEmoji {
+            font-size: 14px;
+            color: rgb(var(--main-Color));
+          }
+
+          .reactionCount {
+            font-size: 14px;
+          }
+
+          .reactionText {
+            font-size: 14px;
+          }
+        }
+    
+      }
+    }
+
+  }
 }

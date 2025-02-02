@@ -4,6 +4,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import PostsList from "../PostsList/PostsList";
 import { useFetchBunchData } from "@/hooks/useFetchBunchData";
 import { SpinnerLoader } from "../SpinnerLoader/SpinnerLoader";
+import NoInfo from "../NoInfo/NoInfo";
 
 
 interface PostFeedProps {
@@ -37,8 +38,8 @@ const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
         }
 
         {isEndPosts && (
-          <div style={{marginBottom: 50}}>
-            <span>А всё</span>
+          <div style={{ marginBottom: 70, marginTop: 50, textAlign: "center"}}>
+            <NoInfo/>
           </div>
         )}
 

@@ -29,11 +29,12 @@
 }
 
 .closeButton {
-    position: absolute;
+    position: sticky;
     top: 10px;
-    right: 10px;
+    left: 100%;
     background: transparent;
     border: none;
     font-size: 20px;
     cursor: pointer;
+    z-index: 10;
 }
