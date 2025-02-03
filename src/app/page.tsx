@@ -11,7 +11,6 @@ const Homepage = () => {
 
   const isAuth = user && Object.keys(user).length > 0;
 
-
   // Логика для выбора правильного URL запроса в зависимости от состояния isLoggedIn
   const serverRequest = isAuth ? 'post/getPostsAuth' : 'post/getPostsNoAuth';
 

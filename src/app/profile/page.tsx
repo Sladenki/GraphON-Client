@@ -4,7 +4,8 @@ import { useAuth } from '@/providers/AuthProvider';
 import styles from './Profile.module.scss'
 import { SpinnerLoader } from '@/components/ui/SpinnerLoader/SpinnerLoader';
 import { IUser } from '@/types/user.interface';
-import LoginButton from '@/components/ProfileCorner/LoginButton/LoginButton';;
+import LoginButton from '@/components/ProfileCorner/LoginButton/LoginButton';
+import Image from 'next/image'
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
@@ -26,7 +27,18 @@ export default function Profile() {
             {typedUser ? (
                 <>
                     <div className={styles.header}>
-                        <img src={typedUser.avaPath} className={styles.avatar} alt="Аватар" />
+                        {
+
+                            <Image 
+                                src={typedUser.avaPath} 
+                                className={styles.avatar} 
+                                alt="Аватар" 
+                                width={120}
+                                height={120}
+                            />
+                            
+                        }
+                       
                         <span className={styles.name}>{typedUser.name}</span>
                     </div>
                   

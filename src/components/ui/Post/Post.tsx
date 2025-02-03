@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import styles from './Post.module.scss'
-import { IPost, IPostClient } from '@/types/post.interface'
+import { IPostClient } from '@/types/post.interface'
 import Image from 'next/image'
 import { time2TimeAgo } from '@/utils/convertData'
 import { useReaction } from './useReaction'

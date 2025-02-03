@@ -28,15 +28,12 @@ const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
     push("/"); // Перенаправление на главную страницу после выхода
   };
 
-
   const { allPosts, isPostsFetching, isEndPosts, loaderRef, error } = useFetchBunchData(serverRequest, [], isLoggedIn);
 
   
   if (error?.response?.status == 401) {
    return handleLogout()
   }
-
-
 
   return (
     <div className=''>
@@ -45,7 +42,6 @@ const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
             <PostsList allPosts={allPosts}/>
           )
         }
-
 
         {
           error && (
