@@ -28,9 +28,8 @@ const EventForm = ({graphId}: any) => {
 
     return (
         <div className={styles.formContainer}>
+            <span>Создайте мероприятие!</span>
             <form className={styles.form} onSubmit={handleSubmit}>
-                {/* <label>Граф</label>
-                <input type="text" value={graphId} onChange={(e) => setGraphId(e.target.value)} required /> */}
 
                 <label>Название</label>
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />

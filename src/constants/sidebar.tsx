@@ -17,7 +17,7 @@ export const sidebar = [
 ];
 
 export const sidebarTwo = [
-  createSidebarItem(1, <Settings color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Настройки', true, '/settings'),
+  createSidebarItem(1, <Settings color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Настройки', false, '/settings'),
 ];
 
 // --- Для мобилок ---
@@ -26,4 +26,5 @@ export const sidebarMobile = [
   createSidebarItem(2, <CalendarCheck color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Расписание', true, '/schedule'),
   createSidebarItem(3, <Handshake color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Подписки', true, '/subs'),
   createSidebarItem(4, <CircleUserRound color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Профиль', false, '/profile'),
+  createSidebarItem(5, <Settings color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Настройки', false, '/settings'),
 ];

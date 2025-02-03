@@ -1,8 +1,9 @@
 import { useState } from "react";
-import CreateNewTopic from "../CreateNewTopic/CreateNewTopic";
+
 
 import styles from './SelectTopics.module.scss'
 import EventForm from "../EventCreate/EventCreate";
+import CreateNewGraph from "../CreateNewGraph/CreateNewGraph";
 
 // @ts-expect-error 123
 const SelectTopics = ({ mainTopics, selectedTopic, setSelectedTopic }) => {
@@ -47,7 +48,7 @@ const SelectTopics = ({ mainTopics, selectedTopic, setSelectedTopic }) => {
                 </button>
             </div>
 
-            <CreateNewTopic
+            <CreateNewGraph
               onClose={() => setOpenCreateNewTopic(false)}
               isOpen={openCreateNewTopic}
             />

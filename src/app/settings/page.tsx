@@ -4,10 +4,14 @@ import React from 'react'
 import { useTheme } from 'next-themes';
 
 import styles from './Settings.module.scss'
+import TelegramButton from './TelegramButton/TelegramButton';
+import { useAuth } from '@/providers/AuthProvider';
 
 const LogOut = React.lazy(() => import('@/components/LogOut/LogOut'));
 
 const Settings = () => {
+
+  const { isLoggedIn } = useAuth();
 
   const { setTheme, theme } = useTheme();
   
@@ -23,9 +27,17 @@ const Settings = () => {
           <input type="checkbox" onChange={toggleTheme} checked={theme === "dark"} />
           <span className={styles.slider}></span>
         </label>
-
-        <LogOut/>
       </div>
+
+      <TelegramButton/>
+
+      {
+        isLoggedIn && (
+          <LogOut/>
+        )
+      }
+      
+
     </div>
   )
 }

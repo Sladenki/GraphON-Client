@@ -16,17 +16,12 @@ const Schedule = () => {
     queryFn: () => GraphSubsService.getSubsSchedule(),
   });
 
-  console.log('data', data)
-
   // Преобразуем расписание по дням
   const scheduleByDays = useScheduleByDays(data?.data);
-
-  // console.log('scheduleByDays', scheduleByDays)
 
   // Выводим состояние загрузки или ошибки
   if (isLoading) return <SpinnerLoader/>;
   if (isError) return <p>Ошибка: {error.message}</p>;
-
 
   return (
     <div className={styles.ScheduleWrapper}>

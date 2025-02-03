@@ -86,11 +86,11 @@ const CreatePost = () => {
             id="textField"
             className={styles.textarea}
             placeholder="Введите текст поста..."
-            maxLength={800}
+            maxLength={600}
             onChange={(e) => setContent(e.target.value)}
             value={content}
         />
-        <span>Количество введенных символов: {content.length} / 800</span>
+        <span>Количество введенных символов: {content.length} / 600</span>
 
         <UploadForm handleImageChange={handleImageChange} />
 
@@ -98,7 +98,7 @@ const CreatePost = () => {
             <input
                 type="text"
                 maxLength={1}
-                placeholder="😊"
+                placeholder="👍"
                 value={emoji}
                 onFocus={() => setShowEmojiPicker(true)}
                 onChange={(e) => setEmoji(e.target.value)}
@@ -119,6 +119,7 @@ const CreatePost = () => {
                 onChange={(e) => setText(e.target.value)}
                 className={styles.reactionInput}
             />
+            <span>Количество введенных символов: {text.length} / 10</span>
         </div>
 
         <button className={styles.createButton} onClick={handleSubmit}>

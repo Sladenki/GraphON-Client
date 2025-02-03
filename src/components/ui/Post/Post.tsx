@@ -9,7 +9,7 @@ import { useGraphPopup } from './useGraphPopup'
 import { useSchedulePopup } from './useSchedulePopup'
 import { useSubscription } from './useSubscription'
 import { useAuth } from '@/providers/AuthProvider'
-import { CalendarCheck, GitFork, Power } from 'lucide-react'
+import { CalendarCheck, GitFork, Plus, Minus } from 'lucide-react'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 const GraphPopUp = React.lazy(() => import('./GraphPopUp/GraphPopUp'));
@@ -56,7 +56,8 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
             <span>{time2TimeAgo(createdAt)}</span>
           </div>
 
-          {isLoggedIn && 
+          {/* Подписаться \ отписаться */}
+          {isLoggedIn ?
             !isMobile ? (
               <button
               onClick={toggleSubscription}
@@ -69,20 +70,30 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
             </button>
             ) : (
               <div className={styles.iconBlock} onClick={toggleSubscription}>
-                <Power 
-                  color="rgb(var(--main-Color))" 
-                  size={20} 
-                  strokeWidth={0.9} 
-                />
+                {
+                  isSubscribed ? (
+                    <Plus    
+                      color="rgba(var(--main-Color), 0.7)" 
+                      size={20} 
+                      strokeWidth={1.5} 
+                    />
+                  ) : (
+                    <Minus 
+                      color="rgb(var(--main-Color))" 
+                      size={20} 
+                      strokeWidth={0.9} 
+                    />
+                  )
+                }
               </div>
-          )}
+          ): null}
         </div>
 
 
         <div className={styles.buttons}>
           <div 
-          className={`${styles.iconBlock} ${isActive ? styles.active : ''}`}  
-          onClick={handleScheduleButtonClick}>
+            className={`${styles.iconBlock} ${isActive ? styles.active : ''}`}  
+            onClick={handleScheduleButtonClick}>
             <CalendarCheck 
               color="rgb(var(--main-Color))" 
               size={isMobile ? 20 : 26} 
@@ -91,8 +102,8 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
           </div>
 
           <div 
-          className={`${styles.iconBlock} ${isActive ? styles.active : ''}`}  
-          onClick={handleGraphButtonClick} >
+            className={`${styles.iconBlock} ${isActive ? styles.active : ''}`}  
+            onClick={handleGraphButtonClick}>
             <GitFork 
               color="rgb(var(--main-Color))" 
               size={isMobile ? 20 : 26} 

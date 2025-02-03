@@ -1,4 +1,16 @@
 .ScheduleListWrapper{
+    margin-bottom: 70px;
+
+    .titlePage{
+        margin-top: 5px;
+        display: flex;
+        justify-content: center;
+        font-family: 'Roboto', sans-serif;
+        color: rgb(var(--main-Color));
+        font-size: 20px;
+        font-weight: 500;
+    }
+
     .dayBlock{
         margin-bottom: 30px;
 

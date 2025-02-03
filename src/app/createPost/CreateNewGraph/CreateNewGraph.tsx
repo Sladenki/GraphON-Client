@@ -3,7 +3,8 @@ import { GraphService } from '@/services/graph.service'
 import { useMutation } from '@tanstack/react-query'
 import React, { FC, useState } from 'react'
 
-import styles from './CreateNewTopic.module.scss'
+import styles from './CreateNewGraph.module.scss'
+import { useRouter } from 'next/navigation'
 
 interface CreateNewTopicProps {
     onClose: () => void
@@ -11,7 +12,10 @@ interface CreateNewTopicProps {
 
 }
 
-const CreateNewTopic: FC<CreateNewTopicProps> = ({onClose, isOpen}) => {
+const CreateNewGraph: FC<CreateNewTopicProps> = ({onClose, isOpen}) => {
+
+  const { push } = useRouter();
+
   const [graphName, setGraphName] = useState("");
 
   const createGraphMutation = useMutation({
@@ -20,6 +24,7 @@ const CreateNewTopic: FC<CreateNewTopicProps> = ({onClose, isOpen}) => {
     },
     onSuccess: () => {
       onClose(); // Закрыть попап после успешного создания графа
+      window.location.href = "/createPost";
     },
   });
     
@@ -47,4 +52,4 @@ const CreateNewTopic: FC<CreateNewTopicProps> = ({onClose, isOpen}) => {
   )
 }
 
-export default CreateNewTopic
+export default CreateNewGraph

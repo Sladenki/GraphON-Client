@@ -49,6 +49,7 @@
   border-radius: 5px;
   outline: none;
   transition: border 0.3s;
+  background-color: transparent;
 
   &:focus {
     border-color: rgb(var(--main-Color));
@@ -60,9 +61,7 @@
   top: 50px;
   left: 0;
   z-index: 10;
-  background: white;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .reactionInput {
@@ -74,6 +73,7 @@
   font-size: 16px;
   outline: none;
   transition: border 0.3s;
+  background-color: transparent;
 
   &:focus {
     border-color: rgb(var(--main-Color));

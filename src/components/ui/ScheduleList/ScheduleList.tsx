@@ -14,24 +14,25 @@ const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', '�
 const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, events, title }) => {
   return (
       <div className={styles.ScheduleListWrapper}>
-          {title && <h2>{title}</h2>}
-
+         <span className={styles.titlePage}>Расписание на неделю</span>
           <div className={styles.scheduleSection}>
-              <h3>Расписание</h3>
               {daysOfWeek.map((day, index) => (
                   <div key={index} className={styles.dayBlock}>
                       <span className={styles.dayofWeek}>{day}</span>
                       {scheduleByDays[index]?.length > 0 ? (
                           scheduleByDays[index].map((item) => (
-                              <ScheduleItem
-                                  key={item._id}
-                                  name={item.name}
-                                  graphName={item.graphId.name}
-                                  timeFrom={item.timeFrom}
-                                  timeTo={item.timeTo}
-                                  roomNumber={item.roomNumber}
-                                  type={item.type}
-                              />
+                            <div className={styles.scheduleItem}>
+                                <ScheduleItem
+                                    key={item._id}
+                                    name={item.name}
+                                    graphName={item.graphId.name}
+                                    timeFrom={item.timeFrom}
+                                    timeTo={item.timeTo}
+                                    roomNumber={item.roomNumber}
+                                    type={item.type}
+                                />
+                            </div>
+                    
                           ))
                       ) : (
                           <p>Нет занятий</p>

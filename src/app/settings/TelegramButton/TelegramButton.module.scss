@@ -1,0 +1,26 @@
+.subscribeButton {
+    font-family: 'Roboto', sans-serif;
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #fff;
+    background-color: #0088cc;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.2s;
+  
+    &:hover {
+      background-color: #0077b5;
+      transform: scale(1.05);
+    }
+  
+    &:active {
+      background-color: #005f8a;
+      transform: scale(0.98);
+    }
+  }
+  

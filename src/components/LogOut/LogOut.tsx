@@ -18,7 +18,7 @@ const LogOut = () => {
 
   return (
     <Link href="#" onClick={handleLogout} className={styles.logoutLink}>
-        Выйти
+        Выйти 
     </Link>
   )
 }

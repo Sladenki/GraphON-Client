@@ -1,6 +1,6 @@
 .ScheduleItemWrapper {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid rgb(var(--main-Color), 0.5);
     border-radius: 8px;
     color: var(--main-text);
 
@@ -18,14 +18,14 @@
 .mainInfo{
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     
 }
 
 .room{
     padding: 5px 10px;
     border-radius: 12px;
-    border: 1px solid #ddd;
-    background-color: #f4f4f4;
+    border: 1px solid rgb(var(--main-Color), 0.5);
+    background-color: var(--light-main);
     text-align: center;
 }

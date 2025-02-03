@@ -49,8 +49,6 @@
                 cursor: pointer; 
                 transition: background-color 0.3s ease, transform 0.2s ease; // Плавные переходы
 
-            
-                
                 // Подписаться
                 &.subscribed {
                   background-color: rgba(var(--main-Color), 0.7); // Основной цвет
@@ -135,7 +133,7 @@
       margin: 20px 0 30px 0;
 
       span{
-        font-size: 21px;
+        font-size: 20px;
       }
     }
 
@@ -176,7 +174,7 @@
         }
       
         &.active {
-          background-color: rgba(var(--main-Color), 0.25); /* Чуть более яркий фон */
+          background-color: rgba(var(--main-Color), 0.35); /* Чуть более яркий фон */
           border-color: rgba(var(--main-Color), 0.8);
       
           .reactionEmoji {
@@ -204,6 +202,11 @@
       
           .reactionCount {
             color: rgba(var(--main-Color), 0.6);
+          }
+
+          .reactionText {
+            color: rgb(var(--main-text));
+            font-size: 15px;
           }
       
         }

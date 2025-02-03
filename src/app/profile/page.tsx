@@ -9,6 +9,8 @@ import LoginButton from '@/components/ProfileCorner/LoginButton/LoginButton';;
 export default function Profile() {
     const { user, loading, error } = useAuth();
 
+    console.log('user', user)
+
     if(loading) {
       return <SpinnerLoader/>
     }
