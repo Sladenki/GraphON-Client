@@ -4,7 +4,6 @@ import PostFeed from "@/components/ui/PostFeed/PostFeed";
 import { useAuth } from "@/providers/AuthProvider";
 import styles from './page.module.scss'
 
-
 const Homepage = () => {
 
   const { user } = useAuth();
