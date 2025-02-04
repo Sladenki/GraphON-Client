@@ -7,13 +7,12 @@
     // height: 53px;
     box-shadow: 0px 0px 28px 15px rgba(var(--main-Color), 0.05);
 
-
     .listMenu{
         font-family: 'Roboto', sans-serif;
         font-weight: 300;
         display: flex;
         flex-direction: row;
-        grid-gap: 23px;
+        grid-gap: 21px;
         justify-content: center;
 
         .listLine{

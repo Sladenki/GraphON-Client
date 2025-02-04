@@ -2,7 +2,6 @@ import { axiosAuth, axiosClassic } from "@/api/interceptors";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export const useFetchBunchData = (serverRequest: string, initialPosts: any[], isLoggedIn: boolean) => {
-  // console.log('isLoggedIn', isLoggedIn)
   const [allPosts, setAllPosts] = useState<any[]>(initialPosts);
   const [skip, setSkip] = useState<number>(initialPosts.length);
   const [isEndPosts, setIsEndPosts] = useState<boolean>(false);

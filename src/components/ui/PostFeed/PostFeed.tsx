@@ -18,50 +18,39 @@ interface PostFeedProps {
 
 // @ts-expect-error из-за return handleLogout()
 const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
-
   const { logout } = useAuth();
-
   const { push } = useRouter();
+
+  const { allPosts, isPostsFetching, isEndPosts, loaderRef, error } = useFetchBunchData(serverRequest, [], isLoggedIn);
 
   const handleLogout = async () => {
     await logout();
     push("/"); // Перенаправление на главную страницу после выхода
   };
 
-  const { allPosts, isPostsFetching, isEndPosts, loaderRef, error } = useFetchBunchData(serverRequest, [], isLoggedIn);
+  if (error && error.response?.status !== 401) {
+    return <div>Ошибка загрузки: {error.message || "Неизвестная ошибка"}</div>;
+  }
 
-  
   if (error?.response?.status == 401) {
    return handleLogout()
   }
 
   return (
-    <div className=''>
-        {
-          allPosts && allPosts.length > 0 && (
-            <PostsList allPosts={allPosts}/>
-          )
-        }
+    <>
+      {allPosts?.length > 0 && <PostsList allPosts={allPosts} />}
 
-        {
-          error && (
-            <div>Загрузка постов: {error.message || 'Произошла ошибка при загрузке данных'}</div>
-          )
-        }
-    
-        {
-          isPostsFetching && !isEndPosts && <SpinnerLoader/>
-        }
+      {isPostsFetching && !isEndPosts && <SpinnerLoader/>}
 
-        {isEndPosts && (
-          <div style={{ marginBottom: 70, marginTop: 50, textAlign: "center"}}>
-            <NoInfo/>
-          </div>
-        )}
+      {isEndPosts && (
+        <div style={{ marginBottom: 70, marginTop: 50, textAlign: "center"}}>
+          <NoInfo/>
+        </div>
+      )}
 
-        <div ref={loaderRef} />
+      <div ref={loaderRef} />
 
-    </div>
+    </>
   )
 }
 

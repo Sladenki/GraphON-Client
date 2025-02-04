@@ -166,7 +166,6 @@
         align-items: center;
         gap: 6px; 
         padding: 8px 12px; 
-        // border: 1px solid rgba(var(--main-Color), 0.2);
         border-radius: 12px; 
         background-color: var(--light-main);
         transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
@@ -260,6 +259,21 @@
         padding: 4px 10px; 
 
         &.active{
+          .reactionEmoji {
+            font-size: 14px;
+            color: rgb(var(--main-Color));
+          }
+
+          .reactionCount {
+            font-size: 14px;
+          }
+
+          .reactionText {
+            font-size: 14px;
+          }
+        }
+
+        &.inactive {
           .reactionEmoji {
             font-size: 14px;
             color: rgb(var(--main-Color));
