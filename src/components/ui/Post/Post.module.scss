@@ -28,14 +28,18 @@
                 .mobileGraphName{
                   font-size: 17px;
                 }
-
     
                 span:nth-child(1) {
-                    font-weight: 400;
+                  font-weight: 400;
+                }
+
+                .postedTime{
+                  font-size: 15px;
+                  color: #777474;
                 }
     
-                span:nth-child(2) {
-                    font-size: 15px;
+                .mobilePostedTime{
+                  font-size: 12px;
                 }
             }
 

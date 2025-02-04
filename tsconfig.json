@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // Путь для хранения метаданных компиляции
+    "tsBuildInfoFile": ".next/cache/tsbuildinfo",
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

@@ -53,7 +53,7 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
         <div className={styles.leftPart}>
           <div className={styles.whoPosted}>
             <span className={isMobile ? styles.mobileGraphName : ""}>{graph.name}</span>
-            <span>{time2TimeAgo(createdAt)}</span>
+            <span className={isMobile ? styles.mobilePostedTime : styles.postedTime}>{time2TimeAgo(createdAt)}</span>
           </div>
 
           {/* Подписаться \ отписаться */}

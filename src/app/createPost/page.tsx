@@ -86,11 +86,11 @@ const CreatePost = () => {
             id="textField"
             className={styles.textarea}
             placeholder="Введите текст поста..."
-            maxLength={600}
+            maxLength={500}
             onChange={(e) => setContent(e.target.value)}
             value={content}
         />
-        <span>Количество введенных символов: {content.length} / 600</span>
+        <span>Количество введенных символов: {content.length} / 500</span>
 
         <UploadForm handleImageChange={handleImageChange} />
 

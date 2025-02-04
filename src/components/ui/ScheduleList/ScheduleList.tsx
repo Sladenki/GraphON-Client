@@ -21,7 +21,7 @@ const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, events, 
                       <span className={styles.dayofWeek}>{day}</span>
                       {scheduleByDays[index]?.length > 0 ? (
                           scheduleByDays[index].map((item) => (
-                            <div className={styles.scheduleItem}>
+                            <div key={item._id} className={styles.scheduleItem}>
                                 <ScheduleItem
                                     key={item._id}
                                     name={item.name}
