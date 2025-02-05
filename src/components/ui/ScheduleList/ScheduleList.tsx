@@ -35,7 +35,7 @@ const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, events, 
                     
                           ))
                       ) : (
-                          <p>Нет занятий</p>
+                          <p className={styles.noSchedule}>🥳 Нет занятий</p>
                       )}
                   </div>
               ))}
@@ -58,7 +58,7 @@ const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, events, 
                                 />
                             ))
                         ) : (
-                            <p>Нет предстоящих мероприятий</p>
+                            <p className={styles.noSchedule}>🥳 Нет предстоящих мероприятий</p>
                         )}
                     </div>
                 )
@@ -68,38 +68,5 @@ const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, events, 
       </div>
   );
 };
-
-// const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, title }) => {
-
-//   return (
-//     <div className={styles.ScheduleListWrapper}>
-//       {title && <h2>{title}</h2>}
-//       <>
-//         {daysOfWeek.map((day, index) => (
-//           <div key={index} className={styles.dayBlock}>
-//             <span className={styles.dayofWeek}>{day}</span>
-//             {scheduleByDays[index]?.length > 0 ? (
-//               <div className={styles.scheduleItem}>
-//                 {scheduleByDays[index].map((item) => (
-//                   <ScheduleItem
-//                     key={item._id}
-//                     name={item.name}
-//                     graphName={item.graphId.name}
-//                     timeFrom={item.timeFrom}
-//                     timeTo={item.timeTo}
-//                     roomNumber={item.roomNumber}
-//                     type={item.type}
-//                   />
-//                 ))}
-//               </div>
-//             ) : (
-//               <p>Нет мероприятий</p>
-//             )}
-//           </div>
-//         ))}
-//       </>
-//     </div>
-//   );
-// };
 
 export default ScheduleList;

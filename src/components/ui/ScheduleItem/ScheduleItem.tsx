@@ -21,7 +21,7 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({ name, graphName, timeFrom, 
       <div className={styles.mainInfo}>
         <div><strong>Граф:</strong> {graphName}</div>
         <div><strong>Имя:</strong> {name}</div>
-        <div><strong>Время:</strong> {timeFrom} - {timeTo}</div>
+        <div>🕒 {timeFrom} - {timeTo}</div>
       </div>
       
       {/* Блок с кабинетом, обёрнут в прямоугольник с закругленными краями */}

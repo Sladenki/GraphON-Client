@@ -36,6 +36,7 @@ const EventForm = ({graphId}: any) => {
 
                 <label>Описание</label>
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+                <span>Количество символов - {description.length} / 150</span>
 
                 <label>Дата</label>
                 <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} required />

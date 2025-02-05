@@ -66,7 +66,7 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
                 isSubscribed ? styles.subscribed : styles.unsubscribed
               }`}
             >
-              {isLoading ? 'Загрузка...' : isSubscribed ? 'Подписаться' : 'Отписаться'}
+              {isLoading ? 'Загрузка...' : isSubscribed ? 'Отписаться' : 'Подписаться'}
             </button>
             ) : (
               <div className={styles.iconBlock} onClick={toggleSubscription}>
