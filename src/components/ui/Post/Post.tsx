@@ -19,6 +19,24 @@ const SchedulePopUp = React.lazy(() => import('./SchedulePopUp/SchedulePopUp'));
 //  ССылка на S3 Yandex
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
+const Linkify = ({ text }: { text: string }) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  return (
+    <>
+      {text.split(urlRegex).map((part, index) =>
+        urlRegex.test(part) ? (
+          <a key={index} href={part} target="_blank" rel="noopener noreferrer" style={{ color: "rgb(var(--main-Color))" }}>
+            {part}
+          </a>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+};
+
 const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted, isSubToGraph }) => {
 
   const { isLoggedIn } = useAuth();
@@ -41,8 +59,6 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
 
 
   const [isActive, setIsActive] = useState(false);
-
-
 
   return (
     <div className={styles.PostWrapper} key={id}>
@@ -117,7 +133,10 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
       
       {/* Основной пост */}
       <div className={styles.body}>
-        <span>{content}</span>
+        <span>
+          <Linkify text={content} />
+        </span>
+
 
         {imgPath && (
           <div className={styles.imageContainer}>

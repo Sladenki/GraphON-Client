@@ -16,12 +16,18 @@ interface PostFeedProps {
   isLoggedIn: boolean
 }
 
-// @ts-expect-error из-за return handleLogout()
+
 const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
   const { logout } = useAuth();
   const { push } = useRouter();
 
   const { allPosts, isPostsFetching, isEndPosts, loaderRef, error } = useFetchBunchData(serverRequest, [], isLoggedIn);
+
+  useEffect(() => {
+    if (error?.response?.status === 401) {
+      handleLogout();
+    }
+  }, [error]);
 
   const handleLogout = async () => {
     await logout();
@@ -32,9 +38,6 @@ const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
     return <div>Ошибка загрузки: {error.message || "Неизвестная ошибка"}</div>;
   }
 
-  if (error?.response?.status == 401) {
-   return handleLogout()
-  }
 
   return (
     <>
