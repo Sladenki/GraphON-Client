@@ -8,6 +8,8 @@ import { ProfileCorner } from "@/components/ProfileCorner/ProfileCorner";
 
 import '../styles/globals.scss'
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import Script from "next/script";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -18,6 +20,27 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <head>
         <title>GraphON</title>
+
+         {/* Подключаем Google Analytics только если есть ID */}
+         {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
       </head>
       <body className={styles.wrapper}>
         <AllProvers>
@@ -33,6 +56,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <div className={styles.roundCorners}/>
             
             <div className={styles.square}>
+              {/* Добавляем компонент для отслеживания переходов */}
+              <GoogleAnalytics /> 
               {children}
             </div>
             
