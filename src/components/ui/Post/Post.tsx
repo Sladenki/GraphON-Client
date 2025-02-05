@@ -26,7 +26,17 @@ const Linkify = ({ text }: { text: string }) => {
     <>
       {text.split(urlRegex).map((part, index) =>
         urlRegex.test(part) ? (
-          <a key={index} href={part} target="_blank" rel="noopener noreferrer" style={{ color: "rgb(var(--main-Color))" }}>
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "rgb(var(--main-Color))",
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+            }}
+          >
             {part}
           </a>
         ) : (
@@ -36,6 +46,7 @@ const Linkify = ({ text }: { text: string }) => {
     </>
   );
 };
+
 
 const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, reactions, isReacted: initialIsReacted, isSubToGraph }) => {
 
@@ -88,16 +99,16 @@ const Post: FC<IPostClient> = ({ id, graph, content, imgPath, user, createdAt, r
               <div className={styles.iconBlock} onClick={toggleSubscription}>
                 {
                   isSubscribed ? (
-                    <Plus    
-                      color="rgba(var(--main-Color), 0.7)" 
-                      size={20} 
-                      strokeWidth={1.5} 
-                    />
-                  ) : (
                     <Minus 
                       color="rgb(var(--main-Color))" 
                       size={20} 
                       strokeWidth={0.9} 
+                    />
+                  ) : (
+                    <Plus    
+                      color="rgba(var(--main-Color), 0.7)" 
+                      size={20} 
+                      strokeWidth={1.5} 
                     />
                   )
                 }

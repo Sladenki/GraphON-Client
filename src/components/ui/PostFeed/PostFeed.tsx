@@ -38,14 +38,15 @@ const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
     return <div>Ошибка загрузки: {error.message || "Неизвестная ошибка"}</div>;
   }
 
-
   return (
     <>
+      {allPosts?.length === 0 && <span>Публикации отсутсвуют</span>}
+
       {allPosts?.length > 0 && <PostsList allPosts={allPosts} />}
 
       {isPostsFetching && !isEndPosts && <SpinnerLoader/>}
 
-      {isEndPosts && (
+      {isEndPosts && allPosts?.length > 0 && (
         <div style={{ marginBottom: 70, marginTop: 50, textAlign: "center"}}>
           <NoInfo/>
         </div>
