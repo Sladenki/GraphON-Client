@@ -12,9 +12,9 @@ export const ProfileCorner = () => {
     //     return <div>Загрузка...</div>;
     // }
 
-    if (error) {
-        return <div>ProfileCorner - {error}</div>; // Отображаем сообщение об ошибке в компоненте
-    }
+    // if (error) {
+    //     return <div>ProfileCorner - {error}</div>; // Отображаем сообщение об ошибке в компоненте
+    // }
 
     return (
         <>
