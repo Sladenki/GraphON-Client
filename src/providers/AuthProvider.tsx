@@ -102,23 +102,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            const res = await fetch(`${apiUrl}/auth/logout`, { 
-                method: 'POST', // Убедитесь, что метод POST
-                credentials: 'include' // Важно для отправки кук с запросом
+            const res = await fetch(`${apiUrl}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include',
             });
 
-            console.log('res', res)
-
             if (!res.ok) {
-                const errorData = await res.json()
-                throw new Error(errorData.message || 'Ошибка при выходе из системы')
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'Ошибка при выходе из системы');
             }
+
             localStorage.removeItem('accessToken');
-            setUser(null);
-            setIsLoggedIn(false);
+            setUser(null); // Очистка состояния пользователя
+            setIsLoggedIn(false); // Обновление состояния логина
         } catch (err: any) {
             console.error('Ошибка при выходе:', err);
-            alert(err.message) // Выводим ошибку пользователю
+            alert(err.message);
         }
     };
 

@@ -3,16 +3,21 @@
 import React, { useState } from 'react';
 
 import styles from './LoginButton.module.scss'
+import { Send } from 'lucide-react';
 
 const LoginButton = () => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    // Функция для начала процесса авторизации через Telegram
     const handleLogin = async () => {
+        setIsLoading(true);
 
-        const redirectUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/google?isCapacitor=false`;
+        // Указываем ссылку для перехода в Telegram-бота с кнопкой авторизации
+        const telegramBotUrl = `https://t.me/graphon_klgtu_bot?start=auth`;  // Здесь будет ссылка на вашего бота с параметром
 
-        window.location.href = redirectUrl;
+        // Перенаправление на Telegram-бота
+        window.location.href = telegramBotUrl;
     };
 
 
@@ -20,15 +25,15 @@ const LoginButton = () => {
         <div className={styles.loginButtonWrapper}>
             {user ? (
                 <div className={styles.userInfo}>
-                    {/* @ts-expect-error 123 */}
-                    <img src={user.imageUrl} alt={user.name} className={styles.userAvatar} />
-                    {/* @ts-expect-error 123 */}
-                    <p className={styles.welcomeText}>Добро пожаловать, {user.name}</p>
+                    {/* @ts-expect-error */}
+                    <img src={user.avaPath} alt={user.firstName} className={styles.userAvatar} />
+                    {/* @ts-expect-error */}
+                    <p className={styles.welcomeText}>Добро пожаловать, {user.firstName} {user.lastName}</p>
                 </div>
             ) : (
                 <button onClick={handleLogin} disabled={isLoading} className={styles.googleButton}>
-                    <img src="/google.svg" alt="Google" className={styles.googleIcon} />
-                    {isLoading ? "Загрузка..." : "Войти с Google"}
+                    <Send />
+                    {isLoading ? "Загрузка..." : "Войти через Telegram"}
                 </button>
             )}
         </div>
