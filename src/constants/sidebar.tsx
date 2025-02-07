@@ -24,7 +24,7 @@ export const sidebarTwo = [
 export const sidebarMobile = [
   createSidebarItem(1, <House color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Главная', false, '/'),
   createSidebarItem(2, <CalendarCheck color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Расписание', true, '/schedule'),
-  createSidebarItem(3, <Handshake color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Подписки', true, '/subs'),
-  createSidebarItem(4, <CircleUserRound color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Профиль', false, '/profile'),
+  createSidebarItem(3, <CircleUserRound color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Профиль', false, '/profile'),
+  createSidebarItem(4, <Pencil color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Создать', true, '/createPost'),
   createSidebarItem(5, <Settings color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Настройки', false, '/settings'),
 ];
