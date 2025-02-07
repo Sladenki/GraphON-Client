@@ -1,0 +1,52 @@
+.tabWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+// Названия табов
+.tabHeader {
+    width: 50vw;
+    background-color: var(--light-main);
+    border-radius: 15px;
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 5px;
+
+    .tabItem {
+        position: relative;
+        z-index: 5;
+        flex: 1;
+        
+        .tabName{     
+            padding: 3px 15px;
+            display: block;
+            font-family: 'Roboto', sans-serif;
+            color: var(--main-text);
+            font-weight: 300;
+            font-size: 17px;  
+        }
+    
+    }
+
+    .indicator {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 25px;
+        // width: 40px;
+        z-index: -1;
+        background-color: var(--block-color);
+        border-radius: 10px;
+    }
+}
+
+.tabContent{
+    margin-top: 30px;
+}
+
+
+
+
+

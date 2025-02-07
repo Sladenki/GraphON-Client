@@ -3,22 +3,41 @@
 import PostFeed from "@/components/ui/PostFeed/PostFeed";
 import { useAuth } from "@/providers/AuthProvider";
 import styles from './page.module.scss'
+import Tabs from "@/components/ui/Tabs/Tabs";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useState } from "react";
 
 const Homepage = () => {
 
   const { user } = useAuth();
-
   const isAuth = user && Object.keys(user).length > 0;
+  const isMobile = useMediaQuery(680)
+
+  const [activeTab, setActiveTab] = useState('main');
 
   // Логика для выбора правильного URL запроса в зависимости от состояния isLoggedIn
-  const serverRequest = isAuth ? 'post/getPostsAuth' : 'post/getPostsNoAuth';
+  const serverRequest = activeTab === 'main'
+    ? isAuth ? 'post/getPostsAuth' : 'post/getPostsNoAuth'
+    : 'graphSubs/getSubsPosts';
+
+  const tabs = [
+    { name: 'main', label: 'Главная', render: () => <></> },
+    { name: 'subs', label: 'Подписки', render: () => <></> },
+  ];
+
+  // console.log('activeTab', activeTab)
+  // console.log('serverRequest', serverRequest)
 
   return (
     <>
-      {/* <p>Homepage 2 - ниже посты</p> */}
+      {isMobile && isAuth &&(
+        <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      )}
+
       <div className={styles.PostFeedWrapper}>
+      
         {/* @ts-expect-error */}
-        <PostFeed serverRequest={serverRequest} isLoggedIn={isAuth} />
+        <PostFeed key={serverRequest} serverRequest={serverRequest} isLoggedIn={isAuth} />
       </div>
       
     </>
