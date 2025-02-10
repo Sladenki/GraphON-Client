@@ -25,8 +25,6 @@ const Homepage = () => {
     { name: 'subs', label: 'Подписки', render: () => <></> },
   ];
 
-  // console.log('activeTab', activeTab)
-  // console.log('serverRequest', serverRequest)
 
   return (
     <>

@@ -40,7 +40,7 @@ const PostFeed: FC<PostFeedProps> = ({serverRequest, isLoggedIn}) => {
 
   return (
     <>
-      {allPosts?.length === 0 && <span>Публикации отсутсвуют</span>}
+      {allPosts?.length === 0 && !isPostsFetching && <span>Публикации отсутсвуют</span>}
 
       {allPosts?.length > 0 && <PostsList allPosts={allPosts} />}
 

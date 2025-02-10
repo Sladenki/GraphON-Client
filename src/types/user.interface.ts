@@ -13,6 +13,8 @@ export interface ISessionUser extends IGoogleAuthUser {
 
 export interface IUser {
     name: string
+    firstName: string
+    lastName: string
     avaPath: string
     postsNum: number
 }

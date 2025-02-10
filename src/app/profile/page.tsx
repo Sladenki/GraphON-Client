@@ -39,7 +39,11 @@ export default function Profile() {
                             
                         }
                        
-                        <span className={styles.name}>{typedUser.name}</span>
+                        <span className={styles.name}>
+                            {typedUser.firstName}
+                            {typedUser.lastName ? ` ${typedUser.lastName}` : ""}
+                        </span>
+
                     </div>
                   
                     <span className={styles.text}>Количество постов: {typedUser.postsNum}</span>
