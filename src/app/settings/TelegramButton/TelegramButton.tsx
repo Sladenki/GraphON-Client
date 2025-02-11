@@ -9,7 +9,7 @@ const TelegramButton = () => {
           rel="noopener noreferrer"
           className={styles.subscribeButton}
         >
-          Мы в Telegram
+          Telegram канал
         </a>
     );
 }

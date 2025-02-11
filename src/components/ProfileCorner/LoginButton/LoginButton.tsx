@@ -8,6 +8,7 @@ import { Send } from 'lucide-react';
 const LoginButton = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showMessage, setShowMessage] = useState(false); // Состояние для текста
 
   // Функция для начала процесса авторизации через Telegram
   const handleLogin = async () => {
@@ -18,6 +19,8 @@ const LoginButton = () => {
 
       // Перенаправление на Telegram-бота
       window.location.href = telegramBotUrl;
+
+      setShowMessage(true);
   };
 
   return (
@@ -30,10 +33,18 @@ const LoginButton = () => {
                   <p className={styles.welcomeText}>Добро пожаловать, {user.firstName} {user.lastName}</p>
               </div>
           ) : (
-              <button onClick={handleLogin} disabled={isLoading} className={styles.googleButton}>
-                  <Send />
-                  {isLoading ? "Загрузка..." : "Войти через Telegram"}
-              </button>
+            <>
+                <button onClick={handleLogin} disabled={isLoading} className={styles.googleButton}>
+                    <Send />
+                    {isLoading ? "Загрузка..." : "Войти через Telegram"}
+                </button>
+
+                {showMessage && (
+                    <p className={styles.authMessage}>
+                        Нажмите кнопку <b>«Войти»</b> в Telegram-боте 
+                    </p>
+                )}
+            </>
           )}
       </div>
   );

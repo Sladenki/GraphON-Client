@@ -21,6 +21,7 @@ const CreatePost = () => {
     const [emoji, setEmoji] = useState(''); // Поле для эмодзи
     const [text, setText] = useState('');   // Поле для текста
     const [showEmojiPicker, setShowEmojiPicker] = useState(false); // Показать или скрыть выбор эмодзи
+    const [isLoading, setIsLoading] = useState(false); // Создание поста
 
     const [selectedTopic, setSelectedTopic] = useState('');
 
@@ -36,6 +37,9 @@ const CreatePost = () => {
     const handleImageChange = (file: File) => setImgPath(file);
 
     const handleSubmit = async () => {
+        if (isLoading) return;
+        setIsLoading(true);
+
         const formData = new FormData();
         formData.append('content', content);
         if (imgPath) formData.append('imgPath', imgPath);
@@ -62,6 +66,8 @@ const CreatePost = () => {
             }
         } catch (error) {
             console.error('Ошибка при создании поста:', error);
+        } finally {
+            setIsLoading(false); // Возвращаем кнопку в активное состояние
         }
     };
 
@@ -122,8 +128,8 @@ const CreatePost = () => {
             <span>Количество введенных символов: {text.length} / 10</span>
         </div>
 
-        <button className={styles.createButton} onClick={handleSubmit}>
-            Создать пост
+        <button className={styles.createButton} onClick={handleSubmit} disabled={isLoading}>
+            {isLoading ? 'Создание...' : 'Создать пост'}
         </button>
     </div>
   );
