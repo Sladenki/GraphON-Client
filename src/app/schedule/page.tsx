@@ -19,17 +19,21 @@ const Schedule = () => {
   // Преобразуем расписание по дням
   const scheduleByDays = useScheduleByDays(data?.data);
 
+  console.log('data?.data', data?.data)
+
   // Выводим состояние загрузки или ошибки
   if (isLoading) return <SpinnerLoader/>;
   if (isError) return <p>Ошибка: {error.message}</p>;
 
   return (
     <div className={styles.ScheduleWrapper}>
-      {data && (
+      {data ? (
         <ScheduleList
           scheduleByDays={scheduleByDays}
           title="Расписание на неделю"
         />
+      ) : (
+        <span>Чтобы появилось расписание сначала нужно подписаться на графы</span>
       )}
     </div>
   );

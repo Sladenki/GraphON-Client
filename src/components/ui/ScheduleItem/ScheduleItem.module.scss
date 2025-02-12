@@ -33,3 +33,36 @@
     background-color: var(--light-main);
     text-align: center;
 }
+
+@media only screen and (max-width: 400px) {
+
+    .ScheduleItem{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .icon{
+        padding-left: 10px;
+    }
+
+    .mainInfo{
+        .graphName{
+            font-size: 13px;
+        }
+
+        .eventName{
+            font-size: 15px;
+        }
+
+        .time{
+            font-size: 12px;
+        }
+    }
+
+
+    .room{
+        padding-right: 10px;
+        font-size: 13px;
+    }
+}

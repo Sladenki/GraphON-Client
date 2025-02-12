@@ -13,15 +13,19 @@ interface ScheduleItemProps {
 
 const ScheduleItem: React.FC<ScheduleItemProps> = ({ name, graphName, timeFrom, timeTo, roomNumber, type }) => (
   <div className={styles.ScheduleItemWrapper}>
+
     <div className={styles.ScheduleItem}>
       {/* В зависимости от типа показываем соответствующую иконку */}
-      {type === 'practice' ? <Pickaxe /> : <School />}
+      <div className={styles.icon}>
+        {type === 'practice' ? <Pickaxe /> : <School />}
+      </div>
+      
       
       {/* Блок с данными, выстраиваем элементы вертикально */}
       <div className={styles.mainInfo}>
         <div className={styles.graphName}>🔗 {graphName}</div>
-        <div><strong>{name}</strong></div>
-        <div>🕒 {timeFrom} - {timeTo}</div>
+        <div className={styles.eventName}><strong>{name}</strong></div>
+        <div className={styles.time}>🕒 {timeFrom} - {timeTo}</div>
       </div>
       
       {/* Блок с кабинетом, обёрнут в прямоугольник с закругленными краями */}
@@ -29,6 +33,7 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({ name, graphName, timeFrom, 
         <span>Кабинет:</span> {roomNumber}
       </div>
     </div>
+
   </div>
 );
 
