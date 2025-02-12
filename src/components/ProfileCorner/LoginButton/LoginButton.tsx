@@ -41,7 +41,7 @@ const LoginButton = () => {
 
                 {showMessage && (
                     <p className={styles.authMessage}>
-                        Нажмите кнопку <b>«Войти»</b> в Telegram-боте 
+                        Нажмите кнопку <b>«Авторизоваться»</b> в Telegram-боте 
                     </p>
                 )}
             </>
