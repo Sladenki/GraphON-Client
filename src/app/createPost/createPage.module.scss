@@ -1,11 +1,20 @@
 .createPostWrapper {
+  padding: 5px;
   // border: 1px solid red;
   display: flex;
   flex-direction: column;
-  padding-top: 40px;
+  padding-top: 20px;
   border-radius: 10px;
   max-width: 80%;
   margin: 0 auto;
+}
+
+@media only screen and (max-width: 680px) {
+
+  .createPostWrapper{
+    max-width: 100vw;
+  }
+    
 }
 
 .title {
@@ -33,11 +42,33 @@
 
 .emojiContainer {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
   margin-top: 10px;
   position: relative;
-  width: 100%;
+
+  .reactionContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  
+    .reactionInput {
+      flex: 1;
+      height: 40px;
+      padding: 8px;
+      border: 2px solid rgba(var(--main-Color), 0.5);
+      border-radius: 5px;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.3s;
+      background-color: transparent;
+    
+      &:focus {
+        border-color: rgb(var(--main-Color));
+      }
+    }
+  }
 }
 
 .emojiInput {
@@ -64,21 +95,9 @@
   border-radius: 8px;
 }
 
-.reactionInput {
-  flex: 1;
-  height: 40px;
-  padding: 8px;
-  border: 2px solid rgba(var(--main-Color), 0.5);
-  border-radius: 5px;
-  font-size: 16px;
-  outline: none;
-  transition: border 0.3s;
-  background-color: transparent;
 
-  &:focus {
-    border-color: rgb(var(--main-Color));
-  }
-}
+
+
 
 .createButton {
   margin-top: 15px;
@@ -101,3 +120,4 @@
   }
 }
   
+

@@ -38,6 +38,13 @@ const CreatePost = () => {
 
     const handleSubmit = async () => {
         if (isLoading) return;
+
+        // Проверяем, заполнены ли поля
+        if (!content.trim() || !selectedTopic) {
+            alert("Пожалуйста, заполните текст поста и выберите тему.");
+            return; // Останавливаем выполнение
+        }
+
         setIsLoading(true);
 
         const formData = new FormData();
@@ -79,7 +86,7 @@ const CreatePost = () => {
 
   return (
     <div className={styles.createPostWrapper}>
-        {/* Поиск по существующим графам + Создание нового графа + Список доступных графов */}
+        {/* Поиск по графам + Создание нового графа + Список доступных графов */}
         {mainTopics && (
             <SelectTopics
                 mainTopics={mainTopics.data}
@@ -96,36 +103,41 @@ const CreatePost = () => {
             onChange={(e) => setContent(e.target.value)}
             value={content}
         />
-        <span>Количество введенных символов: {content.length} / 500</span>
+        <span>Количество символов поста: {content.length} / 500</span>
 
         <UploadForm handleImageChange={handleImageChange} />
 
         <div className={styles.emojiContainer}>
-            <input
-                type="text"
-                maxLength={1}
-                placeholder="👍"
-                value={emoji}
-                onFocus={() => setShowEmojiPicker(true)}
-                onChange={(e) => setEmoji(e.target.value)}
-                className={styles.emojiInput}
-            />
+            <div className={styles.reactionContainer}>
+                <input
+                    type="text"
+                    maxLength={1}
+                    placeholder="👍"
+                    value={emoji}
+                    onFocus={() => setShowEmojiPicker(true)}
+                    onChange={(e) => setEmoji(e.target.value)}
+                    className={styles.emojiInput}
+                />
 
-            {showEmojiPicker && (
-                <div className={styles.emojiPicker}>
-                    <EmojiPicker onEmojiClick={handleEmojiClick} />
-                </div>
-            )}
+                {showEmojiPicker && (
+                    <div className={styles.emojiPicker}>
+                        <EmojiPicker onEmojiClick={handleEmojiClick} />
+                    </div>
+                )}
 
-            <input
-                type="text"
-                maxLength={10}
-                placeholder="Текст реакции"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                className={styles.reactionInput}
-            />
-            <span>Количество введенных символов: {text.length} / 10</span>
+                <input
+                    type="text"
+                    maxLength={10}
+                    placeholder="Текст реакции"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    className={styles.reactionInput}
+                />
+ 
+            </div>
+
+            <span>Количество символов реакции: {text.length} / 10</span>
+
         </div>
 
         <button className={styles.createButton} onClick={handleSubmit} disabled={isLoading}>

@@ -35,7 +35,7 @@ const SelectTopics = ({ mainTopics, selectedTopic, setSelectedTopic }) => {
               <input
                   type="text"
                   className={styles.searchInput}
-                  placeholder="Поиск по существующим графам..."
+                  placeholder="Поиск по графам..."
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />

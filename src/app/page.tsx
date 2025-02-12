@@ -28,7 +28,7 @@ const Homepage = () => {
 
   return (
     <>
-      {isMobile && (
+      {isMobile && isAuth && (
         <div className={styles.tabsContainer}>
           <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
