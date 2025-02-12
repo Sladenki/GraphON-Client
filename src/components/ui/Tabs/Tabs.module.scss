@@ -6,12 +6,13 @@
 
 // Названия табов
 .tabHeader {
-    width: 50vw;
+    width: 70vw;
     background-color: var(--light-main);
     border-radius: 15px;
     display: flex;
     flex-wrap: nowrap;
     padding: 5px;
+    
 
     .tabItem {
         position: relative;
@@ -25,6 +26,8 @@
             color: var(--main-text);
             font-weight: 300;
             font-size: 17px;  
+            justify-content: center;
+            display: flex;
         }
     
     }
@@ -38,7 +41,7 @@
         // width: 40px;
         z-index: -1;
         background-color: var(--block-color);
-        border-radius: 10px;
+        border-radius: 20px;
     }
 }
 

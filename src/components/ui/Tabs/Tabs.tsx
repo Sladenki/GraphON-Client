@@ -1,26 +1,8 @@
 "use client"
 
 import React, { FC, useState } from 'react';  
-// import { AnimatePresence, Variants, motion } from 'framer-motion'
 import styles from './Tabs.module.scss'
   
-
-
-// const tabContentVariants: Variants = {
-// 	initial: {
-// 		y: 10,
-// 		opacity: 0
-// 	},
-// 	enter: {
-// 		y: 0,
-// 		opacity: 1
-// 	},
-// 	exit: {
-// 		y: -10,
-// 		opacity: 0
-// 	}
-// }
-
 const Tabs: FC<{tabs: any, activeTab: string, setActiveTab: (tab: string) => void}> = ({ tabs, activeTab, setActiveTab }) => {  
 
 	return (

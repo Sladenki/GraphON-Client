@@ -6,3 +6,10 @@
         margin: 0 auto;
     }
 }
+
+.tabsContainer {
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Чтобы не перекрывались другими элементами */
+    width: 100%;
+}

@@ -28,12 +28,13 @@ const Homepage = () => {
 
   return (
     <>
-      {isMobile && isAuth &&(
-        <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      {isMobile && (
+        <div className={styles.tabsContainer}>
+          <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
       )}
 
       <div className={styles.PostFeedWrapper}>
-      
         {/* @ts-expect-error */}
         <PostFeed key={serverRequest} serverRequest={serverRequest} isLoggedIn={isAuth} />
       </div>
