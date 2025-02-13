@@ -21,17 +21,12 @@ const GraphPopUp: FC<GraphPopUpProps> = ({ parentGraph, isGraphPopupOpen, closeG
 
   const graphRef = useRef(null);
 
-  console.log('parentGraph', parentGraph)
-
-
   // --- Запрос для получения всех дочерних графов, если родительский граф найден ---
   const { data: allChildrenGraphs, isPending: isChildrenLoading, isError: isChildrenError } = useQuery({
     queryKey: ['childrenGraphs', parentGraph._id],
     queryFn: () => GraphService.getAllChildrenGraphs(parentGraph._id),
     enabled: !!parentGraph.name, // Запрашиваем дочерние графы только если родительский граф существует
   });
-
-  console.log('allChildrenGraphs', allChildrenGraphs?.data)
 
   // --- Генерация данных для графа --- 
   const generateGraphData = () => {

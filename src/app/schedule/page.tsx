@@ -7,6 +7,7 @@ import { GraphSubsService } from "@/services/graphSubs.service";
 import { useQuery } from "@tanstack/react-query";
 
 import styles from './Schedule.module.scss'
+import { WarningText } from "@/components/ui/WarningText/WarningText";
 
 const Schedule = () => {
 
@@ -19,21 +20,17 @@ const Schedule = () => {
   // Преобразуем расписание по дням
   const scheduleByDays = useScheduleByDays(data?.data);
 
-  console.log('data?.data', data?.data)
-
   // Выводим состояние загрузки или ошибки
   if (isLoading) return <SpinnerLoader/>;
   if (isError) return <p>Ошибка: {error.message}</p>;
 
   return (
     <div className={styles.ScheduleWrapper}>
-      {data ? (
-        <ScheduleList
-          scheduleByDays={scheduleByDays}
-          title="Расписание на неделю"
-        />
+      {scheduleByDays &&
+      Object.values(scheduleByDays).every((arr) => Array.isArray(arr) && arr.length === 0) ? (
+        <WarningText text="Чтобы появилось расписание, сначала нужно подписаться на графы" />
       ) : (
-        <span>Чтобы появилось расписание сначала нужно подписаться на графы</span>
+        <ScheduleList scheduleByDays={scheduleByDays} title="Расписание на неделю" />
       )}
     </div>
   );

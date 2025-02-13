@@ -17,4 +17,5 @@ export interface IUser {
     lastName: string
     avaPath: string
     postsNum: number
+    graphSubsNum: number
 }

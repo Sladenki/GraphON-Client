@@ -10,7 +10,7 @@ import Image from 'next/image'
 export default function Profile() {
     const { user, loading, error } = useAuth();
 
-    console.log('user', user)
+    // console.log('user', user)
 
     if(loading) {
       return <SpinnerLoader/>
@@ -28,15 +28,13 @@ export default function Profile() {
                 <>
                     <div className={styles.header}>
                         {
-
                             <Image 
                                 src={typedUser.avaPath} 
                                 className={styles.avatar} 
                                 alt="Аватар" 
                                 width={120}
                                 height={120}
-                            />
-                            
+                            />    
                         }
                        
                         <span className={styles.name}>
@@ -47,6 +45,8 @@ export default function Profile() {
                     </div>
                   
                     <span className={styles.text}>Количество постов: {typedUser.postsNum}</span>
+
+                    {/* <span className={styles.text}>Количество подписок: {typedUser.graphSubsNum}</span> */}
                 </>
             ) : <LoginButton/>}
         </div>
