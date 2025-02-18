@@ -14,29 +14,32 @@ const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', '�
 const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, events, title }) => {
   return (
       <div className={styles.ScheduleListWrapper}>
-         <span className={styles.titlePage}>Расписание на неделю</span>
           <div className={styles.scheduleSection}>
               {daysOfWeek.map((day, index) => (
                   <div key={index} className={styles.dayBlock}>
-                      <span className={styles.dayofWeek}>{day}</span>
-                      {scheduleByDays[index]?.length > 0 ? (
-                          scheduleByDays[index].map((item) => (
-                            <div key={item._id} className={styles.scheduleItem}>
-                                <ScheduleItem
-                                    key={item._id}
-                                    name={item.name}
-                                    graphName={item.graphId.name}
-                                    timeFrom={item.timeFrom}
-                                    timeTo={item.timeTo}
-                                    roomNumber={item.roomNumber}
-                                    type={item.type}
-                                />
-                            </div>
-                    
-                          ))
-                      ) : (
-                          <p className={styles.noSchedule}>🥳 Нет занятий</p>
-                      )}
+
+                    {/* День недели */}
+                    <span className={styles.dayofWeek}>{day}</span>
+
+                    {/* Расписание */}
+                    {scheduleByDays[index]?.length > 0 ? (
+                        scheduleByDays[index].map((item) => (
+                        <div key={item._id} className={styles.scheduleItem}>
+                            <ScheduleItem
+                                key={item._id}
+                                name={item.name}
+                                graphName={item.graphId.name}
+                                timeFrom={item.timeFrom}
+                                timeTo={item.timeTo}
+                                roomNumber={item.roomNumber}
+                                type={item.type}
+                            />
+                        </div>
+                
+                        ))
+                    ) : (
+                        <p className={styles.noSchedule}>🥳 Нет занятий</p>
+                    )}
                   </div>
               ))}
           </div>

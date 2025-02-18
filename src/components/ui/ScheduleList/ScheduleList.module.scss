@@ -1,16 +1,6 @@
 .ScheduleListWrapper{
     margin-bottom: 70px;
 
-    .titlePage{
-        margin-top: 5px;
-        display: flex;
-        justify-content: center;
-        font-family: 'Roboto', sans-serif;
-        color: rgb(var(--main-Color));
-        font-size: 20px;
-        font-weight: 500;
-    }
-
     .dayBlock{
         margin-bottom: 30px;
 
@@ -18,7 +8,8 @@
             font-family: 'Roboto', sans-serif;
             color: var(--main-text);
             font-weight: 500;
-            font-size: 18px;
+            font-size: 22px;
+            color: gray;
         }
 
         .scheduleItem{
@@ -27,6 +18,8 @@
 
         .noSchedule{
             font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            font-size: 18px;
         }
     }
 
