@@ -32,7 +32,6 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({ name, graphName, timeFrom, 
         )}
       </div>
       
-      
       {/* Блок с данными, выстраиваем элементы вертикально */}
       <div className={styles.mainInfo}>
         <div className={styles.graphName}>{graphName}</div>
