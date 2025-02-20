@@ -6,9 +6,11 @@ import { PostService } from '@/services/post.service';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
-import SelectTopics from './SelectTopics/SelectTopics';
 import styles from './createPage.module.scss'
 import { SpinnerLoader } from '@/components/ui/SpinnerLoader/SpinnerLoader';
+import SelectGraph from './SelectGraph/SelectGraph';
+import ButtonActive from '@/components/ui/ButtonActive/ButtonActive';
+import { WarningText } from '@/components/ui/WarningText/WarningText';
 
 
 const EmojiPicker = React.lazy(() => import('./EmojiPicker/EmojiPicker'));
@@ -23,7 +25,7 @@ const CreatePost = () => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false); // Показать или скрыть выбор эмодзи
     const [isLoading, setIsLoading] = useState(false); // Создание поста
 
-    const [selectedTopic, setSelectedTopic] = useState('');
+    const [selectedGraph, setSelectedGraph] = useState('');
 
     // Получение главных графов
     const { isPending, isError, data: mainTopics, error } = useQuery({
@@ -40,7 +42,7 @@ const CreatePost = () => {
         if (isLoading) return;
 
         // Проверяем, заполнены ли поля
-        if (!content.trim() || !selectedTopic) {
+        if (!content.trim() || !selectedGraph) {
             alert("Пожалуйста, заполните текст поста и выберите тему.");
             return; // Останавливаем выполнение
         }
@@ -59,7 +61,7 @@ const CreatePost = () => {
 
         formData.append('reaction', JSON.stringify(reaction)); // Преобразуем в строку
         // @ts-expect-error 123
-        formData.append('selectedTopic', selectedTopic._id); 
+        formData.append('selectedGraph', selectedGraph._id); 
 
         try {
             const response = await PostService.createPost(formData);
@@ -86,63 +88,83 @@ const CreatePost = () => {
 
   return (
     <div className={styles.createPostWrapper}>
+        {/* Показываем пока не выбрали граф */}
+        {!selectedGraph && (
+            <span className={styles.warningText}>
+                ⚠️ Пожалуйста, выберите граф для создания поста или мероприятия
+            </span>
+        )}
+
         {/* Поиск по графам + Создание нового графа + Список доступных графов */}
         {mainTopics && (
-            <SelectTopics
+            <SelectGraph
                 mainTopics={mainTopics.data}
-                selectedTopic={selectedTopic}
-                setSelectedTopic={setSelectedTopic}
+                selectedGraph={selectedGraph}
+                setSelectedGraph={setSelectedGraph}
             />
         )}
 
-        <textarea
-            id="textField"
-            className={styles.textarea}
-            placeholder="Введите текст поста..."
-            maxLength={500}
-            onChange={(e) => setContent(e.target.value)}
-            value={content}
-        />
-        <span>Количество символов поста: {content.length} / 500</span>
-
-        <UploadForm handleImageChange={handleImageChange} />
-
-        <div className={styles.emojiContainer}>
-            <div className={styles.reactionContainer}>
-                <input
-                    type="text"
-                    maxLength={1}
-                    placeholder="👍"
-                    value={emoji}
-                    onFocus={() => setShowEmojiPicker(true)}
-                    onChange={(e) => setEmoji(e.target.value)}
-                    className={styles.emojiInput}
+        {/* Показываем всю инфу только после выбора графа */}
+        {selectedGraph && (
+            <>
+                <textarea
+                    id="textField"
+                    className={styles.textarea}
+                    placeholder="Введите текст поста..."
+                    maxLength={500}
+                    onChange={(e) => setContent(e.target.value)}
+                    value={content}
                 />
+                <span className={styles.countLetters}>Количество символов поста: {content.length} / 500</span>
 
-                {showEmojiPicker && (
-                    <div className={styles.emojiPicker}>
-                        <EmojiPicker onEmojiClick={handleEmojiClick} />
+                <UploadForm handleImageChange={handleImageChange} />
+
+                <div className={styles.emojiContainer}>
+                    <div className={styles.reactionContainer}>
+                        <input
+                            type="text"
+                            maxLength={1}
+                            placeholder="👍"
+                            value={emoji}
+                            onFocus={() => setShowEmojiPicker(true)}
+                            onChange={(e) => setEmoji(e.target.value)}
+                            className={styles.emojiInput}
+                        />
+
+                        {showEmojiPicker && (
+                            <div className={styles.emojiPicker}>
+                                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                            </div>
+                        )}
+
+                        <input
+                            type="text"
+                            maxLength={10}
+                            placeholder="Текст реакции"
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
+                            className={styles.reactionInput}
+                        />
+        
                     </div>
-                )}
 
-                <input
-                    type="text"
-                    maxLength={10}
-                    placeholder="Текст реакции"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    className={styles.reactionInput}
-                />
- 
-            </div>
+                    <span className={styles.countLetters}>Количество символов реакции: {text.length} / 10</span>
 
-            <span>Количество символов реакции: {text.length} / 10</span>
+                </div>
 
-        </div>
+                <div className={styles.buttonSubmit}>
+                    <ButtonActive
+                        text="Создать пост"
+                        onClick={handleSubmit}
+                        isLoading={isLoading}
+                    />
+                </div>
 
-        <button className={styles.createButton} onClick={handleSubmit} disabled={isLoading}>
-            {isLoading ? 'Создание...' : 'Создать пост'}
-        </button>
+  
+            </>
+        )}
+
+      
     </div>
   );
 };

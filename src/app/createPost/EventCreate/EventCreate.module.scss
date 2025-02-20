@@ -1,25 +1,27 @@
 .formContainer {
-    width: 100%;
     max-width: 400px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-
-    h2 {
-        text-align: center;
-        margin-bottom: 15px;
-    }
+    font-family: 'Roboto', sans-serif;
+    color: var(--main-text);
+    font-weight: 300;
+    font-size: 18px; 
+    margin-left: 10%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
     
     .form {
         display: flex;
         flex-direction: column;
     }
-    
-    label {
-        font-weight: bold;
-        margin-top: 10px;
+
+    label{
+        margin-top: 15px;
+    }
+
+    .countLetters{
+        font-size: 14px; 
     }
     
     input,
@@ -30,20 +32,20 @@
         border: 1px solid #ccc;
         border-radius: 5px;
         font-size: 16px;
+        background-color: transparent;
+        resize: none;
     }
     
-    textarea {
-        resize: vertical;
-        min-height: 80px;
-    }
     
     .timeContainer {
+        margin-top: 15px;
         display: flex;
         justify-content: space-between;
     }
     
-    .timeContainer div {
-        width: 48%;
+    .timeContainer {
+        display: flex;
+        gap: 55px;
     }
     
     button {

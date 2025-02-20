@@ -24,7 +24,7 @@ const Settings = () => {
       <div className={styles.themeSwitchWrapper}>
         <span className={styles.themeLabel}>Тема:</span>
         <label className={styles.themeSwitch}>
-          <input type="checkbox" onChange={toggleTheme} checked={theme === "dark"} />
+          <input type="checkbox" onChange={toggleTheme} checked={theme === "light"} />
           <span className={styles.slider}></span>
         </label>
       </div>

@@ -1,13 +1,26 @@
 .createPostWrapper {
   padding: 5px;
-  // border: 1px solid red;
   display: flex;
   flex-direction: column;
   padding-top: 20px;
   border-radius: 10px;
   max-width: 80%;
   margin: 0 auto;
+
+  // Пожалуйста, выберите граф для создания поста или мероприятия
+  .warningText{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-family: 'Roboto', sans-serif;
+    color: var(--main-text);
+    font-weight: 500;
+    font-size: 20px;  
+  }
 }
+
+
 
 @media only screen and (max-width: 680px) {
 
@@ -17,11 +30,11 @@
     
 }
 
-.title {
-  font-size: 22px;
-  font-weight: bold;
-  color: rgb(var(--main-Color));
-  margin-bottom: 15px;
+.countLetters{
+  font-family: 'Roboto', sans-serif;
+  color: var(--main-text);
+  font-weight: 300;
+  font-size: 16px;
 }
 
 .textarea {
@@ -95,29 +108,14 @@
   border-radius: 8px;
 }
 
-
-
-
-
-.createButton {
-  margin-top: 15px;
-  padding: 10px 20px;
-  background: rgb(var(--main-Color));
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.3s;
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.8);
-  }
-
-  &:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
+.buttonSubmit{
+  margin-top: 15px;;
 }
+
+
+
+
+
+
   
 
