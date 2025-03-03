@@ -67,7 +67,7 @@
 // Кнопка "Расписание"
 .scheduleButton {
   width: 100%;
-  background: rgb(var(--main-color));
+  background: rgb(var(--main-Color));
   color: white;
   border: none;
   padding: 12px;
@@ -78,7 +78,7 @@
   transition: background 0.3s ease;
 
   &:hover {
-    background: rgba(var(--main-color), 0.8);
+    background: rgba(var(--main-Color), 0.8);
   }
 }
 

@@ -8,7 +8,7 @@ const GraphsList: FC<{ allGraphs: any}> = ({ allGraphs }) => {
   return (
     <div className={styles.PostsListWrapper}>
       {allGraphs.map((graph: IGraphList) => (
-        <div key={graph._id}>
+        <div key={graph._id} className={styles.graphBlock}>
           <GraphBlock 
             id={graph._id}
             name={graph.name}
