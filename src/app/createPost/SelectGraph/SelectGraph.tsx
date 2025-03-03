@@ -8,7 +8,6 @@ import ButtonActive from "@/components/ui/ButtonActive/ButtonActive";
 
 // @ts-expect-error 123
 const SelectGraph = ({ mainTopics, selectedGraph, setSelectedGraph }) => {
-  // console.log('selectedGraph', selectedGraph)
 
   const [searchTerm, setSearchTerm] = useState('');
 
