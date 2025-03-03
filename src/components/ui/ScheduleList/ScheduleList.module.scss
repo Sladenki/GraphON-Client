@@ -1,27 +1,102 @@
-.ScheduleListWrapper{
-    margin-bottom: 70px;
+.ScheduleList {
+  padding: 20px;
+  max-width: 100%;
+  margin: auto;
+  font-family: 'Roboto', sans-serif;
+}
 
-    .dayBlock{
-        margin-bottom: 30px;
+/* Контейнер сетки */
+.scheduleGrid {
+  display: grid;
+  grid-template-columns: 1fr 4fr; /* Левый столбец для дней, правый - для мероприятий */
+  gap: 15px;
+  align-items: start;
+}
 
-        .dayofWeek{
-            font-family: 'Roboto', sans-serif;
-            color: var(--main-text);
-            font-weight: 500;
-            font-size: 22px;
-            color: gray;
-        }
+/* Адаптация под мобильные устройства */
+@media (max-width: 768px) {
+  .scheduleGrid {
+    grid-template-columns: 1fr; /* В столбик */
+  }
 
-        .scheduleItem{
-            margin-top: 10px;
-        }
+  .eventContainer {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-        .noSchedule{
-            font-family: 'Roboto', sans-serif;
-            font-weight: 300;
-            font-size: 18px;
-        }
-    }
+  .dayColumn {
+    text-align: center;
+  }
+}
 
-  
+/* Блок дня недели */
+.dayColumn {
+  background: rgb(var(--main-Color));
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Контейнер для всех мероприятий за день */
+.eventContainer {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto; /* Горизонтальный скролл при большом количестве событий */
+  padding-bottom: 10px;
+}
+
+/* Карточка занятия */
+.scheduleItem {
+  background: #e3f2fd;
+  border-left: 6px solid #1e88e5;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 200px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Карточка мероприятия */
+.eventItem {
+  background: #d4edda;
+  border-left: 6px solid #28a745;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 220px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Название события */
+.itemTitle {
+  color: #383B40;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+/* Описание */
+.itemDescription {
+  font-weight: 400;
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+/* Время */
+.itemTime {
+  font-weight: 500;
+  font-size: 15px;
+  color: #333;
 }

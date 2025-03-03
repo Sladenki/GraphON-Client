@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import styles from "./PopUpWrapper.module.scss";
 import { X } from 'lucide-react';
 
@@ -20,18 +20,20 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   if (!isOpen) return null;
 
   // Обработчик клика вне окна для его закрытия
-  const handleOverlayClick = (e: any) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
+  const handleOverlayClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
+  if (!isOpen) return null;
 
   return (
     <div className={styles.popupOverlay} onClick={handleOverlayClick}>
-      <div 
-        className={styles.popupContent}
-        style={{ width, height }}
-      >
+      <div className={styles.popupContent} style={{ width, height }}>
         <button onClick={onClose} className={styles.closeButton}>
           <X size={24} /> 
         </button>

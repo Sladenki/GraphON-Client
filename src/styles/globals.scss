@@ -1,32 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
-  --main-Color: 106, 87, 232;
-  --light-main: rgba(var(--main-Color), .1);
+  --main-Color: 114, 87, 232;  /* Тёплый фиолетовый */
+  --light-main: rgba(var(--main-Color), .2);
 
   --parent-node: rgb(106, 87, 232); /* Основной цвет для родительского узла */
-  --child-node: rgba(106, 87, 232, 0.1);
+  --intermediate-node: rgba(89, 76, 169, 0.2); /* Цвет для промежуточного узла */
+  --child-node: rgba(106, 87, 232, 0.1); /* Цвет для дочернего узла */
 
   --google-color: #4285f4;
   --google-hover: #357ae8;
 }
 
 html[data-theme="light"] {
-  
-  --background-color: #F8FAFF;
+  --background-color: #F4F7FF;  /* Светлее */
   --block-color: #FFFFFF;
-  --main-text: #474545;
+  --main-text: #333333;  /* Более тёмный текст */
 
 }
 
 html[data-theme="dark"] {
-
-  --background-color: #2D2F34;
+  --background-color: #2A2D33;  /* Немного светлее */
   --block-color: #383B40;
-  --main-text: #B9BABD;
-
+  --main-text: #E0E0E0;  /* Легче */
 }
 
 html,

@@ -1,5 +1,8 @@
 const nextConfig = {
   swcMinify: true,
+
+  trailingSlash: true,
+
   // Разрешаем загрузку изображений с любого домена 
   images: {
     unoptimized: true,
@@ -24,12 +27,6 @@ const nextConfig = {
     // Используем файловое кеширование для ускорения сборки
     config.cache = {
       type: 'filesystem', 
-    };
-
-    // Удаляет неиспользуемые экспорты
-    config.optimization = {
-      ...config.optimization,
-      usedExports: true, 
     };
 
     return config;

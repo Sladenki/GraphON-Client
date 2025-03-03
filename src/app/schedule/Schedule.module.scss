@@ -4,6 +4,17 @@
     margin: 0 auto;
     // border: 1px solid red;
     overflow-x: hidden;
+
+    .warningText{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+        width: 70%;
+        height: 100vh; /* Растягиваем блок на весь экран */
+        margin: 0 auto; /* Центрируем по горизонтали */
+    }
 }
 
 @media only screen and (max-width: 680px) {

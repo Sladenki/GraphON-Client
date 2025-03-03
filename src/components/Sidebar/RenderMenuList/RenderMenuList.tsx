@@ -13,6 +13,8 @@ const RenderMenuList: React.FC<{arrayItems: IArrayItem[], small: boolean}> = ({ 
 
   const pathname  = usePathname()
 
+  console.log('pathname', pathname)
+
   const menuWidth = small ? 85 : 200;
 
   return(

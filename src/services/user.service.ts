@@ -7,8 +7,4 @@ export const UserService = {
         return axiosClassic.post(`/user/auth`, dto)
     },
 
-    async getAuthUrl() {
-        return axiosClassic.get('/auth/google');
-    },
-
 }

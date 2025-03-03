@@ -2,15 +2,15 @@
 
 import { useAuth } from '@/providers/AuthProvider';
 import styles from './Profile.module.scss'
-import { SpinnerLoader } from '@/components/ui/SpinnerLoader/SpinnerLoader';
+import { SpinnerLoader } from '@/components/SpinnerLoader/SpinnerLoader';
 import { IUser } from '@/types/user.interface';
 import LoginButton from '@/components/ProfileCorner/LoginButton/LoginButton';
 import Image from 'next/image'
+import LogOut from '@/app/profile/LogOut/LogOut';
+import { useTheme } from 'next-themes';
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
-
-    // console.log('user', user)
 
     if(loading) {
       return <SpinnerLoader/>
@@ -21,6 +21,13 @@ export default function Profile() {
     }
 
     const typedUser = user as IUser | null;
+
+    // -- Тема ---
+    const { setTheme, theme } = useTheme();
+  
+    const toggleTheme = () => {
+        setTheme(theme === "dark" ? "light" : "dark");
+    };
   
     return (
         <div className={styles.profileWrapper}>
@@ -43,10 +50,19 @@ export default function Profile() {
                         </span>
 
                     </div>
-                  
-                    <span className={styles.text}>Количество постов: {typedUser.postsNum}</span>
 
-                    {/* <span className={styles.text}>Количество подписок: {typedUser.graphSubsNum}</span> */}
+                    <div className={styles.themeSwitchWrapper}>
+                        <span className={styles.themeLabel}>Тема:</span>
+                        <label className={styles.themeSwitch}>
+                        <input type="checkbox" onChange={toggleTheme} checked={theme === "light"} />
+                        <span className={styles.slider}></span>
+                        </label>
+                    </div>
+                  
+                    {/* <span className={styles.text}>Количество постов: {typedUser.postsNum}</span> */}
+
+                    <LogOut/>
+                 
                 </>
             ) : <LoginButton/>}
         </div>

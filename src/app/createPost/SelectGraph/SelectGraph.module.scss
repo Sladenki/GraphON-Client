@@ -68,9 +68,8 @@
 
 .afterSelectGraph{
   display: flex;
-  flex-direction: row;
-  gap: 15%;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 20px;
 
   .selectedGraph{
     font-family: 'Roboto', sans-serif;

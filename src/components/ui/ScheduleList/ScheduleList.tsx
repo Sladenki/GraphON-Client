@@ -1,75 +1,64 @@
-import React from 'react';
-import ScheduleItem from "@/components/ui/ScheduleItem/ScheduleItem";
-import styles from './ScheduleList.module.scss'
-import EventItem from '../EventItem/EventItem';
+'use client';
 
-interface ScheduleDisplayProps {
-  scheduleByDays: { [key: number]: any[] }; // Типизируйте точнее, если известно содержимое расписания
-  events?: any[];
-  title?: string; // Необязательный заголовок
+import React from 'react';
+import { format, startOfWeek, addDays, parseISO, isSameDay, startOfDay } from 'date-fns';
+import { ru } from 'date-fns/locale';
+import styles from './ScheduleList.module.scss';
+import { EventItem, ScheduleItem } from '@/types/schedule.interface';
+
+
+interface ScheduleCalendarProps {
+  schedule: ScheduleItem[];
+  events: EventItem[];
 }
 
-const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница'];
+const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ schedule, events }) => {
+  const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
+  const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-const ScheduleList: React.FC<ScheduleDisplayProps> = ({ scheduleByDays, events, title }) => {
   return (
-      <div className={styles.ScheduleListWrapper}>
-          <div className={styles.scheduleSection}>
-              {daysOfWeek.map((day, index) => (
-                  <div key={index} className={styles.dayBlock}>
+    <div className={styles.ScheduleList}>
+      <h2>Расписание на неделю</h2>
 
-                    {/* День недели */}
-                    <span className={styles.dayofWeek}>{day}</span>
+      <div className={styles.scheduleGrid}>
+        {daysOfWeek.map((date, index) => (
+          <React.Fragment key={index}>
+            {/* Левая колонка с днем недели */}
+            <div className={styles.dayColumn}>
+              {format(date, 'EEEE, dd MMM', { locale: ru })}
+            </div>
 
-                    {/* Расписание */}
-                    {scheduleByDays[index]?.length > 0 ? (
-                        scheduleByDays[index].map((item) => (
-                        <div key={item._id} className={styles.scheduleItem}>
-                            <ScheduleItem
-                                key={item._id}
-                                name={item.name}
-                                graphName={item.graphId.name}
-                                timeFrom={item.timeFrom}
-                                timeTo={item.timeTo}
-                                roomNumber={item.roomNumber}
-                                type={item.type}
-                            />
-                        </div>
-                
-                        ))
-                    ) : (
-                        <p className={styles.noSchedule}>🥳 Нет занятий</p>
-                    )}
+            {/* Правая колонка с занятиями и мероприятиями */}
+            <div className={styles.eventContainer}>
+              {/* Расписание */}
+              {schedule
+                .filter((item) => item.dayOfWeek === index)
+                .map((item) => (
+                  <div key={item._id} className={styles.scheduleItem}>
+                    <span className={styles.itemTitle}>{item.name}</span>
+                    <span className={styles.itemDescription}>
+                      {item.type === 'lecture' ? '📖 Лекция' : '🛠 Практика'} • Ауд. {item.roomNumber}
+                    </span>
+                    <span className={styles.itemTime}>⏰ {item.timeFrom} - {item.timeTo}</span>
                   </div>
-              ))}
-          </div>
+                ))}
 
-              {
-                events && (
-                    <div className={styles.eventsSection}>
-                        <h3>Ближайшие мероприятия</h3>
-                        {events.length > 0 ? (
-                            events.map((event: any) => (
-                                <EventItem
-                                    key={event._id}
-                                    name={event.name}
-                                    description={event.description}
-                                    graphName={event.graphId.name}
-                                    eventDate={event.eventDate}
-                                    timeFrom={event.timeFrom}
-                                    timeTo={event.timeTo}
-                                />
-                            ))
-                        ) : (
-                            <p className={styles.noSchedule}>🥳 Нет предстоящих мероприятий</p>
-                        )}
-                    </div>
-                )
-              }
-
-
+              {/* Мероприятия */}
+              {events
+                .filter((event) => isSameDay(startOfDay(parseISO(event.eventDate)), startOfDay(date)))
+                .map((event) => (
+                  <div key={event._id} className={styles.eventItem}>
+                    <span className={styles.itemTitle}>📝 {event.name}</span>
+                    <span className={styles.itemDescription}>{event.description}</span>
+                    <span className={styles.itemTime}>⏰ {event.timeFrom} - {event.timeTo}</span>
+                  </div>
+                ))}
+            </div>
+          </React.Fragment>
+        ))}
       </div>
+    </div>
   );
 };
 
-export default ScheduleList;
+export default ScheduleCalendar;

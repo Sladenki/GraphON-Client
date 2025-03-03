@@ -1,0 +1,64 @@
+// Больше 1000px
+@media only screen and (min-width: 680px) {
+    .PostFeedWrapper{
+        padding-top: 25px;
+        width: 65%;
+        margin: 0 auto;
+    }
+}
+
+// Шапка
+.headerPart{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+
+    .tabsContainer {
+        padding-top: 15px;
+        width: 40vw;
+        margin: 0 auto;
+    }
+
+    // Поиск
+    .inputBlock{
+        padding: 10px 0 10px 20px;
+        border: 1px solid rgb(var(--main-Color), 0.2);
+        background-color: var(--block-color);
+        border-radius: 20px;
+        width: 40vw;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        grid-gap: 11px;
+    
+        input {
+            border: none;
+            outline: none;
+            width: 90%;
+            font-family: 'Roboto', sans-serif;;
+            font-style: normal;
+            font-weight: 300;
+            font-size: 16px;
+            color: #8D93AB;
+            background-color: transparent;
+        
+        }
+    }
+
+}
+
+// Список графов
+.postsList {
+    display: flex;
+    justify-content: center;
+    min-height: 200px; // Фиксируем минимальную высоту
+    align-items: center;
+}
+
+
+
+
+
