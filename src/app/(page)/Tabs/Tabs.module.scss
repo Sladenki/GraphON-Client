@@ -1,49 +1,54 @@
-@media (min-width: 1000px) {
-  .tabWrapper {
-    width: 70%;
-  }
+.tabWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
-
-@media (max-width: 1000px) {
-  .tabWrapper {
-    width: 100%;
-  }
-}
-
-
 
 .tabHeader {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 10px;
+  display: flex;
+  position: relative;
+  width: 100%;
+  max-width: 600px;
   border-bottom: 2px solid rgba(var(--main-Color), 0.3);
+}
 
-  .tabItem {
-    background: none;
-    border: none;
-    padding: 10px 0;
-    font-family: "Roboto", sans-serif;
-    font-size: 1rem;
-    font-weight: 400;
-    color: var(--main-text);
-    cursor: pointer;
-    transition: color 0.3s, border-color 0.3s;
-    text-align: center;
+.tabItem {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 12px 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--main-text);
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.3s;
 
-    &:hover {
-      color: rgba(var(--main-Color), 0.7);
-    }
+  &:hover {
+    color: rgba(var(--main-Color), 0.7);
+  }
 
-    &.selected {
-      border-bottom: 3px solid rgb(var(--main-Color));
-      color: rgb(var(--main-Color));
-    }
+  &.selected {
+    color: rgb(var(--main-Color));
   }
 }
 
+/* Анимированный индикатор активного таба */
+.tabIndicator {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  height: 3px;
+  width: calc(100% / var(--tab-count, 3)); /* Количество табов */
+  background: rgb(var(--main-Color));
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(calc(var(--active-index, 0) * 100%));
+}
+
+/* Адаптивность */
 @media (max-width: 600px) {
   .tabHeader {
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    max-width: 100%;
   }
 }
-  

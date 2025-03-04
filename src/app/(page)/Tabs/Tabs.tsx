@@ -18,9 +18,11 @@ interface TabsProps {
 const Tabs: FC<TabsProps> = ({ tabs, activeTab, setActiveTab }) => {
   const handleTabClick = useCallback((name: string) => () => setActiveTab(name), [setActiveTab]);
 
+  const activeIndex = tabs.findIndex((tab) => tab.name === activeTab);
+
   return (
     <div className={styles.tabWrapper}>
-      <div className={styles.tabHeader}>
+      <div className={styles.tabHeader} style={{ "--tab-count": tabs.length } as React.CSSProperties}>
         {tabs.map(({ name, label }) => (
           <button
             key={name}
@@ -30,6 +32,8 @@ const Tabs: FC<TabsProps> = ({ tabs, activeTab, setActiveTab }) => {
             <span className={styles.tabName}>{label}</span>
           </button>
         ))}
+        {/* Индикатор активного таба (в крайних положениях) */}
+        <div className={styles.tabIndicator} style={{ "--active-index": activeIndex } as React.CSSProperties} />
       </div>
     </div>
   );
