@@ -2,12 +2,8 @@ import React, { memo, useMemo, useCallback } from "react";
 import styles from "./GraphBlock.module.scss";
 import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useAuth } from "@/providers/AuthProvider";
-import { useSchedulePopup } from "./useSchedulePopUp";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { PlusSquare, MinusSquare } from "lucide-react";
-
-const SchedulePopUp = dynamic(() => import("../SchedulePopUp/SchedulePopUp"), { ssr: false });
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -16,32 +12,42 @@ interface GraphBlockProps {
   name: string;
   isSubToGraph: boolean;
   imgPath?: string;
+  handleScheduleButtonClick: any
+  setSelectedGraphId: any
 }
 
-const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath }) => {
+const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath, handleScheduleButtonClick, setSelectedGraphId }) => {
   const fullImageUrl = useMemo(() => `${BASE_S3_URL}/${imgPath}`, [imgPath]);
 
   const { isLoggedIn } = useAuth();
   const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, id);
 
-  const { isSchedulePopupOpen, handleScheduleButtonClick, closeSchedulePopup } = useSchedulePopup();
-
   const handleSubscription = useCallback(() => toggleSubscription(), [toggleSubscription]);
+
+  // Нажали на кнопку расписания графа
+  const clickSchedule = (id: string) => {
+    handleScheduleButtonClick()
+    setSelectedGraphId(id)
+  }
 
   return (
     <div className={styles.graphBlock}>
       {/* Фото графа */}
       {imgPath && (
         <div className={styles.imageContainer}>
-          <div className={styles.nameTag}>{name}</div>
           <Image
             src={fullImageUrl}
             alt="Graph Image"
             layout="responsive"
             width={400}
-            height={250}
+            height={300}
             className={styles.postImage}
           />
+
+          {/* Градиентный блок с названием объединения */}
+          <div className={styles.nameOverlay}>
+            <span className={styles.nameText}>{name}</span>
+          </div>
 
           {isLoggedIn && (
             <button
@@ -58,15 +64,10 @@ const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath
       )}
 
       {/* Кнопка расписания */}
-      <button className={styles.scheduleButton} onClick={handleScheduleButtonClick}>
+      <button className={styles.scheduleButton} onClick={() => clickSchedule(id)}>
         📅 Расписание
       </button>
 
-
-      {/* Модальное окно расписания */}
-      {isSchedulePopupOpen && (
-        <SchedulePopUp graphId={id} isSchedulePopupOpen={isSchedulePopupOpen} closeSchedulePopup={closeSchedulePopup} />
-      )}
     </div>
   );
 };
