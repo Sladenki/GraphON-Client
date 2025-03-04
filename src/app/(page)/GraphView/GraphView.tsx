@@ -51,6 +51,7 @@ const GraphView = ({ searchQuery }: { searchQuery: string}) => {
 
   // --- Генерация данных для графа ---
   const graphData = useMemo(() => {
+    // @ts-expect-error типизация
     return allGraphs ? buildGraphHierarchy(parentGraph, allGraphs.data) : { nodes: [], links: [] };
   }, [allGraphs]);
 

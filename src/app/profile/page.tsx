@@ -12,6 +12,13 @@ import { useTheme } from 'next-themes';
 export default function Profile() {
     const { user, loading, error } = useAuth();
 
+    // -- Тема ---
+    const { setTheme, theme } = useTheme();
+    
+    const toggleTheme = () => {
+        setTheme(theme === "dark" ? "light" : "dark");
+    };
+
     if(loading) {
       return <SpinnerLoader/>
     }
@@ -22,12 +29,7 @@ export default function Profile() {
 
     const typedUser = user as IUser | null;
 
-    // -- Тема ---
-    const { setTheme, theme } = useTheme();
   
-    const toggleTheme = () => {
-        setTheme(theme === "dark" ? "light" : "dark");
-    };
   
     return (
         <div className={styles.profileWrapper}>

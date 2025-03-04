@@ -17,6 +17,7 @@ const Sidebar: React.FC<{}> = ({}) => {
   return (
     <div className={styles.sidebar}>
         
+        {/* @ts-expect-error типизация */}
       <RenderMenuList arrayItems={sidebar} small={small}  />
 
     </div>

@@ -2,12 +2,20 @@
   --main-Color: 114, 87, 232;  /* Тёплый фиолетовый */
   --light-main: rgba(var(--main-Color), .2);
 
-  --parent-node: rgb(106, 87, 232); /* Основной цвет для родительского узла */
-  --intermediate-node: rgba(89, 76, 169, 0.2); /* Цвет для промежуточного узла */
-  --child-node: rgba(106, 87, 232, 0.1); /* Цвет для дочернего узла */
+  // --parent-node: rgb(106, 87, 232); /* Основной цвет для родительского узла */
+  // --intermediate-node: rgba(89, 76, 169, 0.2); /* Цвет для промежуточного узла */
+  // --child-node: rgba(106, 87, 232, 0.1); /* Цвет для дочернего узла */
+
+  --parent-node: #ff6b6b;
+  --intermediate-node: #ffcc29;
+  --child-node: #1e90ff;
 
   --google-color: #4285f4;
   --google-hover: #357ae8;
+
+  --popup-bg: rgba(0, 0, 0, 0.5);
+  --popup-content-bg: var(--background-color);
+  --popup-border-radius: 1.875rem; // 30px в rem
 }
 
 html[data-theme="light"] {

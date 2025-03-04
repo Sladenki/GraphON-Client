@@ -17,7 +17,6 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   width = 'auto', // Дефолтное значение для ширины
   height = 'auto' // Дефолтное значение для высоты
  }) => {
-  if (!isOpen) return null;
 
   // Обработчик клика вне окна для его закрытия
   const handleOverlayClick = useCallback(
