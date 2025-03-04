@@ -59,8 +59,9 @@ const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath
 
       {/* Кнопка расписания */}
       <button className={styles.scheduleButton} onClick={handleScheduleButtonClick}>
-        Расписание
+        📅 Расписание
       </button>
+
 
       {/* Модальное окно расписания */}
       {isSchedulePopupOpen && (

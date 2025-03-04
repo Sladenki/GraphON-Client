@@ -25,7 +25,8 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ schedule, events })
           <React.Fragment key={index}>
             {/* Левая колонка с днем недели */}
             <div className={styles.dayColumn}>
-              {format(date, 'EEEE, dd MMM', { locale: ru })}
+              <span className={styles.dayName}>{format(date, 'EEEE', { locale: ru })}</span>
+              <span className={styles.dayDate}>{format(date, 'dd MMM', { locale: ru })}</span>
             </div>
 
             {/* Правая колонка с занятиями и мероприятиями */}
