@@ -1,38 +1,55 @@
-.BottomSidebarWrapper{
-    background-color: var(--block-color);
-    // border-top: 1px solid rgb(var(--main-Color));
-    border-radius: 20px 20px 0 0;
-    width: 100vw;
-    padding: 5px 0 5px 0;
-    // height: 53px;
-    box-shadow: 0px 0px 28px 15px rgba(var(--main-Color), 0.05);
+.bottomSidebarWrapper {
+  background-color: var(--block-color);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  padding: 8px 0;
+  box-shadow: 0px 0px 28px 15px rgba(var(--main-Color), 0.05);
 
-    .listMenu{
-        font-family: 'Roboto', sans-serif;
-        font-weight: 300;
-        display: flex;
-        flex-direction: row;
-        grid-gap: 21px;
-        justify-content: center;
+  .listMenu {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
 
-        .listLine{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            stroke: rgb(var(--main-Color));
-            color: var(--main-text);
-            font-size: 11px;
-            
-            .active{
-                color: rgb(var(--main-Color));
-            }
+  .listItem {
+    display: flex;
+  }
 
-        }
+  .link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: clamp(10px, 1vw, 12px);
+    text-decoration: none;
+    color: var(--main-text);
+    transition: color 0.3s;
+
+    &:hover,
+    &.active {
+      color: rgb(var(--main-Color));
     }
+  }
 
-
-    
+  .icon {
+    font-size: 20px;
+  }
 }
 
+// Адаптивность
+@media (max-width: 480px) {
+  .listMenu {
+    gap: 12px;
+  }
+  
+  .link {
+    font-size: 10px;
+  }
 
-
+  .icon {
+    font-size: 18px;
+  }
+}

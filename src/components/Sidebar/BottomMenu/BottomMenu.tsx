@@ -1,43 +1,38 @@
 "use client";
 
-import React from "react";
-import styles from './BottomMenu.module.scss'
-
+import React, { useMemo } from "react";
+import styles from "./BottomMenu.module.scss";
 import Link from "next/link";
-
 import { sidebarMobile } from "@/constants/sidebar";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 
-const BottomMenu = () => {
-
+const BottomMenu: React.FC = () => {
   const { isLoggedIn } = useAuth();
+  const pathname = usePathname();
 
-  const pathname  = usePathname()
+  // Фильтрация элементов меню
+  const menuItems = useMemo(
+    () => sidebarMobile.filter(({ forAuthUsers }) => !forAuthUsers || isLoggedIn),
+    [isLoggedIn]
+  );
 
   return (
-    <div className={styles.BottomSidebarWrapper}>
-      <div className={styles.listMenu}>
-          
-        {sidebarMobile.map(({ id, icon, title, forAuthUsers, path }) => {
-
-          // Проверяем, нужно ли отображать вкладку
-          const shouldRender = !forAuthUsers || (forAuthUsers && isLoggedIn);
-
-            return shouldRender ?(
-              <Link key={id} href={path}>
-                <div className={styles.listLine}>
-                  <span className={pathname === path ? styles.icon : undefined}>{icon}</span>
-                  <span className={pathname === path ? styles.active : undefined}>{title}</span>
-                </div>
+    <nav className={styles.bottomSidebarWrapper}>
+      <ul className={styles.listMenu}>
+        {menuItems.map(({ id, icon, title, path }) => {
+          const isActive = pathname === path;
+          return (
+            <li key={id} className={styles.listItem}>
+              <Link href={path} className={`${styles.link} ${isActive ? styles.active : ""}`}>
+                <span className={styles.icon}>{icon}</span>
+                <span className={styles.title}>{title}</span>
               </Link>
-            ) : null
+            </li>
+          );
         })}
-
-
-      </div>
-
-    </div>
+      </ul>
+    </nav>
   );
 };
 
