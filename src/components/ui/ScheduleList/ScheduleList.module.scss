@@ -24,9 +24,6 @@
     justify-content: center;
   }
 
-  .dayColumn {
-    text-align: center;
-  }
 }
 
 /* Блок дня недели */
@@ -70,18 +67,22 @@
 /* Адаптивность */
 @media (max-width: 600px) {
   .dayColumn {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
     font-size: 16px;
-    padding: 12px;
+    padding: 10px;
     min-width: 100px;
   }
 
   .dayName {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .dayDate {
-    font-size: 20px;
+    font-size: 14px;
   }
+
 }
 
 
