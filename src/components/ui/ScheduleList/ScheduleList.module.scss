@@ -13,7 +13,7 @@
   align-items: start;
 }
 
-/* Адаптация под мобильные устройства */
+/* Делаем в столбик */
 @media (max-width: 768px) {
   .scheduleGrid {
     grid-template-columns: 1fr; /* В столбик */
@@ -65,10 +65,10 @@
 }
 
 /* Адаптивность */
-@media (max-width: 600px) {
+@media (max-width: 680px) {
   .dayColumn {
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     justify-content: space-around;
     font-size: 16px;
     padding: 10px;
