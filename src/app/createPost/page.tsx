@@ -1,11 +1,11 @@
 'use client'
 
-import UploadForm from '@/components/UploadForm/UploadForm';
+import UploadForm from '@/components/global/UploadForm/UploadForm';
 import { GraphService } from '@/services/graph.service';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react'
 import styles from './createPage.module.scss'
-import { SpinnerLoader } from '@/components/SpinnerLoader/SpinnerLoader';
+import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import SelectGraph from './SelectGraph/SelectGraph';
 
 

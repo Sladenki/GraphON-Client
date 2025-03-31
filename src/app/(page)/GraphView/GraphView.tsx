@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
 
 import { ForceGraph2D } from 'react-force-graph';
-import { SpinnerLoader } from '@/components/SpinnerLoader/SpinnerLoader';
+import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useGraphInfoPopup } from './useGraphInfoPopUp';
 import { buildGraphHierarchy } from '@/utils/grahSystem';
 import SchedulePopUp from '@/components/ui/SchedulePopUp/SchedulePopUp';

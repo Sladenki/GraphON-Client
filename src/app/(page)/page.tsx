@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useState, useMemo, useCallback, Suspense } from "react";
 import { useFetchBunchData } from "@/hooks/useFetchBunchData";
-import { SpinnerLoader } from "@/components/SpinnerLoader/SpinnerLoader";
+import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import React from "react";
 
 const Tabs = dynamic(() => import("./Tabs/Tabs"), { ssr: false });

@@ -1,6 +1,6 @@
 'use client'
 
-import LoginButton from "@/components/ProfileCorner/LoginButton/LoginButton";
+import LoginButton from "@/components/global/ProfileCorner/LoginButton/LoginButton";
 
 
 const Signin = () => {

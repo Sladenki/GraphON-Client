@@ -23,6 +23,7 @@ const createSidebarItem = (
   path,
 });
 
+// ----- Для десктопа ----
 export const sidebar = [
   createSidebarItem(1, <House color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Главная', false, '/'),
   createSidebarItem(2, <CalendarCheck color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />, 'Расписание', true, '/schedule/'),

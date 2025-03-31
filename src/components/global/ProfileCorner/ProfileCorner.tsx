@@ -1,5 +1,5 @@
 'use client';
-import { useAuth } from '../../providers/AuthProvider'; // Импортируем useAuth
+import { useAuth } from '../../../providers/AuthProvider'; // Импортируем useAuth
 
 import { useRouter } from 'next/navigation';
 import ProfileUser from './ProfileUser/ProfileUser';
