@@ -14,12 +14,8 @@ export const EventService = {
         return axiosClassic.post("/event/create", eventData);
     },
 
-    // async getEventsByGraphId(graphId: string) {
-    //     return axiosClassic.get(`/events/by-graph?graphId=${graphId}`);
-    // },
-
-    // async getUpcomingEvents() {
-    //     return axiosClassic.get("/events/upcoming");
-    // },
+    async getUpcomingEvents() {
+        return axiosClassic.get("/event/upcoming");
+    },
 
 }
