@@ -48,7 +48,7 @@ const Homepage = () => {
           tabs={[
             { name: "events", label: "Мероприятия" },
             { name: "main", label: "Объединения" },
-            { name: "graphSystem", label: "Система графов" },
+            { name: "graphSystem", label: "Графы" },
           ]}
           activeTab={activeTab}
           setActiveTab={handleTabChange}

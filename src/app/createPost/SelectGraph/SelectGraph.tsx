@@ -72,7 +72,7 @@ const SelectGraph = ({ mainTopics, selectedGraph, setSelectedGraph }) => {
       <div className={styles.afterSelectGraph}>
         {selectedGraph && (
           <div className={styles.selectedGraph}>
-            <span>Публикации и мероприятия будут опубликованы в графе: <strong>{selectedGraph.name}</strong></span>
+            <span>Мероприятие будут опубликовано в графе: <strong>{selectedGraph.name}</strong></span>
           </div>
         )}
 
