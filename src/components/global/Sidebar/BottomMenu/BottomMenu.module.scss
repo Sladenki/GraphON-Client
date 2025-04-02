@@ -2,54 +2,56 @@
   background-color: var(--block-color);
   border-radius: 20px 20px 0 0;
   width: 100%;
-  padding: 8px 0;
+  padding: 12px 0;
   box-shadow: 0px 0px 28px 15px rgba(var(--main-Color), 0.05);
+}
 
-  .listMenu {
-    font-family: 'Roboto', sans-serif;
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-  }
+.listMenu {
+  display: flex;
+  justify-content: space-around;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-family: "Roboto", sans-serif;
+}
 
-  .listItem {
-    display: flex;
-  }
+.listItem {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
 
-  .link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: clamp(10px, 1vw, 12px);
-    text-decoration: none;
-    color: var(--main-text);
-    transition: color 0.3s;
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 8px 16px; // Увеличил отступы для овальной формы
+  border-radius: 20px; // Делаем обводку овальной
+  transition: all 0.3s ease;
+}
 
-    &:hover,
-    &.active {
-      color: rgb(var(--main-Color));
-    }
-  }
+.icon {
+  font-size: 24px;
+  color: var(--main-text);
+  transition: color 0.3s, transform 0.3s;
+}
+
+// Овальная обводка для активного элемента
+.active {
+  background-color: rgba(var(--main-Color), 0.2); // Лёгкий фон
+  // border: 2px solid var(--main-text);
+  padding: 8px 25px; // Делаем форму ещё более овальной
 
   .icon {
-    font-size: 20px;
+    color: var(--main-text);
+    transform: scale(1.2);
   }
 }
 
-// Адаптивность
+/* Адаптивность */
 @media (max-width: 480px) {
-  .listMenu {
-    gap: 16px;
-  }
-  
-  .link {
-    font-size: 12px;
-  }
-
   .icon {
-    font-size: 20px;
+    font-size: 22px;
   }
 }

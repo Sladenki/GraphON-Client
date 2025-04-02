@@ -26,7 +26,7 @@ const BottomMenu: React.FC = () => {
             <li key={id} className={styles.listItem}>
               <Link href={path} className={`${styles.link} ${isActive ? styles.active : ""}`}>
                 <span className={styles.icon}>{icon}</span>
-                <span className={styles.title}>{title}</span>
+                {/* <span className={styles.title}>{title}</span> */}
               </Link>
             </li>
           );
