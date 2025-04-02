@@ -3,10 +3,11 @@ import { EventItem } from '@/types/schedule.interface';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react'
 import styles from './EventsList.module.scss'
+import EventCard from './EventCard/EventCard';
 
 const EventsList = ({ searchQuery }: { searchQuery: string}) => {
 
-  const { data: allEvents, isPending: isEventsLoading, isError: isEventsError } = useQuery({
+  const { data: allEvents } = useQuery({
     queryKey: ['eventsList'],
     queryFn: () => EventService.getUpcomingEvents(),
   });
@@ -20,11 +21,9 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
   return (
     <div className={styles.eventsListWrapper}>
       {filteredEvents && filteredEvents.map((event: EventItem) => (
-          <div key={event._id} className={styles.eventItem}>
-            <span className={styles.itemTitle}>📝 {event.name}</span>
-            <span className={styles.itemDescription}>{event.description}</span>
-            <span className={styles.itemTime}>⏰ {event.timeFrom} - {event.timeTo}</span>
-          </div>
+        <div key={event._id}>
+          <EventCard event={event} />
+        </div>
         ) 
       )}
     </div>

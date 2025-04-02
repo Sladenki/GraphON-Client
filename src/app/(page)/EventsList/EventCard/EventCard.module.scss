@@ -1,0 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+// 🎨 Переменные цветов
+$primary-color: #007aff;
+$secondary-color: #f0f4f8;
+$text-color: #222;
+$hover-color: #005ecb;
+
+// 📱 Mobile-first адаптивность
+$mobile-breakpoint: 480px;
+$tablet-breakpoint: 768px;
+
+// 🏷️ Основной стиль карточки
+.eventCard {
+  background: $secondary-color;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  max-width: 400px;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-left: 6px solid $primary-color;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    border-left-color: $hover-color;
+  }
+}
+
+// 🏷️ Заголовок и автор
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: $primary-color;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.author {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+// 🏷️ Описание события
+.description {
+  font-size: 16px;
+  color: $text-color;
+  line-height: 1.5;
+  margin: 0;
+}
+
+// 🏷️ Подвал с временем
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 14px;
+  font-weight: 600;
+  color: $primary-color;
+}
+
+// 📱 Медиазапросы для мобильных устройств
+@media (max-width: $mobile-breakpoint) {
+  .eventCard {
+    padding: 14px;
+  }
+  .title {
+    font-size: 18px;
+  }
+  .description {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: $tablet-breakpoint) {
+  .eventCard {
+    max-width: 100%;
+  }
+}

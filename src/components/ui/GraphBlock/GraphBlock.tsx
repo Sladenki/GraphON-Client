@@ -38,7 +38,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath
           <Image
             src={fullImageUrl}
             alt="Graph Image"
-            layout="responsive"
+            // layout="responsive"
             width={400}
             height={300}
             className={styles.postImage}
