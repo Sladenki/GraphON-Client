@@ -46,8 +46,8 @@ const Homepage = () => {
       <div className={styles.headerPart}>
         <Tabs
           tabs={[
-            { name: "events", label: "Мероприятия" },
-            { name: "main", label: "Объединения" },
+            { name: "events", label: "События" },
+            { name: "main", label: "Группы" },
             { name: "graphSystem", label: "Графы" },
           ]}
           activeTab={activeTab}
