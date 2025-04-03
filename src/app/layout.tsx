@@ -2,7 +2,7 @@
 
 import Sidebar from "@/components/global/Sidebar/Sidebar";
 import styles from './layout.module.scss'
-import BottomMenu from "@/components/global/Sidebar/BottomMenu/BottomMenu";
+import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
 import { AllProvers } from "@/providers/main";
 import { ProfileCorner } from "@/components/global/ProfileCorner/ProfileCorner";
 

@@ -18,8 +18,6 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ schedule, events })
 
   return (
     <div className={styles.ScheduleList}>
-      <h2>Расписание на неделю</h2>
-
       <div className={styles.scheduleGrid}>
         {daysOfWeek.map((date, index) => (
           <React.Fragment key={index}>

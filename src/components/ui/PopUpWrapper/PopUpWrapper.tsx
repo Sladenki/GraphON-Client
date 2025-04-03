@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 import styles from "./PopUpWrapper.module.scss";
 import { X } from 'lucide-react';
 
@@ -17,6 +17,19 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   width = 'auto', // Дефолтное значение для ширины
   height = 'auto' // Дефолтное значение для высоты
  }) => {
+
+  // Блокируем/разблокируем общий скролл при изменении isOpen
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = ''; // Восстановление при размонтировании
+    };
+  }, [isOpen]);
 
   // Обработчик клика вне окна для его закрытия
   const handleOverlayClick = useCallback(
