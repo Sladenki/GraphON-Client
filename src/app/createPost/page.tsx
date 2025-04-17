@@ -26,6 +26,7 @@ const CreatePost = () => {
     if (isPending) return <SpinnerLoader/>;
     if (isError) return <p>Ошибка: {error.message}</p>;
 
+    // @ts-expect-error ошибка типизации
     if (user?.role === UserRole.User) {
         return <p>Тебя тут не должно быть</p>
     }
