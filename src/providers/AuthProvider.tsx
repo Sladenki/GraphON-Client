@@ -34,11 +34,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 if (typeof window !== 'undefined') {
                     const params = new URLSearchParams(window.location.search);
                     const accessToken = params.get('accessToken');
-                    
-                    // Выходим из аккаунта если токен не найден
-                    // if (accessToken === null) {
-                    //     return logout()
-                    // }
 
                     if (accessToken) {
                         localStorage.setItem('accessToken', accessToken);

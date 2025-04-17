@@ -3,7 +3,7 @@
 import { useAuth } from '@/providers/AuthProvider';
 import styles from './Profile.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
-import { IUser } from '@/types/user.interface';
+import { IUser, RoleTitles } from '@/types/user.interface';
 import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButton';
 import Image from 'next/image'
 import LogOut from '@/app/profile/LogOut/LogOut';
@@ -49,6 +49,10 @@ export default function Profile() {
                         <span className={styles.name}>
                             {typedUser.firstName}
                             {typedUser.lastName ? ` ${typedUser.lastName}` : ""}
+                        </span>
+
+                        <span>
+                            {RoleTitles[typedUser.role]}
                         </span>
 
                     </div>
