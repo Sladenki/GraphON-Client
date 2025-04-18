@@ -35,6 +35,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     const params = new URLSearchParams(window.location.search);
                     const accessToken = params.get('accessToken');
 
+                    console.log('accessToken', accessToken)
+
                     if (accessToken) {
                         localStorage.setItem('accessToken', accessToken);
                         window.history.replaceState({}, document.title, window.location.pathname);
