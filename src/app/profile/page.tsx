@@ -82,13 +82,12 @@ export default function Profile() {
                         subsEvents && subsEvents.length > 0 && (
                             <p>Мероприя на которые вы записаны</p>   
                         )
-                    }
-                    
+                    } 
                    
 
                     {
-                        subsEvents && subsEvents.map((event: any) => (
-                            <div key={event.eventId._id}>
+                        subsEvents && subsEvents.length > 0 && subsEvents.map((event: any) => (
+                            <div key={event._id}>
                                 <EventCard event={event.eventId} />
                             </div>
                         ))

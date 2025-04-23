@@ -39,21 +39,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
                     if (accessToken) {
                         localStorage.setItem('accessToken', accessToken);
+                        sessionStorage.setItem('accessToken', accessToken);
                         window.history.replaceState({}, document.title, window.location.pathname);
                     }
-                    const storedToken = localStorage.getItem('accessToken');
+
+                    // Проверяем токен в localStorage и sessionStorage
+                    const localStorageToken = localStorage.getItem('accessToken');
+                    const sessionStorageToken = sessionStorage.getItem('accessToken');
+                    const storedToken = localStorageToken || sessionStorageToken;
+
                     if (storedToken) {
                         try {
                             const decodedToken = JSON.parse(atob(storedToken.split('.')[1]));
-                            // const decodedToken = JSON.parse(storedToken);
-                            if (decodedToken && decodedToken.sub) { // Проверяем наличие sub
-                                await fetchUserData(decodedToken.sub, storedToken); // Вызываем функцию получения данных
+                            if (decodedToken && decodedToken.sub) {
+                                await fetchUserData(decodedToken.sub, storedToken);
                             } else {
+                                // Очищаем токен из обоих хранилищ
                                 localStorage.removeItem('accessToken');
+                                sessionStorage.removeItem('accessToken');
                             }
                         } catch (decodeError) {
                             console.error("Ошибка декодирования токена:", decodeError);
                             localStorage.removeItem('accessToken');
+                            sessionStorage.removeItem('accessToken');
                         }
                     }
                 }

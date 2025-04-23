@@ -14,8 +14,10 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
 
   const events = allEvents?.data
 
+  console.log('events', events)
+
   const filteredEvents = events && events.filter((event: EventItem) =>
-    event.name.toLowerCase().includes(searchQuery.toLowerCase())
+    event &&event.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (

@@ -16,6 +16,7 @@ interface EventProps {
 }
 
 const EventCard: React.FC<EventProps> = ({ event }) => {
+  console.log('event', event)
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id);
 
   return (

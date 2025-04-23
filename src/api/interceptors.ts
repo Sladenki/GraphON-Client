@@ -23,10 +23,12 @@ export const axiosAuth = axios.create({
 axiosAuth.interceptors.request.use(
     async (config) => {
         // Получаем токен из localStorage
-        const token = localStorage.getItem('accessToken');
+        const localStorageToken = localStorage.getItem('accessToken');
+        const sessionStorageToken = sessionStorage.getItem('accessToken');
+        const storedToken = localStorageToken || sessionStorageToken;
 
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        if (storedToken) {
+            config.headers.Authorization = `Bearer ${storedToken}`;
         }
         return config;
     },
