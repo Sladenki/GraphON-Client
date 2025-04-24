@@ -12,24 +12,24 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
     queryFn: () => EventService.getUpcomingEvents(),
   });
 
-  const events = allEvents?.data
+  const events = allEvents?.data;
 
-  console.log('events', events)
-
-  const filteredEvents = events && events.filter((event: EventItem) =>
-    event &&event.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredEvents = events?.filter((event: EventItem) => {
+    if (!event?._id || !event?.name) return false;
+    return event.name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <div className={styles.eventsListWrapper}>
-      {filteredEvents && filteredEvents.map((event: EventItem) => (
-        <div key={event._id}>
-          <EventCard event={event} />
-        </div>
-        ) 
-      )}
+      {filteredEvents?.map((event: EventItem) => (
+        event?._id && (
+          <div key={event._id}>
+            <EventCard event={event} />
+          </div>
+        )
+      ))}
     </div>
-  )
-}
+  );
+};
 
-export default EventsList
+export default EventsList;

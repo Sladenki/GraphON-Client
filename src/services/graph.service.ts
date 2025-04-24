@@ -8,9 +8,9 @@ export const GraphService = {
     },
 
     // --- Получение графа по id ---
-    async getGraphById(graphId: any) {
-        return axiosClassic.get(`/graph/getById/${graphId}`)
-    },
+    // async getGraphById(graphId: any) {
+    //     return axiosClassic.get(`/graph/getById/${graphId}`)
+    // },
 
     // --- Получение главных графов ---
     async getParentGraphs() {

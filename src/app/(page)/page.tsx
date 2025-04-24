@@ -21,7 +21,7 @@ const Homepage = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const serverRequest = useMemo(
-    () => (isAuth ? "graph/getParentGraphsAuth" : "graph/getParentGraphs"),
+    () => ("graph/getParentGraphs"),
     [isAuth]
   );
 
