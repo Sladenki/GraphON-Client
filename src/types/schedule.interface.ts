@@ -21,4 +21,5 @@ export interface EventItem {
     graphId: {
       name: string;
     };
+    isAttended?: boolean;
 }

@@ -24,7 +24,7 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
       {filteredEvents?.map((event: EventItem) => (
         event?._id && (
           <div key={event._id}>
-            <EventCard event={event} />
+            <EventCard event={event} isAttended={event.isAttended} />
           </div>
         )
       ))}

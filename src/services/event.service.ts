@@ -1,4 +1,4 @@
-import { axiosClassic } from "@/api/interceptors";
+import { axiosAuth, axiosClassic } from "@/api/interceptors";
 
 export const EventService = {
 
@@ -14,8 +14,12 @@ export const EventService = {
         return axiosClassic.post("/event/create", eventData);
     },
 
+    // async getUpcomingEvents() {
+    //     return axiosClassic.get("/event/upcoming");
+    // },
+
     async getUpcomingEvents() {
-        return axiosClassic.get("/event/upcoming");
+        return axiosAuth.get("/event/upcoming");
     },
 
 }

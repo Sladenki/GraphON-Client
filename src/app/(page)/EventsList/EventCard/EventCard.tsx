@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./EventCard.module.scss";
 import { useEventRegistration } from "@/hooks/useEventRegistration";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface EventProps {
   event: any;
@@ -32,6 +33,10 @@ const formatDateTime = (dateString?: string, timeString?: string): string => {
 
 const EventCard: React.FC<EventProps> = ({ event, isAttended }) => {
 
+  const { isLoggedIn} = useAuth();
+
+  console.log('isLoggedIn', isLoggedIn)
+
   console.log('event', event)
 
   if (!event?._id) return null;
@@ -55,7 +60,10 @@ const EventCard: React.FC<EventProps> = ({ event, isAttended }) => {
             onClick={toggleRegistration}
             disabled={isLoading}
           >
-            {isRegistered ? 'Отменить регистрацию' : 'Зарегистрироваться'}
+            {
+              isLoggedIn ? isRegistered ? 'Отменить регистрацию' : 'Зарегистрироваться' : 'Не авторизирован'
+            }
+          
           </button>
         </div>
       </div>
