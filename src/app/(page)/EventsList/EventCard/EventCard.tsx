@@ -3,17 +3,8 @@ import styles from "./EventCard.module.scss";
 import { useEventRegistration } from "@/hooks/useEventRegistration";
 
 interface EventProps {
-  event: {
-    _id?: string;
-    name?: string;
-    description?: string;
-    eventDate?: string;
-    timeFrom?: string;
-    timeTo?: string;
-    graphId?: {
-      name?: string;
-    };
-  };
+  event: any;
+  isAttended?: boolean;
 }
 
 const formatDateTime = (dateString?: string, timeString?: string): string => {
@@ -39,13 +30,13 @@ const formatDateTime = (dateString?: string, timeString?: string): string => {
   }
 };
 
-const EventCard: React.FC<EventProps> = ({ event }) => {
+const EventCard: React.FC<EventProps> = ({ event, isAttended }) => {
 
   console.log('event', event)
 
   if (!event?._id) return null;
 
-  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id);
+  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, isAttended);
 
   return (
     <>

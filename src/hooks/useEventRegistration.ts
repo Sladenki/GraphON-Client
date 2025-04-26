@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { EventRegService } from '@/services/eventReg.service';
 
-export const useEventRegistration = (eventId: string) => {
-  const [isRegistered, setIsRegistered] = useState(false);
+export const useEventRegistration = (eventId: string, initialState?: boolean) => {
+  const [isRegistered, setIsRegistered] = useState(initialState ?? false);
   const queryClient = useQueryClient();
 
   const mutation = useMutation({

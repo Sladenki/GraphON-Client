@@ -88,7 +88,7 @@ export default function Profile() {
                     {
                         subsEvents && subsEvents.length > 0 && subsEvents.map((event: any) => (
                             <div key={event._id}>
-                                <EventCard event={event.eventId} />
+                                <EventCard event={event.eventId} isAttended={event.isAttended} />
                             </div>
                         ))
                     }
