@@ -14,10 +14,14 @@ import EventCard from '../(page)/EventsList/EventCard/EventCard';
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
-
-    // -- Тема ---
     const { setTheme, theme } = useTheme();
     
+    const { data: allEvents } = useQuery({
+        queryKey: ['eventsList'],
+        queryFn: () => EventRegService.getEventsByUserId(),
+        enabled: !!user
+    });
+
     const toggleTheme = () => {
         setTheme(theme === "dark" ? "light" : "dark");
     };
@@ -31,13 +35,6 @@ export default function Profile() {
     }
 
     const typedUser = user as IUser | null;
-
-    const { data: allEvents } = useQuery({
-        queryKey: ['eventsList'],
-        queryFn: () => EventRegService.getEventsByUserId(),
-        enabled: !!typedUser
-    });
-    
     const subsEvents = allEvents?.data
 
     console.log('subsEvents', subsEvents)

@@ -32,16 +32,13 @@ const formatDateTime = (dateString?: string, timeString?: string): string => {
 };
 
 const EventCard: React.FC<EventProps> = ({ event, isAttended }) => {
-
-  const { isLoggedIn} = useAuth();
+  const { isLoggedIn } = useAuth();
+  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, isAttended);
 
   console.log('isLoggedIn', isLoggedIn)
-
   console.log('event', event)
 
   if (!event?._id) return null;
-
-  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, isAttended);
 
   return (
     <>
@@ -63,7 +60,6 @@ const EventCard: React.FC<EventProps> = ({ event, isAttended }) => {
             {
               isLoggedIn ? isRegistered ? 'Отменить регистрацию' : 'Зарегистрироваться' : 'Не авторизирован'
             }
-          
           </button>
         </div>
       </div>

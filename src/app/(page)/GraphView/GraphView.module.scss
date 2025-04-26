@@ -17,6 +17,53 @@
   overflow: hidden;
 }
 
+.legend {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  z-index: 10;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  font-size: 14px;
+  color: var(--main-text);
+}
+
+.legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .legend {
+    bottom: 10px;
+    right: 10px;
+    padding: 10px;
+  }
+
+  .legendItem {
+    font-size: 12px;
+    margin: 5px 0;
+  }
+
+  .legendDot {
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+  }
+}
+
 @media only screen and (max-width: 680px) {
   .graphContainer {
     width: 100vw;

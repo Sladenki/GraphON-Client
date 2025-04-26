@@ -32,6 +32,23 @@ const parentGraph = {
   "isSubscribed": false
 }
 
+// Функция для инициализации позиций узлов
+const initializeNodePositions = (nodes: any[]) => {
+  const centerX = 0;
+  const centerY = 0;
+  const radius = 300; // Радиус круга для расположения узлов
+  
+  return nodes.map((node, index) => {
+    const angle = (index * 2 * Math.PI) / nodes.length;
+    return {
+      ...node,
+      x: centerX + radius * Math.cos(angle),
+      y: centerY + radius * Math.sin(angle),
+      vx: 0,
+      vy: 0
+    };
+  });
+};
 
 const GraphView = ({ searchQuery }: { searchQuery: string}) => {
 
@@ -51,8 +68,13 @@ const GraphView = ({ searchQuery }: { searchQuery: string}) => {
 
   // --- Генерация данных для графа ---
   const graphData = useMemo(() => {
+    if (!allGraphs) return { nodes: [], links: [] };
+    
     // @ts-expect-error типизация
-    return allGraphs ? buildGraphHierarchy(parentGraph, allGraphs.data) : { nodes: [], links: [] };
+    const data = buildGraphHierarchy(parentGraph, allGraphs.data);
+    // Инициализируем позиции узлов
+    data.nodes = initializeNodePositions(data.nodes);
+    return data;
   }, [allGraphs]);
 
   const filteredGraphData = useMemo(() => {
@@ -147,6 +169,16 @@ const GraphView = ({ searchQuery }: { searchQuery: string}) => {
           onNodeClick={(node: any) => {
             clickedGraph(node)
           }}
+          // Настраиваем параметры симуляции
+          d3Force="charge"
+          d3ForceStrength={-1000}
+          d3AlphaDecay={0.1}
+          d3VelocityDecay={0.3}
+          cooldownTicks={100}
+          warmupTicks={50}
+          nodeRelSize={6}
+          linkDistance={100}
+          linkStrength={0.5}
         />
       </div>
 
