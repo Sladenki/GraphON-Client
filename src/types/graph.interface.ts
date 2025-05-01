@@ -4,3 +4,8 @@ export interface IGraphList {
     isSubscribed: boolean
     imgPath: string
 }
+
+export interface CreateGraphDto {
+    name: string;
+    parentGraphId: string;
+}

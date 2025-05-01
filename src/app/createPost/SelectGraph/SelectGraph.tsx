@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import styles from './SelectGraph.module.scss'
 import EventForm from "../EventCreate/EventCreate";
-import CreateNewGraph from "../CreateNewGraph/CreateNewGraph";
 import ButtonActive from "@/components/ui/ButtonActive/ButtonActive";
 
 // @ts-expect-error 123
@@ -41,17 +40,7 @@ const SelectGraph = ({ mainTopics, selectedGraph, setSelectedGraph }) => {
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
-
-              <ButtonActive
-                text="Создать новый граф!"
-                onClick={() => setOpenCreateNewTopic(true)}
-              />
           </div>
-
-          <CreateNewGraph
-            onClose={() => setOpenCreateNewTopic(false)}
-            isOpen={openCreateNewTopic}
-          />
 
           <span className={styles.allowedGraphs}>Вы можете выбрать граф из списка существующих</span>
 

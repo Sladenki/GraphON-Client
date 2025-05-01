@@ -10,13 +10,13 @@ import SelectGraph from './SelectGraph/SelectGraph';
 import { useAuth } from '@/providers/AuthProvider';
 import { UserRole, IUser } from '@/types/user.interface';
 import { UserRoleManager } from '@/components/admin/UserRoleManager/UserRoleManager';
-
+import { CreateGraphForm } from '@/components/admin/CreateGraphForm/CreateGraphForm';
 
 const CreatePost = () => {
-
     const { user } = useAuth();
     const typedUser = user as IUser | null;
     const isAdmin = typedUser?.role === UserRole.Create;
+    const isEditor = typedUser?.role === UserRole.Editor;
 
     const [selectedGraph, setSelectedGraph] = useState('');
 
@@ -34,31 +34,13 @@ const CreatePost = () => {
         return <p>Тебя тут не должно быть</p>
     }
 
+    return (
+        <div className={styles.createPostWrapper}>
+            {isAdmin && <UserRoleManager />}
+            {isAdmin && mainTopics && <CreateGraphForm mainTopics={mainTopics.data} />}
 
-  return (
-    <div className={styles.createPostWrapper}>
-        {isAdmin && <UserRoleManager />}
-
-        {/* Показываем пока не выбрали граф */}
-        {!selectedGraph && (
-            <span className={styles.warningText}>
-                ⚠️ Пожалуйста, выберите граф для создания мероприятия
-            </span>
-        )}
-
-        {/* Поиск по графам + Создание нового графа + Список доступных графов */}
-        {mainTopics && (
-            <SelectGraph
-                mainTopics={mainTopics.data}
-                selectedGraph={selectedGraph}
-                setSelectedGraph={setSelectedGraph}
-            />
-        )}
-
-
-      
-    </div>
-  );
+        </div>
+    );
 };
 
 export default CreatePost;
