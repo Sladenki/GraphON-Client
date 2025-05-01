@@ -1,0 +1,93 @@
+.container {
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    border: 2px solid rgba(var(--main-Color), 0.5);
+
+    h2 {
+        margin-bottom: 20px;
+        color: var(--main-text);
+        font-size: 1.5rem;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+    }
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    label {
+        color: var(--main-text);
+        font-family: 'Roboto', sans-serif;
+        font-size: 1rem;
+    }
+
+    input, select, textarea {
+        padding: 8px 12px;
+        border: 2px solid rgba(var(--main-Color), 0.5);
+        border-radius: 5px;
+        font-size: 1rem;
+        background-color: transparent;
+        color: var(--main-text);
+        font-family: 'Roboto', sans-serif;
+        transition: border-color 0.3s;
+
+        &:focus {
+            outline: none;
+            border-color: rgb(var(--main-Color));
+        }
+    }
+
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    select {
+        cursor: pointer;
+
+        option {
+            background-color: var(--bg-secondary);
+            color: var(--main-text);
+        }
+    }
+}
+
+.dateTimeGroup {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.submitButton {
+    padding: 10px 20px;
+    background-color: rgb(var(--main-Color));
+    color: var(--bg-secondary);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif;
+    transition: opacity 0.2s;
+    align-self: flex-start;
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        background-color: var(--bg-disabled);
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+} 

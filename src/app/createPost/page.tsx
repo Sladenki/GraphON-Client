@@ -11,6 +11,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { UserRole, IUser } from '@/types/user.interface';
 import { UserRoleManager } from '@/components/admin/UserRoleManager/UserRoleManager';
 import { CreateGraphForm } from '@/components/admin/CreateGraphForm/CreateGraphForm';
+import { CreateEventForm } from '@/components/admin/CreateEventForm/CreateEventForm';
 
 const CreatePost = () => {
     const { user } = useAuth();
@@ -38,7 +39,7 @@ const CreatePost = () => {
         <div className={styles.createPostWrapper}>
             {isAdmin && <UserRoleManager />}
             {isAdmin && mainTopics && <CreateGraphForm mainTopics={mainTopics.data} />}
-
+            {isAdmin && mainTopics && <CreateEventForm mainTopics={mainTopics.data} />}
         </div>
     );
 };
