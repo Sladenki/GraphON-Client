@@ -11,6 +11,7 @@ import { UserRole, IUser } from '@/types/user.interface';
 import { UserRoleManager } from '@/components/admin/UserRoleManager/UserRoleManager';
 import { CreateGraphForm } from '@/components/admin/CreateGraphForm/CreateGraphForm';
 import { CreateEventForm } from '@/components/admin/CreateEventForm/CreateEventForm';
+import { CreateScheduleForm } from '@/components/admin/CreateScheduleForm/CreateScheduleForm';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 
 const CreatePost = () => {
@@ -36,6 +37,7 @@ const CreatePost = () => {
             {canAccessCreate && <UserRoleManager />}
             {canAccessCreate && mainTopics && <CreateGraphForm mainTopics={mainTopics.data} />}
             {canAccessEditor && mainTopics && <CreateEventForm mainTopics={mainTopics.data} />}
+            {canAccessEditor && mainTopics && <CreateScheduleForm graphs={mainTopics.data} />}
         </div>
     );
 };

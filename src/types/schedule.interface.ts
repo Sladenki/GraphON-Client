@@ -1,7 +1,12 @@
+export enum ScheduleType {
+    LECTURE = 'lecture',
+    PRACTICE = 'practice',
+}
+
 export interface ScheduleItem {
     _id: string;
     name: string;
-    type: 'lecture' | 'practice';
+    type: ScheduleType;
     roomNumber: number;
     dayOfWeek: number;
     timeFrom: string;
@@ -22,4 +27,17 @@ export interface EventItem {
       name: string;
     };
     isAttended?: boolean;
+}
+
+export interface ISchedule {
+    id: string;
+    graphId: string;
+    name: string;
+    type: ScheduleType;
+    roomNumber: number;
+    dayOfWeek: number;
+    timeFrom: string;
+    timeTo: string;
+    createdAt: string;
+    updatedAt: string;
 }
