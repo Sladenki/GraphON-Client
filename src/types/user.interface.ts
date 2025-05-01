@@ -26,11 +26,12 @@ export const RoleTitles: Record<UserRole, string> = {
 };
 
 export interface IUser {
-    name: string
-    firstName: string
-    lastName: string
-    avaPath: string
-    postsNum: number
-    graphSubsNum: number
-    role: UserRole
+    _id: string;
+    firstName: string;
+    lastName?: string;
+    email: string;
+    role: UserRole;
+    avaPath: string;
+    postsNum?: number;
+    graphSubsNum?: number;
 }

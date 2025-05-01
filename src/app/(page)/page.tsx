@@ -7,6 +7,8 @@ import { useState, useMemo, useCallback, Suspense } from "react";
 import { useFetchBunchData } from "@/hooks/useFetchBunchData";
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import React from "react";
+import { UserRoleManager } from "@/components/admin/UserRoleManager/UserRoleManager";
+import { UserRole } from "@/types/user.interface";
 
 const Tabs = dynamic(() => import("./Tabs/Tabs"), { ssr: false });
 const GraphsList = dynamic(() => import("@/components/ui/GraphsList/GraphsList"), { ssr: false });

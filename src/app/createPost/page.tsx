@@ -8,12 +8,15 @@ import styles from './createPage.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import SelectGraph from './SelectGraph/SelectGraph';
 import { useAuth } from '@/providers/AuthProvider';
-import { UserRole } from '@/types/user.interface';
+import { UserRole, IUser } from '@/types/user.interface';
+import { UserRoleManager } from '@/components/admin/UserRoleManager/UserRoleManager';
 
 
 const CreatePost = () => {
 
     const { user } = useAuth();
+    const typedUser = user as IUser | null;
+    const isAdmin = typedUser?.role === UserRole.Create;
 
     const [selectedGraph, setSelectedGraph] = useState('');
 
@@ -34,8 +37,7 @@ const CreatePost = () => {
 
   return (
     <div className={styles.createPostWrapper}>
-
- 
+        {isAdmin && <UserRoleManager />}
 
         {/* Показываем пока не выбрали граф */}
         {!selectedGraph && (

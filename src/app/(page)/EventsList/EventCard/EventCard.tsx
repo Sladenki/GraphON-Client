@@ -33,12 +33,17 @@ const formatDateTime = (dateString?: string, timeString?: string): string => {
 
 const EventCard: React.FC<EventProps> = ({ event, isAttended }) => {
   const { isLoggedIn } = useAuth();
-  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, isAttended);
+
+  // Проверяем наличие event и его _id перед использованием хука
+  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
+    event?._id || '', 
+    isAttended
+  );
 
   console.log('isLoggedIn', isLoggedIn)
   console.log('event', event)
 
-  if (!event?._id) return null;
+  if (!event || !event._id) return null;
 
   return (
     <>
