@@ -49,6 +49,9 @@
 
 // Меньше 1000Px
 @media only screen and (max-width: 680px) {
+  .wrapper {
+    padding-bottom: 80px;
+  }
 
   .BottomMenu{
     z-index: 10;
