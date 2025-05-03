@@ -1,0 +1,100 @@
+.section {
+    margin-bottom: 24px;
+    background-color: var(--block-color);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+}
+
+.header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: linear-gradient(
+        to right,
+        rgba(var(--main-Color), 0.05),
+        rgba(var(--main-Color), 0.02)
+    );
+    
+    &:hover {
+        background: linear-gradient(
+            to right,
+            rgba(var(--main-Color), 0.08),
+            rgba(var(--main-Color), 0.05)
+        );
+    }
+
+    h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text-color);
+        position: relative;
+        padding-left: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .emoji {
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background-color: rgb(var(--main-Color));
+            border-radius: 2px;
+        }
+    }
+}
+
+.arrow {
+    transition: all 0.3s ease;
+    color: var(--text-color);
+    font-size: 16px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(var(--main-Color), 0.1);
+    
+    &.open {
+        transform: rotate(180deg);
+        background-color: rgba(var(--main-Color), 0.2);
+    }
+}
+
+.content {
+    padding: 24px;
+    border-top: 1px solid rgba(var(--main-Color), 0.1);
+    background-color: rgba(var(--main-Color), 0.02);
+    animation: slideDown 0.3s ease-out;
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+} 

@@ -13,6 +13,7 @@ import { CreateGraphForm } from '@/components/admin/CreateGraphForm/CreateGraphF
 import { CreateEventForm } from '@/components/admin/CreateEventForm/CreateEventForm';
 import { CreateScheduleForm } from '@/components/admin/CreateScheduleForm/CreateScheduleForm';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
+import { AdminSection } from '@/components/admin/AdminSection/AdminSection';
 
 const CreatePost = () => {
     const { user } = useAuth();
@@ -34,10 +35,41 @@ const CreatePost = () => {
 
     return (
         <div className={styles.createPostWrapper}>
-            {canAccessCreate && <UserRoleManager />}
-            {canAccessCreate && mainTopics && <CreateGraphForm mainTopics={mainTopics.data} />}
-            {canAccessEditor && mainTopics && <CreateEventForm mainTopics={mainTopics.data} />}
-            {canAccessEditor && mainTopics && <CreateScheduleForm graphs={mainTopics.data} />}
+            {canAccessCreate && (
+                <AdminSection 
+                    title="Управление ролями пользователей"
+                    emoji="👥"
+                >
+                    <UserRoleManager />
+                </AdminSection>
+            )}
+            
+            {canAccessCreate && mainTopics && (
+                <AdminSection 
+                    title="Создание графа"
+                    emoji="📊"
+                >
+                    <CreateGraphForm mainTopics={mainTopics.data} />
+                </AdminSection>
+            )}
+            
+            {canAccessEditor && mainTopics && (
+                <AdminSection 
+                    title="Создание события"
+                    emoji="📅"
+                >
+                    <CreateEventForm mainTopics={mainTopics.data} />
+                </AdminSection>
+            )}
+            
+            {canAccessEditor && mainTopics && (
+                <AdminSection 
+                    title="Создание расписания"
+                    emoji="⏰"
+                >
+                    <CreateScheduleForm graphs={mainTopics.data} />
+                </AdminSection>
+            )}
         </div>
     );
 };
