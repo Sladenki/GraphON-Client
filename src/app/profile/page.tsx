@@ -10,7 +10,7 @@ import LogOut from '@/app/profile/LogOut/LogOut';
 import { useTheme } from 'next-themes';
 import { useQuery } from '@tanstack/react-query';
 import { EventRegService } from '@/services/eventReg.service';
-import EventCard from '../(page)/EventsList/EventCard/EventCard';
+import EventCard from '../../components/ui/EventCard/EventCard';
 
 export default function Profile() {
     const { user, loading, error } = useAuth();

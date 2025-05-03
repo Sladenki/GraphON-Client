@@ -3,7 +3,7 @@ import { EventItem } from '@/types/schedule.interface';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react'
 import styles from './EventsList.module.scss'
-import EventCard from './EventCard/EventCard';
+import EventCard from '../../../components/ui/EventCard/EventCard';
 
 const EventsList = ({ searchQuery }: { searchQuery: string}) => {
 
