@@ -8,28 +8,6 @@ interface EventProps {
   isAttended?: boolean;
 }
 
-const formatDateTime = (dateString?: string, timeString?: string): string => {
-  if (!dateString || !timeString) return 'Время не указано';
-  
-  try {
-    const [hours, minutes] = timeString.split(':');
-    const date = new Date(dateString);
-    date.setHours(parseInt(hours, 10), parseInt(minutes, 10));
-    
-    if (isNaN(date.getTime())) return 'Некорректная дата';
-    
-    return date.toLocaleString('ru-RU', {
-      day: 'numeric',
-      month: 'long',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } catch (error) {
-    console.error('Ошибка форматирования даты:', error);
-    return 'Ошибка формата даты';
-  }
-};
-
 const formatEventTime = (startDate?: string, startTime?: string, endDate?: string, endTime?: string): string => {
   if (!startDate || !startTime || !endDate || !endTime) return 'Время не указано';
 

@@ -97,6 +97,23 @@
     }
 }
 
+.eventsHeader {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--main-text);
+  margin: 24px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Roboto', sans-serif;
+
+  &::before {
+    content: '📋';
+    font-size: 24px;
+    color: rgb(var(--main-Color));
+  }
+}
+
 
 
 

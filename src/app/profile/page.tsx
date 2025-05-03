@@ -77,7 +77,7 @@ export default function Profile() {
                         
                     {
                         subsEvents && subsEvents.length > 0 && (
-                            <p>Мероприя на которые вы записаны</p>   
+                            <h2 className={styles.eventsHeader}>Мероприятия, на которые вы записаны</h2>   
                         )
                     } 
                    
