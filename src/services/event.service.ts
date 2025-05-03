@@ -14,12 +14,14 @@ export const EventService = {
         return axiosClassic.post("/event/create", eventData);
     },
 
-    // async getUpcomingEvents() {
-    //     return axiosClassic.get("/event/upcoming");
-    // },
-
+    // --- Получение всех мероприятий ---
     async getUpcomingEvents() {
         return axiosAuth.get("/event/upcoming");
+    },
+
+    // --- Удаление мероприятия ---
+    async deleteEvent(eventId: string) {
+        return axiosAuth.delete(`/event/${eventId}`);
     },
 
 }
