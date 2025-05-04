@@ -1,9 +1,16 @@
 'use client';
 import { createContext, useState, useEffect, useContext } from 'react';
 
+interface User {
+    _id: string;
+    email: string;
+    role: string;
+    // ... other existing properties ...
+}
+
 interface AuthContextType {
     isLoggedIn: boolean;
-    user: Document | null; // Тип user теперь UserDocument | null
+    user: User | null;
     login: (userData: { sub: string; email: string }) => void;
     logout: () => void;
     loading: boolean;
@@ -23,7 +30,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-    const [user, setUser] = useState<{ sub: string; email: string } | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null); // Добавляем состояние для ошибок
 
@@ -102,7 +109,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const login = (userData: { sub: string; email: string }) => {
         setIsLoggedIn(true);
-        setUser(userData);
+        setUser({
+            _id: userData.sub,
+            email: userData.email,
+            role: 'user' // Default role
+        });
     };
 
     const logout = async () => {
@@ -129,7 +140,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const value = { isLoggedIn, user, login, logout, loading, error }; // Передаем loading в контекст
 
     return (
-        // @ts-expect-error 123
         <AuthContext value={value}>
             {!loading && children} {/* Отображаем индикатор загрузки */}
         </AuthContext>

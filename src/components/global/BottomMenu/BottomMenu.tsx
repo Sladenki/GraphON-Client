@@ -18,7 +18,6 @@ const BottomMenu: React.FC = () => {
       let shouldInclude = !forAuthUsers || isLoggedIn;
 
       // 🔐 Дополнительное ограничение для "Создать"
-      // @ts-expect-error типизация с role
       if (path === '/createPost/' && user?.role === UserRole.User) {
         shouldInclude = false;
       }

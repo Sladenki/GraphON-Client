@@ -159,6 +159,92 @@ $tablet-breakpoint: 768px;
   }
 }
 
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 18px;
+  color: var(--main-text);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  margin-left: auto;
+
+  &:hover {
+    opacity: 1;
+    color: rgb(var(--main-Color));
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 18px;
+  color: var(--main-text);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    color: rgb(var(--main-Color));
+  }
+}
+
+.editInput {
+  background: var(--block-color);
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 16px;
+  color: var(--main-text);
+  width: 100%;
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: rgb(var(--main-Color));
+  }
+}
+
+.editTextarea {
+  @extend .editInput;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.editTime {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.timeInputs {
+  display: flex;
+  gap: 8px;
+}
+
+.saveButton, .cancelButton {
+  @extend .editButton;
+  font-size: 16px;
+}
+
+.saveButton:hover {
+  color: #28a745;
+}
+
+.cancelButton:hover {
+  color: #dc3545;
+}
+
 // 📱 Медиазапросы для мобильных устройств
 @media (max-width: $mobile-breakpoint) {
   .eventCard {
