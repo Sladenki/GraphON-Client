@@ -8,19 +8,30 @@ import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButt
 import Image from 'next/image'
 import LogOut from '@/app/profile/LogOut/LogOut';
 import { useTheme } from 'next-themes';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '../../components/ui/EventCard/EventCard';
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
     const { setTheme, theme } = useTheme();
+    const queryClient = useQueryClient();
     
     const { data: allEvents } = useQuery({
         queryKey: ['eventsList'],
         queryFn: () => EventRegService.getEventsByUserId(),
         enabled: !!user
     });
+
+    const handleDelete = (eventId: string) => {
+        queryClient.setQueryData(['eventsList'], (old: any) => {
+            if (!old?.data) return old;
+            return {
+                ...old,
+                data: old.data.filter((event: any) => event.eventId?._id !== eventId)
+            };
+        });
+    };
 
     const toggleTheme = () => {
         setTheme(theme === "dark" ? "light" : "dark");
@@ -89,6 +100,7 @@ export default function Profile() {
                                     <EventCard 
                                         event={event.eventId} 
                                         isAttended={event.isAttended} 
+                                        onDelete={handleDelete}
                                     />
                                 )}
                             </div>

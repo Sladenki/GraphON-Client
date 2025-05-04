@@ -11,7 +11,7 @@ export const EventService = {
         timeFrom: string;
         timeTo: string;
     }) {
-        return axiosClassic.post("/event/create", eventData);
+        return axiosAuth.post("/event/create", eventData);
     },
 
     // --- Получение всех мероприятий ---

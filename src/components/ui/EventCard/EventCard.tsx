@@ -10,6 +10,7 @@ import { UserRole } from "@/types/user.interface";
 interface EventProps {
   event: any;
   isAttended?: boolean;
+  onDelete?: (eventId: string) => void;
 }
 
 const formatEventTime = (startDate?: string, startTime?: string, endDate?: string, endTime?: string): string => {
@@ -38,7 +39,7 @@ const formatEventTime = (startDate?: string, startTime?: string, endDate?: strin
   }
 };
 
-const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended }) => {
+const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDelete }) => {
   const { isLoggedIn, user } = useAuth();
   const router = useRouter();
   const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
@@ -62,7 +63,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended }) =>
     
     try {
       await EventService.deleteEvent(event._id);
-      router.refresh();
+      onDelete?.(event._id);
     } catch (error) {
       console.error('Ошибка при удалении мероприятия:', error);
     }
