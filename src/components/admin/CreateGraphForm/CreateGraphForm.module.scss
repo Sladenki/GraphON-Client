@@ -56,6 +56,20 @@
             color: var(--main-text);
         }
     }
+
+    .imagePreview {
+        margin-top: 10px;
+        max-width: 300px;
+        border-radius: 5px;
+        overflow: hidden;
+        border: 2px solid rgba(var(--main-Color), 0.5);
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    }
 }
 
 .submitButton {

@@ -11,8 +11,17 @@ export const AdminService = {
     },
 
     // --- Создание графа --- 
-    async createGraph(dto: CreateGraphDto) {
-        const { data } = await axiosAuth.post('/admin/createGraph', dto);
-        return data;
+    async createGraph(data: { name: string; parentGraphId: string; image: File }) {
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('parentGraphId', data.parentGraphId);
+        formData.append('image', data.image);
+
+        const { data: response } = await axiosAuth.post('/admin/createGraph', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
     }
 };

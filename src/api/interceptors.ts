@@ -30,6 +30,12 @@ axiosAuth.interceptors.request.use(
         if (storedToken) {
             config.headers.Authorization = `Bearer ${storedToken}`;
         }
+
+        // Если отправляем FormData, не устанавливаем Content-Type
+        if (config.data instanceof FormData) {
+            delete config.headers['Content-Type'];
+        }
+
         return config;
     },
     (error) => {
