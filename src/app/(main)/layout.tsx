@@ -6,7 +6,7 @@ import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
 import { AllProvers } from "@/providers/main";
 import { ProfileCorner } from "@/components/global/ProfileCorner/ProfileCorner";
 
-import '../styles/globals.scss'
+import '../../styles/globals.scss'
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Script from "next/script";
 import GoogleAnalytics from "@/components/GoogleAnalytics";

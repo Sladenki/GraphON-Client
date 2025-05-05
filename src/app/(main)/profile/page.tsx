@@ -6,11 +6,13 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { IUser, RoleTitles } from '@/types/user.interface';
 import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButton';
 import Image from 'next/image'
-import LogOut from '@/app/profile/LogOut/LogOut';
+
 import { useTheme } from 'next-themes';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { EventRegService } from '@/services/eventReg.service';
-import EventCard from '../../components/ui/EventCard/EventCard';
+import EventCard from '@/components/ui/EventCard/EventCard';
+import LogOut from './LogOut/LogOut';
+
 
 export default function Profile() {
     const { user, loading, error } = useAuth();

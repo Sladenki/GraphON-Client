@@ -1,6 +1,5 @@
 import { axiosAuth } from "@/api/interceptors"
 import { UserRole } from "@/types/user.interface"
-import { CreateGraphDto } from "@/types/graph.interface"
 
 export const AdminService = {
 
