@@ -58,8 +58,12 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
     });
 
     const handleSubmit = (e: React.FormEvent) => {
+        console.log(formData);
         e.preventDefault();
-        createSchedule(formData);
+        createSchedule({
+            ...formData,
+            dayOfWeek: Number(formData.dayOfWeek) === 0 ? 6 : Number(formData.dayOfWeek) - 1
+        });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
