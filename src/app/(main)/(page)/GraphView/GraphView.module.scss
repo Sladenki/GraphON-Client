@@ -1,12 +1,31 @@
 .graphWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   width: 100%;
+  height: 100vh;
+  position: relative;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #d32f2f;
+  font-size: 1.2rem;
+  padding: 1rem;
+  background-color: #ffffff;
 }
 
 .graphContainer {
+<<<<<<< HEAD
   background: var(--background-color, #f7f7fa);
+=======
+  height: 80vh;
+  width: 80vw;
+  max-width: 1200px;
+  border: 1px dashed #1976d2;
+>>>>>>> 2783ac59176de00550b6c1d488b8fc12d00ba1a9
   border-radius: 20px;
   border: 1px dashed var(--main-Color, #aaa);
   box-shadow: 0 4px 32px rgba(80, 80, 120, 0.08);
@@ -33,7 +52,7 @@
   align-items: center;
   margin: 8px 0;
   font-size: 14px;
-  color: var(--main-text);
+  color: #333333;
 }
 
 .legendDot {
@@ -45,6 +64,10 @@
 }
 
 @media (max-width: 768px) {
+  .graphWrapper {
+    height: calc(100vh - 60px);
+  }
+
   .legend {
     bottom: 10px;
     right: 10px;

@@ -10,6 +10,8 @@ import '../../styles/globals.scss'
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Script from "next/script";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import '@/styles/reactflow.scss';
+import 'reactflow/dist/style.css';
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
