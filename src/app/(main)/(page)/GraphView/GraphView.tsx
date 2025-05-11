@@ -1,5 +1,10 @@
+import HierarchyGraph from './HierarchyGraph';
 import SiteMapGraph from './SiteMapGraph';
 
+// export default function GraphView({ searchQuery }: { searchQuery: string }) {
+//   return <SiteMapGraph searchQuery={searchQuery} />;
+// }
+
 export default function GraphView({ searchQuery }: { searchQuery: string }) {
-  return <SiteMapGraph searchQuery={searchQuery} />;
+  return <HierarchyGraph searchQuery={searchQuery} />;
 }

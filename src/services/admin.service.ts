@@ -22,5 +22,11 @@ export const AdminService = {
             },
         });
         return response;
+    },
+
+    // --- Передача прав на граф ---
+    async transferGraphOwnership(graphId: string, newOwnerId: string) {
+        const { data } = await axiosAuth.patch(`/admin/transferGraphOwnership/${graphId}`, { newOwnerId });
+        return data;
     }
 };

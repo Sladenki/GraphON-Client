@@ -12,6 +12,7 @@ import { UserRoleManager } from '@/components/admin/UserRoleManager/UserRoleMana
 import { CreateGraphForm } from '@/components/admin/CreateGraphForm/CreateGraphForm';
 import { CreateEventForm } from '@/components/admin/CreateEventForm/CreateEventForm';
 import { CreateScheduleForm } from '@/components/admin/CreateScheduleForm/CreateScheduleForm';
+import { TransferGraphOwnershipForm } from '@/components/admin/TransferGraphOwnershipForm/TransferGraphOwnershipForm';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import { AdminSection } from '@/components/admin/AdminSection/AdminSection';
 
@@ -50,6 +51,15 @@ const CreatePost = () => {
                     emoji="📊"
                 >
                     <CreateGraphForm mainTopics={mainTopics.data} />
+                </AdminSection>
+            )}
+            
+            {canAccessCreate && mainTopics && (
+                <AdminSection 
+                    title="Передача прав на граф"
+                    emoji="🔑"
+                >
+                    <TransferGraphOwnershipForm graphs={mainTopics.data} />
                 </AdminSection>
             )}
             
