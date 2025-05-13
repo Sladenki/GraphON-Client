@@ -1,3 +1,4 @@
+import FirstVariant from './FirstVariant';
 import HierarchyGraph from './HierarchyGraph';
 import SiteMapGraph from './SiteMapGraph';
 
@@ -5,6 +6,10 @@ import SiteMapGraph from './SiteMapGraph';
 //   return <SiteMapGraph searchQuery={searchQuery} />;
 // }
 
+// export default function GraphView({ searchQuery }: { searchQuery: string }) {
+//   return <HierarchyGraph searchQuery={searchQuery} />;
+// }
+
 export default function GraphView({ searchQuery }: { searchQuery: string }) {
-  return <HierarchyGraph searchQuery={searchQuery} />;
+  return <FirstVariant searchQuery={searchQuery} />;
 }
