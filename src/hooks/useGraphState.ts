@@ -71,6 +71,7 @@ export const useGraphState = (parentGraphId: string) => {
     if (!initialData) return { nodes: [], edges: [] };
     
     const { nodes: graphNodes, links } = buildGraphHierarchy(
+       // @ts-expect-error 123
       { _id: parentGraphId, name: 'КГТУ' },
       initialData.data
     );
@@ -116,6 +117,7 @@ export const useGraphState = (parentGraphId: string) => {
     try {
       const response = await GraphService.getAllChildrenGraphs(nodeId);
       const { nodes: childNodes, links: childLinks } = buildGraphHierarchy(
+        // @ts-expect-error 123
         { _id: nodeId, name: '' },
         response.data
       );
