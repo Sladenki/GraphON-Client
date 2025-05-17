@@ -15,6 +15,8 @@ import { CreateScheduleForm } from '@/components/admin/CreateScheduleForm/Create
 import { TransferGraphOwnershipForm } from '@/components/admin/TransferGraphOwnershipForm/TransferGraphOwnershipForm';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import { AdminSection } from '@/components/admin/AdminSection/AdminSection';
+import { UserStats } from '@/components/admin/UserStats/UserStats';
+import { ServerStats } from '@/components/admin/ServerStats/ServerStats';
 
 const CreatePost = () => {
     const { user } = useAuth();
@@ -36,6 +38,24 @@ const CreatePost = () => {
 
     return (
         <div className={styles.createPostWrapper}>
+            {canAccessCreate && (
+                <AdminSection 
+                    title="Статистика пользователей"
+                    emoji="📊"
+                >
+                    <UserStats />
+                </AdminSection>
+            )}
+            
+            {canAccessCreate && (
+                <AdminSection 
+                    title="Статистика сервера"
+                    emoji="🖥️"
+                >
+                    <ServerStats />
+                </AdminSection>
+            )}
+            
             {canAccessCreate && (
                 <AdminSection 
                     title="Управление ролями пользователей"

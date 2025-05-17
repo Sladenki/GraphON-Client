@@ -28,5 +28,17 @@ export const AdminService = {
     async transferGraphOwnership(graphId: string, newOwnerId: string) {
         const { data } = await axiosAuth.patch(`/admin/transferGraphOwnership/${graphId}`, { newOwnerId });
         return data;
+    },
+
+    // --- Получение статистики приложения ---
+    async getApplicationStats() {
+        const { data } = await axiosAuth.get('/admin/user-stats');
+        return data;
+    },
+
+    // --- Получение статистики использования ресурсов сервера ---
+    async getServerResourceStats() {
+        const { data } = await axiosAuth.get('/admin/server-stats');
+        return data;
     }
 };
