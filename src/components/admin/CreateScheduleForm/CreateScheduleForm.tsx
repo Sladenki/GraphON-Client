@@ -2,68 +2,66 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ScheduleService, ICreateScheduleDto } from '@/services/schedule.service';
 import { IGraphList } from '@/types/graph.interface';
 import { useState } from 'react';
-import styles from './CreateScheduleForm.module.scss';
 import { ScheduleType } from '@/types/schedule.interface';
+import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/ui/AdminForm';
 
 interface CreateScheduleFormProps {
     graphs: IGraphList[];
 }
 
+const SCHEDULE_TYPES = [
+    { value: ScheduleType.LECTURE, label: 'Лекция' },
+    { value: ScheduleType.PRACTICE, label: 'Практика' },
+    { value: ScheduleType.LABORATORY, label: 'Лабораторная работа' }
+];
+
 const DAYS_OF_WEEK = [
-    'Воскресенье',
     'Понедельник',
     'Вторник',
     'Среда',
     'Четверг',
     'Пятница',
-    'Суббота'
-];
-
-const SCHEDULE_TYPES = [
-    { value: ScheduleType.LECTURE, label: 'Лекция' },
-    { value: ScheduleType.PRACTICE, label: 'Практика' }
+    'Суббота',
+    'Воскресенье'
 ];
 
 export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
-    const queryClient = useQueryClient();
     const [formData, setFormData] = useState<ICreateScheduleDto>({
         graphId: '',
         name: '',
         type: ScheduleType.LECTURE,
         roomNumber: 0,
-        dayOfWeek: 1,
+        dayOfWeek: 0,
         timeFrom: '',
         timeTo: ''
     });
 
+    const queryClient = useQueryClient();
+
     const { mutate: createSchedule, isPending } = useMutation({
-        mutationFn: (data: ICreateScheduleDto) => ScheduleService.createSchedule(data),
+        mutationFn: () => ScheduleService.createSchedule(formData),
         onSuccess: () => {
-            alert('Расписание успешно создано');
+            queryClient.invalidateQueries({ queryKey: ['schedules'] });
             setFormData({
                 graphId: '',
                 name: '',
                 type: ScheduleType.LECTURE,
                 roomNumber: 0,
-                dayOfWeek: 1,
+                dayOfWeek: 0,
                 timeFrom: '',
                 timeTo: ''
             });
-            queryClient.invalidateQueries({ queryKey: ['schedules'] });
+            alert('Расписание успешно создано');
         },
         onError: (error) => {
+            console.error('Failed to create schedule:', error);
             alert('Ошибка при создании расписания');
-            console.error('Error creating schedule:', error);
         }
     });
 
     const handleSubmit = (e: React.FormEvent) => {
-        console.log(formData);
         e.preventDefault();
-        createSchedule({
-            ...formData,
-            dayOfWeek: Number(formData.dayOfWeek) === 0 ? 6 : Number(formData.dayOfWeek) - 1
-        });
+        createSchedule();
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -82,122 +80,97 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
         formData.timeTo;
 
     return (
-        <div className={styles.container}>
-            <h2>Создать расписание</h2>
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="graphId">Граф</label>
-                    <select
-                        id="graphId"
-                        name="graphId"
-                        value={formData.graphId}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Выберите граф</option>
-                        {graphs.map(graph => (
-                            <option key={graph._id} value={graph._id}>
-                                {graph.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+        <AdminForm
+            title="Создать расписание"
+            onSubmit={handleSubmit}
+            submitButtonText="Создать расписание"
+            isSubmitting={isPending}
+            isSubmitDisabled={!isFormValid}
+        >
+            <FormInputGroup label="Граф">
+                <FormSelect
+                    name="graphId"
+                    value={formData.graphId}
+                    onChange={handleChange}
+                    options={[
+                        { value: '', label: 'Выберите граф' },
+                        ...graphs.map(graph => ({
+                            value: graph._id,
+                            label: graph.name
+                        }))
+                    ]}
+                    required
+                />
+            </FormInputGroup>
 
-                <div className={styles.inputGroup}>
-                    <label htmlFor="name">Название</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
+            <FormInputGroup label="Название">
+                <FormInput
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    placeholder="Введите название"
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="Тип">
+                <FormSelect
+                    name="type"
+                    value={formData.type}
+                    onChange={handleChange}
+                    options={SCHEDULE_TYPES}
+                    required
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="Номер аудитории">
+                <FormInput
+                    type="number"
+                    name="roomNumber"
+                    value={formData.roomNumber}
+                    onChange={handleChange}
+                    required
+                    min="0"
+                    placeholder="Введите номер аудитории"
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="День недели">
+                <FormSelect
+                    name="dayOfWeek"
+                    value={formData.dayOfWeek}
+                    onChange={handleChange}
+                    options={DAYS_OF_WEEK.map((day, index) => ({
+                        value: index,
+                        label: day,
+                        key: `day-${index}`
+                    }))}
+                    required
+                />
+            </FormInputGroup>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+                <FormInputGroup label="Время начала">
+                    <FormInput
+                        type="time"
+                        name="timeFrom"
+                        value={formData.timeFrom}
                         onChange={handleChange}
                         required
-                        placeholder="Введите название"
                     />
-                </div>
+                </FormInputGroup>
 
-                <div className={styles.inputGroup}>
-                    <label htmlFor="type">Тип</label>
-                    <select
-                        id="type"
-                        name="type"
-                        value={formData.type}
+                <FormInputGroup label="Время окончания">
+                    <FormInput
+                        type="time"
+                        name="timeTo"
+                        value={formData.timeTo}
                         onChange={handleChange}
                         required
-                    >
-                        {SCHEDULE_TYPES.map(type => (
-                            <option key={type.value} value={type.value}>
-                                {type.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className={styles.inputGroup}>
-                    <label htmlFor="roomNumber">Номер аудитории</label>
-                    <input
-                        type="number"
-                        id="roomNumber"
-                        name="roomNumber"
-                        value={formData.roomNumber}
-                        onChange={handleChange}
-                        required
-                        min="0"
-                        placeholder="Введите номер аудитории"
                     />
-                </div>
-
-                <div className={styles.inputGroup}>
-                    <label htmlFor="dayOfWeek">День недели</label>
-                    <select
-                        id="dayOfWeek"
-                        name="dayOfWeek"
-                        value={formData.dayOfWeek}
-                        onChange={handleChange}
-                        required
-                    >
-                        {DAYS_OF_WEEK.map((day, index) => (
-                            <option key={index} value={index}>
-                                {day}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className={styles.timeGroup}>
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="timeFrom">Время начала</label>
-                        <input
-                            type="time"
-                            id="timeFrom"
-                            name="timeFrom"
-                            value={formData.timeFrom}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="timeTo">Время окончания</label>
-                        <input
-                            type="time"
-                            id="timeTo"
-                            name="timeTo"
-                            value={formData.timeTo}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                </div>
-
-                <button 
-                    type="submit" 
-                    disabled={!isFormValid || isPending}
-                    className={styles.submitButton}
-                >
-                    {isPending ? 'Создание...' : 'Создать расписание'}
-                </button>
-            </form>
-        </div>
+                </FormInputGroup>
+            </div>
+        </AdminForm>
     );
 }; 

@@ -3,7 +3,7 @@ import { UserService } from '@/services/user.service';
 import { IUser } from '@/types/user.interface';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import styles from './TransferGraphOwnershipForm.module.scss';
+import { AdminForm, FormInputGroup, FormSelect } from '@/components/ui/AdminForm';
 
 interface TransferGraphOwnershipFormProps {
     graphs: Array<{ _id: string; name: string }>;
@@ -14,74 +14,69 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
     const [selectedUserId, setSelectedUserId] = useState('');
     const queryClient = useQueryClient();
 
-    // Получение списка пользователей
-    const { data: users, isLoading: isLoadingUsers } = useQuery({
+    const { data: users } = useQuery({
         queryKey: ['users'],
-        queryFn: () => UserService.getAllUsers(),
+        queryFn: UserService.getAllUsers
     });
 
-    // Мутация для передачи прав
     const { mutate: transferOwnership, isPending } = useMutation({
         mutationFn: () => AdminService.transferGraphOwnership(selectedGraphId, selectedUserId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['graph/getParentGraphs'] });
+            queryClient.invalidateQueries({ queryKey: ['graphs'] });
             setSelectedGraphId('');
             setSelectedUserId('');
+            alert('Права на граф успешно переданы');
         },
+        onError: (error) => {
+            console.error('Failed to transfer ownership:', error);
+            alert('Ошибка при передаче прав на граф');
+        }
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (selectedGraphId && selectedUserId) {
-            transferOwnership();
-        }
+        transferOwnership();
     };
 
-    if (isLoadingUsers) return <div>Загрузка пользователей...</div>;
+    const isFormValid = selectedGraphId && selectedUserId;
 
     return (
-        <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.formGroup}>
-                <label htmlFor="graph">Выберите граф:</label>
-                <select
-                    id="graph"
+        <AdminForm
+            title="Передача прав на граф"
+            onSubmit={handleSubmit}
+            submitButtonText="Передать права"
+            isSubmitting={isPending}
+            isSubmitDisabled={!isFormValid}
+        >
+            <FormInputGroup label="Выберите граф:">
+                <FormSelect
                     value={selectedGraphId}
                     onChange={(e) => setSelectedGraphId(e.target.value)}
+                    options={[
+                        { value: '', label: 'Выберите граф' },
+                        ...graphs.map((graph) => ({
+                            value: graph._id,
+                            label: graph.name
+                        }))
+                    ]}
                     required
-                >
-                    <option value="">Выберите граф</option>
-                    {graphs.map((graph) => (
-                        <option key={graph._id} value={graph._id}>
-                            {graph.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
+                />
+            </FormInputGroup>
 
-            <div className={styles.formGroup}>
-                <label htmlFor="user">Выберите нового администратора:</label>
-                <select
-                    id="user"
+            <FormInputGroup label="Выберите нового администратора:">
+                <FormSelect
                     value={selectedUserId}
                     onChange={(e) => setSelectedUserId(e.target.value)}
+                    options={[
+                        { value: '', label: 'Выберите пользователя' },
+                        ...(users?.map((user: IUser) => ({
+                            value: user._id,
+                            label: `${user.firstName} ${user.lastName || ''} (${user.email})`
+                        })) || [])
+                    ]}
                     required
-                >
-                    <option value="">Выберите пользователя</option>
-                    {users?.map((user: IUser) => (
-                        <option key={user._id} value={user._id}>
-                            {user.firstName} {user.lastName || ''} ({user.email})
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <button 
-                type="submit" 
-                disabled={isPending || !selectedGraphId || !selectedUserId}
-                className={styles.submitButton}
-            >
-                {isPending ? 'Передача прав...' : 'Передать права'}
-            </button>
-        </form>
+                />
+            </FormInputGroup>
+        </AdminForm>
     );
 }; 

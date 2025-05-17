@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AdminService } from '@/services/admin.service';
 import { IGraphList } from '@/types/graph.interface';
-import styles from './CreateGraphForm.module.scss';
+import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/ui/AdminForm';
 
 interface CreateGraphFormProps {
     mainTopics: IGraphList[];
@@ -53,24 +53,9 @@ export const CreateGraphForm = ({ mainTopics }: CreateGraphFormProps) => {
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            
-            // Validate file type
-            if (!file.type.startsWith('image/')) {
-                alert('Пожалуйста, выберите файл изображения');
-                return;
-            }
-
-            // Validate file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Размер файла не должен превышать 5MB');
-                return;
-            }
-
+        const file = e.target.files?.[0];
+        if (file) {
             setImage(file);
-            
-            // Create preview
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
@@ -79,64 +64,63 @@ export const CreateGraphForm = ({ mainTopics }: CreateGraphFormProps) => {
         }
     };
 
+    const isFormValid = graphName && selectedParentGraph && image;
+
     return (
-        <div className={styles.container}>
-            <h2>Создание нового графа</h2>
-            
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="graphName">Название графа:</label>
-                    <input
-                        id="graphName"
-                        type="text"
-                        value={graphName}
-                        onChange={(e) => setGraphName(e.target.value)}
-                        placeholder="Введите название графа"
-                        required
-                    />
-                </div>
+        <AdminForm
+            title="Создание нового графа"
+            onSubmit={handleSubmit}
+            submitButtonText="Создать граф"
+            isSubmitting={isPending}
+            isSubmitDisabled={!isFormValid}
+        >
+            <FormInputGroup label="Название графа:">
+                <FormInput
+                    type="text"
+                    value={graphName}
+                    onChange={(e) => setGraphName(e.target.value)}
+                    placeholder="Введите название графа"
+                    required
+                />
+            </FormInputGroup>
 
-                <div className={styles.inputGroup}>
-                    <label htmlFor="parentGraph">Родительский граф:</label>
-                    <select
-                        id="parentGraph"
-                        value={selectedParentGraph}
-                        onChange={(e) => setSelectedParentGraph(e.target.value)}
-                        required
-                    >
-                        <option value="">Выберите родительский граф</option>
-                        {mainTopics.map(graph => (
-                            <option key={graph._id} value={graph._id}>
-                                {graph.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+            <FormInputGroup label="Родительский граф:">
+                <FormSelect
+                    value={selectedParentGraph}
+                    onChange={(e) => setSelectedParentGraph(e.target.value)}
+                    options={[
+                        { value: '', label: 'Выберите родительский граф' },
+                        ...mainTopics.map(graph => ({
+                            value: graph._id,
+                            label: graph.name
+                        }))
+                    ]}
+                    required
+                />
+            </FormInputGroup>
 
-                <div className={styles.inputGroup}>
-                    <label htmlFor="image">Изображение графа:</label>
-                    <input
-                        id="image"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        required
-                    />
-                    {imagePreview && (
-                        <div className={styles.imagePreview}>
-                            <img src={imagePreview} alt="Preview" />
-                        </div>
-                    )}
-                </div>
-
-                <button 
-                    type="submit" 
-                    disabled={!graphName || !selectedParentGraph || !image || isPending}
-                    className={styles.submitButton}
-                >
-                    {isPending ? 'Создание...' : 'Создать граф'}
-                </button>
-            </form>
-        </div>
+            <FormInputGroup label="Изображение графа:">
+                <FormInput
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    required
+                />
+                {imagePreview && (
+                    <div style={{ marginTop: '10px', maxWidth: '300px' }}>
+                        <img 
+                            src={imagePreview} 
+                            alt="Preview" 
+                            style={{ 
+                                width: '100%', 
+                                height: 'auto', 
+                                borderRadius: '4px',
+                                border: '1px solid #ddd'
+                            }} 
+                        />
+                    </div>
+                )}
+            </FormInputGroup>
+        </AdminForm>
     );
 }; 

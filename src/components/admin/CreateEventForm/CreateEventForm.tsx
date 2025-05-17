@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { EventService } from '@/services/event.service';
 import { IGraphList } from '@/types/graph.interface';
-import styles from './CreateEventForm.module.scss';
+import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
 
 interface CreateEventFormProps {
     mainTopics: IGraphList[];
@@ -55,101 +55,89 @@ export const CreateEventForm = ({ mainTopics }: CreateEventFormProps) => {
         }));
     };
 
+    const isFormValid = eventData.name && 
+        eventData.description && 
+        eventData.eventDate && 
+        eventData.timeFrom && 
+        eventData.timeTo && 
+        eventData.graphId;
+
     return (
-        <div className={styles.container}>
-            <h2>Создание нового мероприятия</h2>
-            
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="name">Название мероприятия:</label>
-                    <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        value={eventData.name}
+        <AdminForm
+            title="Создание нового мероприятия"
+            onSubmit={handleSubmit}
+            submitButtonText="Создать мероприятие"
+            isSubmitting={isPending}
+            isSubmitDisabled={!isFormValid}
+        >
+            <FormInputGroup label="Название мероприятия:">
+                <FormInput
+                    name="name"
+                    type="text"
+                    value={eventData.name}
+                    onChange={handleChange}
+                    placeholder="Введите название мероприятия"
+                    required
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="Описание:">
+                <FormTextarea
+                    name="description"
+                    value={eventData.description}
+                    onChange={handleChange}
+                    placeholder="Введите описание мероприятия"
+                    required
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="Граф:">
+                <FormSelect
+                    name="graphId"
+                    value={eventData.graphId}
+                    onChange={handleChange}
+                    options={[
+                        { value: '', label: 'Выберите граф' },
+                        ...mainTopics.map(graph => ({
+                            value: graph._id,
+                            label: graph.name
+                        }))
+                    ]}
+                    required
+                />
+            </FormInputGroup>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+                <FormInputGroup label="Дата:">
+                    <FormInput
+                        name="eventDate"
+                        type="date"
+                        value={eventData.eventDate}
                         onChange={handleChange}
-                        placeholder="Введите название мероприятия"
                         required
                     />
-                </div>
+                </FormInputGroup>
 
-                <div className={styles.inputGroup}>
-                    <label htmlFor="description">Описание:</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        value={eventData.description}
+                <FormInputGroup label="Время начала:">
+                    <FormInput
+                        name="timeFrom"
+                        type="time"
+                        value={eventData.timeFrom}
                         onChange={handleChange}
-                        placeholder="Введите описание мероприятия"
                         required
                     />
-                </div>
+                </FormInputGroup>
 
-                <div className={styles.inputGroup}>
-                    <label htmlFor="graphId">Граф:</label>
-                    <select
-                        id="graphId"
-                        name="graphId"
-                        value={eventData.graphId}
+                <FormInputGroup label="Время окончания:">
+                    <FormInput
+                        name="timeTo"
+                        type="time"
+                        value={eventData.timeTo}
                         onChange={handleChange}
                         required
-                    >
-                        <option value="">Выберите граф</option>
-                        {mainTopics.map(graph => (
-                            <option key={graph._id} value={graph._id}>
-                                {graph.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className={styles.dateTimeGroup}>
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="eventDate">Дата:</label>
-                        <input
-                            id="eventDate"
-                            name="eventDate"
-                            type="date"
-                            value={eventData.eventDate}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="timeFrom">Время начала:</label>
-                        <input
-                            id="timeFrom"
-                            name="timeFrom"
-                            type="time"
-                            value={eventData.timeFrom}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="timeTo">Время окончания:</label>
-                        <input
-                            id="timeTo"
-                            name="timeTo"
-                            type="time"
-                            value={eventData.timeTo}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                </div>
-
-                <button 
-                    type="submit" 
-                    disabled={!eventData.name || !eventData.description || !eventData.eventDate || 
-                             !eventData.timeFrom || !eventData.timeTo || !eventData.graphId || isPending}
-                    className={styles.submitButton}
-                >
-                    {isPending ? 'Создание...' : 'Создать мероприятие'}
-                </button>
-            </form>
-        </div>
+                    />
+                </FormInputGroup>
+            </div>
+        </AdminForm>
     );
 }; 
