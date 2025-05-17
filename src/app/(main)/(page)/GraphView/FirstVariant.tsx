@@ -10,6 +10,7 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useGraphInfoPopup } from './useGraphInfoPopUp';
 import { buildGraphHierarchy } from '@/utils/grahSystem';
 import SchedulePopUp from '@/components/ui/SchedulePopUp/SchedulePopUp';
+import { GraphInfo } from '@/components/global/GraphInfo/GraphInfo';
 
 interface GraphInfo {
   id: string;
@@ -184,6 +185,14 @@ const FirstVariant = ({ searchQuery }: { searchQuery: string}) => {
         />
       </div>
 
+      {/* {isGraphInfoPopupOpen && clickedInfoGraph && (
+        <GraphInfo
+          graphId={clickedInfoGraph.id}
+          isOpen={isGraphInfoPopupOpen}
+          onClose={closeGraphInfoPopup}
+        />
+      )} */}
+
       {isGraphInfoPopupOpen && clickedInfoGraph && (
         <SchedulePopUp
           graphId={clickedInfoGraph.id}
@@ -191,6 +200,8 @@ const FirstVariant = ({ searchQuery }: { searchQuery: string}) => {
           closeSchedulePopup={closeGraphInfoPopup}
         />
       )}
+
+
 
     </div>
 

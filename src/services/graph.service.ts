@@ -1,5 +1,14 @@
 import { axiosAuth, axiosClassic } from "@/api/interceptors"
 
+interface IGraphData {
+    _id: string;
+    name: string;
+    ownerUserId: string;
+    subsNum: number;
+    childGraphNum: number;
+    imgPath: string;
+}
+
 export const GraphService = {
 
     // --- Создание графа ---
@@ -8,9 +17,10 @@ export const GraphService = {
     // },
 
     // --- Получение графа по id ---
-    // async getGraphById(graphId: any) {
-    //     return axiosClassic.get(`/graph/getById/${graphId}`)
-    // },
+    async getGraphById(graphId: string): Promise<IGraphData> {
+        const response = await axiosClassic.get<IGraphData>(`/graph/getById/${graphId}`);
+        return response.data;
+    },
 
     // --- Получение главных графов ---
     async getParentGraphs() {
@@ -20,5 +30,6 @@ export const GraphService = {
     // --- Получение дочерних графов по ID родительского ---
     async getAllChildrenGraphs(parentGraphId: string) {
         return axiosClassic.get(`/graph/getAllChildrenGraphs/${parentGraphId}`)
-    }
+    },
+
 }
