@@ -21,7 +21,7 @@ import { ServerStats } from '@/components/admin/ServerStats/ServerStats';
 const CreatePost = () => {
     const { user } = useAuth();
     const typedUser = user as IUser | null;
-    const { canAccessCreate, canAccessEditor } = useRoleAccess(typedUser?.role);
+    const { canAccessCreate, canAccessEditor, canAccessSysAdmin, canAccessAdmin } = useRoleAccess(typedUser?.role);
 
     // Получение главных графов
     const { isPending, isError, data: mainTopics, error } = useQuery({
@@ -42,42 +42,47 @@ const CreatePost = () => {
                 <AdminSection 
                     title="Статистика пользователей"
                     emoji="📊"
+                    role={UserRole.Create}
                 >
                     <UserStats />
                 </AdminSection>
             )}
-            
+
             {canAccessCreate && (
                 <AdminSection 
-                    title="Статистика сервера"
-                    emoji="🖥️"
-                >
-                    <ServerStats />
-                </AdminSection>
-            )}
-            
-            {canAccessCreate && (
-                <AdminSection 
-                    title="Управление ролями пользователей"
+                    title="Изменить роль пользователя"
                     emoji="👥"
+                    role={UserRole.Create}
                 >
                     <UserRoleManager />
                 </AdminSection>
             )}
             
-            {canAccessCreate && mainTopics && (
+            {canAccessSysAdmin && (
+                <AdminSection 
+                    title="Статистика сервера"
+                    emoji="🖥️"
+                    role={UserRole.SysAdmin}
+                >
+                    <ServerStats />
+                </AdminSection>
+            )}
+            
+            {canAccessAdmin && mainTopics && (
                 <AdminSection 
                     title="Создание графа"
                     emoji="📊"
+                    role={UserRole.Admin}
                 >
                     <CreateGraphForm mainTopics={mainTopics.data} />
                 </AdminSection>
             )}
             
-            {canAccessCreate && mainTopics && (
+            {canAccessAdmin && mainTopics && (
                 <AdminSection 
                     title="Передача прав на граф"
                     emoji="🔑"
+                    role={UserRole.Admin}
                 >
                     <TransferGraphOwnershipForm graphs={mainTopics.data} />
                 </AdminSection>
@@ -87,6 +92,7 @@ const CreatePost = () => {
                 <AdminSection 
                     title="Создание события"
                     emoji="📅"
+                    role={UserRole.Editor}
                 >
                     <CreateEventForm mainTopics={mainTopics.data} />
                 </AdminSection>
@@ -96,6 +102,7 @@ const CreatePost = () => {
                 <AdminSection 
                     title="Создание расписания"
                     emoji="⏰"
+                    role={UserRole.Editor}
                 >
                     <CreateScheduleForm graphs={mainTopics.data} />
                 </AdminSection>

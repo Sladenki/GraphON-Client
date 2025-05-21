@@ -26,7 +26,7 @@ interface GraphInfo {
 }
 
 const parentGraph = {
-  "_id": "67a49a0a08ac3c0df94d6ac3",
+  "_id": "67a499dd08ac3c0df94d6ab7",
   "name": "КГТУ",
   "ownerUserId": "67a499dd08ac3c0df94d6ab7",
   "subsNum": 2,

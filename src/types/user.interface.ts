@@ -15,6 +15,7 @@ export enum UserRole {
     Create = 'create',
     Admin = 'admin',
     Editor = 'editor',
+    SysAdmin = 'sysadmin',
     User = 'user',
 }
 
@@ -22,6 +23,7 @@ export const RoleTitles: Record<UserRole, string> = {
     [UserRole.Create]: 'Владелец',
     [UserRole.Admin]: 'Администратор',
     [UserRole.Editor]: 'Редактор',
+    [UserRole.SysAdmin]: 'Сис.Админ',
     [UserRole.User]: 'Пользователь',
 };
 
