@@ -5,6 +5,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-family: 'Roboto', sans-serif;
 
     &:hover {
         transform: translateY(-2px);
@@ -36,13 +37,14 @@
     h3 {
         margin: 0;
         font-size: 20px;
-        font-weight: 600;
+        font-weight: 500;
         color: var(--text-color);
         position: relative;
         padding-left: 12px;
         display: flex;
         align-items: center;
         gap: 12px;
+        font-family: 'Roboto', sans-serif;
 
         .emoji {
             font-size: 24px;
@@ -50,13 +52,15 @@
         }
 
         .roleLabel {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--text-secondary);
             background: rgba(var(--main-Color), 0.1);
-            padding: 4px 8px;
-            border-radius: 4px;
-            margin-left: 8px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-left: 12px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
         }
 
         &::before {
@@ -66,7 +70,7 @@
             top: 50%;
             transform: translateY(-50%);
             width: 4px;
-            height: 20px;
+            height: 24px;
             background-color: rgb(var(--main-Color));
             border-radius: 2px;
         }
@@ -76,9 +80,9 @@
 .arrow {
     transition: all 0.3s ease;
     color: var(--text-color);
-    font-size: 16px;
-    width: 24px;
-    height: 24px;
+    font-size: 14px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -96,6 +100,7 @@
     border-top: 1px solid rgba(var(--main-Color), 0.1);
     background-color: rgba(var(--main-Color), 0.02);
     animation: slideDown 0.3s ease-out;
+    font-family: 'Roboto', sans-serif;
 
     @keyframes slideDown {
         from {
