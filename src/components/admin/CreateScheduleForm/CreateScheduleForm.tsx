@@ -86,7 +86,10 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
             isSubmitting={isPending}
             isSubmitDisabled={!isFormValid}
         >
-            <FormInputGroup label="Граф">
+            <FormInputGroup 
+                label="Граф"
+                description="Выберите граф, для которого создается расписание. Это может быть лекция или практика по данному графу."
+            >
                 <FormSelect
                     name="graphId"
                     value={formData.graphId}
@@ -102,7 +105,10 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
                 />
             </FormInputGroup>
 
-            <FormInputGroup label="Название">
+            <FormInputGroup 
+                label="Название"
+                description="Введите название занятия. Например: 'Лекция по основам графов' или 'Практика по алгоритмам'"
+            >
                 <FormInput
                     type="text"
                     name="name"
@@ -113,7 +119,10 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
                 />
             </FormInputGroup>
 
-            <FormInputGroup label="Тип">
+            <FormInputGroup 
+                label="Тип"
+                description="Выберите тип занятия: лекция - теоретическое занятие, практика - практическое занятие с заданиями"
+            >
                 <FormSelect
                     name="type"
                     value={formData.type}
@@ -123,7 +132,10 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
                 />
             </FormInputGroup>
 
-            <FormInputGroup label="Номер аудитории">
+            <FormInputGroup 
+                label="Номер аудитории"
+                description="Укажите номер аудитории, где будет проходить занятие"
+            >
                 <FormInput
                     type="number"
                     name="roomNumber"
@@ -135,7 +147,10 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
                 />
             </FormInputGroup>
 
-            <FormInputGroup label="День недели">
+            <FormInputGroup 
+                label="День недели"
+                description="Выберите день недели, когда будет проходить занятие"
+            >
                 <FormSelect
                     name="dayOfWeek"
                     value={formData.dayOfWeek}
@@ -149,7 +164,10 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
             </FormInputGroup>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-                <FormInputGroup label="Время начала">
+                <FormInputGroup 
+                    label="Время начала"
+                    description="Укажите время начала занятия в формате ЧЧ:ММ"
+                >
                     <FormInput
                         type="time"
                         name="timeFrom"
@@ -159,7 +177,10 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
                     />
                 </FormInputGroup>
 
-                <FormInputGroup label="Время окончания">
+                <FormInputGroup 
+                    label="Время окончания"
+                    description="Укажите время окончания занятия в формате ЧЧ:ММ"
+                >
                     <FormInput
                         type="time"
                         name="timeTo"

@@ -70,7 +70,10 @@ export const CreateEventForm = ({ mainTopics }: CreateEventFormProps) => {
             isSubmitting={isPending}
             isSubmitDisabled={!isFormValid}
         >
-            <FormInputGroup label="Название мероприятия:">
+            <FormInputGroup 
+                label="Название мероприятия"
+                description="Введите название мероприятия. Используйте понятное и информативное название, которое отражает суть события"
+            >
                 <FormInput
                     name="name"
                     type="text"
@@ -81,7 +84,10 @@ export const CreateEventForm = ({ mainTopics }: CreateEventFormProps) => {
                 />
             </FormInputGroup>
 
-            <FormInputGroup label="Описание:">
+            <FormInputGroup 
+                label="Описание"
+                description="Подробно опишите мероприятие. Укажите цель, программу, требования к участникам и другую важную информацию"
+            >
                 <FormTextarea
                     name="description"
                     value={eventData.description}
@@ -91,7 +97,10 @@ export const CreateEventForm = ({ mainTopics }: CreateEventFormProps) => {
                 />
             </FormInputGroup>
 
-            <FormInputGroup label="Граф:">
+            <FormInputGroup 
+                label="Граф"
+                description="Выберите граф, к которому относится мероприятие. Это поможет участникам найти связанные материалы и контент"
+            >
                 <FormSelect
                     name="graphId"
                     value={eventData.graphId}
