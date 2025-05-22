@@ -264,4 +264,22 @@ $tablet-breakpoint: 768px;
   }
 }
 
+.eventInfo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.usersCount {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.usersIcon {
+    font-size: 16px;
+}
+
 

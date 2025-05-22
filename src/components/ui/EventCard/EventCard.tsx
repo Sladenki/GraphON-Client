@@ -58,6 +58,21 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
     isAttended
   );
 
+  const handleRegistration = async () => {
+    try {
+      await toggleRegistration();
+      // Обновляем количество зарегистрированных пользователей
+      setEvent((prev: typeof event) => ({
+        ...prev,
+        regedUsers: isRegistered 
+          ? (prev.regedUsers || 1) - 1  // Уменьшаем при отмене регистрации
+          : (prev.regedUsers || 0) + 1  // Увеличиваем при регистрации
+      }));
+    } catch (error) {
+      console.error('Ошибка при изменении статуса регистрации:', error);
+    }
+  };
+
   const handleDelete = async () => {
     if (!event._id) return;
     
@@ -195,14 +210,20 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
             </div>
           </div>
         ) : (
-          <span className={styles.time}>
-            {formatEventTime(event.eventDate, event.timeFrom, event.eventDate, event.timeTo)}
-          </span>
+          <div className={styles.eventInfo}>
+            <span className={styles.time}>
+              {formatEventTime(event.eventDate, event.timeFrom, event.eventDate, event.timeTo)}
+            </span>
+            <div className={styles.usersCount}>
+              <span className={styles.usersIcon}>👥</span>
+              <span>{event.regedUsers || 0}</span>
+            </div>
+          </div>
         )}
         
         <button 
           className={styles.registerButton} 
-          onClick={toggleRegistration}
+          onClick={handleRegistration}
           disabled={isLoading || !isLoggedIn}
           data-registered={isRegistered}
           data-logged={isLoggedIn}
