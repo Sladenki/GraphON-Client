@@ -12,7 +12,6 @@ interface CreateScheduleFormProps {
 const SCHEDULE_TYPES = [
     { value: ScheduleType.LECTURE, label: 'Лекция' },
     { value: ScheduleType.PRACTICE, label: 'Практика' },
-    { value: ScheduleType.LABORATORY, label: 'Лабораторная работа' }
 ];
 
 const DAYS_OF_WEEK = [
@@ -142,9 +141,8 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
                     value={formData.dayOfWeek}
                     onChange={handleChange}
                     options={DAYS_OF_WEEK.map((day, index) => ({
-                        value: index,
-                        label: day,
-                        key: `day-${index}`
+                        value: index.toString(),
+                        label: day
                     }))}
                     required
                 />

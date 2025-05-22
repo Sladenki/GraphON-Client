@@ -22,8 +22,8 @@ export const FormSelect: React.FC<FormSelectProps> = ({
             className={`${styles.select} ${error ? styles.inputError : ''} ${className || ''}`}
             {...props}
         >
-            {options.map((option) => (
-                <option key={option.value} value={option.value}>
+            {options.map((option, index) => (
+                <option key={`${option.value}-${index}`} value={option.value}>
                     {option.label}
                 </option>
             ))}
