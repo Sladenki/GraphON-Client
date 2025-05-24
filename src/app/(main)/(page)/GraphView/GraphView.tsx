@@ -2,6 +2,7 @@ import FirstVariant from './FirstVariant';
 import HierarchyGraph from './HierarchyGraph';
 import SecondVariant from './SecondVariant';
 import SiteMapGraph from './SiteMapGraph';
+import BubbleGraph from './BubbleGraph';
 import BiomeScene from './BiomeScene';
 
 // export default function GraphView({ searchQuery }: { searchQuery: string }) {
@@ -12,10 +13,17 @@ import BiomeScene from './BiomeScene';
 //   return <HierarchyGraph searchQuery={searchQuery} />;
 // }
 
+// export default function GraphView({ searchQuery }: { searchQuery: string }) {
+//   return <FirstVariant searchQuery={searchQuery} />;
+// }
+
 export default function GraphView({ searchQuery }: { searchQuery: string }) {
-  // return <BiomeScene searchQuery={searchQuery} />;
-  return <FirstVariant searchQuery={searchQuery} />;
+  return <BubbleGraph searchQuery={searchQuery} />;
 }
+
+// export default function GraphView({ searchQuery }: { searchQuery: string }) {
+//   return <BiomeScene searchQuery={searchQuery} />;
+// }
 
 
 // export default function GraphView({ searchQuery }: { searchQuery: string }) {
