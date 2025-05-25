@@ -14,6 +14,14 @@
   justify-content: center;
 }
 
+.nodeWrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+  will-change: transform;
+}
+
 .rootNode {
   position: relative;
   z-index: 10;
@@ -25,6 +33,7 @@
   overflow: hidden;
   border: 4px solid rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(4px);
+  transform: translate(-50%, -50%);
 }
 
 .firstLevelNode {
@@ -39,10 +48,11 @@
   border: 4px solid rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(4px);
   transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
 
   &.activeNode {
     background: linear-gradient(135deg, #10B981, #047857);
-    transform: scale(1.1);
+    transform: translate(-50%, -50%) scale(1.1);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
   }
 }
@@ -59,6 +69,7 @@
   border: 4px solid rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(4px);
   transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
 }
 
 .nodeContent {

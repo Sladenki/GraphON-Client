@@ -341,7 +341,9 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
 
   // Calculate positions for first level nodes in a circle
   const getFirstLevelPosition = (index: number, total: number) => {
-    const angle = (2 * Math.PI * index) / total;
+    // Start from the top (270 degrees) and go clockwise
+    const startAngle = -Math.PI / 2; // 270 degrees
+    const angle = startAngle + (2 * Math.PI * index) / total;
     const radius = 280; // Distance from center
     return {
       x: Math.cos(angle) * radius,
@@ -351,14 +353,17 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
 
   // Calculate positions for second level nodes relative to their parent
   const getSecondLevelPosition = (index: number, total: number, parentPosition: { x: number, y: number }) => {
-    const angle = (2 * Math.PI * index) / total;
+    // Calculate the angle based on the parent's position
+    const parentAngle = Math.atan2(parentPosition.y, parentPosition.x);
+    // Create a semi-circle on the outer side of the parent
+    const startAngle = parentAngle - Math.PI / 2;
+    const angleStep = Math.PI / (total + 1);
+    const angle = startAngle + angleStep * (index + 1);
     const radius = 160; // Distance from parent
-    const offsetX = Math.cos(angle) * radius;
-    const offsetY = Math.sin(angle) * radius;
     
     return {
-      x: parentPosition.x + offsetX,
-      y: parentPosition.y + offsetY,
+      x: parentPosition.x + Math.cos(angle) * radius,
+      y: parentPosition.y + Math.sin(angle) * radius,
     };
   };
 
@@ -377,11 +382,9 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
   const handleNodeClick = (node: GraphNode) => {
     if (node.childGraphNum > 0) {
       if (activeNodeId === node._id.$oid) {
-        // If clicking the same node, close it
         setActiveNodeId(null);
         setActiveChildNodes([]);
       } else {
-        // Open new node
         setActiveNodeId(node._id.$oid);
         const childNodes = mockData.filter(n => 
           n.parentGraphId?.$oid === node._id.$oid
@@ -401,6 +404,11 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 20
+              }}
               className={styles.rootNode}
             >
               <div className={styles.nodeContent}>
@@ -428,14 +436,14 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
                   transition: { 
                     delay: index * 0.1,
                     type: "spring",
-                    stiffness: 100
+                    stiffness: 100,
+                    damping: 15
                   }
                 }}
                 exit={{ scale: 0 }}
-                className="absolute"
+                className={styles.nodeWrapper}
                 style={{
-                  x: position.x,
-                  y: position.y,
+                  transform: `translate(${position.x}px, ${position.y}px)`,
                 }}
               >
                 <motion.div
@@ -443,6 +451,11 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
                   onClick={() => handleNodeClick(node)}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 17
+                  }}
                 >
                   <div className={styles.nodeContent}>
                     <span className={styles.firstLevelNodeContent}>{node.name}</span>
@@ -462,28 +475,40 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
                     return (
                       <motion.div
                         key={childNode._id.$oid}
-                        initial={{ scale: 0, x: 0, y: 0 }}
+                        initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
                         animate={{ 
                           scale: 1,
+                          opacity: 1,
                           x: childPosition.x - position.x,
                           y: childPosition.y - position.y,
                           transition: { 
                             delay: childIndex * 0.1,
                             type: "spring",
-                            stiffness: 100
+                            stiffness: 100,
+                            damping: 15
                           }
                         }}
-                        exit={{ scale: 0 }}
-                        className="absolute"
+                        exit={{ 
+                          scale: 0,
+                          opacity: 0,
+                          transition: {
+                            duration: 0.2
+                          }
+                        }}
+                        className={styles.nodeWrapper}
                         style={{
-                          x: childPosition.x - position.x,
-                          y: childPosition.y - position.y,
+                          transform: `translate(${childPosition.x - position.x}px, ${childPosition.y - position.y}px)`,
                         }}
                       >
                         <motion.div
                           className={styles.secondLevelNode}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 17
+                          }}
                         >
                           <div className={styles.nodeContent}>
                             <span className={styles.secondLevelNodeContent}>{childNode.name}</span>
