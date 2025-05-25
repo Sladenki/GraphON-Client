@@ -43,33 +43,32 @@ function Planet() {
   const { viewport } = useThree();
   
   // Planet rotation animation
-  useFrame((state, delta) => {
-    if (mesh.current) {
-      mesh.current.rotation.y += delta * 0.1;
-    }
+  useFrame((_, delta) => {
+    if (mesh.current) mesh.current.rotation.y += delta * 0.08;
   });
 
   return (
-    <mesh ref={mesh}>
-      <sphereGeometry args={[2.7, 64, 64]} />
-      <meshStandardMaterial
-        color="#3a1c6b"
-        roughness={0.4}
-        metalness={0.7}
-        emissive="#a04fff"
-        emissiveIntensity={0.2}
-      />
-      {/* Glow effect */}
-      <mesh scale={[1.1, 1.1, 1.1]}>
-        <sphereGeometry args={[2.7, 32, 32]} />
+    <group>
+      <mesh ref={mesh} castShadow receiveShadow>
+        <sphereGeometry args={[1.8, 64, 64]} />
+        <meshStandardMaterial
+          color="#3a1c6b"
+          roughness={0.4}
+          metalness={0.7}
+          emissive="#a04fff"
+          emissiveIntensity={0.3}
+        />
+      </mesh>
+      <mesh scale={[1.22, 1.22, 1.22]}>
+        <sphereGeometry args={[1.8, 32, 32]} />
         <meshBasicMaterial
           color="#a04fff"
           transparent
-          opacity={0.1}
+          opacity={0.13}
           side={THREE.BackSide}
         />
       </mesh>
-    </mesh>
+    </group>
   );
 }
 
