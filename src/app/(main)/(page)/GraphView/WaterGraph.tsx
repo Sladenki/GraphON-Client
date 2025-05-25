@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
+import styles from './WaterGraph.module.scss';
 
 interface GraphNode {
   _id: { $oid: string };
@@ -340,6 +340,20 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
 
   const defaultImage = '/images/graphAva/default.jpg';
 
+  // Define colors for different levels
+  const getNodeColor = (level: number) => {
+    switch (level) {
+      case 0: // Root level
+        return 'bg-gradient-to-br from-blue-400 to-blue-600';
+      case 1: // First level children
+        return 'bg-gradient-to-br from-emerald-400 to-emerald-600';
+      case 2: // Second level children
+        return 'bg-gradient-to-br from-violet-400 to-violet-600';
+      default:
+        return 'bg-gradient-to-br from-gray-400 to-gray-600';
+    }
+  };
+
   useEffect(() => {
     // Initialize with root node (КГТУ)
     const rootNode = mockData.find(node => node.name === "КГТУ");
@@ -391,80 +405,70 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
   };
 
   return (
-    <div className="relative w-full h-screen bg-gradient-to-b from-blue-50 to-blue-100 overflow-hidden">
-      {/* Parent Node */}
-      <AnimatePresence>
-        {parentNode && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-          >
+    <div className={styles.container}>
+      <div className={styles.graphContainer}>
+        {/* Parent Node */}
+        <AnimatePresence>
+          {parentNode && (
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="relative w-32 h-32 rounded-full bg-white shadow-lg overflow-hidden cursor-pointer"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              className={styles.parentNode}
               onClick={() => handleBack()}
             >
-              <Image
-                src={parentNode.imgPath || defaultImage}
-                alt={parentNode.name}
-                fill
-                className="object-cover"
-              />
-              <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-center py-1 text-sm">
-                {parentNode.name}
+              <div className={styles.nodeContent}>
+                <span className={styles.parentNodeContent}>{parentNode.name}</span>
               </div>
+              <div className={styles.nodeOverlay} />
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
 
-      {/* Child Nodes */}
-      <AnimatePresence>
-        {nodes.map((node, index) => {
-          const angle = (2 * Math.PI * index) / nodes.length;
-          const radius = 200;
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
+        {/* Child Nodes */}
+        <AnimatePresence>
+          {nodes.map((node, index) => {
+            const angle = (2 * Math.PI * index) / nodes.length;
+            const radius = 280;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
 
-          return (
-            <motion.div
-              key={node._id.$oid}
-              initial={{ scale: 0, x: 0, y: 0 }}
-              animate={{ 
-                scale: 1,
-                x: x,
-                y: y,
-                transition: { delay: index * 0.1 }
-              }}
-              exit={{ scale: 0 }}
-              whileHover={{ scale: 1.1 }}
-              className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              style={{
-                x: x,
-                y: y,
-              }}
-            >
+            return (
               <motion.div
-                className="relative w-24 h-24 rounded-full bg-white shadow-lg overflow-hidden cursor-pointer"
-                onClick={() => handleNodeClick(node)}
-                whileTap={{ scale: 0.9 }}
+                key={node._id.$oid}
+                initial={{ scale: 0, x: 0, y: 0 }}
+                animate={{ 
+                  scale: 1,
+                  x: x,
+                  y: y,
+                  transition: { 
+                    delay: index * 0.1,
+                    type: "spring",
+                    stiffness: 100
+                  }
+                }}
+                exit={{ scale: 0 }}
+                className="absolute"
+                style={{
+                  x: x,
+                  y: y,
+                }}
               >
-                <Image
-                  src={node.imgPath || defaultImage}
-                  alt={node.name}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-white text-center py-1 text-xs">
-                  {node.name}
-                </div>
+                <motion.div
+                  className={`${styles.childNode} ${node.childGraphNum > 0 ? styles.secondLevelNode : styles.thirdLevelNode}`}
+                  onClick={() => handleNodeClick(node)}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <div className={styles.nodeContent}>
+                    <span className={styles.childNodeContent}>{node.name}</span>
+                  </div>
+                  <div className={styles.nodeOverlay} />
+                </motion.div>
               </motion.div>
-            </motion.div>
-          );
-        })}
-      </AnimatePresence>
+            );
+          })}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };
