@@ -334,72 +334,59 @@ const mockData: GraphNode[] = [
 ];
 
 const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
-  const [currentLevel, setCurrentLevel] = useState<string | null>(null);
-  const [nodes, setNodes] = useState<GraphNode[]>([]);
-  const [parentNode, setParentNode] = useState<GraphNode | null>(null);
+  const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
+  const [rootNode, setRootNode] = useState<GraphNode | null>(null);
+  const [firstLevelNodes, setFirstLevelNodes] = useState<GraphNode[]>([]);
+  const [activeChildNodes, setActiveChildNodes] = useState<GraphNode[]>([]);
 
-  const defaultImage = '/images/graphAva/default.jpg';
+  // Calculate positions for first level nodes in a circle
+  const getFirstLevelPosition = (index: number, total: number) => {
+    const angle = (2 * Math.PI * index) / total;
+    const radius = 280; // Distance from center
+    return {
+      x: Math.cos(angle) * radius,
+      y: Math.sin(angle) * radius,
+    };
+  };
 
-  // Define colors for different levels
-  const getNodeColor = (level: number) => {
-    switch (level) {
-      case 0: // Root level
-        return 'bg-gradient-to-br from-blue-400 to-blue-600';
-      case 1: // First level children
-        return 'bg-gradient-to-br from-emerald-400 to-emerald-600';
-      case 2: // Second level children
-        return 'bg-gradient-to-br from-violet-400 to-violet-600';
-      default:
-        return 'bg-gradient-to-br from-gray-400 to-gray-600';
-    }
+  // Calculate positions for second level nodes relative to their parent
+  const getSecondLevelPosition = (index: number, total: number, parentPosition: { x: number, y: number }) => {
+    const angle = (2 * Math.PI * index) / total;
+    const radius = 160; // Distance from parent
+    const offsetX = Math.cos(angle) * radius;
+    const offsetY = Math.sin(angle) * radius;
+    
+    return {
+      x: parentPosition.x + offsetX,
+      y: parentPosition.y + offsetY,
+    };
   };
 
   useEffect(() => {
     // Initialize with root node (КГТУ)
-    const rootNode = mockData.find(node => node.name === "КГТУ");
-    if (rootNode) {
-      setParentNode(rootNode);
-      const childNodes = mockData.filter(node => 
-        node.parentGraphId?.$oid === rootNode._id.$oid
+    const root = mockData.find(node => node.name === "КГТУ");
+    if (root) {
+      setRootNode(root);
+      const children = mockData.filter(node => 
+        node.parentGraphId?.$oid === root._id.$oid
       );
-      setNodes(childNodes);
+      setFirstLevelNodes(children);
     }
   }, []);
 
   const handleNodeClick = (node: GraphNode) => {
     if (node.childGraphNum > 0) {
-      setCurrentLevel(node._id.$oid);
-      const childNodes = mockData.filter(n => 
-        n.parentGraphId?.$oid === node._id.$oid
-      );
-      setNodes(childNodes);
-      setParentNode(node);
-    }
-  };
-
-  const handleBack = () => {
-    if (parentNode?.parentGraphId?.$oid) {
-      const newParent = mockData.find(node => 
-        node._id.$oid === parentNode?.parentGraphId?.$oid
-      );
-      if (newParent) {
-        setParentNode(newParent);
-        const childNodes = mockData.filter(node => 
-          node.parentGraphId?.$oid === newParent._id.$oid
+      if (activeNodeId === node._id.$oid) {
+        // If clicking the same node, close it
+        setActiveNodeId(null);
+        setActiveChildNodes([]);
+      } else {
+        // Open new node
+        setActiveNodeId(node._id.$oid);
+        const childNodes = mockData.filter(n => 
+          n.parentGraphId?.$oid === node._id.$oid
         );
-        setNodes(childNodes);
-        setCurrentLevel(newParent._id.$oid);
-      }
-    } else {
-      // Return to root
-      const rootNode = mockData.find(node => node.name === "КГТУ");
-      if (rootNode) {
-        setParentNode(rootNode);
-        const childNodes = mockData.filter(node => 
-          node.parentGraphId?.$oid === rootNode._id.$oid
-        );
-        setNodes(childNodes);
-        setCurrentLevel(null);
+        setActiveChildNodes(childNodes);
       }
     }
   };
@@ -407,31 +394,28 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.graphContainer}>
-        {/* Parent Node */}
+        {/* Root Node */}
         <AnimatePresence>
-          {parentNode && (
+          {rootNode && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className={styles.parentNode}
-              onClick={() => handleBack()}
+              className={styles.rootNode}
             >
               <div className={styles.nodeContent}>
-                <span className={styles.parentNodeContent}>{parentNode.name}</span>
+                <span className={styles.rootNodeContent}>{rootNode.name}</span>
               </div>
               <div className={styles.nodeOverlay} />
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Child Nodes */}
+        {/* First Level Nodes */}
         <AnimatePresence>
-          {nodes.map((node, index) => {
-            const angle = (2 * Math.PI * index) / nodes.length;
-            const radius = 280;
-            const x = Math.cos(angle) * radius;
-            const y = Math.sin(angle) * radius;
+          {firstLevelNodes.map((node, index) => {
+            const position = getFirstLevelPosition(index, firstLevelNodes.length);
+            const isActive = activeNodeId === node._id.$oid;
 
             return (
               <motion.div
@@ -439,8 +423,8 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
                 initial={{ scale: 0, x: 0, y: 0 }}
                 animate={{ 
                   scale: 1,
-                  x: x,
-                  y: y,
+                  x: position.x,
+                  y: position.y,
                   transition: { 
                     delay: index * 0.1,
                     type: "spring",
@@ -450,20 +434,66 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
                 exit={{ scale: 0 }}
                 className="absolute"
                 style={{
-                  x: x,
-                  y: y,
+                  x: position.x,
+                  y: position.y,
                 }}
               >
                 <motion.div
-                  className={`${styles.childNode} ${node.childGraphNum > 0 ? styles.secondLevelNode : styles.thirdLevelNode}`}
+                  className={`${styles.firstLevelNode} ${isActive ? styles.activeNode : ''}`}
                   onClick={() => handleNodeClick(node)}
+                  whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <div className={styles.nodeContent}>
-                    <span className={styles.childNodeContent}>{node.name}</span>
+                    <span className={styles.firstLevelNodeContent}>{node.name}</span>
                   </div>
                   <div className={styles.nodeOverlay} />
                 </motion.div>
+
+                {/* Second Level Nodes */}
+                <AnimatePresence>
+                  {isActive && activeChildNodes.map((childNode, childIndex) => {
+                    const childPosition = getSecondLevelPosition(
+                      childIndex,
+                      activeChildNodes.length,
+                      position
+                    );
+
+                    return (
+                      <motion.div
+                        key={childNode._id.$oid}
+                        initial={{ scale: 0, x: 0, y: 0 }}
+                        animate={{ 
+                          scale: 1,
+                          x: childPosition.x - position.x,
+                          y: childPosition.y - position.y,
+                          transition: { 
+                            delay: childIndex * 0.1,
+                            type: "spring",
+                            stiffness: 100
+                          }
+                        }}
+                        exit={{ scale: 0 }}
+                        className="absolute"
+                        style={{
+                          x: childPosition.x - position.x,
+                          y: childPosition.y - position.y,
+                        }}
+                      >
+                        <motion.div
+                          className={styles.secondLevelNode}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <div className={styles.nodeContent}>
+                            <span className={styles.secondLevelNodeContent}>{childNode.name}</span>
+                          </div>
+                          <div className={styles.nodeOverlay} />
+                        </motion.div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
               </motion.div>
             );
           })}
