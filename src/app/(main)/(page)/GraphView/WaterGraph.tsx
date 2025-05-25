@@ -344,7 +344,12 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
     // Start from the top (270 degrees) and go clockwise
     const startAngle = -Math.PI / 2; // 270 degrees
     const angle = startAngle + (2 * Math.PI * index) / total;
-    const radius = 280; // Distance from center
+    
+    // Adjust radius based on screen width
+    const isMobile = window.innerWidth <= 768;
+    const isSmallMobile = window.innerWidth <= 480;
+    const radius = isSmallMobile ? 180 : isMobile ? 220 : 280;
+    
     return {
       x: Math.cos(angle) * radius,
       y: Math.sin(angle) * radius,
@@ -355,17 +360,42 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
   const getSecondLevelPosition = (index: number, total: number, parentPosition: { x: number, y: number }) => {
     // Calculate the angle based on the parent's position
     const parentAngle = Math.atan2(parentPosition.y, parentPosition.x);
-    // Create a semi-circle on the outer side of the parent
-    const startAngle = parentAngle - Math.PI / 2;
-    const angleStep = Math.PI / (total + 1);
-    const angle = startAngle + angleStep * (index + 1);
-    const radius = 160; // Distance from parent
+    
+    // Calculate the spread angle based on the number of nodes
+    const maxSpread = Math.PI * 0.8; // Maximum spread angle (144 degrees)
+    const spreadAngle = Math.min(maxSpread, Math.PI * (total - 1) / total);
+    
+    // Calculate the start angle to center the spread around the parent
+    const startAngle = parentAngle - spreadAngle / 2;
+    
+    // Calculate the angle step between nodes
+    const angleStep = total > 1 ? spreadAngle / (total - 1) : 0;
+    
+    // Calculate the angle for this node
+    const angle = startAngle + angleStep * index;
+    
+    // Adjust radius based on screen width
+    const isMobile = window.innerWidth <= 768;
+    const isSmallMobile = window.innerWidth <= 480;
+    const baseRadius = isSmallMobile ? 120 : isMobile ? 140 : 160;
+    const radius = baseRadius + Math.min(40, total * 5);
     
     return {
       x: parentPosition.x + Math.cos(angle) * radius,
       y: parentPosition.y + Math.sin(angle) * radius,
     };
   };
+
+  // Add window resize handler
+  useEffect(() => {
+    const handleResize = () => {
+      // Force re-render on window resize
+      setFirstLevelNodes(prev => [...prev]);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     // Initialize with root node (КГТУ)
@@ -456,6 +486,7 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
                     stiffness: 400,
                     damping: 17
                   }}
+                  
                 >
                   <div className={styles.nodeContent}>
                     <span className={styles.firstLevelNodeContent}>{node.name}</span>
@@ -502,7 +533,6 @@ const WaterGraph = ({ searchQuery }: WaterGraphProps) => {
                       >
                         <motion.div
                           className={styles.secondLevelNode}
-                          whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           transition={{
                             type: "spring",
