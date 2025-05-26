@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree, ThreeEvent } from '@react-three/fiber';
-import { OrbitControls, Billboard, Html, Stars,useTexture } from '@react-three/drei';
+import { OrbitControls, Billboard, Html, Stars,useTexture, Sphere, MeshDistortMaterial, MeshWobbleMaterial, MeshReflectorMaterial } from '@react-three/drei';
 import { EffectComposer, Bloom, Outline } from '@react-three/postprocessing';
 import { useSpring, a, SpringValue } from '@react-spring/three';
 import { animated } from '@react-spring/web';
@@ -55,42 +55,83 @@ function useMediaQuery(query: string): boolean {
   return matches;
 }
 
-// Planet component
+// Planet component with enhanced visuals
 function Planet() {
   const mesh = useRef<THREE.Mesh>(null);
+  const atmosphere = useRef<THREE.Mesh>(null);
   const { viewport } = useThree();
   
   // Planet rotation animation
   useFrame((_, delta) => {
-    if (mesh.current) mesh.current.rotation.y += delta * 0.08;
+    if (mesh.current) {
+      mesh.current.rotation.y += delta * 0.08;
+      mesh.current.rotation.x += delta * 0.02;
+    }
+    if (atmosphere.current) {
+      atmosphere.current.rotation.y += delta * 0.06;
+      atmosphere.current.rotation.x += delta * 0.01;
+    }
   });
 
   return (
     <group>
+      {/* Main planet sphere with distortion effect */}
       <mesh ref={mesh} castShadow receiveShadow>
         <sphereGeometry args={[1.8, 64, 64]} />
-        <meshStandardMaterial
+        <MeshDistortMaterial
           color="#3a1c6b"
           roughness={0.4}
           metalness={0.7}
           emissive="#a04fff"
           emissiveIntensity={0.3}
+          distort={0.2}
+          speed={2}
         />
       </mesh>
-      <mesh scale={[1.22, 1.22, 1.22]}>
+
+      {/* Atmosphere layer */}
+      <mesh ref={atmosphere} scale={[1.22, 1.22, 1.22]}>
         <sphereGeometry args={[1.8, 32, 32]} />
-        <meshBasicMaterial
+        <MeshWobbleMaterial
           color="#a04fff"
           transparent
           opacity={0.13}
           side={THREE.BackSide}
+          factor={0.2}
+          speed={1}
+        />
+      </mesh>
+
+      {/* Glow effect */}
+      <mesh scale={[1.3, 1.3, 1.3]}>
+        <sphereGeometry args={[1.8, 32, 32]} />
+        <meshBasicMaterial
+          color="#a04fff"
+          transparent
+          opacity={0.05}
+          side={THREE.BackSide}
+        />
+      </mesh>
+
+      {/* Surface details */}
+      <mesh scale={[1.01, 1.01, 1.01]}>
+        <sphereGeometry args={[1.8, 64, 64]} />
+        <MeshReflectorMaterial
+          color="#4a2c8b"
+          roughness={0.8}
+          metalness={0.2}
+          mirror={0.1}
+          blur={[400, 100]}
+          mixBlur={1}
+          mixStrength={0.5}
+          resolution={256}
         />
       </mesh>
     </group>
   );
 }
 
-// Theme node component
+// Theme node component with meteor-like appearance
 function ThemeNode({ 
   theme, 
   index, 
@@ -118,6 +159,7 @@ function ThemeNode({
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
+  const trailRef = useRef<THREE.Mesh>(null);
   
   // Adjust orbit radius and node scale for mobile
   const orbitRadius = useMemo(() => isMobile ? 2.8 : 3.5, [isMobile]);
@@ -132,15 +174,26 @@ function ThemeNode({
   const z = isMobile ? 0.3 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
 
   // Enhanced spring animations with inactive state
-  const { scale, glow, opacity, groupScale } = useSpring({
+  const { scale, glow, opacity, groupScale, rotation } = useSpring({
     scale: active ? 1.3 : hovered ? 1.25 : 1,
     glow: active ? 2 : hovered ? 1.5 : 0.7,
     opacity: active ? 1 : anyActive ? 0.6 : 0.7,
     groupScale: active ? 1 : anyActive ? 0.85 : 1,
+    rotation: active ? [0, Math.PI * 2, 0] : [0, 0, 0],
     config: { 
       tension: 300, 
       friction: 20,
       mass: 1
+    }
+  });
+
+  // Animation for meteor trail
+  useFrame((_, delta) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.5;
+      if (trailRef.current) {
+        trailRef.current.rotation.z += delta * 0.8;
+      }
     }
   });
 
@@ -166,15 +219,16 @@ function ThemeNode({
       ref={groupRef}
       position={[x, y, z]}
       scale={groupScale}
+      rotation={rotation}
       onPointerOver={() => setHovered(theme._id.$oid)}
       onPointerOut={() => setHovered(null)}
       onClick={handleClick}
       userData={{ themeId: theme._id.$oid }}
     >
-      {/* Theme node sphere with mobile scaling */}
+      {/* Meteor core */}
       <a.mesh ref={meshRef} scale={scale}>
-        <sphereGeometry args={[nodeScale, 32, 32]} />
-        <meshStandardMaterial
+        <octahedronGeometry args={[nodeScale, 0]} />
+        <MeshDistortMaterial
           color={active ? activeColor : defaultColor}
           emissive={active ? activeColor : defaultColor}
           emissiveIntensity={glow.get()}
@@ -182,32 +236,23 @@ function ThemeNode({
           metalness={active ? 0.9 : 0.8}
           transparent
           opacity={opacity.get()}
+          distort={0.2}
+          speed={2}
         />
       </a.mesh>
 
-      {/* Enhanced glow effect for active state */}
-      <a.mesh scale={scale}>
-        <sphereGeometry args={[0.5, 32, 32]} />
-        <meshBasicMaterial
+      {/* Meteor trail */}
+      <a.mesh ref={trailRef} scale={[scale.get() * 1.5, scale.get() * 0.3, scale.get() * 1.5]}>
+        <coneGeometry args={[nodeScale * 0.8, nodeScale * 2, 8]} />
+        <MeshWobbleMaterial
           color={active ? activeColor : defaultColor}
           transparent
           opacity={active ? 0.4 : 0.3}
           side={THREE.BackSide}
+          factor={0.2}
+          speed={1}
         />
       </a.mesh>
-
-      {/* Active state outer glow */}
-      {active && (
-        <a.mesh scale={scale}>
-          <sphereGeometry args={[0.6, 32, 32]} />
-          <meshBasicMaterial
-            color={activeColor}
-            transparent
-            opacity={0.2}
-            side={THREE.BackSide}
-          />
-        </a.mesh>
-      )}
 
       {/* Theme label with active state */}
       <Billboard position={[0, 0.8, 0]}>
@@ -219,7 +264,7 @@ function ThemeNode({
         </Html>
       </Billboard>
 
-      {/* Child nodes with mobile scaling */}
+      {/* Child nodes with enhanced visuals */}
       {active && children.map((child, i) => {
         const childAngle = (i / children.length) * Math.PI * 2;
         const cx = Math.cos(childAngle) * childOrbitRadius;
@@ -231,9 +276,10 @@ function ThemeNode({
             position={[cx, cy, 0]}
             scale={scale}
           >
+            {/* Small meteor */}
             <mesh>
-              <sphereGeometry args={[childNodeScale, 24, 24]} />
-              <meshStandardMaterial
+              <octahedronGeometry args={[childNodeScale, 0]} />
+              <MeshDistortMaterial
                 color={activeColor}
                 emissive={activeColor}
                 emissiveIntensity={1.5}
@@ -241,17 +287,21 @@ function ThemeNode({
                 metalness={0.8}
                 transparent
                 opacity={opacity.get()}
+                distort={0.1}
+                speed={1.5}
               />
             </mesh>
 
-            {/* Enhanced child node glow */}
-            <mesh>
-              <sphereGeometry args={[0.25, 24, 24]} />
-              <meshBasicMaterial
+            {/* Child meteor trail */}
+            <mesh scale={[1.2, 0.2, 1.2]}>
+              <coneGeometry args={[childNodeScale * 0.6, childNodeScale * 1.5, 8]} />
+              <MeshWobbleMaterial
                 color={activeColor}
                 transparent
-                opacity={0.4}
+                opacity={0.3}
                 side={THREE.BackSide}
+                factor={0.15}
+                speed={1.2}
               />
             </mesh>
 
