@@ -10,6 +10,7 @@
   
   @media (max-width: 768px) {
     flex-direction: column;
+    height: 100vh;
   }
 }
 
@@ -337,11 +338,16 @@
   flex: 1;
   height: 100vh;
   min-width: 0;
-  z-index: 10;
+  z-index: 1;
   
   @media (max-width: 768px) {
-    height: 60vh;
-    min-height: 360px;
+    height: calc(100vh - 200px);
+    min-height: 320px;
+  }
+
+  @media (max-width: 360px) {
+    height: calc(100vh - 180px);
+    min-height: 280px;
   }
 }
 
@@ -634,8 +640,11 @@
   }
 
   .themeLabel {
-    padding: 6px 12px;
-    max-width: 220px;
+    padding: 5px 10px;
+    max-width: 200px;
+    background: rgba(13, 4, 35, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     
     .emoji {
       font-size: 1.1em;
@@ -647,8 +656,11 @@
   }
 
   .childLabel {
-    padding: 4px 10px;
-    max-width: 180px;
+    padding: 4px 8px;
+    max-width: 160px;
+    background: rgba(13, 4, 35, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     
     .labelText {
       font-size: 0.75rem;
@@ -656,15 +668,14 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 360px) {
   .container {
-    height: 70vh;
-    min-height: 400px;
+    height: 100vh;
   }
 
   .themeLabel {
-    padding: 5px 10px;
-    max-width: 180px;
+    padding: 4px 8px;
+    max-width: 160px;
     
     .emoji {
       font-size: 1em;
@@ -676,11 +687,28 @@
   }
 
   .childLabel {
-    padding: 3px 8px;
-    max-width: 150px;
+    padding: 3px 6px;
+    max-width: 140px;
     
     .labelText {
       font-size: 0.7rem;
+    }
+  }
+}
+
+// Добавляем стили для предотвращения проблем с виртуальной клавиатурой на iOS
+@supports (-webkit-touch-callout: none) {
+  .container {
+    height: -webkit-fill-available;
+  }
+  
+  .graphContainer {
+    height: calc(-webkit-fill-available - 200px);
+  }
+  
+  @media (max-width: 360px) {
+    .graphContainer {
+      height: calc(-webkit-fill-available - 180px);
     }
   }
 }
@@ -689,12 +717,19 @@
 .themeCardsContainer {
   position: relative;
   width: 100%;
-  background: linear-gradient(180deg, rgba(26, 27, 61, 0) 0%, var(--primary-bg) 100%);
-  padding: 1rem;
-  z-index: 20;
+  z-index: 2;
+  padding: 0.75rem 1rem;
+  margin-top: auto;
+  background: transparent;
+  padding-bottom: calc(0.75rem + 60px);
   
   @media (min-width: 769px) {
     display: none;
+  }
+
+  @media (max-width: 360px) {
+    padding: 0.5rem 0.75rem;
+    padding-bottom: calc(0.5rem + 60px);
   }
 }
 
@@ -702,7 +737,7 @@
   display: flex;
   gap: 0.75rem;
   overflow-x: auto;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -711,25 +746,37 @@
   &::-webkit-scrollbar {
     display: none;
   }
+
+  @media (max-width: 360px) {
+    gap: 0.5rem;
+  }
 }
 
 .themeCard {
   flex: 0 0 auto;
-  width: 280px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 1rem;
+  width: 260px;
+  background: rgba(13, 4, 35, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.75rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   scroll-snap-align: start;
-  backdrop-filter: blur(12px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   
+  @media (max-width: 360px) {
+    width: 220px;
+    padding: 0.625rem;
+    border-radius: 10px;
+  }
+  
   &:hover {
-    background: var(--glass-hover);
+    background: rgba(13, 4, 35, 0.85);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.15);
     
     .emoji {
       transform: scale(1.1);
@@ -737,7 +784,7 @@
   }
   
   &.active {
-    background: var(--card-active);
+    background: rgba(0, 255, 255, 0.15);
     border-color: var(--accent-color);
     box-shadow: 0 0 20px var(--accent-glow);
     
@@ -756,7 +803,11 @@
 .cardContent {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.625rem;
+  
+  @media (max-width: 360px) {
+    gap: 0.5rem;
+  }
 }
 
 .cardInfo {
@@ -769,32 +820,45 @@
 
 .cardTitle {
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 1.3;
   letter-spacing: -0.01em;
   transition: all 0.3s ease;
+  
+  @media (max-width: 360px) {
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
 }
 
 .cardSubtitle {
   color: var(--text-secondary);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
   gap: 0.25rem;
   
+  @media (max-width: 360px) {
+    font-size: 0.75rem;
+  }
+  
   &::before {
     content: '🛸';
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   }
 }
 
 .emoji {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
   transition: all 0.3s ease;
   flex-shrink: 0;
+  
+  @media (max-width: 360px) {
+    font-size: 1.2rem;
+  }
 }
 
 .subgraphCards {
