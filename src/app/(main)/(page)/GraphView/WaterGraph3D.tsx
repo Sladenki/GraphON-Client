@@ -341,18 +341,12 @@ function LeftPanel({
     [data, selectedTheme]
   );
 
-  // Remove animations for desktop version
-  const themeBlocks = useSpring({
-    from: { opacity: 1, transform: 'none' },
-    to: { opacity: 1, transform: 'none' },
-    config: { tension: 300, friction: 20 }
-  });
+  // Add hover state for theme blocks
+  const [hoveredThemeId, setHoveredThemeId] = useState<string | null>(null);
 
-  const subgraphBlocks = useSpring({
-    from: { opacity: 1, transform: 'none' },
-    to: { opacity: 1, transform: 'none' },
-    config: { tension: 300, friction: 20 }
-  });
+  // Add animation for theme count
+  const themeCount = useMemo(() => themes.length, [themes]);
+  const subgraphCount = useMemo(() => subgraphs.length, [subgraphs]);
 
   if (!root || !themes.length) {
     return null;
@@ -361,49 +355,96 @@ function LeftPanel({
   return (
     <div className={styles.leftPanel}>
       <div className={styles.panelContent}>
-        <h1 className={styles.title}>Планета – КГТУ</h1>
+        <h1 className={styles.title}>
+          Планета – КГТУ
+          <span className={styles.themeCount}>
+            {themeCount} {themeCount === 1 ? 'спутник' : themeCount < 5 ? 'спутника' : 'спутников'}
+          </span>
+        </h1>
+        
         <h2 className={styles.subtitle}>
-          {selectedTheme ? `${THEME_CONFIG[selectedTheme.name]} ${selectedTheme.name}` : 'Изученные спутники'}
+          {selectedTheme ? (
+            <>
+              <span className={styles.emoji}>{THEME_CONFIG[selectedTheme.name] || '✨'}</span>
+              {selectedTheme.name}
+              <span className={styles.subgraphCount}>
+                {subgraphCount} {subgraphCount === 1 ? 'подспутник' : subgraphCount < 5 ? 'подспутника' : 'подспутников'}
+              </span>
+            </>
+          ) : (
+            'Изученные спутники'
+          )}
         </h2>
         
         {!selectedTheme ? (
-          <animated.div style={themeBlocks} className={styles.themeBlocks}>
+          <div className={styles.themeBlocks}>
             {themes.map((theme) => (
               <div
                 key={theme._id.$oid}
                 className={`${styles.themeBlock} ${selectedTheme?._id.$oid === theme._id.$oid ? styles.active : ''}`}
                 onClick={() => onThemeSelect(theme)}
+                onMouseEnter={() => setHoveredThemeId(theme._id.$oid)}
+                onMouseLeave={() => setHoveredThemeId(null)}
               >
                 <span className={styles.emoji}>{THEME_CONFIG[theme.name] || '✨'}</span>
-                <span className={styles.themeName}>{theme.name}</span>
+                <div className={styles.themeInfo}>
+                  <span className={styles.themeName}>{theme.name}</span>
+                  {theme.childGraphNum > 0 && (
+                    <span className={styles.childCount}>
+                      {theme.childGraphNum} {theme.childGraphNum === 1 ? 'подспутник' : theme.childGraphNum < 5 ? 'подспутника' : 'подспутников'}
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
-          </animated.div>
+          </div>
         ) : (
-          <animated.div style={subgraphBlocks} className={styles.subgraphBlocks}>
+          <div className={styles.subgraphBlocks}>
             <button 
               className={styles.backButton}
               onClick={() => onThemeSelect(null)}
+              aria-label="Вернуться к темам"
             >
               Назад к темам
             </button>
-            {/* <h3 className={styles.subgraphTitle}>
-              {THEME_CONFIG[selectedTheme.name]} {selectedTheme.name}
-            </h3> */}
-            {subgraphs.map((subgraph) => (
-              <div
-                key={subgraph._id.$oid}
-                className={styles.subgraphBlock}
-              >
-                <span className={styles.subgraphName}>{subgraph.name}</span>
-                {subgraph.directorName && (
-                  <span className={styles.directorName}>
-                    Руководитель: {subgraph.directorName}
-                  </span>
-                )}
+            
+            {subgraphs.length > 0 ? (
+              subgraphs.map((subgraph) => (
+                <div
+                  key={subgraph._id.$oid}
+                  className={styles.subgraphBlock}
+                  onClick={() => {
+                    // Можно добавить дополнительную функциональность при клике на подспутник
+                    console.log('Selected subgraph:', subgraph);
+                  }}
+                >
+                  <div className={styles.subgraphInfo}>
+                    <span className={styles.subgraphName}>{subgraph.name}</span>
+                    {subgraph.directorName && (
+                      <span className={styles.directorName}>
+                        {subgraph.directorName}
+                      </span>
+                    )}
+                  </div>
+                  {subgraph.vkLink && (
+                    <a 
+                      href={subgraph.vkLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.vkLink}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      VK
+                    </a>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className={styles.emptyState}>
+                У этого спутника пока нет подспутников
               </div>
-            ))}
-          </animated.div>
+            )}
+          </div>
         )}
       </div>
     </div>
