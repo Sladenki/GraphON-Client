@@ -446,25 +446,25 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           style={{ width: '100%', height: '100%' }}
         >
           {/* Scene setup */}
-          <color attach="background" args={['#0a0020']} />
-          <fog attach="fog" args={['#0a0020', 15, 30]} />
+          <color attach="background" args={['#1a1b3d']} />
+          <fog attach="fog" args={['#1a1b3d', 15, 30]} />
           
           {/* Lighting */}
-          <ambientLight intensity={0.7} />
-          <directionalLight position={[5, 5, 5]} intensity={1.2} />
-          <pointLight position={[-5, -5, -5]} intensity={0.5} color="#ff4fd8" />
+          <ambientLight intensity={0.6} />
+          <directionalLight position={[5, 5, 5]} intensity={1} />
+          <pointLight position={[-5, -5, -5]} intensity={0.4} color="#a04fff" />
           
           {/* Effects */}
           <EffectComposer>
             <Bloom 
-              luminanceThreshold={0.1}
+              luminanceThreshold={0.15}
               luminanceSmoothing={0.9}
-              intensity={1.5}
+              intensity={1.3}
             />
             {activeNodeRef.current && (
               <Outline
                 selection={[activeNodeRef.current]}
-                edgeStrength={100}
+                edgeStrength={90}
                 pulseSpeed={0.5}
                 visibleEdgeColor={0x00ffff}
                 hiddenEdgeColor={0x00ffff}
@@ -477,14 +477,14 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
             )}
           </EffectComposer>
 
-          {/* Stars background */}
+          {/* Stars background with adjusted intensity */}
           <Stars 
             radius={100}
             depth={50}
-            count={5000}
-            factor={2}
+            count={4000}
+            factor={1.8}
             fade
-            speed={1}
+            speed={0.9}
           />
 
           {/* Controls */}

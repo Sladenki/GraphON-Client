@@ -1,17 +1,17 @@
 // Color variables
 :root {
-  --primary-bg: #0a0020;
-  --panel-bg: rgba(13, 4, 35, 0.95);
-  --card-bg: rgba(160, 79, 255, 0.08);
-  --card-hover: rgba(160, 79, 255, 0.15);
-  --card-active: rgba(0, 255, 255, 0.1);
-  --border-color: rgba(160, 79, 255, 0.25);
+  --primary-bg: #1a1b3d;
+  --panel-bg: rgba(26, 27, 61, 0.95);
+  --card-bg: rgba(160, 79, 255, 0.1);
+  --card-hover: rgba(160, 79, 255, 0.18);
+  --card-active: rgba(0, 255, 255, 0.12);
+  --border-color: rgba(160, 79, 255, 0.3);
   --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.85);
+  --text-secondary: rgba(255, 255, 255, 0.9);
   --accent-color: #00ffff;
-  --accent-glow: rgba(0, 255, 255, 0.3);
+  --accent-glow: rgba(0, 255, 255, 0.25);
   --theme-color: #a04fff;
-  --theme-glow: rgba(160, 79, 255, 0.3);
+  --theme-glow: rgba(160, 79, 255, 0.25);
 }
 
 .container {
@@ -20,7 +20,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--primary-bg);
+  background: linear-gradient(135deg, var(--primary-bg) 0%, #2a2b5d 100%);
   font-family: var(--font-family, system-ui, -apple-system, sans-serif);
   overflow: hidden;
   
