@@ -312,7 +312,9 @@ function LeftPanel({
     <div className={styles.leftPanel}>
       <div className={styles.panelContent}>
         <h1 className={styles.title}>Планета – КГТУ</h1>
-        <h2 className={styles.subtitle}>Изученные спутники</h2>
+        <h2 className={styles.subtitle}>
+          {selectedTheme ? `${THEME_CONFIG[selectedTheme.name]} ${selectedTheme.name}` : 'Изученные спутники'}
+        </h2>
         
         {!selectedTheme ? (
           <animated.div style={themeBlocks} className={styles.themeBlocks}>
@@ -333,11 +335,11 @@ function LeftPanel({
               className={styles.backButton}
               onClick={() => onThemeSelect(null)}
             >
-              ← Назад к темам
+              Назад к темам
             </button>
-            <h3 className={styles.subgraphTitle}>
+            {/* <h3 className={styles.subgraphTitle}>
               {THEME_CONFIG[selectedTheme.name]} {selectedTheme.name}
-            </h3>
+            </h3> */}
             {subgraphs.map((subgraph) => (
               <div
                 key={subgraph._id.$oid}

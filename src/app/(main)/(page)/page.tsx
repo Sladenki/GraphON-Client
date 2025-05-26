@@ -56,14 +56,19 @@ const Homepage = () => {
           setActiveTab={handleTabChange}
         />
 
-        <div className={styles.inputBlock}>
-          <input
-            type="text"
-            placeholder="Поиск..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        {
+          activeTab !== "graphSystem" && (
+            <div className={styles.inputBlock}>
+            <input
+              type="text"
+              placeholder="Поиск..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          )
+        }
+
       </div>
 
       {/* Контент в зависимости от активного таба */}
