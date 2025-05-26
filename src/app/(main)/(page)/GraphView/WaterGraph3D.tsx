@@ -2,6 +2,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Billboard, Html, Stars,useTexture } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { useSpring, a } from '@react-spring/three';
+import { animated } from '@react-spring/web';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import styles from './WaterGraph3D.module.scss';
@@ -212,12 +213,107 @@ function ThemeNode({
   );
 }
 
+// Left Panel Component
+function LeftPanel({ 
+  data, 
+  onThemeSelect, 
+  selectedTheme 
+}: { 
+  data: GraphNode[];
+  onThemeSelect: (theme: GraphNode | null) => void;
+  selectedTheme: GraphNode | null;
+}) {
+  const root = useMemo(() => data.find(n => n.name === "КГТУ"), [data]);
+  const themes = useMemo(() => 
+    data.filter(n => n.parentGraphId?.$oid === root?._id.$oid),
+    [data, root]
+  );
+
+  const subgraphs = useMemo(() => 
+    selectedTheme ? data.filter(n => n.parentGraphId?.$oid === selectedTheme._id.$oid) : [],
+    [data, selectedTheme]
+  );
+
+  // Animation for theme blocks
+  const themeBlocks = useSpring({
+    from: { opacity: 0, transform: 'translateX(-50px)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
+    config: { tension: 300, friction: 20 }
+  });
+
+  // Animation for subgraph blocks
+  const subgraphBlocks = useSpring({
+    from: { opacity: 0, transform: 'translateX(-30px)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
+    config: { tension: 300, friction: 20 }
+  });
+
+  return (
+    <div className={styles.leftPanel}>
+      <div className={styles.panelContent}>
+        <h1 className={styles.title}>Планета – КГТУ</h1>
+        <h2 className={styles.subtitle}>Изученные спутники</h2>
+        
+        {!selectedTheme ? (
+          <animated.div style={themeBlocks} className={styles.themeBlocks}>
+            {themes.map((theme, index) => (
+              <div
+                key={theme._id.$oid}
+                className={styles.themeBlock}
+                onClick={() => onThemeSelect(theme)}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <span className={styles.emoji}>{THEME_CONFIG[theme.name] || '✨'}</span>
+                <span className={styles.themeName}>{theme.name}</span>
+              </div>
+            ))}
+          </animated.div>
+        ) : (
+          <animated.div style={subgraphBlocks} className={styles.subgraphBlocks}>
+            <button 
+              className={styles.backButton}
+              onClick={() => onThemeSelect(null)}
+            >
+              ← Назад к темам
+            </button>
+            <h3 className={styles.subgraphTitle}>
+              {THEME_CONFIG[selectedTheme.name]} {selectedTheme.name}
+            </h3>
+            {subgraphs.map((subgraph, index) => (
+              <div
+                key={subgraph._id.$oid}
+                className={styles.subgraphBlock}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <span className={styles.subgraphName}>{subgraph.name}</span>
+                {subgraph.directorName && (
+                  <span className={styles.directorName}>
+                    Руководитель: {subgraph.directorName}
+                  </span>
+                )}
+              </div>
+            ))}
+          </animated.div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Main component
 const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
   const [hoveredThemeId, setHoveredThemeId] = useState<string | null>(null);
+  const [selectedTheme, setSelectedTheme] = useState<GraphNode | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
+
+  // Find root and theme nodes
+  const root = useMemo(() => data.find(n => n.name === "КГТУ"), [data]);
+  const themes = useMemo(() => 
+    data.filter(n => n.parentGraphId?.$oid === root?._id.$oid),
+    [data, root]
+  );
 
   // Handle window resize
   useEffect(() => {
@@ -231,13 +327,6 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Find root and theme nodes
-  const root = useMemo(() => data.find(n => n.name === "КГТУ"), [data]);
-  const themes = useMemo(() => 
-    data.filter(n => n.parentGraphId?.$oid === root?._id.$oid),
-    [data, root]
-  );
-
   // Handle click outside
   const handlePointerMissed = () => {
     setActiveThemeId(null);
@@ -247,66 +336,73 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
 
   return (
     <div ref={containerRef} className={styles.container}>
-      <Canvas
-        camera={{ position: [0, 0, 12], fov: 50 }}
-        onPointerMissed={handlePointerMissed}
-        style={{ width: '100%', height: '100%' }}
-      >
-        {/* Scene setup */}
-        <color attach="background" args={['#0a0020']} />
-        <fog attach="fog" args={['#0a0020', 15, 30]} />
-        
-        {/* Lighting */}
-        <ambientLight intensity={0.7} />
-        <directionalLight position={[5, 5, 5]} intensity={1.2} />
-        <pointLight position={[-5, -5, -5]} intensity={0.5} color="#ff4fd8" />
-        
-        {/* Effects */}
-        <EffectComposer>
-          <Bloom 
-            luminanceThreshold={0.1}
-            luminanceSmoothing={0.9}
-            intensity={1.5}
+      <LeftPanel 
+        data={data}
+        onThemeSelect={setSelectedTheme}
+        selectedTheme={selectedTheme}
+      />
+      <div className={styles.graphContainer}>
+        <Canvas
+          camera={{ position: [0, 0, 12], fov: 50 }}
+          onPointerMissed={handlePointerMissed}
+          style={{ width: '100%', height: '100%' }}
+        >
+          {/* Scene setup */}
+          <color attach="background" args={['#0a0020']} />
+          <fog attach="fog" args={['#0a0020', 15, 30]} />
+          
+          {/* Lighting */}
+          <ambientLight intensity={0.7} />
+          <directionalLight position={[5, 5, 5]} intensity={1.2} />
+          <pointLight position={[-5, -5, -5]} intensity={0.5} color="#ff4fd8" />
+          
+          {/* Effects */}
+          <EffectComposer>
+            <Bloom 
+              luminanceThreshold={0.1}
+              luminanceSmoothing={0.9}
+              intensity={1.5}
+            />
+          </EffectComposer>
+
+          {/* Stars background */}
+          <Stars 
+            radius={100}
+            depth={50}
+            count={5000}
+            factor={2}
+            fade
+            speed={1}
           />
-        </EffectComposer>
 
-        {/* Stars background */}
-        <Stars 
-          radius={100}
-          depth={50}
-          count={5000}
-          factor={2}
-          fade
-          speed={1}
-        />
-
-        {/* Controls */}
-        <OrbitControls
-          enablePan={false}
-          minDistance={8}
-          maxDistance={20}
-          enableDamping
-          dampingFactor={0.05}
-        />
-
-        {/* Planet */}
-        <Planet />
-
-        {/* Theme nodes */}
-        {themes.map((theme, i) => (
-          <ThemeNode
-            key={theme._id.$oid}
-            theme={theme}
-            index={i}
-            total={themes.length}
-            active={activeThemeId === theme._id.$oid}
-            hovered={hoveredThemeId === theme._id.$oid}
-            setActive={setActiveThemeId}
-            setHovered={setHoveredThemeId}
-            data={data}
+          {/* Controls */}
+          <OrbitControls
+            enablePan={false}
+            minDistance={8}
+            maxDistance={20}
+            enableDamping
+            dampingFactor={0.05}
           />
-        ))}
-      </Canvas>
+
+          {/* Planet */}
+          <Planet />
+
+          {/* Theme nodes */}
+          {themes.map((theme: GraphNode, i: number) => (
+            <ThemeNode
+              key={theme._id.$oid}
+              theme={theme}
+              index={i}
+              total={themes.length}
+              active={activeThemeId === theme._id.$oid}
+              hovered={hoveredThemeId === theme._id.$oid}
+              setActive={setActiveThemeId}
+              setHovered={setHoveredThemeId}
+              data={data}
+            />
+          ))}
+        </Canvas>
+      </div>
     </div>
   );
 };
