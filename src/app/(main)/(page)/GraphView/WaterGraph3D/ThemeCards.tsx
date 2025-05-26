@@ -39,6 +39,7 @@ export function ThemeCards({
           {themes.map((theme) => (
             <button
               key={theme._id.$oid}
+            //    @ts-expect-error 123
               className={`${styles.themeCard} ${selectedTheme?._id.$oid === theme._id.$oid ? styles.active : ''}`}
               onClick={() => onThemeSelect(theme)}
             >

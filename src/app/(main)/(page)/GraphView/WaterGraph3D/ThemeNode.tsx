@@ -122,10 +122,12 @@ export function ThemeNode({
       requestAnimationFrame(updateLabelVisibility);
     };
 
+        //    @ts-expect-error 123
     camera.addEventListener('change', updateOnCameraChange);
     updateLabelVisibility();
 
     return () => {
+          //    @ts-expect-error 123
       camera.removeEventListener('change', updateOnCameraChange);
     };
   }, [camera, children, childOrbitRadius]);

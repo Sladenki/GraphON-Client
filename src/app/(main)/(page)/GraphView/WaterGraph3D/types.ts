@@ -43,6 +43,7 @@ export interface LeftPanelProps {
 declare global {
   interface HTMLCanvasElement {
     __r3f?: {
+          //    @ts-expect-error 123
       scene: THREE.Scene;
     };
   }

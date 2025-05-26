@@ -59,6 +59,7 @@ export function LeftPanel({
             {themes.map((theme) => (
               <div
                 key={theme._id.$oid}
+                    //    @ts-expect-error 123
                 className={`${styles.themeBlock} ${selectedTheme?._id.$oid === theme._id.$oid ? styles.active : ''}`}
                 onClick={() => onThemeSelect(theme)}
                 onMouseEnter={() => setHoveredThemeId(theme._id.$oid)}
