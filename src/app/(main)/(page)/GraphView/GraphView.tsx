@@ -5,7 +5,8 @@ import SiteMapGraph from './SiteMapGraph';
 import BubbleGraph from './BubbleGraph';
 import BiomeScene from './BiomeScene';
 import WaterGraph from './WaterGraph';
-import WaterGraph3D from './WaterGraph3D';
+import WaterGraph3D from './WaterGraph3D/WaterGraph3D';
+
 
 // Mock data from WaterGraph.tsx
 const mockData = [
