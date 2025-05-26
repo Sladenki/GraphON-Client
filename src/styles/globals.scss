@@ -44,6 +44,25 @@
   --node-expand-icon-hover: var(--primary-color);
   --node-expand-icon-transition: transform 0.2s ease;
   --node-expand-icon-rotation: 45deg;
+
+  // 3D граф
+  --primary-bg: #1a1b3d;
+  --panel-bg: rgba(26, 27, 61, 0.95);
+  --card-bg: rgba(160, 79, 255, 0.08);
+  --card-hover: rgba(160, 79, 255, 0.15);
+  --card-active: rgba(0, 255, 255, 0.12);
+  --border-color: rgba(160, 79, 255, 0.2);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --accent-color: #00ffff;
+  --accent-glow: rgba(0, 255, 255, 0.25);
+  --theme-color: #a04fff;
+  --theme-glow: rgba(160, 79, 255, 0.25);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-hover: rgba(255, 255, 255, 0.05);
+  --gradient-start: #3a1c6b;
+  --gradient-end: #2a2b5d;
 }
 
 html[data-theme="light"] {

@@ -1,3 +1,5 @@
+'use client'
+
 import { Canvas, useFrame, useThree, ThreeEvent } from '@react-three/fiber';
 import { OrbitControls, Billboard, Html, Stars,useTexture, Sphere, MeshDistortMaterial, MeshWobbleMaterial, MeshReflectorMaterial } from '@react-three/drei';
 import { EffectComposer, Bloom, Outline } from '@react-three/postprocessing';

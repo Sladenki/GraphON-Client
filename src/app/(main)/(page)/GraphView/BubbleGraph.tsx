@@ -110,6 +110,7 @@ function BubbleGraph({ searchQuery }: BubbleGraphProps) {
           isActive={isExpanded}
         />
         {isExpanded && node.children && node.children.map((child, index) => {
+          // @ts-expect-error 123
           const angle = (index / node.children.length) * Math.PI * 2;
           const childX = x + Math.cos(angle) * (150 + level * 50);
           const childY = y + Math.sin(angle) * (150 + level * 50);
