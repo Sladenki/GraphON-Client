@@ -3,7 +3,7 @@ import { OrbitControls, Billboard, Html, Stars,useTexture } from '@react-three/d
 import { EffectComposer, Bloom, Outline } from '@react-three/postprocessing';
 import { useSpring, a, SpringValue } from '@react-spring/three';
 import { animated } from '@react-spring/web';
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import * as THREE from 'three';
 import styles from './WaterGraph3D.module.scss';
 
@@ -37,6 +37,23 @@ const THEME_CONFIG: Record<string, string> = {
   "Медиа": "📰",
   "Студенческие отряды": "👷"
 };
+
+// Add media query hook
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => setMatches(media.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }, [matches, query]);
+
+  return matches;
+}
 
 // Planet component
 function Planet() {
@@ -83,7 +100,8 @@ function ThemeNode({
   setActive, 
   setHovered,
   onThemeSelect,
-  data 
+  data,
+  isMobile 
 }: { 
   theme: GraphNode;
   index: number;
@@ -94,16 +112,22 @@ function ThemeNode({
   setHovered: (id: string | null) => void;
   onThemeSelect: (theme: GraphNode) => void;
   data: GraphNode[];
+  isMobile: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
   
-  // Calculate position on the sphere
+  // Adjust orbit radius and node scale for mobile
+  const orbitRadius = useMemo(() => isMobile ? 2.8 : 3.5, [isMobile]);
+  const nodeScale = useMemo(() => isMobile ? 0.35 : 0.45, [isMobile]);
+  const childOrbitRadius = useMemo(() => isMobile ? 1.2 : 1.5, [isMobile]);
+  const childNodeScale = useMemo(() => isMobile ? 0.18 : 0.22, [isMobile]);
+
+  // Calculate position on the sphere with mobile adjustments
   const angle = (index / total) * Math.PI * 2;
-  const r = 3.5;
-  const x = Math.cos(angle) * r;
-  const y = Math.sin(angle) * r;
-  const z = 0.5 * Math.sin(angle * 2);
+  const x = Math.cos(angle) * orbitRadius;
+  const y = Math.sin(angle) * orbitRadius;
+  const z = isMobile ? 0.3 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
 
   // Spring animations with enhanced active state
   const { scale, glow, opacity } = useSpring({
@@ -118,9 +142,6 @@ function ThemeNode({
     data.filter(n => n.parentGraphId?.$oid === theme._id.$oid),
     [theme, data]
   );
-
-  // Orbit radius for child nodes
-  const orbitR = 1.5;
 
   // Handle click with theme selection
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
@@ -140,10 +161,11 @@ function ThemeNode({
       onPointerOver={() => setHovered(theme._id.$oid)}
       onPointerOut={() => setHovered(null)}
       onClick={handleClick}
+      userData={{ themeId: theme._id.$oid }}
     >
-      {/* Theme node sphere with enhanced active state */}
+      {/* Theme node sphere with mobile scaling */}
       <a.mesh ref={meshRef} scale={scale}>
-        <sphereGeometry args={[0.45, 32, 32]} />
+        <sphereGeometry args={[nodeScale, 32, 32]} />
         <meshStandardMaterial
           color={active ? activeColor : defaultColor}
           emissive={active ? activeColor : defaultColor}
@@ -187,11 +209,11 @@ function ThemeNode({
         </Html>
       </Billboard>
 
-      {/* Child nodes with enhanced active state */}
+      {/* Child nodes with mobile scaling */}
       {active && children.map((child, i) => {
         const childAngle = (i / children.length) * Math.PI * 2;
-        const cx = Math.cos(childAngle) * orbitR;
-        const cy = Math.sin(childAngle) * orbitR;
+        const cx = Math.cos(childAngle) * childOrbitRadius;
+        const cy = Math.sin(childAngle) * childOrbitRadius;
         
         return (
           <a.group
@@ -199,9 +221,8 @@ function ThemeNode({
             position={[cx, cy, 0]}
             scale={scale}
           >
-            {/* Child node sphere */}
             <mesh>
-              <sphereGeometry args={[0.22, 24, 24]} />
+              <sphereGeometry args={[childNodeScale, 24, 24]} />
               <meshStandardMaterial
                 color={activeColor}
                 emissive={activeColor}
@@ -258,19 +279,22 @@ function LeftPanel({
     [data, selectedTheme]
   );
 
-  // Animation for theme blocks
+  // Remove animations for desktop version
   const themeBlocks = useSpring({
-    from: { opacity: 0, transform: 'translateX(-50px)' },
-    to: { opacity: 1, transform: 'translateX(0)' },
+    from: { opacity: 1, transform: 'none' },
+    to: { opacity: 1, transform: 'none' },
     config: { tension: 300, friction: 20 }
   });
 
-  // Animation for subgraph blocks
   const subgraphBlocks = useSpring({
-    from: { opacity: 0, transform: 'translateX(-30px)' },
-    to: { opacity: 1, transform: 'translateX(0)' },
+    from: { opacity: 1, transform: 'none' },
+    to: { opacity: 1, transform: 'none' },
     config: { tension: 300, friction: 20 }
   });
+
+  if (!root || !themes.length) {
+    return null;
+  }
 
   return (
     <div className={styles.leftPanel}>
@@ -280,12 +304,11 @@ function LeftPanel({
         
         {!selectedTheme ? (
           <animated.div style={themeBlocks} className={styles.themeBlocks}>
-            {themes.map((theme, index) => (
+            {themes.map((theme) => (
               <div
                 key={theme._id.$oid}
-                className={styles.themeBlock}
+                className={`${styles.themeBlock} ${selectedTheme?._id.$oid === theme._id.$oid ? styles.active : ''}`}
                 onClick={() => onThemeSelect(theme)}
-                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <span className={styles.emoji}>{THEME_CONFIG[theme.name] || '✨'}</span>
                 <span className={styles.themeName}>{theme.name}</span>
@@ -303,11 +326,10 @@ function LeftPanel({
             <h3 className={styles.subgraphTitle}>
               {THEME_CONFIG[selectedTheme.name]} {selectedTheme.name}
             </h3>
-            {subgraphs.map((subgraph, index) => (
+            {subgraphs.map((subgraph) => (
               <div
                 key={subgraph._id.$oid}
                 className={styles.subgraphBlock}
-                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <span className={styles.subgraphName}>{subgraph.name}</span>
                 {subgraph.directorName && (
@@ -324,14 +346,21 @@ function LeftPanel({
   );
 }
 
-// Main component
+// Main component with responsive handling
 const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
   const [hoveredThemeId, setHoveredThemeId] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<GraphNode | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const activeNodeRef = useRef<THREE.Object3D | null>(null);
+
+  // Adjust camera position for mobile
+  const cameraPosition = useMemo(() => 
+    isMobile ? [0, 0, 10] : [0, 0, 12],
+    [isMobile]
+  );
 
   // Find root and theme nodes
   const root = useMemo(() => data.find(n => n.name === "КГТУ"), [data]);
@@ -372,17 +401,19 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     setSelectedTheme(null);
   };
 
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      if (containerRef.current) {
-        setWidth(containerRef.current.offsetWidth);
-      }
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+  // Handle window resize with debounce
+  const handleResize = useCallback(() => {
+    if (containerRef.current) {
+      setWidth(containerRef.current.offsetWidth);
+    }
   }, []);
+
+  useEffect(() => {
+    handleResize();
+    const debouncedResize = debounce(handleResize, 250);
+    window.addEventListener('resize', debouncedResize);
+    return () => window.removeEventListener('resize', debouncedResize);
+  }, [handleResize]);
 
   if (!root) return null;
 
@@ -395,7 +426,10 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
       />
       <div className={styles.graphContainer}>
         <Canvas
-          camera={{ position: [0, 0, 12], fov: 50 }}
+          camera={{ 
+            position: cameraPosition,
+            fov: isMobile ? 45 : 50 
+          }}
           onPointerMissed={handlePointerMissed}
           style={{ width: '100%', height: '100%' }}
         >
@@ -453,7 +487,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           {/* Planet */}
           <Planet />
 
-          {/* Theme nodes with synchronized selection */}
+          {/* Theme nodes with mobile prop */}
           {themes.map((theme: GraphNode, i: number) => (
             <ThemeNode
               key={theme._id.$oid}
@@ -466,6 +500,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               setHovered={setHoveredThemeId}
               onThemeSelect={handleThemeSelect}
               data={data}
+              isMobile={isMobile}
             />
           ))}
         </Canvas>
@@ -473,5 +508,17 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     </div>
   );
 };
+
+// Debounce helper
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
 
 export default WaterGraph3D; 
