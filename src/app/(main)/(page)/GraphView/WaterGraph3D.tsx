@@ -81,7 +81,8 @@ function ThemeNode({
   active, 
   hovered, 
   setActive, 
-  setHovered, 
+  setHovered,
+  onThemeSelect,
   data 
 }: { 
   theme: GraphNode;
@@ -91,6 +92,7 @@ function ThemeNode({
   hovered: boolean;
   setActive: (id: string | null) => void;
   setHovered: (id: string | null) => void;
+  onThemeSelect: (theme: GraphNode) => void;
   data: GraphNode[];
 }) {
   const groupRef = useRef<THREE.Group>(null);
@@ -119,16 +121,20 @@ function ThemeNode({
   // Orbit radius for child nodes
   const orbitR = 1.5;
 
+  // Handle click with theme selection
+  const handleClick = (e: THREE.Event) => {
+    e.stopPropagation();
+    setActive(active ? null : theme._id.$oid);
+    onThemeSelect(theme);
+  };
+
   return (
     <group 
       ref={groupRef}
       position={[x, y, z]}
       onPointerOver={() => setHovered(theme._id.$oid)}
       onPointerOut={() => setHovered(null)}
-      onClick={(e) => {
-        e.stopPropagation();
-        setActive(active ? null : theme._id.$oid);
-      }}
+      onClick={handleClick}
     >
       {/* Theme node sphere */}
       <a.mesh scale={scale}>
@@ -315,6 +321,18 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     [data, root]
   );
 
+  // Handle theme selection from both sources
+  const handleThemeSelect = (theme: GraphNode | null) => {
+    setSelectedTheme(theme);
+    setActiveThemeId(theme?._id.$oid || null);
+  };
+
+  // Handle click outside
+  const handlePointerMissed = () => {
+    setActiveThemeId(null);
+    setSelectedTheme(null);
+  };
+
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
@@ -327,18 +345,13 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Handle click outside
-  const handlePointerMissed = () => {
-    setActiveThemeId(null);
-  };
-
   if (!root) return null;
 
   return (
     <div ref={containerRef} className={styles.container}>
       <LeftPanel 
         data={data}
-        onThemeSelect={setSelectedTheme}
+        onThemeSelect={handleThemeSelect}
         selectedTheme={selectedTheme}
       />
       <div className={styles.graphContainer}>
@@ -387,7 +400,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           {/* Planet */}
           <Planet />
 
-          {/* Theme nodes */}
+          {/* Theme nodes with synchronized selection */}
           {themes.map((theme: GraphNode, i: number) => (
             <ThemeNode
               key={theme._id.$oid}
@@ -398,6 +411,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               hovered={hoveredThemeId === theme._id.$oid}
               setActive={setActiveThemeId}
               setHovered={setHoveredThemeId}
+              onThemeSelect={handleThemeSelect}
               data={data}
             />
           ))}
