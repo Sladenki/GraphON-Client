@@ -1,7 +1,7 @@
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useThree, ThreeEvent } from '@react-three/fiber';
 import { OrbitControls, Billboard, Html, Stars,useTexture } from '@react-three/drei';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
-import { useSpring, a } from '@react-spring/three';
+import { EffectComposer, Bloom, Outline } from '@react-three/postprocessing';
+import { useSpring, a, SpringValue } from '@react-spring/three';
 import { animated } from '@react-spring/web';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
@@ -96,6 +96,7 @@ function ThemeNode({
   data: GraphNode[];
 }) {
   const groupRef = useRef<THREE.Group>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
   
   // Calculate position on the sphere
   const angle = (index / total) * Math.PI * 2;
@@ -104,10 +105,10 @@ function ThemeNode({
   const y = Math.sin(angle) * r;
   const z = 0.5 * Math.sin(angle * 2);
 
-  // Spring animations
+  // Spring animations with enhanced active state
   const { scale, glow, opacity } = useSpring({
-    scale: hovered || active ? 1.25 : 1,
-    glow: hovered || active ? 1.5 : 0.7,
+    scale: active ? 1.3 : hovered ? 1.25 : 1,
+    glow: active ? 2 : hovered ? 1.5 : 0.7,
     opacity: active ? 1 : 0.7,
     config: { tension: 300, friction: 20 }
   });
@@ -122,11 +123,15 @@ function ThemeNode({
   const orbitR = 1.5;
 
   // Handle click with theme selection
-  const handleClick = (e: THREE.Event) => {
+  const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
     setActive(active ? null : theme._id.$oid);
     onThemeSelect(theme);
   };
+
+  // Memoize material colors
+  const activeColor = useMemo(() => new THREE.Color('#00ffff'), []);
+  const defaultColor = useMemo(() => new THREE.Color('#ff4fd8'), []);
 
   return (
     <group 
@@ -136,40 +141,53 @@ function ThemeNode({
       onPointerOut={() => setHovered(null)}
       onClick={handleClick}
     >
-      {/* Theme node sphere */}
-      <a.mesh scale={scale}>
+      {/* Theme node sphere with enhanced active state */}
+      <a.mesh ref={meshRef} scale={scale}>
         <sphereGeometry args={[0.45, 32, 32]} />
         <meshStandardMaterial
-          color="#ff4fd8"
-          emissive="#ff4fd8"
-          emissiveIntensity={glow}
-          roughness={0.3}
-          metalness={0.8}
+          color={active ? activeColor : defaultColor}
+          emissive={active ? activeColor : defaultColor}
+          emissiveIntensity={glow.get()}
+          roughness={active ? 0.2 : 0.3}
+          metalness={active ? 0.9 : 0.8}
         />
       </a.mesh>
 
-      {/* Glow effect */}
+      {/* Enhanced glow effect for active state */}
       <a.mesh scale={scale}>
         <sphereGeometry args={[0.5, 32, 32]} />
         <meshBasicMaterial
-          color="#ff4fd8"
+          color={active ? activeColor : defaultColor}
           transparent
-          opacity={0.3}
+          opacity={active ? 0.4 : 0.3}
           side={THREE.BackSide}
         />
       </a.mesh>
 
-      {/* Theme label */}
+      {/* Active state outer glow */}
+      {active && (
+        <a.mesh scale={scale}>
+          <sphereGeometry args={[0.6, 32, 32]} />
+          <meshBasicMaterial
+            color={activeColor}
+            transparent
+            opacity={0.2}
+            side={THREE.BackSide}
+          />
+        </a.mesh>
+      )}
+
+      {/* Theme label with active state */}
       <Billboard position={[0, 0.8, 0]}>
         <Html center>
-          <div className={styles.themeLabel}>
+          <div className={`${styles.themeLabel} ${active ? styles.active : ''}`}>
             <span className={styles.emoji}>{THEME_CONFIG[theme.name] || '✨'}</span>
             <span className={styles.labelText}>{theme.name}</span>
           </div>
         </Html>
       </Billboard>
 
-      {/* Child nodes */}
+      {/* Child nodes with enhanced active state */}
       {active && children.map((child, i) => {
         const childAngle = (i / children.length) * Math.PI * 2;
         const cx = Math.cos(childAngle) * orbitR;
@@ -185,21 +203,21 @@ function ThemeNode({
             <mesh>
               <sphereGeometry args={[0.22, 24, 24]} />
               <meshStandardMaterial
-                color="#fff"
-                emissive="#ff4fd8"
-                emissiveIntensity={1.2}
+                color={activeColor}
+                emissive={activeColor}
+                emissiveIntensity={1.5}
                 roughness={0.2}
-                metalness={0.7}
+                metalness={0.8}
               />
             </mesh>
 
-            {/* Child node glow */}
+            {/* Enhanced child node glow */}
             <mesh>
               <sphereGeometry args={[0.25, 24, 24]} />
               <meshBasicMaterial
-                color="#ff4fd8"
+                color={activeColor}
                 transparent
-                opacity={0.3}
+                opacity={0.4}
                 side={THREE.BackSide}
               />
             </mesh>
@@ -313,6 +331,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const [selectedTheme, setSelectedTheme] = useState<GraphNode | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
+  const activeNodeRef = useRef<THREE.Object3D | null>(null);
 
   // Find root and theme nodes
   const root = useMemo(() => data.find(n => n.name === "КГТУ"), [data]);
@@ -320,6 +339,26 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     data.filter(n => n.parentGraphId?.$oid === root?._id.$oid),
     [data, root]
   );
+
+  // Update active node ref when theme changes
+  useEffect(() => {
+    if (activeThemeId) {
+      const activeTheme = themes.find(t => t._id.$oid === activeThemeId);
+      if (activeTheme) {
+        // Find the corresponding 3D object
+        const scene = document.querySelector('canvas')?.__r3f?.scene;
+        if (scene) {
+          scene.traverse((object) => {
+            if (object.userData?.themeId === activeThemeId) {
+              activeNodeRef.current = object;
+            }
+          });
+        }
+      }
+    } else {
+      activeNodeRef.current = null;
+    }
+  }, [activeThemeId, themes]);
 
   // Handle theme selection from both sources
   const handleThemeSelect = (theme: GraphNode | null) => {
@@ -376,6 +415,20 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               luminanceSmoothing={0.9}
               intensity={1.5}
             />
+            {activeNodeRef.current && (
+              <Outline
+                selection={[activeNodeRef.current]}
+                edgeStrength={100}
+                pulseSpeed={0.5}
+                visibleEdgeColor={0x00ffff}
+                hiddenEdgeColor={0x00ffff}
+                blurPass={{
+                  enabled: true,
+                  resolutionScale: 1.0,
+                  blurSize: 1.0
+                }}
+              />
+            )}
           </EffectComposer>
 
           {/* Stars background */}

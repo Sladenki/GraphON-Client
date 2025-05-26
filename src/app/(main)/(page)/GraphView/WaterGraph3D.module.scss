@@ -94,6 +94,8 @@
   opacity: 0;
   transform: translateX(-20px);
   animation: blockFadeIn 0.4s ease forwards;
+  position: relative;
+  overflow: hidden;
   
   @for $i from 1 through 7 {
     &:nth-child(#{$i}) {
@@ -107,9 +109,43 @@
     box-shadow: 0 4px 12px rgba(160, 79, 255, 0.15);
   }
   
+  &.active {
+    background: rgba(43, 43, 43, 0.95);
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    transform: translateX(5px) scale(1.02);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        45deg,
+        rgba(0, 255, 255, 0.1),
+        rgba(160, 79, 255, 0.1)
+      );
+      animation: activeGlow 2s ease-in-out infinite;
+    }
+    
+    .themeName {
+      font-weight: 600;
+      color: #00ffff;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    
+    .emoji {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.5));
+    }
+  }
+  
   .emoji {
     font-size: 1.5rem;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: all 0.3s ease;
   }
   
   .themeName {
@@ -118,6 +154,7 @@
     font-weight: 500;
     line-height: 1.4;
     letter-spacing: -0.01em;
+    transition: all 0.3s ease;
   }
 }
 
@@ -129,6 +166,15 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes activeGlow {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
   }
 }
 
@@ -263,6 +309,23 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 
+  &.active {
+    background: rgba(43, 43, 43, 0.95);
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    
+    .labelText {
+      color: #00ffff;
+      font-weight: 600;
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    }
+    
+    .emoji {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.6));
+    }
+  }
+
   &:hover {
     background: rgba(255, 255, 255, 0.15);
     box-shadow: 0 0 30px rgba(255, 79, 216, 0.3);
@@ -271,6 +334,7 @@
   .emoji {
     font-size: 1.2em;
     filter: drop-shadow(0 0 8px rgba(255, 79, 216, 0.5));
+    transition: all 0.3s ease;
   }
 
   .labelText {
@@ -278,6 +342,7 @@
     font-size: 14px;
     font-weight: 500;
     text-shadow: 0 0 10px rgba(255, 79, 216, 0.5);
+    transition: all 0.3s ease;
   }
 }
 
