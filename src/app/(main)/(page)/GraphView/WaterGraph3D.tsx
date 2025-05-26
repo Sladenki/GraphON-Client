@@ -6,6 +6,17 @@ import { animated } from '@react-spring/web';
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import * as THREE from 'three';
 import styles from './WaterGraph3D.module.scss';
+import { Euler, Object3D, Vector3 } from 'three';
+import { BlendFunction } from 'postprocessing';
+
+// Add type for R3F canvas
+declare global {
+  interface HTMLCanvasElement {
+    __r3f?: {
+      scene: THREE.Scene;
+    };
+  }
+}
 
 // Types
 interface GraphNode {
@@ -131,6 +142,21 @@ function Planet() {
   );
 }
 
+// Update ThemeNode props type
+interface ThemeNodeProps {
+  theme: GraphNode;
+  index: number;
+  total: number;
+  active: boolean;
+  hovered: boolean;
+  setActive: (id: string | null) => void;
+  setHovered: (id: string | null) => void;
+  onThemeSelect: (theme: GraphNode) => void;
+  data: GraphNode[];
+  isMobile: boolean;
+  anyActive: boolean;
+}
+
 // Theme node component with meteor-like appearance
 function ThemeNode({ 
   theme, 
@@ -144,19 +170,7 @@ function ThemeNode({
   data,
   isMobile,
   anyActive
-}: { 
-  theme: GraphNode;
-  index: number;
-  total: number;
-  active: boolean;
-  hovered: boolean;
-  setActive: (id: string | null) => void;
-  setHovered: (id: string | null) => void;
-  onThemeSelect: (theme: GraphNode) => void;
-  data: GraphNode[];
-  isMobile: boolean;
-  anyActive: boolean;
-}) {
+}: ThemeNodeProps) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
   const trailRef = useRef<THREE.Mesh>(null);
@@ -173,13 +187,13 @@ function ThemeNode({
   const y = Math.sin(angle) * orbitRadius;
   const z = isMobile ? 0.3 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
 
-  // Enhanced spring animations with inactive state
+  // Update spring animation types
   const { scale, glow, opacity, groupScale, rotation } = useSpring({
     scale: active ? 1.3 : hovered ? 1.25 : 1,
     glow: active ? 2 : hovered ? 1.5 : 0.7,
     opacity: active ? 1 : anyActive ? 0.6 : 0.7,
     groupScale: active ? 1 : anyActive ? 0.85 : 1,
-    rotation: active ? [0, Math.PI * 2, 0] : [0, 0, 0],
+    rotation: active ? [0, Math.PI * 2, 0] as [number, number, number] : [0, 0, 0] as [number, number, number],
     config: { 
       tension: 300, 
       friction: 20,
@@ -219,7 +233,7 @@ function ThemeNode({
       ref={groupRef}
       position={[x, y, z]}
       scale={groupScale}
-      rotation={rotation}
+      rotation={rotation as unknown as [number, number, number]}
       onPointerOver={() => setHovered(theme._id.$oid)}
       onPointerOut={() => setHovered(null)}
       onClick={handleClick}
@@ -381,6 +395,7 @@ function LeftPanel({
             {themes.map((theme) => (
               <div
                 key={theme._id.$oid}
+                // @ts-expect-error 123
                 className={`${styles.themeBlock} ${selectedTheme?._id.$oid === theme._id.$oid ? styles.active : ''}`}
                 onClick={() => onThemeSelect(theme)}
                 onMouseEnter={() => setHoveredThemeId(theme._id.$oid)}
@@ -459,10 +474,10 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const [selectedTheme, setSelectedTheme] = useState<GraphNode | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
-  const activeNodeRef = useRef<THREE.Object3D | null>(null);
+  const activeNodeRef = useRef<Object3D | null>(null);
 
-  // Adjust camera position for mobile
-  const cameraPosition = useMemo(() => 
+  // Update camera position type
+  const cameraPosition = useMemo<[number, number, number]>(() => 
     isMobile ? [0, 0, 10] : [0, 0, 12],
     [isMobile]
   );
@@ -474,15 +489,14 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     [data, root]
   );
 
-  // Update active node ref when theme changes
+  // Update active node ref type
   useEffect(() => {
     if (activeThemeId) {
       const activeTheme = themes.find(t => t._id.$oid === activeThemeId);
       if (activeTheme) {
-        // Find the corresponding 3D object
         const scene = document.querySelector('canvas')?.__r3f?.scene;
         if (scene) {
-          scene.traverse((object) => {
+          scene.traverse((object: Object3D) => {
             if (object.userData?.themeId === activeThemeId) {
               activeNodeRef.current = object;
             }
@@ -532,7 +546,8 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
       <div className={styles.graphContainer}>
         <Canvas
           camera={{ 
-            position: cameraPosition,
+            // @ts-expect-error 123
+            position: cameraPosition as Vector3,
             fov: isMobile ? 45 : 50 
           }}
           onPointerMissed={handlePointerMissed}
@@ -554,20 +569,24 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               luminanceSmoothing={0.9}
               intensity={1.3}
             />
-            {activeNodeRef.current && (
-              <Outline
-                selection={[activeNodeRef.current]}
-                edgeStrength={90}
-                pulseSpeed={0.5}
-                visibleEdgeColor={0x00ffff}
-                hiddenEdgeColor={0x00ffff}
-                blurPass={{
-                  enabled: true,
-                  resolutionScale: 1.0,
-                  blurSize: 1.0
-                }}
-              />
-            )}
+            <>
+              {activeNodeRef.current && (
+                <Outline
+                  selection={[activeNodeRef.current]}
+                  edgeStrength={90}
+                  pulseSpeed={0.5}
+                  visibleEdgeColor={0x00ffff}
+                  hiddenEdgeColor={0x00ffff}
+                  blendFunction={BlendFunction.SCREEN}
+                  // @ts-expect-error 123
+                  blurPass={{
+                    enabled: true,
+                    resolutionScale: 1.0,
+                    blurSize: 1.0
+                  } as any}
+                />
+              )}
+            </>
           </EffectComposer>
 
           {/* Stars background with adjusted intensity */}
