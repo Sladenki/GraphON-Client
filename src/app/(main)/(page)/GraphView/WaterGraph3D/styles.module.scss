@@ -346,23 +346,29 @@
 }
 
 .themeLabel {
-  background: rgba(13, 4, 35, 0.9);
-  backdrop-filter: blur(8px);
-  padding: 10px 20px;
-  border-radius: 24px;
+  background: rgba(13, 4, 35, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 8px 16px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   white-space: nowrap;
   transform: translateZ(0);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
+  will-change: transform, opacity;
+  pointer-events: none;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &.active {
-    background: rgba(0, 255, 255, 0.1);
-    border: 2px solid var(--accent-color);
+    background: rgba(0, 255, 255, 0.15);
+    border: 1px solid var(--accent-color);
     box-shadow: 0 0 30px var(--accent-glow);
+    z-index: 10;
     
     .labelText {
       color: var(--accent-color);
@@ -371,22 +377,21 @@
     }
     
     .emoji {
-      transform: scale(1.15);
+      transform: scale(1.1);
       filter: drop-shadow(0 0 15px var(--accent-glow));
     }
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 6px 24px rgba(160, 79, 255, 0.25);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(160, 79, 255, 0.3);
   }
 
   &.inactive {
     opacity: 0.7;
-    transform: scale(0.9);
+    transform: scale(0.95);
     filter: blur(0.5px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     
     .emoji {
       filter: brightness(0.8) drop-shadow(0 0 8px var(--theme-glow));
@@ -394,12 +399,11 @@
     
     .labelText {
       color: var(--text-secondary);
-      text-shadow: none;
     }
     
     &:hover {
       opacity: 0.9;
-      transform: scale(0.95);
+      transform: scale(1);
       filter: blur(0);
       
       .emoji {
@@ -413,62 +417,70 @@
   }
 
   .emoji {
-    font-size: 1.4em;
+    font-size: 1.2em;
     filter: drop-shadow(0 0 10px var(--theme-glow));
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
   }
 
   .labelText {
     color: var(--text-primary);
-    font-size: 15px;
+    font-size: 0.9rem;
     font-weight: 500;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
 .childLabel {
-  background: rgba(13, 4, 35, 0.85);
-  backdrop-filter: blur(6px);
-  padding: 8px 16px;
-  border-radius: 20px;
+  background: rgba(13, 4, 35, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 6px 12px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   white-space: nowrap;
   transform: translateZ(0);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.2s ease;
+  will-change: transform, opacity;
+  pointer-events: none;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 6px 20px rgba(160, 79, 255, 0.2);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(160, 79, 255, 0.25);
   }
 
   &.active {
-    background: rgba(0, 255, 255, 0.1);
-    border: 2px solid var(--accent-color);
-    box-shadow: 0 0 30px var(--accent-glow);
+    background: rgba(0, 255, 255, 0.15);
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 0 25px var(--accent-glow);
+    z-index: 5;
     
     .labelText {
       color: var(--accent-color);
       font-weight: 600;
-      text-shadow: 0 0 15px var(--accent-glow);
+      text-shadow: 0 0 12px var(--accent-glow);
     }
-  }
-
-  .emoji {
-    font-size: 1.2em;
-    filter: drop-shadow(0 0 8px var(--theme-glow));
   }
 
   .labelText {
     color: var(--text-primary);
-    font-size: 13px;
+    font-size: 0.8rem;
     font-weight: 500;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -623,25 +635,23 @@
 
   .themeLabel {
     padding: 6px 12px;
+    max-width: 220px;
     
     .emoji {
       font-size: 1.1em;
     }
 
     .labelText {
-      font-size: 12px;
+      font-size: 0.85rem;
     }
   }
 
   .childLabel {
     padding: 4px 10px;
+    max-width: 180px;
     
-    .emoji {
-      font-size: 0.9em;
-    }
-
     .labelText {
-      font-size: 11px;
+      font-size: 0.75rem;
     }
   }
 }
@@ -654,25 +664,23 @@
 
   .themeLabel {
     padding: 5px 10px;
+    max-width: 180px;
     
     .emoji {
       font-size: 1em;
     }
 
     .labelText {
-      font-size: 11px;
+      font-size: 0.8rem;
     }
   }
 
   .childLabel {
     padding: 3px 8px;
+    max-width: 150px;
     
-    .emoji {
-      font-size: 0.8em;
-    }
-
     .labelText {
-      font-size: 10px;
+      font-size: 0.7rem;
     }
   }
 }
