@@ -101,7 +101,8 @@ function ThemeNode({
   setHovered,
   onThemeSelect,
   data,
-  isMobile 
+  isMobile,
+  anyActive
 }: { 
   theme: GraphNode;
   index: number;
@@ -113,6 +114,7 @@ function ThemeNode({
   onThemeSelect: (theme: GraphNode) => void;
   data: GraphNode[];
   isMobile: boolean;
+  anyActive: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
@@ -129,12 +131,17 @@ function ThemeNode({
   const y = Math.sin(angle) * orbitRadius;
   const z = isMobile ? 0.3 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
 
-  // Spring animations with enhanced active state
-  const { scale, glow, opacity } = useSpring({
+  // Enhanced spring animations with inactive state
+  const { scale, glow, opacity, groupScale } = useSpring({
     scale: active ? 1.3 : hovered ? 1.25 : 1,
     glow: active ? 2 : hovered ? 1.5 : 0.7,
-    opacity: active ? 1 : 0.7,
-    config: { tension: 300, friction: 20 }
+    opacity: active ? 1 : anyActive ? 0.6 : 0.7,
+    groupScale: active ? 1 : anyActive ? 0.85 : 1,
+    config: { 
+      tension: 300, 
+      friction: 20,
+      mass: 1
+    }
   });
 
   // Get child nodes
@@ -155,9 +162,10 @@ function ThemeNode({
   const defaultColor = useMemo(() => new THREE.Color('#ff4fd8'), []);
 
   return (
-    <group 
+    <a.group 
       ref={groupRef}
       position={[x, y, z]}
+      scale={groupScale}
       onPointerOver={() => setHovered(theme._id.$oid)}
       onPointerOut={() => setHovered(null)}
       onClick={handleClick}
@@ -172,6 +180,8 @@ function ThemeNode({
           emissiveIntensity={glow.get()}
           roughness={active ? 0.2 : 0.3}
           metalness={active ? 0.9 : 0.8}
+          transparent
+          opacity={opacity.get()}
         />
       </a.mesh>
 
@@ -202,7 +212,7 @@ function ThemeNode({
       {/* Theme label with active state */}
       <Billboard position={[0, 0.8, 0]}>
         <Html center>
-          <div className={`${styles.themeLabel} ${active ? styles.active : ''}`}>
+          <div className={`${styles.themeLabel} ${active ? styles.active : ''} ${anyActive && !active ? styles.inactive : ''}`}>
             <span className={styles.emoji}>{THEME_CONFIG[theme.name] || '✨'}</span>
             <span className={styles.labelText}>{theme.name}</span>
           </div>
@@ -229,6 +239,8 @@ function ThemeNode({
                 emissiveIntensity={1.5}
                 roughness={0.2}
                 metalness={0.8}
+                transparent
+                opacity={opacity.get()}
               />
             </mesh>
 
@@ -246,7 +258,7 @@ function ThemeNode({
             {/* Child label */}
             <Billboard position={[0, 0.4, 0]}>
               <Html center>
-                <div className={styles.childLabel}>
+                <div className={`${styles.childLabel} ${active ? styles.active : ''}`}>
                   <span className={styles.labelText}>{child.name}</span>
                 </div>
               </Html>
@@ -254,7 +266,7 @@ function ThemeNode({
           </a.group>
         );
       })}
-    </group>
+    </a.group>
   );
 }
 
@@ -501,6 +513,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               onThemeSelect={handleThemeSelect}
               data={data}
               isMobile={isMobile}
+              anyActive={!!activeThemeId}
             />
           ))}
         </Canvas>
