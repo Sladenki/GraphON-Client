@@ -16,10 +16,34 @@ const isPointVisible = (point: THREE.Vector3, camera: THREE.Camera): boolean => 
 };
 
 // Функция для проверки перекрытия подписей
-const checkLabelOverlap = (pos1: THREE.Vector3, pos2: THREE.Vector3, camera: THREE.Camera, threshold = 0.1): boolean => {
+const checkLabelOverlap = (pos1: THREE.Vector3, pos2: THREE.Vector3, camera: THREE.Camera, threshold = 0.15): boolean => {
   const screenPos1 = pos1.clone().project(camera);
   const screenPos2 = pos2.clone().project(camera);
   return screenPos1.distanceTo(screenPos2) < threshold;
+};
+
+// Функция для получения оптимального размера шрифта
+const getOptimalFontSize = (childrenCount: number, isMobile: boolean): number => {
+  if (isMobile) {
+    if (childrenCount > 8) return 0.65;
+    if (childrenCount > 5) return 0.7;
+    return 0.75;
+  }
+  if (childrenCount > 12) return 0.75;
+  if (childrenCount > 8) return 0.8;
+  return 0.85;
+};
+
+// Функция для сокращения текста
+const truncateText = (text: string, maxLength: number): string => {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength - 2) + '...';
+};
+
+// Функция для получения оптимального масштаба для мобильных устройств
+const getMobileScale = (active: boolean, isMobile: boolean): number => {
+  if (!isMobile) return active ? 1.3 : 1;
+  return active ? 1.15 : 1;
 };
 
 export function ThemeNode({ 
@@ -58,10 +82,10 @@ export function ThemeNode({
 
   // Анимации с учетом состояния
   const { scale: springScale, glow, opacity, groupScale, rotation } = useSpring({
-    scale: active ? 1.3 : hovered ? 1.25 : 1,
-    glow: active ? 2 : hovered ? 1.5 : 0.7,
-    opacity: active ? 1 : anyActive ? 0.6 : 0.7,
-    groupScale: active ? 1 : anyActive ? 0.85 : 1,
+    scale: getMobileScale(active, isMobile),
+    glow: active ? (isMobile ? 1.5 : 2) : hovered ? 1.5 : 0.7,
+    opacity: active ? 1 : anyActive ? (isMobile ? 0.4 : 0.6) : 0.7,
+    groupScale: active ? (isMobile ? 1.1 : 1) : anyActive ? 0.85 : 1,
     rotation: active ? [0, Math.PI * 2, 0] as [number, number, number] : [0, 0, 0] as [number, number, number],
     config: { 
       tension: 300, 
@@ -76,6 +100,18 @@ export function ThemeNode({
     [theme, data]
   );
 
+  // Оптимальный размер шрифта для подписей
+  const optimalFontSize = useMemo(() => 
+    getOptimalFontSize(children.length, isMobile),
+    [children.length, isMobile]
+  );
+
+  // Максимальная длина текста для подписей
+  const maxTextLength = useMemo(() => 
+    isMobile ? (children.length > 5 ? 12 : 16) : (children.length > 8 ? 14 : 20),
+    [children.length, isMobile]
+  );
+
   // Проверяем видимость подписей
   useEffect(() => {
     if (!groupRef.current) return;
@@ -85,34 +121,47 @@ export function ThemeNode({
 
       const nodePosition = groupRef.current.position.clone();
       const isNodeVisible = isPointVisible(nodePosition, camera);
-      setLabelVisible(isNodeVisible);
+      
+      // На мобильных показываем все подписи по умолчанию, но скрываем неактивные при выборе
+      if (isMobile) {
+        setLabelVisible(isNodeVisible && (!anyActive || active));
+      } else {
+        setLabelVisible(isNodeVisible);
+      }
 
       // Проверяем видимость подписей дочерних узлов
       const newChildLabelsVisible: Record<string, boolean> = {};
+      const visiblePositions: THREE.Vector3[] = [];
+
       children.forEach((child, i) => {
         const childAngle = (i / children.length) * Math.PI * 2;
         const childX = Math.cos(childAngle) * childOrbitRadius;
         const childY = Math.sin(childAngle) * childOrbitRadius;
         const childPos = nodePosition.clone().add(new THREE.Vector3(childX, childY, 0));
         
-        // Проверяем, не перекрывается ли подпись другими узлами
+        // На мобильных показываем подписи дочерних узлов только для активного графа
+        if (isMobile && !active) {
+          newChildLabelsVisible[child._id.$oid] = false;
+          return;
+        }
+
+        // Проверяем видимость и перекрытие
         let isChildLabelVisible = isPointVisible(childPos, camera);
         if (isChildLabelVisible) {
-          children.forEach((otherChild, j) => {
-            if (i !== j) {
-              const otherAngle = (j / children.length) * Math.PI * 2;
-              const otherX = Math.cos(otherAngle) * childOrbitRadius;
-              const otherY = Math.sin(otherAngle) * childOrbitRadius;
-              const otherPos = nodePosition.clone().add(new THREE.Vector3(otherX, otherY, 0));
-              
-              if (checkLabelOverlap(childPos, otherPos, camera)) {
-                isChildLabelVisible = false;
-              }
-            }
-          });
+          // Проверяем перекрытие с уже видимыми подписями
+          const hasOverlap = visiblePositions.some(pos => 
+            checkLabelOverlap(childPos, pos, camera)
+          );
+          
+          if (!hasOverlap) {
+            visiblePositions.push(childPos);
+            newChildLabelsVisible[child._id.$oid] = true;
+          } else {
+            newChildLabelsVisible[child._id.$oid] = false;
+          }
+        } else {
+          newChildLabelsVisible[child._id.$oid] = false;
         }
-        
-        newChildLabelsVisible[child._id.$oid] = isChildLabelVisible;
       });
       
       setChildLabelsVisible(newChildLabelsVisible);
@@ -123,15 +172,15 @@ export function ThemeNode({
       requestAnimationFrame(updateLabelVisibility);
     };
 
-        //    @ts-expect-error 123
+    // @ts-expect-error 123
     camera.addEventListener('change', updateOnCameraChange);
     updateLabelVisibility();
 
     return () => {
-          //    @ts-expect-error 123
+      // @ts-expect-error 123
       camera.removeEventListener('change', updateOnCameraChange);
     };
-  }, [camera, children, childOrbitRadius]);
+  }, [camera, children, childOrbitRadius, active, anyActive, isMobile]);
 
   // Анимация вращения
   useFrame((_, delta) => {
@@ -170,25 +219,25 @@ export function ThemeNode({
           color={active ? activeColor : defaultColor}
           emissive={active ? activeColor : defaultColor}
           emissiveIntensity={glow.get()}
-          roughness={active ? 0.2 : 0.3}
-          metalness={active ? 0.9 : 0.8}
+          roughness={active ? (isMobile ? 0.3 : 0.2) : 0.3}
+          metalness={active ? (isMobile ? 0.7 : 0.9) : 0.8}
           transparent
           opacity={opacity.get()}
-          distort={0.2}
-          speed={2}
+          distort={isMobile ? 0.15 : 0.2}
+          speed={isMobile ? 1.5 : 2}
         />
       </a.mesh>
 
       {/* След узла */}
-      <a.mesh ref={trailRef} scale={[springScale.get() * 1.5, springScale.get() * 0.3, springScale.get() * 1.5]}>
+      <a.mesh ref={trailRef} scale={[springScale.get() * (isMobile ? 1.2 : 1.5), springScale.get() * 0.3, springScale.get() * (isMobile ? 1.2 : 1.5)]}>
         <coneGeometry args={[nodeScale * 0.8, nodeScale * 2, 8]} />
         <MeshWobbleMaterial
           color={active ? activeColor : defaultColor}
           transparent
-          opacity={active ? 0.4 : 0.3}
+          opacity={active ? (isMobile ? 0.3 : 0.4) : 0.3}
           side={THREE.BackSide}
-          factor={0.2}
-          speed={1}
+          factor={isMobile ? 0.15 : 0.2}
+          speed={isMobile ? 0.8 : 1}
         />
       </a.mesh>
 
@@ -199,12 +248,15 @@ export function ThemeNode({
             <div 
               className={`${styles.themeLabel} ${active ? styles.active : ''} ${anyActive && !active ? styles.inactive : ''}`}
               style={{
-                transform: `scale(${active ? 1.1 : 1})`,
-                transition: 'transform 0.2s ease'
+                transform: `scale(${active ? (isMobile ? 1.05 : 1.1) : 1})`,
+                transition: 'transform 0.2s ease',
+                fontSize: `${optimalFontSize}rem`
               }}
             >
               <span className={styles.emoji}>{THEME_CONFIG[theme.name] || '✨'}</span>
-              <span className={styles.labelText}>{theme.name}</span>
+              <span className={styles.labelText} title={theme.name}>
+                {truncateText(theme.name, maxTextLength)}
+              </span>
             </div>
           </Html>
         </Billboard>
@@ -227,13 +279,13 @@ export function ThemeNode({
               <MeshDistortMaterial
                 color={activeColor}
                 emissive={activeColor}
-                emissiveIntensity={1.5}
-                roughness={0.2}
-                metalness={0.8}
+                emissiveIntensity={isMobile ? 1.2 : 1.5}
+                roughness={isMobile ? 0.3 : 0.2}
+                metalness={isMobile ? 0.7 : 0.8}
                 transparent
                 opacity={opacity.get()}
-                distort={0.1}
-                speed={1.5}
+                distort={isMobile ? 0.1 : 0.1}
+                speed={isMobile ? 1.2 : 1.5}
               />
             </mesh>
 
@@ -242,10 +294,10 @@ export function ThemeNode({
               <MeshWobbleMaterial
                 color={activeColor}
                 transparent
-                opacity={0.3}
+                opacity={isMobile ? 0.25 : 0.3}
                 side={THREE.BackSide}
-                factor={0.15}
-                speed={1.2}
+                factor={isMobile ? 0.12 : 0.15}
+                speed={isMobile ? 1 : 1.2}
               />
             </mesh>
 
@@ -256,11 +308,14 @@ export function ThemeNode({
                   <div 
                     className={`${styles.childLabel} ${active ? styles.active : ''}`}
                     style={{
-                      transform: `scale(${active ? 1.05 : 1})`,
-                      transition: 'transform 0.2s ease'
+                      transform: `scale(${active ? (isMobile ? 1.02 : 1.05) : 1})`,
+                      transition: 'transform 0.2s ease',
+                      fontSize: `${optimalFontSize * 0.9}rem`
                     }}
                   >
-                    <span className={styles.labelText}>{child.name}</span>
+                    <span className={styles.labelText} title={child.name}>
+                      {truncateText(child.name, maxTextLength - 2)}
+                    </span>
                   </div>
                 </Html>
               </Billboard>
