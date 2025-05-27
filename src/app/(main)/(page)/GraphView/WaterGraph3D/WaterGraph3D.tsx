@@ -153,7 +153,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           />
 
           {/* Planet */}
-          <Planet scale={isMobile ? 0.8 : 1} />
+          <Planet scale={activeThemeId ? (isMobile ? 0.32 : 0.4) : (isMobile ? 0.8 : 1)} />
 
           {/* Theme nodes */}
           {themes.map((theme, i) => (

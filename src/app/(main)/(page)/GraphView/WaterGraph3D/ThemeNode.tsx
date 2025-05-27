@@ -46,6 +46,17 @@ const getMobileScale = (active: boolean, isMobile: boolean): number => {
   return active ? 1.15 : 1;
 };
 
+// Функция для расчета радиуса орбиты
+const calculateOrbitRadius = (childrenCount: number, isMobile: boolean): number => {
+  const baseRadius = isMobile ? 1.8 : 2.2;
+  const minRadius = isMobile ? 1.5 : 1.8;
+  const maxRadius = isMobile ? 2.5 : 3.0;
+  
+  // Увеличиваем радиус в зависимости от количества подграфов
+  const radius = baseRadius + (childrenCount * 0.1);
+  return Math.min(Math.max(radius, minRadius), maxRadius);
+};
+
 export function ThemeNode({ 
   theme, 
   index, 
@@ -68,11 +79,37 @@ export function ThemeNode({
   const [childLabelsVisible, setChildLabelsVisible] = useState<Record<string, boolean>>({});
   const [labelPosition, setLabelPosition] = useState<THREE.Vector3>(new THREE.Vector3());
   
-  // Оптимизированные размеры для разных состояний
+  // Получаем дочерние узлы
+  const children = useMemo(() => 
+    data.filter(n => n.parentGraphId?.$oid === theme._id.$oid),
+    [theme, data]
+  );
+
+  // Обновляем размеры с учетом новой орбитальной системы
   const orbitRadius = useMemo(() => (isMobile ? 2.8 : 3.5) * scale, [isMobile, scale]);
-  const nodeScale = useMemo(() => (isMobile ? 0.35 : 0.45) * scale, [isMobile, scale]);
-  const childOrbitRadius = useMemo(() => (isMobile ? 1.2 : 1.5) * scale, [isMobile, scale]);
-  const childNodeScale = useMemo(() => (isMobile ? 0.18 : 0.22) * scale, [isMobile, scale]);
+  const nodeScale = useMemo(() => {
+    // Если это центральный граф (КГТУ)
+    if (theme.name === 'КГТУ') {
+      if (anyActive) {
+        return (isMobile ? 0.14 : 0.18) * scale; // Уменьшаем в 2.5 раза при активации любого графа
+      }
+      return (isMobile ? 0.35 : 0.45) * scale; // Нормальный размер
+    }
+    // Для остальных графов
+    if (active) return (isMobile ? 0.25 : 0.3) * scale;
+    if (anyActive) return (isMobile ? 0.2 : 0.25) * scale;
+    return (isMobile ? 0.35 : 0.45) * scale;
+  }, [isMobile, scale, active, anyActive, theme.name]);
+  
+  const childOrbitRadius = useMemo(() => 
+    calculateOrbitRadius(children.length, isMobile) * scale,
+    [children.length, isMobile, scale]
+  );
+  
+  const childNodeScale = useMemo(() => 
+    (isMobile ? 0.22 : 0.28) * scale,
+    [isMobile, scale]
+  );
 
   // Вычисляем позицию узла с учетом активного состояния
   const angle = (index / total) * Math.PI * 2;
@@ -80,13 +117,13 @@ export function ThemeNode({
   const y = Math.sin(angle) * orbitRadius;
   const z = isMobile ? 0.3 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
 
-  // Анимации с учетом состояния
+  // Обновляем анимации
   const { scale: springScale, glow, opacity, groupScale, rotation } = useSpring({
-    scale: getMobileScale(active, isMobile),
-    glow: active ? (isMobile ? 1.5 : 2) : hovered ? 1.5 : 0.7,
-    opacity: active ? 1 : anyActive ? (isMobile ? 0.4 : 0.6) : 0.7,
-    groupScale: active ? (isMobile ? 1.1 : 1) : anyActive ? 0.85 : 1,
-    rotation: active ? [0, Math.PI * 2, 0] as [number, number, number] : [0, 0, 0] as [number, number, number],
+    scale: active ? 1.2 : hovered ? 1.1 : 1,
+    glow: active ? (isMobile ? 1.8 : 2.2) : hovered ? 1.5 : 0.7,
+    opacity: active ? 1 : anyActive ? (isMobile ? 0.3 : 0.4) : 0.7,
+    groupScale: theme.name === 'КГТУ' && anyActive ? 0.4 : active ? 1 : anyActive ? 0.7 : 1,
+    rotation: [0, 0, 0] as [number, number, number],
     config: { 
       tension: 280, 
       friction: 25,
@@ -95,12 +132,6 @@ export function ThemeNode({
       precision: 0.001
     }
   });
-
-  // Получаем дочерние узлы
-  const children = useMemo(() => 
-    data.filter(n => n.parentGraphId?.$oid === theme._id.$oid),
-    [theme, data]
-  );
 
   // Оптимальный размер шрифта для подписей
   const optimalFontSize = useMemo(() => 
@@ -236,6 +267,19 @@ export function ThemeNode({
         />
       </a.mesh>
 
+      {/* Орбитальная окружность */}
+      {active && (
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[childOrbitRadius - 0.1, childOrbitRadius + 0.1, 64]} />
+          <meshBasicMaterial
+            color={activeColor}
+            transparent
+            opacity={0.15}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      )}
+
       {/* След узла */}
       <a.mesh ref={trailRef} scale={[springScale.get() * (isMobile ? 1.2 : 1.5), springScale.get() * 0.3, springScale.get() * (isMobile ? 1.2 : 1.5)]}>
         <coneGeometry args={[nodeScale * 0.8, nodeScale * 2, 8]} />
@@ -258,7 +302,8 @@ export function ThemeNode({
               style={{
                 transform: `scale(${active ? (isMobile ? 1.05 : 1.1) : 1})`,
                 transition: 'transform 0.2s ease',
-                fontSize: `${optimalFontSize}rem`
+                fontSize: `${optimalFontSize}rem`,
+                opacity: active ? 1 : anyActive ? 0.4 : 1
               }}
             >
               <span className={styles.emoji}>{THEME_CONFIG[theme.name] || '✨'}</span>
@@ -318,7 +363,11 @@ export function ThemeNode({
                     style={{
                       transform: `scale(${active ? (isMobile ? 1.02 : 1.05) : 1})`,
                       transition: 'transform 0.2s ease',
-                      fontSize: `${optimalFontSize * 0.9}rem`
+                      fontSize: `${optimalFontSize * 0.9}rem`,
+                      backdropFilter: 'blur(4px)',
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                      padding: '4px 8px',
+                      borderRadius: '4px'
                     }}
                   >
                     <span className={styles.labelText} title={child.name}>
