@@ -146,7 +146,7 @@ export function ThemeNode({
         }
 
         // Проверяем видимость и перекрытие
-        let isChildLabelVisible = isPointVisible(childPos, camera);
+        const isChildLabelVisible = isPointVisible(childPos, camera);
         if (isChildLabelVisible) {
           // Проверяем перекрытие с уже видимыми подписями
           const hasOverlap = visiblePositions.some(pos => 
