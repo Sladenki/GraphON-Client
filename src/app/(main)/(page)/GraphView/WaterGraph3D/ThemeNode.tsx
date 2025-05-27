@@ -88,9 +88,11 @@ export function ThemeNode({
     groupScale: active ? (isMobile ? 1.1 : 1) : anyActive ? 0.85 : 1,
     rotation: active ? [0, Math.PI * 2, 0] as [number, number, number] : [0, 0, 0] as [number, number, number],
     config: { 
-      tension: 300, 
-      friction: 20,
-      mass: 1
+      tension: 280, 
+      friction: 25,
+      mass: 1,
+      clamp: false,
+      precision: 0.001
     }
   });
 
@@ -194,8 +196,14 @@ export function ThemeNode({
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
-    setActive(active ? null : theme._id.$oid);
-    onThemeSelect(theme);
+    // If clicking the same theme that's already active, deactivate it
+    if (active) {
+      setActive(null);
+      onThemeSelect(null);
+    } else {
+      setActive(theme._id.$oid);
+      onThemeSelect(theme);
+    }
   };
 
   const activeColor = useMemo(() => new THREE.Color('#00ffff'), []);

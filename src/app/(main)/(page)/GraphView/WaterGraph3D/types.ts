@@ -27,7 +27,7 @@ export interface ThemeNodeProps {
   hovered: boolean;
   setActive: (id: string | null) => void;
   setHovered: (id: string | null) => void;
-  onThemeSelect: (theme: GraphNode) => void;
+  onThemeSelect: (theme: GraphNode | null) => void;
   data: GraphNode[];
   isMobile: boolean;
   anyActive: boolean;
