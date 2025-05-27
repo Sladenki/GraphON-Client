@@ -33,8 +33,9 @@ export function ThemeNode({
   onThemeSelect,
   data,
   isMobile,
-  anyActive
-}: ThemeNodeProps) {
+  anyActive,
+  scale = 1
+}: ThemeNodeProps & { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
   const trailRef = useRef<THREE.Mesh>(null);
@@ -44,10 +45,10 @@ export function ThemeNode({
   const [labelPosition, setLabelPosition] = useState<THREE.Vector3>(new THREE.Vector3());
   
   // Оптимизированные размеры для разных состояний
-  const orbitRadius = useMemo(() => isMobile ? 2.8 : 3.5, [isMobile]);
-  const nodeScale = useMemo(() => isMobile ? 0.35 : 0.45, [isMobile]);
-  const childOrbitRadius = useMemo(() => isMobile ? 1.2 : 1.5, [isMobile]);
-  const childNodeScale = useMemo(() => isMobile ? 0.18 : 0.22, [isMobile]);
+  const orbitRadius = useMemo(() => (isMobile ? 2.8 : 3.5) * scale, [isMobile, scale]);
+  const nodeScale = useMemo(() => (isMobile ? 0.35 : 0.45) * scale, [isMobile, scale]);
+  const childOrbitRadius = useMemo(() => (isMobile ? 1.2 : 1.5) * scale, [isMobile, scale]);
+  const childNodeScale = useMemo(() => (isMobile ? 0.18 : 0.22) * scale, [isMobile, scale]);
 
   // Вычисляем позицию узла с учетом активного состояния
   const angle = (index / total) * Math.PI * 2;
@@ -56,7 +57,7 @@ export function ThemeNode({
   const z = isMobile ? 0.3 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
 
   // Анимации с учетом состояния
-  const { scale, glow, opacity, groupScale, rotation } = useSpring({
+  const { scale: springScale, glow, opacity, groupScale, rotation } = useSpring({
     scale: active ? 1.3 : hovered ? 1.25 : 1,
     glow: active ? 2 : hovered ? 1.5 : 0.7,
     opacity: active ? 1 : anyActive ? 0.6 : 0.7,
@@ -163,7 +164,7 @@ export function ThemeNode({
       userData={{ themeId: theme._id.$oid }}
     >
       {/* Основной узел */}
-      <a.mesh ref={meshRef} scale={scale}>
+      <a.mesh ref={meshRef} scale={springScale}>
         <octahedronGeometry args={[nodeScale, 0]} />
         <MeshDistortMaterial
           color={active ? activeColor : defaultColor}
@@ -179,7 +180,7 @@ export function ThemeNode({
       </a.mesh>
 
       {/* След узла */}
-      <a.mesh ref={trailRef} scale={[scale.get() * 1.5, scale.get() * 0.3, scale.get() * 1.5]}>
+      <a.mesh ref={trailRef} scale={[springScale.get() * 1.5, springScale.get() * 0.3, springScale.get() * 1.5]}>
         <coneGeometry args={[nodeScale * 0.8, nodeScale * 2, 8]} />
         <MeshWobbleMaterial
           color={active ? activeColor : defaultColor}
@@ -219,7 +220,7 @@ export function ThemeNode({
           <a.group
             key={child._id.$oid}
             position={[cx, cy, 0]}
-            scale={scale}
+            scale={springScale}
           >
             <mesh>
               <octahedronGeometry args={[childNodeScale, 0]} />

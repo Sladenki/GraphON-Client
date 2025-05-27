@@ -25,7 +25,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const activeNodeRef = useRef<Object3D | null>(null);
 
   const cameraPosition = useMemo<[number, number, number]>(() => 
-    isMobile ? [0, 0, 10] : [0, 0, 12],
+    isMobile ? [0, 0, 8] : [0, 0, 12],
     [isMobile]
   );
 
@@ -91,14 +91,14 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
         <Canvas
           camera={{ 
             position: new THREE.Vector3(...cameraPosition),
-            fov: isMobile ? 45 : 50 
+            fov: isMobile ? 40 : 50 
           }}
           onPointerMissed={handlePointerMissed}
           style={{ width: '100%', height: '100%' }}
         >
           {/* Scene setup */}
           <color attach="background" args={['#1a1b3d']} />
-          <fog attach="fog" args={['#1a1b3d', 15, 30]} />
+          <fog attach="fog" args={['#1a1b3d', 12, 25]} />
           
           {/* Lighting */}
           <ambientLight intensity={0.6} />
@@ -146,14 +146,14 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           {/* Controls */}
           <OrbitControls
             enablePan={false}
-            minDistance={8}
-            maxDistance={20}
+            minDistance={isMobile ? 6 : 8}
+            maxDistance={isMobile ? 15 : 20}
             enableDamping
             dampingFactor={0.05}
           />
 
           {/* Planet */}
-          <Planet />
+          <Planet scale={isMobile ? 0.8 : 1} />
 
           {/* Theme nodes */}
           {themes.map((theme, i) => (
@@ -170,6 +170,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               data={data}
               isMobile={isMobile}
               anyActive={!!activeThemeId}
+              scale={isMobile ? 0.8 : 1}
             />
           ))}
         </Canvas>

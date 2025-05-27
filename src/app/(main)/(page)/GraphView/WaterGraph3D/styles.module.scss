@@ -11,6 +11,7 @@
   @media (max-width: 768px) {
     flex-direction: column;
     height: 100vh;
+    overflow-y: auto;
   }
 }
 
@@ -334,20 +335,13 @@
 }
 
 .graphContainer {
-  position: relative;
   flex: 1;
+  position: relative;
   height: 100vh;
-  min-width: 0;
-  z-index: 1;
   
   @media (max-width: 768px) {
-    height: calc(100vh - 200px);
-    min-height: 320px;
-  }
-
-  @media (max-width: 360px) {
-    height: calc(100vh - 180px);
-    min-height: 280px;
+    height: 50vh;
+    min-height: 300px;
   }
 }
 
@@ -717,97 +711,76 @@
 .themeCardsContainer {
   position: relative;
   width: 100%;
-  z-index: 2;
-  padding: 0.75rem 1rem;
-  margin-top: auto;
-  background: transparent;
-  padding-bottom: calc(0.75rem + 60px);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 10;
   
-  @media (min-width: 769px) {
-    display: none;
-  }
-
-  @media (max-width: 360px) {
-    padding: 0.5rem 0.75rem;
-    padding-bottom: calc(0.5rem + 60px);
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    margin-top: -1rem;
+    position: relative;
+    background: transparent;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      backdrop-filter: blur(8px);
+      z-index: -1;
+      background: rgba(26, 27, 61, 0.3);
+    }
   }
 }
 
 .themeCards {
   display: flex;
+  flex-direction: column;
   gap: 0.75rem;
-  overflow-x: auto;
-  padding: 0.25rem 0;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  width: 100%;
   
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  @media (max-width: 360px) {
+  @media (max-width: 768px) {
     gap: 0.5rem;
   }
 }
 
 .themeCard {
-  flex: 0 0 auto;
-  width: 260px;
-  background: rgba(13, 4, 35, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 0.75rem;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  scroll-snap-align: start;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  
-  @media (max-width: 360px) {
-    width: 220px;
-    padding: 0.625rem;
-    border-radius: 10px;
-  }
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
   
   &:hover {
-    background: rgba(13, 4, 35, 0.85);
+    background: rgba(255, 255, 255, 0.08);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    border-color: rgba(255, 255, 255, 0.15);
-    
-    .emoji {
-      transform: scale(1.1);
-    }
   }
   
   &.active {
     background: rgba(0, 255, 255, 0.15);
     border-color: var(--accent-color);
     box-shadow: 0 0 20px var(--accent-glow);
-    
-    .cardTitle {
-      color: var(--accent-color);
-      font-weight: 600;
-    }
-    
-    .emoji {
-      transform: scale(1.15);
-      filter: drop-shadow(0 0 12px var(--accent-glow));
-    }
   }
 }
 
 .cardContent {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  
-  @media (max-width: 360px) {
-    gap: 0.5rem;
-  }
+  gap: 0.75rem;
+}
+
+.emoji {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+  transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .cardInfo {
@@ -815,50 +788,45 @@
   flex-direction: column;
   gap: 0.25rem;
   flex: 1;
-  min-width: 0;
 }
 
 .cardTitle {
   color: var(--text-primary);
   font-size: 0.95rem;
   font-weight: 500;
-  line-height: 1.3;
+  line-height: 1.4;
   letter-spacing: -0.01em;
-  transition: all 0.3s ease;
-  
-  @media (max-width: 360px) {
-    font-size: 0.9rem;
-    line-height: 1.2;
-  }
 }
 
 .cardSubtitle {
   color: var(--text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.backButton {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  margin-bottom: 0.5rem;
   
-  @media (max-width: 360px) {
-    font-size: 0.75rem;
-  }
-  
-  &::before {
-    content: '🛸';
-    font-size: 0.85rem;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
   }
 }
 
-.emoji {
-  font-size: 1.3rem;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-  
-  @media (max-width: 360px) {
-    font-size: 1.2rem;
-  }
+.backIcon {
+  font-size: 1.1rem;
 }
 
 .subgraphCards {
@@ -867,119 +835,43 @@
   gap: 0.75rem;
 }
 
-.backButton {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: fit-content;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 0.5rem;
-
-  &:hover {
-    background: var(--glass-hover);
-    transform: translateX(-4px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  }
-}
-
-.backIcon {
-  font-size: 1.1rem;
-  transition: transform 0.3s ease;
-}
-
-.backButton:hover .backIcon {
-  transform: translateX(-4px);
-}
-
 .cardsWrapper {
   display: flex;
-  gap: 0.75rem;
-  overflow-x: auto;
-  padding: 0.5rem 0;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .subgraphCard {
-  flex: 0 0 auto;
-  width: 280px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 1rem;
-  transition: all 0.3s ease;
-  scroll-snap-align: start;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  
-  &:hover {
-    background: var(--glass-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  }
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.75rem;
+  backdrop-filter: blur(8px);
 }
 
 .vkLink {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  padding: 0.4rem 0.75rem;
-  color: var(--text-primary);
-  font-size: 0.85rem;
-  font-weight: 500;
+  color: var(--accent-color);
   text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--accent-color);
+  border-radius: 6px;
   transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.75rem;
-  
-  &::before {
-    content: '🔗';
-    font-size: 0.9rem;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-  }
   
   &:hover {
-    background: var(--glass-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: var(--accent-color);
+    color: var(--text-primary);
   }
 }
 
 .emptyState {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 2rem;
-  text-align: center;
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   backdrop-filter: blur(8px);
-  width: 100%;
-  
-  &::before {
-    content: '🌌';
-    font-size: 2rem;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
-    display: block;
-    margin-bottom: 0.75rem;
-  }
 } 

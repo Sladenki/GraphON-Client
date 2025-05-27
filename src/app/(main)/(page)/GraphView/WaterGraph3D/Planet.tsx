@@ -5,7 +5,11 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { MeshDistortMaterial, MeshWobbleMaterial, MeshReflectorMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
-export function Planet() {
+interface PlanetProps {
+  scale?: number;
+}
+
+export function Planet({ scale = 1 }: PlanetProps) {
   const mesh = useRef<THREE.Mesh>(null);
   const atmosphere = useRef<THREE.Mesh>(null);
   const { viewport } = useThree();
@@ -22,7 +26,7 @@ export function Planet() {
   });
 
   return (
-    <group>
+    <group scale={[scale, scale, scale]}>
       {/* Main planet sphere with distortion effect */}
       <mesh ref={mesh} castShadow receiveShadow>
         <sphereGeometry args={[1.8, 64, 64]} />
