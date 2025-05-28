@@ -54,15 +54,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           
           {/* Основная страница */}
           <div className={styles.main}>
-
-            <div className={styles.roundCorners}/>
-            
-            <div className={styles.square}>
+            <div className={styles.content}>
               {/* Добавляем компонент для отслеживания переходов */}
               <GoogleAnalytics /> 
               {children}
             </div>
-            
           </div>
           
           {/* Ава в углу */}
