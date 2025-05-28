@@ -86,19 +86,19 @@ export function ThemeNode({
   );
 
   // Обновляем размеры с учетом новой орбитальной системы
-  const orbitRadius = useMemo(() => (isMobile ? 2.8 : 3.5) * scale, [isMobile, scale]);
+  const orbitRadius = useMemo(() => (isMobile ? 1.87 : 3.5) * scale, [isMobile, scale]);
   const nodeScale = useMemo(() => {
     // Если это центральный граф (КГТУ)
     if (theme.name === 'КГТУ') {
       if (anyActive) {
-        return (isMobile ? 0.14 : 0.18) * scale; // Уменьшаем в 2.5 раза при активации любого графа
+        return (isMobile ? 0.09 : 0.18) * scale; // Уменьшаем в 2.5 раза при активации любого графа
       }
-      return (isMobile ? 0.35 : 0.45) * scale; // Нормальный размер
+      return (isMobile ? 0.23 : 0.45) * scale; // Нормальный размер
     }
     // Для остальных графов
-    if (active) return (isMobile ? 0.25 : 0.3) * scale;
-    if (anyActive) return (isMobile ? 0.2 : 0.25) * scale;
-    return (isMobile ? 0.35 : 0.45) * scale;
+    if (active) return (isMobile ? 0.17 : 0.3) * scale;
+    if (anyActive) return (isMobile ? 0.13 : 0.25) * scale;
+    return (isMobile ? 0.23 : 0.45) * scale;
   }, [isMobile, scale, active, anyActive, theme.name]);
   
   const childOrbitRadius = useMemo(() => 
@@ -107,7 +107,7 @@ export function ThemeNode({
   );
   
   const childNodeScale = useMemo(() => 
-    (isMobile ? 0.22 : 0.28) * scale,
+    (isMobile ? 0.15 : 0.28) * scale,
     [isMobile, scale]
   );
 
@@ -115,7 +115,7 @@ export function ThemeNode({
   const angle = (index / total) * Math.PI * 2;
   const x = Math.cos(angle) * orbitRadius;
   const y = Math.sin(angle) * orbitRadius;
-  const z = isMobile ? 0.3 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
+  const z = isMobile ? 0.15 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
 
   // Обновляем анимации
   const { scale: springScale, glow, opacity, groupScale, rotation } = useSpring({

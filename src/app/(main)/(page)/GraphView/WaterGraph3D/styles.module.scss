@@ -340,7 +340,7 @@
   height: 100vh;
   
   @media (max-width: 768px) {
-    height: 50vh;
+    height: 70vh;
     min-height: 300px;
   }
 }
@@ -766,10 +766,13 @@
   z-index: 10;
   
   @media (max-width: 768px) {
+    height: 30vh;
     padding: 0.75rem;
-    margin-top: -1rem;
+    margin-top: 0;
     position: relative;
     background: transparent;
+    overflow-x: auto;
+    overflow-y: hidden;
     
     &::before {
       content: '';
@@ -792,7 +795,10 @@
   width: 100%;
   
   @media (max-width: 768px) {
-    gap: 0.5rem;
+    flex-direction: row;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+    min-width: min-content;
   }
 }
 
@@ -805,6 +811,12 @@
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(8px);
+  
+  @media (max-width: 768px) {
+    width: 280px;
+    min-width: 280px;
+    flex-shrink: 0;
+  }
   
   &:hover {
     background: rgba(255, 255, 255, 0.08);
