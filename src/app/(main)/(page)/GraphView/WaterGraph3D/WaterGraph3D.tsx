@@ -181,15 +181,18 @@ function CameraController({
         dampingFactor={0.05}
         target={[0, 0, 0]}
       />
-      <Html position={[0, 0, 0]} center>
-        <button 
-          className={styles.resetButton}
-          onClick={resetCamera}
-          title="Вернуться к общему виду"
-        >
-          Сбросить вид
-        </button>
-      </Html>
+        {!isMobile && (
+          <Html position={[0, 0, 0]} center>
+            <button 
+              className={styles.resetButton}
+              onClick={resetCamera}
+              title="Вернуться к общему виду"
+            >
+              Сбросить вид
+            </button>
+          </Html>
+        )}
+
     </>
   );
 }
@@ -338,8 +341,10 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           />
 
           {/* Camera Controller */}
-          <CameraController activeNodeRef={activeNodeRef} isMobile={isMobile} />
 
+          <CameraController activeNodeRef={activeNodeRef} isMobile={isMobile} />
+   
+        
           {/* Planet */}
           <Planet scale={activeThemeId 
             ? (isMobile ? 0.21 : 0.4) 
@@ -361,7 +366,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               data={data}
               isMobile={isMobile}
               anyActive={!!activeThemeId}
-              scale={isMobile ? 0.6 : 1}
+              scale={isMobile ? 0.85 : 1}
             />
           ))}
         </Canvas>

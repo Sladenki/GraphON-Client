@@ -64,7 +64,6 @@ export function ThemeCards({
             onClick={() => onThemeSelect(null)}
             aria-label="Вернуться к темам"
           >
-            <span className={styles.backIcon}>←</span>
             Назад
           </button>
           
