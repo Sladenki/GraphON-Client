@@ -17,7 +17,7 @@ interface GraphBlockProps {
 }
 
 const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath, handleScheduleButtonClick, setSelectedGraphId }) => {
-  const fullImageUrl = useMemo(() => `${BASE_S3_URL}/${imgPath}`, [imgPath]);
+  const fullImageUrl = useMemo(() => imgPath ? `${BASE_S3_URL}/${imgPath}` : "", [imgPath]);
 
   const { isLoggedIn } = useAuth();
   const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, id);
@@ -32,41 +32,45 @@ const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath
 
   return (
     <div className={styles.graphBlock}>
-      {/* Фото графа */}
-      {imgPath && (
-        <div className={styles.imageContainer}>
-          <Image
-            src={fullImageUrl}
-            alt="Graph Image"
-            width={400}
-            height={300}
-            className={styles.postImage}
-          />
-
-          {/* Градиентный блок с названием объединения */}
-          <div className={styles.nameOverlay}>
-            <span className={styles.nameText}>{name}</span>
+      <div className={styles.contentWrapper}>
+        {/* Контейнер с изображением */}
+        {imgPath ? (
+          <div className={styles.imageContainer}>
+            <Image
+              src={fullImageUrl}
+              alt="Graph Image"
+              width={400}
+              height={300}
+              className={styles.postImage}
+            />
           </div>
+        ) : (
+          <div className={styles.placeholderContainer} />
+        )}
 
-          {isLoggedIn && (
-            <button
-              onClick={handleSubscription}
-              disabled={isLoading}
-              className={`${styles.subscriptionButton} ${
-                isSubscribed ? styles.subscribed : styles.unsubscribed
-              }`}
-            >
-              {isLoading ? "..." : isSubscribed ? <MinusSquare size={20} /> : <PlusSquare size={20} />}
-            </button>
-          )}
+        {/* Название объединения (всегда видимое) */}
+        <div className={styles.nameOverlay}>
+          <span className={styles.nameText}>{name}</span>
         </div>
-      )}
+
+        {/* Кнопка подписки */}
+        {isLoggedIn && (
+          <button
+            onClick={handleSubscription}
+            disabled={isLoading}
+            className={`${styles.subscriptionButton} ${
+              isSubscribed ? styles.subscribed : styles.unsubscribed
+            }`}
+          >
+            {isLoading ? "..." : isSubscribed ? <MinusSquare size={20} /> : <PlusSquare size={20} />}
+          </button>
+        )}
+      </div>
 
       {/* Кнопка расписания */}
       <button className={styles.scheduleButton} onClick={() => clickSchedule(id)}>
         📅 Расписание
       </button>
-
     </div>
   );
 };

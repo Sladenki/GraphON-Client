@@ -8,27 +8,35 @@
   overflow: hidden;
 }
 
-
+.contentWrapper {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  overflow: hidden;
+}
 
 /* Контейнер изображения */
 .imageContainer {
   position: relative;
   width: 100%;
-  border-radius: 12px;
+  height: 300px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
+}
 
-  &:hover {
-    transform: scale(1.02);
-  }
+/* Плейсхолдер при отсутствии изображения */
+.placeholderContainer {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #e0e0e0, #f0f0f0);
 }
 
 /* Фото объединения */
 .postImage {
   width: 100%;
-  height: auto;
-  border-radius: 12px;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Градиентный блок с названием объединения */
@@ -50,7 +58,7 @@
   font-family: "Poppins", sans-serif;
   font-weight: 600;
   letter-spacing: 0.5px;
-  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2); // Лёгкое свечение
+  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
 }
 
 /* Кнопка подписки */
@@ -87,20 +95,6 @@
   }
 }
 
-/* Адаптивность */
-@media (max-width: 600px) {
-  .nameText {
-    font-size: 18px;
-  }
-
-  .subscriptionButton {
-    padding: 6px;
-  }
-}
-
-
-
-
 // Кнопка "Расписание"
 .scheduleButton {
   width: 100%;
@@ -132,12 +126,14 @@
   }
 }
 
-
 // Адаптивность
 @media (max-width: 600px) {
-  .imageContainer .nameTag {
-    font-size: 14px;
-    padding: 8px 16px;
+  .nameText {
+    font-size: 18px;
+  }
+
+  .subscriptionButton {
+    padding: 6px;
   }
 
   .scheduleButton {
