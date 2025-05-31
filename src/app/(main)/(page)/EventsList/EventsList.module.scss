@@ -6,3 +6,16 @@
   font-family: 'Roboto', sans-serif;
 }
 
+.emptyMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 1.2rem;
+  color: #666;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+}
+

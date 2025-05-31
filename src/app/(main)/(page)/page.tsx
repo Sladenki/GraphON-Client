@@ -19,12 +19,23 @@ const Homepage = () => {
   const { user } = useAuth();
   const isAuth = Boolean(user && Object.keys(user).length > 0);
 
-  const [activeTab, setActiveTab] = useState<"events" | "main" | "graphSystem">("main");
+  const [activeTab, setActiveTab] = useState<"events" | "groups" | "graphSystem">("events");
   const [searchQuery, setSearchQuery] = useState("");
 
   const serverRequest = useMemo(
-    () => ("graph/getParentGraphs"),
-    [isAuth]
+    () => {
+      switch (activeTab) {
+        case 'groups':
+          return 'graph/getParentGraphs';
+        case 'events':
+          return 'events/getAll';
+        case 'graphSystem':
+          return '';  // GraphSystem использует свой собственный запрос
+        default:
+          return '';
+      }
+    },
+    [activeTab, isAuth]
   );
 
   const { allPosts: allGraphs, isPostsFetching, isEndPosts, loaderRef, error } =
@@ -38,7 +49,7 @@ const Homepage = () => {
   }, [allGraphs, searchQuery]);
 
   const handleTabChange = useCallback((tab: string) => {
-    setActiveTab(tab as "main" | "graphSystem");
+    setActiveTab(tab as "events" | "groups" | "graphSystem");
   }, []);
   
 
@@ -48,8 +59,8 @@ const Homepage = () => {
       <div className={styles.headerPart}>
         <Tabs
           tabs={[
+            { name: "groups", label: "Группы" },
             { name: "events", label: "События" },
-            { name: "main", label: "Группы" },
             { name: "graphSystem", label: "Графы" },
           ]}
           activeTab={activeTab}
@@ -73,7 +84,7 @@ const Homepage = () => {
 
       {/* Контент в зависимости от активного таба */}
       <div className={styles.contentWrapper}>
-          {activeTab === "main" && (
+          {activeTab === "groups" && (
             <div className={styles.postsList}>
               {isPostsFetching && !isEndPosts && <SpinnerLoader />}
               {allGraphs.length > 0 && (

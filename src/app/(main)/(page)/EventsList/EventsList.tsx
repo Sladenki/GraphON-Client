@@ -28,6 +28,15 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
     }));
   };
 
+  // Если нет событий или отфильтрованный список пуст
+  if (!events?.length || (filteredEvents && filteredEvents.length === 0)) {
+    return (
+      <div className={styles.emptyMessage}>
+        На ближайшее время никакой движухи нет
+      </div>
+    );
+  }
+
   return (
     <div className={styles.eventsListWrapper}>
       {filteredEvents?.map((event: EventItem) => (
