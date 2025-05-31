@@ -58,7 +58,7 @@ const CreatePost = () => {
                 </AdminSection>
             )}
             
-            {canAccessSysAdmin && (
+            {typedUser?.role === UserRole.SysAdmin || typedUser?.role === UserRole.Create && (
                 <AdminSection 
                     title="Статистика сервера"
                     emoji="🖥️"

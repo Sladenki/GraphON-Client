@@ -1,14 +1,25 @@
 .container {
-    background: #fff;
+    background: var(--block-color);
     border-radius: 8px;
     padding: 24px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     margin-bottom: 24px;
+    border: 1px solid rgba(var(--main-Color), 0.1);
+
+    @media (max-width: 360px) {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
 
     h2 {
         margin: 0 0 24px;
         font-size: 20px;
-        color: #333;
+        color: var(--main-text);
+
+        @media (max-width: 360px) {
+            font-size: 18px;
+            margin: 0 0 16px;
+        }
     }
 }
 
@@ -17,19 +28,31 @@
     flex-direction: column;
     gap: 24px;
     font-family: 'Roboto', sans-serif;
+
+    @media (max-width: 360px) {
+        gap: 16px;
+    }
 }
 
 .title {
     font-size: 18px;
     font-weight: 500;
-    color: var(--text-color);
+    color: var(--main-text);
     margin-bottom: 8px;
+
+    @media (max-width: 360px) {
+        font-size: 16px;
+    }
 }
 
 .inputGroup {
     display: flex;
     flex-direction: column;
     gap: 8px;
+
+    @media (max-width: 360px) {
+        gap: 6px;
+    }
 
     .labelContainer {
         display: flex;
@@ -40,8 +63,12 @@
     .label {
         font-size: 14px;
         font-weight: 500;
-        color: var(--text-secondary);
+        color: var(--main-text);
         margin-bottom: 4px;
+
+        @media (max-width: 360px) {
+            font-size: 13px;
+        }
     }
 
     .descriptionContainer {
@@ -51,15 +78,31 @@
         color: var(--text-secondary);
         font-size: 13px;
         line-height: 1.4;
+        background: rgba(var(--main-Color), 0.05);
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(var(--main-Color), 0.1);
+
+        @media (max-width: 360px) {
+            font-size: 12px;
+            padding: 6px 10px;
+            gap: 4px;
+        }
     }
 
     .infoIcon {
-        color: rgba(var(--main-Color), 0.6);
+        color: rgb(var(--main-Color));
         flex-shrink: 0;
         margin-top: 2px;
+
+        @media (max-width: 360px) {
+            width: 14px;
+            height: 14px;
+        }
     }
 
     .description {
+        color: var(--main-text);
         opacity: 0.8;
     }
 
@@ -70,11 +113,17 @@
         border: 1px solid rgba(var(--main-Color), 0.2);
         border-radius: 8px;
         font-size: 15px;
-        color: var(--text-color);
+        color: var(--main-text);
         background-color: var(--block-color);
         transition: all 0.2s ease;
         font-family: 'Roboto', sans-serif;
         box-sizing: border-box;
+
+        @media (max-width: 360px) {
+            padding: 10px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+        }
 
         &:focus {
             outline: none;
@@ -92,6 +141,10 @@
         min-height: 120px;
         resize: vertical;
         line-height: 1.5;
+
+        @media (max-width: 360px) {
+            min-height: 100px;
+        }
     }
 
     .select {
@@ -100,7 +153,7 @@
         border: 1px solid rgba(var(--main-Color), 0.2);
         border-radius: 8px;
         font-size: 15px;
-        color: var(--text-color);
+        color: var(--main-text);
         background-color: var(--block-color);
         transition: all 0.2s ease;
         cursor: pointer;
@@ -112,6 +165,15 @@
         background-size: 16px;
         padding-right: 40px;
 
+        @media (max-width: 360px) {
+            padding: 10px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            background-position: right 8px center;
+            background-size: 14px;
+            padding-right: 32px;
+        }
+
         &:focus {
             outline: none;
             border-color: rgb(var(--main-Color));
@@ -120,7 +182,12 @@
 
         option {
             background-color: var(--block-color);
-            color: var(--text-color);
+            color: var(--main-text);
+            padding: 8px;
+
+            @media (max-width: 360px) {
+                padding: 6px;
+            }
         }
     }
 
@@ -130,11 +197,17 @@
         border: 2px dashed rgba(var(--main-Color), 0.2);
         border-radius: 8px;
         font-size: 15px;
-        color: var(--text-color);
+        color: var(--main-text);
         background-color: var(--block-color);
         transition: all 0.2s ease;
         cursor: pointer;
         font-family: 'Roboto', sans-serif;
+
+        @media (max-width: 360px) {
+            padding: 10px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+        }
 
         &:hover {
             border-color: rgba(var(--main-Color), 0.4);
@@ -152,6 +225,12 @@
             cursor: pointer;
             margin-right: 12px;
             transition: all 0.2s ease;
+
+            @media (max-width: 360px) {
+                padding: 6px 12px;
+                font-size: 13px;
+                margin-right: 8px;
+            }
 
             &:hover {
                 background-color: rgba(var(--main-Color), 0.9);
@@ -173,15 +252,26 @@
     font-family: 'Roboto', sans-serif;
     align-self: flex-start;
     min-width: 160px;
+    box-shadow: 0 2px 4px rgba(var(--main-Color), 0.2);
+
+    @media (max-width: 360px) {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-width: 140px;
+        border-radius: 6px;
+    }
 
     &:hover:not(:disabled) {
         background-color: rgba(var(--main-Color), 0.9);
         transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(var(--main-Color), 0.3);
     }
 
     &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
     }
 }
 
@@ -189,6 +279,11 @@
     color: #ef4444;
     font-size: 14px;
     margin-top: 4px;
+
+    @media (max-width: 360px) {
+        font-size: 13px;
+        margin-top: 3px;
+    }
 }
 
 .validationMessage {
@@ -198,4 +293,10 @@
     background-color: rgba(220, 53, 69, 0.1);
     border-radius: 4px;
     margin-bottom: 8px;
+
+    @media (max-width: 360px) {
+        font-size: 13px;
+        padding: 6px 10px;
+        margin-bottom: 6px;
+    }
 } 
