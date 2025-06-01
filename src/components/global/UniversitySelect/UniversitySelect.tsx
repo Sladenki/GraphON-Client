@@ -6,10 +6,6 @@ import { Settings } from 'lucide-react';
 import Link from 'next/link';
 import styles from './UniversitySelect.module.scss';
 
-interface UniversitySelectProps {
-  className?: string;
-}
-
 interface University {
   name: string;
   graphId: string;
@@ -22,20 +18,22 @@ const universities: University[] = [
   }
 ];
 
-export const UniversitySelect: FC<UniversitySelectProps> = ({ className }) => {
+export const UniversitySelect = () => {
   const { user, setUser } = useAuth();
   const router = useRouter();
   const [selectedUniversity, setSelectedUniversity] = useState<string>('');
 
   useEffect(() => {
-    // Check localStorage on component mount
+    // Проверяем наличие сохраненного graphId при монтировании
     const savedGraphId = localStorage.getItem('selectedGraphId');
     if (savedGraphId) {
       setSelectedUniversity(savedGraphId);
-      // Если пользователь не авторизован, но есть сохраненный graphId,
-      // обновляем состояние как будто он выбран
+      // Если пользователь не авторизован, но есть сохраненный graphId
       if (!user) {
-        router.refresh();
+        // Добавляем небольшую задержку для обновления состояния
+        setTimeout(() => {
+          router.refresh();
+        }, 100);
       }
     }
   }, []);
@@ -47,21 +45,25 @@ export const UniversitySelect: FC<UniversitySelectProps> = ({ className }) => {
     if (user) {
       try {
         const updatedUser = await UserService.updateSelectedGraph(graphId);
-        // Обновляем состояние пользователя с новым selectedGraphId
         setUser({ ...user, selectedGraphId: graphId });
       } catch (error) {
         console.error('Error updating selected graph:', error);
       }
     } else {
-      // User is not authenticated, save to localStorage
+      // Для неавторизованного пользователя
       localStorage.setItem('selectedGraphId', graphId);
-      // Принудительно обновляем страницу, чтобы отобразить контент
-      router.refresh();
+      // Добавляем событие для оповещения других компонентов
+      const event = new CustomEvent('graphSelected', { detail: graphId });
+      window.dispatchEvent(event);
+      // Обновляем страницу для отображения контента
+      setTimeout(() => {
+        router.refresh();
+      }, 100);
     }
   };
 
   return (
-    <div className={`${styles.container} ${className || ''}`}>
+    <div className={styles.container}>
       <h2 className={styles.title}>Выберите университет</h2>
       <div className={styles.description}>
         <p>

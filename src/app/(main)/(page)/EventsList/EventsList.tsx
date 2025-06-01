@@ -1,20 +1,54 @@
 import { EventService } from '@/services/event.service';
 import { EventItem } from '@/types/schedule.interface';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import React from 'react'
+import { useAuth } from '@/providers/AuthProvider';
+import React, { useEffect, useState } from 'react';
 import styles from './EventsList.module.scss'
 import EventCard from '@/components/ui/EventCard/EventCard';
+import { AxiosResponse } from 'axios';
 
+interface EventsResponse {
+  data: EventItem[];
+}
 
-const EventsList = ({ searchQuery, selectedGraphId }: { searchQuery: string, selectedGraphId: string}) => {
+const EventsList = ({ searchQuery }: { searchQuery: string}) => {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
 
-  const { data: allEvents } = useQuery({
-    queryKey: ['eventsList'],
-    queryFn: () => EventService.getUpcomingEvents(selectedGraphId),
+  useEffect(() => {
+    // Инициализация selectedGraphId
+    const savedGraphId = localStorage.getItem('selectedGraphId');
+    setSelectedGraphId(user?.selectedGraphId || savedGraphId || null);
+
+    // Слушаем событие изменения графа
+    const handleGraphSelected = (event: CustomEvent<string>) => {
+      setSelectedGraphId(event.detail);
+    };
+
+    window.addEventListener('graphSelected', handleGraphSelected as EventListener);
+
+    return () => {
+      window.removeEventListener('graphSelected', handleGraphSelected as EventListener);
+    };
+  }, [user]);
+
+  const { data: allEvents } = useQuery<AxiosResponse<EventsResponse>>({
+    queryKey: ['eventsList', selectedGraphId],
+    queryFn: () => {
+      if (!selectedGraphId) return Promise.resolve({
+        data: { data: [] },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {} as any
+      } as AxiosResponse<EventsResponse>);
+      return EventService.getUpcomingEvents(selectedGraphId);
+    },
+    enabled: !!selectedGraphId
   });
 
-  const events = allEvents?.data;
+  const events = allEvents?.data.data;
 
   const filteredEvents = events?.filter((event: EventItem) => {
     if (!event?._id || !event?.name) return false;
@@ -22,10 +56,16 @@ const EventsList = ({ searchQuery, selectedGraphId }: { searchQuery: string, sel
   });
 
   const handleDelete = (eventId: string) => {
-    queryClient.setQueryData(['eventsList'], (old: any) => ({
-      ...old,
-      data: old.data.filter((event: EventItem) => event._id !== eventId)
-    }));
+    queryClient.setQueryData(['eventsList', selectedGraphId], (old: AxiosResponse<EventsResponse> | undefined) => {
+      if (!old) return old;
+      return {
+        ...old,
+        data: {
+          ...old.data,
+          data: old.data.data.filter((event: EventItem) => event._id !== eventId)
+        }
+      };
+    });
   };
 
   // Если нет событий или отфильтрованный список пуст

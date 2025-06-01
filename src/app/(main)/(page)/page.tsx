@@ -3,7 +3,7 @@
 import { useAuth } from "@/providers/AuthProvider";
 import styles from "./page.module.scss";
 import dynamic from "next/dynamic";
-import { useState, useCallback, Suspense } from "react";
+import { useState, useCallback, Suspense, useEffect } from "react";
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import React from "react";
 import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
@@ -15,15 +15,34 @@ const EventsList = dynamic(() => import("./EventsList/EventsList"), { ssr: false
 
 const Homepage = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<"events" | "groups" | "graphSystem">("events");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState<'events' | 'groups' | 'graphSystem'>('events');
+  const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Инициализация selectedGraphId
+    const savedGraphId = localStorage.getItem('selectedGraphId');
+    setSelectedGraphId(user?.selectedGraphId || savedGraphId || null);
+
+    // Слушаем событие изменения графа
+    const handleGraphSelected = (event: CustomEvent<string>) => {
+      setSelectedGraphId(event.detail);
+    };
+
+    window.addEventListener('graphSelected', handleGraphSelected as EventListener);
+
+    return () => {
+      window.removeEventListener('graphSelected', handleGraphSelected as EventListener);
+    };
+  }, [user]);
 
   const handleTabChange = useCallback((tab: string) => {
-    setActiveTab(tab as "events" | "groups" | "graphSystem");
+    setActiveTab(tab as 'events' | 'groups' | 'graphSystem');
   }, []);
 
-  // Если нет выбранного университета, показываем компонент выбора
-  if (!user?.selectedGraphId) {
+  // Проверяем наличие выбранного университета как у авторизованного пользователя, так и в localStorage
+  const savedGraphId = localStorage.getItem('selectedGraphId');
+  if (!user?.selectedGraphId && !savedGraphId) {
     return (
       <div style={{ 
         minHeight: '100vh',
@@ -67,13 +86,16 @@ const Homepage = () => {
       <div className={styles.contentWrapper}>
         {activeTab === "groups" && (
           <Suspense fallback={<SpinnerLoader />}>
-            <AllGraphs searchQuery={searchQuery} selectedGraphId={user?.selectedGraphId} />
+            <AllGraphs 
+              searchQuery={searchQuery} 
+              selectedGraphId={selectedGraphId || ''} 
+            />
           </Suspense>
         )}
 
         {activeTab === 'events' && (
           <Suspense fallback={<SpinnerLoader />}>
-            <EventsList searchQuery={searchQuery} selectedGraphId={user?.selectedGraphId}  />
+            <EventsList searchQuery={searchQuery} />
           </Suspense>
         )}
 

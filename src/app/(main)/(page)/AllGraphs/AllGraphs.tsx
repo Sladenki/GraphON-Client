@@ -10,6 +10,9 @@ interface AllGraphsProps {
 }
 
 export const AllGraphs: FC<AllGraphsProps> = ({ searchQuery, selectedGraphId }) => {
+
+  console.log('selectedGraphId', selectedGraphId)
+
   const { 
     allPosts: allGraphs, 
     isPostsFetching, 
