@@ -2,6 +2,8 @@ import { FC, useEffect, useState, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 import { UserService } from '@/services/user.service';
+import { Settings } from 'lucide-react';
+import Link from 'next/link';
 import styles from './UniversitySelect.module.scss';
 
 interface UniversitySelectProps {
@@ -61,6 +63,9 @@ export const UniversitySelect: FC<UniversitySelectProps> = ({ className }) => {
   return (
     <div className={`${styles.container} ${className || ''}`}>
       <h2 className={styles.title}>Выберите университет</h2>
+      <p className={styles.description}>
+        Выберите ваш университет для доступа к соответствующим графам и событиям
+      </p>
       <div className={styles.selectWrapper}>
         <select
           className={styles.select}
@@ -75,6 +80,15 @@ export const UniversitySelect: FC<UniversitySelectProps> = ({ className }) => {
           ))}
         </select>
       </div>
+      {user && (
+        <div className={styles.note}>
+          <Settings size={16} />
+          <span>
+            Вы можете изменить университет в{' '}
+            <Link href="/profile">настройках профиля</Link>
+          </span>
+        </div>
+      )}
     </div>
   );
 }; 
