@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, Stars, Html } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
+import { Stars } from '@react-three/drei';
 import { EffectComposer, Bloom, Outline } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
@@ -13,189 +13,8 @@ import { Planet } from './Planet';
 import { ThemeNode } from './ThemeNode';
 import { LeftPanel } from './LeftPanel';
 import { ThemeCards } from './ThemeCards';
+import { CameraController } from './camera/CameraController';
 import styles from './styles.module.scss';
-
-// Компонент для управления камерой
-function CameraController({ 
-  activeNodeRef, 
-  isMobile 
-}: { 
-  activeNodeRef: React.RefObject<Object3D | null>,
-  isMobile: boolean 
-}) {
-  const { camera } = useThree();
-  const [isAnimating, setIsAnimating] = useState(false);
-  const animationRef = useRef<number | null>(null);
-
-  // Функция для плавного перемещения камеры
-  const animateCamera = useCallback((targetPosition: THREE.Vector3, targetLookAt: THREE.Vector3) => {
-    if (!camera || isAnimating) return;
-    
-    setIsAnimating(true);
-    const startPosition = camera.position.clone();
-    const startLookAt = new THREE.Vector3();
-    camera.getWorldDirection(startLookAt);
-    startLookAt.multiplyScalar(10).add(camera.position);
-
-    const duration = 1000; // 1 секунда
-    const startTime = Date.now();
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Используем easeInOutCubic для плавности
-      const easeProgress = progress < 0.5
-        ? 4 * progress * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-      // Интерполируем позицию и направление взгляда
-      camera.position.lerpVectors(startPosition, targetPosition, easeProgress);
-      
-      const currentLookAt = new THREE.Vector3();
-      currentLookAt.lerpVectors(startLookAt, targetLookAt, easeProgress);
-      camera.lookAt(currentLookAt);
-
-      if (progress < 1) {
-        animationRef.current = requestAnimationFrame(animate);
-      } else {
-        setIsAnimating(false);
-      }
-    };
-
-    animate();
-  }, [camera, isAnimating]);
-
-  // Функция для расчета оптимальной позиции камеры
-  const calculateOptimalCameraPosition = useCallback((node: Object3D) => {
-    // Получаем все дочерние элементы
-    const children: THREE.Object3D[] = [];
-    node.traverse((child) => {
-      if (child !== node) {
-        children.push(child);
-      }
-    });
-
-    // Создаем ограничивающий бокс, включающий основной узел и все дочерние элементы
-    const boundingBox = new THREE.Box3().setFromObject(node);
-    children.forEach(child => {
-      const childBox = new THREE.Box3().setFromObject(child);
-      boundingBox.union(childBox);
-    });
-
-    // Получаем центр ограничивающего бокса
-    const center = new THREE.Vector3();
-    boundingBox.getCenter(center);
-
-    // Рассчитываем размер ограничивающего бокса
-    const size = new THREE.Vector3();
-    boundingBox.getSize(size);
-    const maxDimension = Math.max(size.x, size.y, size.z);
-
-    // Рассчитываем оптимальное расстояние до камеры с учетом количества дочерних элементов
-    const childCount = children.length;
-    const distanceMultiplier = isMobile
-      ? Math.max(2.5, 2 + childCount * 0.2)
-      : Math.max(3, 2.5 + childCount * 0.15);
-
-    const optimalDistance = Math.max(
-      isMobile ? 6 : 8,
-      maxDimension * distanceMultiplier
-    );
-
-    // Определяем позицию узла относительно центра сцены
-    const nodePosition = node.position.clone();
-    const angle = Math.atan2(nodePosition.y, nodePosition.x);
-    
-    // Рассчитываем смещение камеры в зависимости от позиции узла
-    const offsetX = Math.cos(angle) * optimalDistance * 0.8;
-    const offsetY = Math.sin(angle) * optimalDistance * 0.8;
-    
-    // Рассчитываем высоту камеры для лучшего обзора
-    const heightOffset = optimalDistance * 0.5;
-
-    // Рассчитываем финальную позицию камеры
-    const cameraPosition = new THREE.Vector3(
-      center.x + offsetX,
-      center.y + offsetY + heightOffset,
-      center.z + optimalDistance
-    );
-
-    // Немного смещаем точку фокуса вверх для лучшего обзора
-    const lookAt = new THREE.Vector3(
-      center.x,
-      center.y + heightOffset * 0.5,
-      center.z
-    );
-
-    return {
-      cameraPosition,
-      lookAt
-    };
-  }, [isMobile]);
-
-  // Обработка изменения активного узла
-  useEffect(() => {
-    if (activeNodeRef.current) {
-      console.log('Active node changed:', activeNodeRef.current);
-      const node = activeNodeRef.current;
-      const { cameraPosition, lookAt } = calculateOptimalCameraPosition(node);
-      console.log('New camera position:', cameraPosition);
-      console.log('New look at:', lookAt);
-      animateCamera(cameraPosition, lookAt);
-    } else {
-      // Если активный узел сброшен, возвращаем камеру в исходное положение
-      console.log('Resetting camera to default position');
-      const defaultPosition = new THREE.Vector3(0, 0, isMobile ? 8 : 12);
-      const defaultLookAt = new THREE.Vector3(0, 0, 0);
-      animateCamera(defaultPosition, defaultLookAt);
-    }
-  }, [activeNodeRef.current, calculateOptimalCameraPosition, animateCamera, isMobile]);
-
-  // Очистка анимации при размонтировании
-  useEffect(() => {
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, []);
-
-  // Функция сброса позиции камеры
-  const resetCamera = useCallback(() => {
-    if (!camera) return;
-    
-    const defaultPosition = new THREE.Vector3(0, 0, isMobile ? 8 : 12);
-    const defaultLookAt = new THREE.Vector3(0, 0, 0);
-    
-    animateCamera(defaultPosition, defaultLookAt);
-  }, [camera, isMobile, animateCamera]);
-
-  return (
-    <>
-      <OrbitControls
-        enablePan={false}
-        minDistance={isMobile ? 6 : 8}
-        maxDistance={isMobile ? 15 : 20}
-        enableDamping
-        dampingFactor={0.05}
-        target={[0, 0, 0]}
-      />
-        {!isMobile && (
-          <Html position={[0, 0, 0]} center>
-            <button 
-              className={styles.resetButton}
-              onClick={resetCamera}
-              title="Вернуться к общему виду"
-            >
-              Сбросить вид
-            </button>
-          </Html>
-        )}
-
-    </>
-  );
-}
 
 const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -341,10 +160,8 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           />
 
           {/* Camera Controller */}
-
           <CameraController activeNodeRef={activeNodeRef} isMobile={isMobile} />
    
-        
           {/* Planet */}
           <Planet scale={activeThemeId 
             ? (isMobile ? 0.21 : 0.4) 
