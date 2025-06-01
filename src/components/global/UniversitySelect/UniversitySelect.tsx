@@ -63,9 +63,16 @@ export const UniversitySelect: FC<UniversitySelectProps> = ({ className }) => {
   return (
     <div className={`${styles.container} ${className || ''}`}>
       <h2 className={styles.title}>Выберите университет</h2>
-      <p className={styles.description}>
-        Выберите ваш университет для доступа к соответствующим графам и событиям
-      </p>
+      <div className={styles.description}>
+        <p>
+          Для персонализированного доступа к учебным материалам и событиям.
+        </p>
+        <ul>
+          <li>Доступ к учебным группам вашего университета</li>
+          <li>Актуальные мероприятия и события</li>
+          <li>Персонализированное расписание</li>
+        </ul>
+      </div>
       <div className={styles.selectWrapper}>
         <select
           className={styles.select}
