@@ -67,7 +67,7 @@ const Homepage = () => {
       <div className={styles.contentWrapper}>
         {activeTab === "groups" && (
           <Suspense fallback={<SpinnerLoader />}>
-            <AllGraphs searchQuery={searchQuery} />
+            <AllGraphs searchQuery={searchQuery} selectedGraphId={user?.selectedGraphId} />
           </Suspense>
         )}
 

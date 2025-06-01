@@ -32,7 +32,7 @@ const CreatePost = () => {
     if (isPending) return <SpinnerLoader/>;
     if (isError) return <p>Ошибка: {error.message}</p>;
 
-    if (!canAccessEditor) {
+    if (!canAccessSysAdmin) {
         return <p>У вас нет доступа к этой странице</p>
     }
 

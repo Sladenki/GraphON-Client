@@ -6,16 +6,17 @@ import GraphsList from '@/components/ui/GraphsList/GraphsList';
 
 interface AllGraphsProps {
   searchQuery: string;
+  selectedGraphId: string;
 }
 
-export const AllGraphs: FC<AllGraphsProps> = ({ searchQuery }) => {
+export const AllGraphs: FC<AllGraphsProps> = ({ searchQuery, selectedGraphId }) => {
   const { 
     allPosts: allGraphs, 
     isPostsFetching, 
     isEndPosts, 
     loaderRef, 
     error 
-  } = useFetchBunchData('graph/getParentGraphs', [], true);
+  } = useFetchBunchData(`graph/getAllChildrenGraphs/${selectedGraphId}`, [], true);
 
   const filteredGraphs = useMemo(() => {
     if (!searchQuery) return allGraphs;

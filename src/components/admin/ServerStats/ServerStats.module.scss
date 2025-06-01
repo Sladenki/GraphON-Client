@@ -18,7 +18,7 @@
 
     h4 {
         margin: 0 0 15px 0;
-        color: var(--text-secondary);
+        // color: var(--text-secondary);
         font-size: 1.1rem;
         border-bottom: 2px solid rgba(var(--main-Color), 0.1);
         padding-bottom: 8px;
@@ -36,9 +36,9 @@
         border-bottom: none;
     }
 
-    span:first-child {
-        color: var(--text-secondary);
-    }
+    // span:first-child {
+    //     // color: var(--text-secondary);
+    // }
 
     span:last-child {
         font-weight: 500;
@@ -57,7 +57,7 @@
 
     h5 {
         margin: 0 0 10px 0;
-        color: var(--text-secondary);
+        // color: var(--text-secondary);
         font-size: 0.9rem;
     }
 
@@ -66,7 +66,7 @@
         padding-left: 20px;
         
         li {
-            color: var(--text-secondary);
+            // color: var(--text-secondary);
             font-size: 0.9rem;
             margin-bottom: 5px;
             
