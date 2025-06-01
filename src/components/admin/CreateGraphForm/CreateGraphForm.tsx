@@ -1,19 +1,26 @@
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminService } from '@/services/admin.service';
 import { IGraphList } from '@/types/graph.interface';
 import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/ui/AdminForm';
+import { GraphService } from '@/services/graph.service';
 
-interface CreateGraphFormProps {
-    mainTopics: IGraphList[];
-}
 
-export const CreateGraphForm = ({ mainTopics }: CreateGraphFormProps) => {
+export const CreateGraphForm = ({ globalGraphId }: { globalGraphId: string }) => {
     const [graphName, setGraphName] = useState('');
     const [selectedParentGraph, setSelectedParentGraph] = useState('');
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const queryClient = useQueryClient();
+
+    // Получение главных графов
+    const { isPending: isPendingGraphTopics, isError, data: mainTopics, error } = useQuery({
+        queryKey: ['graph/getTopicGraphstGraphs'],
+        queryFn: async () => {
+            const response = await GraphService.getGraphsByTopic(globalGraphId);
+            return response.data as IGraphList[];
+        },
+    });
 
     const { mutate: createGraph, isPending } = useMutation({
         mutationFn: () => {
@@ -90,10 +97,10 @@ export const CreateGraphForm = ({ mainTopics }: CreateGraphFormProps) => {
                     onChange={(e) => setSelectedParentGraph(e.target.value)}
                     options={[
                         { value: '', label: 'Выберите родительский граф' },
-                        ...mainTopics.map(graph => ({
+                        ...(mainTopics?.map((graph: IGraphList) => ({
                             value: graph._id,
                             label: graph.name
-                        }))
+                        })) || [])
                     ]}
                     required
                 />

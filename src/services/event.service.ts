@@ -10,13 +10,14 @@ export const EventService = {
         eventDate: string;
         timeFrom: string;
         timeTo: string;
+        globalGraphId: string;
     }) {
         return axiosAuth.post("/event/create", eventData);
     },
 
     // --- Получение всех мероприятий ---
-    async getUpcomingEvents() {
-        return axiosAuth.get("/event/upcoming");
+    async getUpcomingEvents(selectedGraphId: string) {
+        return axiosAuth.get(`/event/upcoming/${selectedGraphId}`);
     },
 
     // --- Удаление мероприятия ---

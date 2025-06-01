@@ -74,7 +74,7 @@ const CreatePost = () => {
                     emoji="📊"
                     role={UserRole.Admin}
                 >
-                    <CreateGraphForm mainTopics={mainTopics.data} />
+                    <CreateGraphForm globalGraphId={user?.selectedGraphId || ''} />
                 </AdminSection>
             )}
             
@@ -94,7 +94,7 @@ const CreatePost = () => {
                     emoji="📅"
                     role={UserRole.Editor}
                 >
-                    <CreateEventForm mainTopics={mainTopics.data} />
+                    <CreateEventForm mainTopics={mainTopics.data} globalGraphId={user?.selectedGraphId || ''} />
                 </AdminSection>
             )}
             

@@ -6,9 +6,10 @@ import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '
 
 interface CreateEventFormProps {
     mainTopics: IGraphList[];
+    globalGraphId: string;
 }
 
-export const CreateEventForm = ({ mainTopics }: CreateEventFormProps) => {
+export const CreateEventForm = ({ mainTopics, globalGraphId }: CreateEventFormProps) => {
     const [eventData, setEventData] = useState({
         name: '',
         description: '',
@@ -21,7 +22,10 @@ export const CreateEventForm = ({ mainTopics }: CreateEventFormProps) => {
     const queryClient = useQueryClient();
 
     const { mutate: createEvent, isPending } = useMutation({
-        mutationFn: () => EventService.createEvent(eventData),
+        mutationFn: () => EventService.createEvent({
+            ...eventData,
+            globalGraphId
+        }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['eventsList'] });
             setEventData({

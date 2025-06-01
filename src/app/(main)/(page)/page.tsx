@@ -71,15 +71,15 @@ const Homepage = () => {
           </Suspense>
         )}
 
-        {activeTab === 'graphSystem' && (
+        {activeTab === 'events' && (
           <Suspense fallback={<SpinnerLoader />}>
-            <GraphView searchQuery={searchQuery} />
+            <EventsList searchQuery={searchQuery} selectedGraphId={user?.selectedGraphId}  />
           </Suspense>
         )}
 
-        {activeTab === 'events' && (
+        {activeTab === 'graphSystem' && (
           <Suspense fallback={<SpinnerLoader />}>
-            <EventsList searchQuery={searchQuery} />
+            <GraphView searchQuery={searchQuery} />
           </Suspense>
         )}
       </div>

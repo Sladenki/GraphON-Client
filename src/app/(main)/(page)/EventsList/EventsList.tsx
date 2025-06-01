@@ -6,12 +6,12 @@ import styles from './EventsList.module.scss'
 import EventCard from '@/components/ui/EventCard/EventCard';
 
 
-const EventsList = ({ searchQuery }: { searchQuery: string}) => {
+const EventsList = ({ searchQuery, selectedGraphId }: { searchQuery: string, selectedGraphId: string}) => {
   const queryClient = useQueryClient();
 
   const { data: allEvents } = useQuery({
     queryKey: ['eventsList'],
-    queryFn: () => EventService.getUpcomingEvents(),
+    queryFn: () => EventService.getUpcomingEvents(selectedGraphId),
   });
 
   const events = allEvents?.data;
