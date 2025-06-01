@@ -1,4 +1,4 @@
-import { axiosClassic } from "@/api/interceptors"
+import { axiosAuth, axiosClassic } from "@/api/interceptors"
 import { IGoogleAuthUser } from "@/types/user.interface"
 import { IUser } from '@/types/user.interface';
 
@@ -17,8 +17,8 @@ export const UserService = {
         return data;
     },
 
-    async getUserById(id: string): Promise<IUser> {
-        const { data } = await axiosClassic.get<IUser>(`/users/${id}`);
+    async updateSelectedGraph(selectedGraphId: string) {
+        const { data } = await axiosAuth.patch(`/user/selected-graph`, { selectedGraphId });
         return data;
     }
 }

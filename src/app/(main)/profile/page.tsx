@@ -50,7 +50,7 @@ export default function Profile() {
     const typedUser = user as IUser | null;
     const subsEvents = allEvents?.data
 
-    console.log('subsEvents', subsEvents)
+    console.log('typedUser', typedUser)
 
     return (
         <div className={styles.profileWrapper}>

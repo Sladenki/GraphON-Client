@@ -1,0 +1,18 @@
+// Список графов
+.postsList {
+  display: flex;
+  justify-content: center;
+  min-height: 200px; // Фиксируем минимальную высоту
+  align-items: center;
+}
+
+.error {
+  color: var(--text-primary);
+  text-align: center;
+  padding: 2rem;
+  font-size: 1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+} 

@@ -5,12 +5,14 @@ interface User {
     _id: string;
     email: string;
     role: string;
+    selectedGraphId: string | null;
     // ... other existing properties ...
 }
 
 interface AuthContextType {
     isLoggedIn: boolean;
     user: User | null;
+    setUser: (user: User | null) => void;
     login: (userData: { sub: string; email: string }) => void;
     logout: () => void;
     loading: boolean;
@@ -20,6 +22,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
     isLoggedIn: false,
     user: null,
+    setUser: () => {},
     login: () => {},
     logout: () => {},
     loading: true,
@@ -112,7 +115,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser({
             _id: userData.sub,
             email: userData.email,
-            role: 'user' // Default role
+            role: 'user', // Default role
+            selectedGraphId: null
         });
     };
 
@@ -137,7 +141,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
-    const value = { isLoggedIn, user, login, logout, loading, error }; // Передаем loading в контекст
+    const value = { isLoggedIn, user, setUser, login, logout, loading, error }; // Передаем loading в контекст
 
     return (
         <AuthContext value={value}>
