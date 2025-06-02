@@ -72,9 +72,11 @@ export default function Profile() {
                             {typedUser.lastName ? ` ${typedUser.lastName}` : ""}
                         </span>
 
-                        <span>
-                            {RoleTitles[typedUser.role]}
-                        </span>
+                        {typedUser.role !== 'user' && (
+                            <span>
+                                {RoleTitles[typedUser.role]}
+                            </span>
+                        )}
 
                     </div>
 

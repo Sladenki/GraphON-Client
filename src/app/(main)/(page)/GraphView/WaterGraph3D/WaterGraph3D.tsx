@@ -108,55 +108,64 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           }}
           onPointerMissed={handlePointerMissed}
           style={{ width: '100%', height: '100%' }}
-          onCreated={({ scene }) => {
+          onCreated={({ scene, gl }) => {
             sceneRef.current = scene;
+            if (isMobile) {
+              gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+              gl.setSize(width, width * 0.75);
+              gl.shadowMap.enabled = false;
+            }
           }}
+          dpr={isMobile ? [1, 2] : [1, 2]}
+          performance={{ min: 0.5 }}
         >
           {/* Scene setup */}
           <color attach="background" args={['#1a1b3d']} />
-          <fog attach="fog" args={['#1a1b3d', 12, 25]} />
+          <fog attach="fog" args={['#1a1b3d', isMobile ? 8 : 12, isMobile ? 20 : 25]} />
           
           {/* Lighting */}
-          <ambientLight intensity={0.6} />
-          <directionalLight position={[5, 5, 5]} intensity={1} />
+          <ambientLight intensity={isMobile ? 0.5 : 0.6} />
+          <directionalLight position={[5, 5, 5]} intensity={isMobile ? 0.8 : 1} />
           <pointLight position={[-5, -5, -5]} intensity={0.4} color="#a04fff" />
           
           {/* Effects */}
-          <EffectComposer>
-            <Bloom 
-              luminanceThreshold={0.15}
-              luminanceSmoothing={0.9}
-              intensity={1.3}
-            />
-            {activeNodeRef.current ? (
-              <Outline
-                key={activeNodeRef.current.uuid}
-                selection={[activeNodeRef.current]}
-                edgeStrength={90}
-                pulseSpeed={0.5}
-                visibleEdgeColor={0x00ffff}
-                hiddenEdgeColor={0x00ffff}
-                blendFunction={BlendFunction.SCREEN}
+          {!isMobile && (
+            <EffectComposer>
+              <Bloom 
+                luminanceThreshold={0.15}
+                luminanceSmoothing={0.9}
+                intensity={1.3}
               />
-            ) : (
-              <Outline
-                selection={[]}
-                edgeStrength={0}
-                visibleEdgeColor={0x000000}
-                hiddenEdgeColor={0x000000}
-                blendFunction={BlendFunction.SCREEN}
-              />
-            )}
-          </EffectComposer>
+              {activeNodeRef.current ? (
+                <Outline
+                  key={activeNodeRef.current.uuid}
+                  selection={[activeNodeRef.current]}
+                  edgeStrength={90}
+                  pulseSpeed={0.5}
+                  visibleEdgeColor={0x00ffff}
+                  hiddenEdgeColor={0x00ffff}
+                  blendFunction={BlendFunction.SCREEN}
+                />
+              ) : (
+                <Outline
+                  selection={[]}
+                  edgeStrength={0}
+                  visibleEdgeColor={0x000000}
+                  hiddenEdgeColor={0x000000}
+                  blendFunction={BlendFunction.SCREEN}
+                />
+              )}
+            </EffectComposer>
+          )}
 
           {/* Stars background */}
           <Stars 
-            radius={100}
-            depth={50}
-            count={4000}
-            factor={1.8}
+            radius={isMobile ? 80 : 100}
+            depth={isMobile ? 30 : 50}
+            count={isMobile ? 2000 : 4000}
+            factor={isMobile ? 1.5 : 1.8}
             fade
-            speed={0.9}
+            speed={isMobile ? 0.5 : 0.9}
           />
 
           {/* Camera Controller */}
