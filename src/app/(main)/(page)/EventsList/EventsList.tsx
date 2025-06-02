@@ -7,10 +7,6 @@ import styles from './EventsList.module.scss'
 import EventCard from '@/components/ui/EventCard/EventCard';
 import { AxiosResponse } from 'axios';
 
-interface EventsResponse {
-  data: EventItem[];
-}
-
 const EventsList = ({ searchQuery }: { searchQuery: string}) => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -33,7 +29,7 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
     };
   }, [user]);
 
-  const { data: allEvents } = useQuery<AxiosResponse<EventsResponse>>({
+  const { data: allEvents } = useQuery<AxiosResponse<any>>({
     queryKey: ['eventsList', selectedGraphId],
     queryFn: () => {
       if (!selectedGraphId) return Promise.resolve({
@@ -42,13 +38,13 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
         statusText: 'OK',
         headers: {},
         config: {} as any
-      } as AxiosResponse<EventsResponse>);
+      } as AxiosResponse<any>);
       return EventService.getUpcomingEvents(selectedGraphId);
     },
     enabled: !!selectedGraphId
   });
 
-  const events = allEvents?.data.data;
+  const events = allEvents?.data;
 
   const filteredEvents = events?.filter((event: EventItem) => {
     if (!event?._id || !event?.name) return false;
@@ -56,7 +52,7 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
   });
 
   const handleDelete = (eventId: string) => {
-    queryClient.setQueryData(['eventsList', selectedGraphId], (old: AxiosResponse<EventsResponse> | undefined) => {
+    queryClient.setQueryData(['eventsList', selectedGraphId], (old: AxiosResponse<any> | undefined) => {
       if (!old) return old;
       return {
         ...old,
@@ -76,6 +72,8 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
       </div>
     );
   }
+
+  console.log(filteredEvents);
 
   return (
     <div className={styles.eventsListWrapper}>
