@@ -1,15 +1,11 @@
 'use client'
 
 import { useMemo } from 'react';
-import { LeftPanelProps, GraphNode } from './types';
+import { ThemeCardsProps } from './types';
 import { THEME_CONFIG } from './constants';
 import styles from './styles.module.scss';
 
-export function ThemeCards({ 
-  data, 
-  onThemeSelect, 
-  selectedTheme 
-}: LeftPanelProps) {
+export const ThemeCards = ({ data, onThemeSelect, selectedTheme }: ThemeCardsProps) => {
   // Find root node first
   const rootNode = useMemo(() => {
     const found = data.find(n => n.name === "КГТУ");

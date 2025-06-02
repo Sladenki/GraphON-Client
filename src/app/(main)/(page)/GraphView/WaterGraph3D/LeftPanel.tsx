@@ -8,7 +8,8 @@ import styles from './styles.module.scss';
 export function LeftPanel({ 
   data, 
   onThemeSelect, 
-  selectedTheme 
+  selectedTheme,
+  onSubgraphSelect
 }: LeftPanelProps) {
   const root = useMemo(() => data.find(n => n.name === "КГТУ"), [data]);
   const themes = useMemo(() => 
@@ -92,9 +93,7 @@ export function LeftPanel({
                 <div
                   key={subgraph._id.$oid}
                   className={styles.subgraphBlock}
-                  onClick={() => {
-                    console.log('Selected subgraph:', subgraph);
-                  }}
+                  onClick={() => onSubgraphSelect(subgraph)}
                 >
                   <div className={styles.subgraphInfo}>
                     <span className={styles.subgraphName}>{subgraph.name}</span>

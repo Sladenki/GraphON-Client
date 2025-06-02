@@ -33,10 +33,17 @@ export interface ThemeNodeProps {
   anyActive: boolean;
 }
 
+export interface ThemeCardsProps {
+  data: GraphNode[];
+  onThemeSelect: (theme: GraphNode | null) => void;
+  selectedTheme: GraphNode | null;
+}
+
 export interface LeftPanelProps {
   data: GraphNode[];
   onThemeSelect: (theme: GraphNode | null) => void;
   selectedTheme: GraphNode | null;
+  onSubgraphSelect: (subgraph: GraphNode) => void;
 }
 
 // Add type for R3F canvas

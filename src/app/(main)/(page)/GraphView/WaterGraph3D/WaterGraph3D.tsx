@@ -14,6 +14,7 @@ import { ThemeNode } from './ThemeNode';
 import { LeftPanel } from './LeftPanel';
 import { ThemeCards } from './ThemeCards';
 import { CameraController } from './camera/CameraController';
+import SubgraphPopUp from './SubgraphPopUp/SubgraphPopUp';
 import styles from './styles.module.scss';
 
 const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
@@ -21,6 +22,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
   const [hoveredThemeId, setHoveredThemeId] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<GraphNode | null>(null);
+  const [selectedSubgraph, setSelectedSubgraph] = useState<GraphNode | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const activeNodeRef = useRef<Object3D | null>(null);
@@ -89,6 +91,10 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     return () => window.removeEventListener('resize', debouncedResize);
   }, [handleResize]);
 
+  const handleSubgraphSelect = (subgraph: GraphNode) => {
+    setSelectedSubgraph(subgraph);
+  };
+
   if (!root) return null;
 
   return (
@@ -98,6 +104,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           data={data}
           onThemeSelect={handleThemeSelect}
           selectedTheme={selectedTheme}
+          onSubgraphSelect={handleSubgraphSelect}
         />
       )}
       <div className={styles.graphContainer}>
@@ -204,6 +211,10 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           selectedTheme={selectedTheme}
         />
       )}
+      <SubgraphPopUp 
+        subgraph={selectedSubgraph}
+        onClose={() => setSelectedSubgraph(null)}
+      />
     </div>
   );
 };
