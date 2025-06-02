@@ -37,6 +37,7 @@ export interface ThemeCardsProps {
   data: GraphNode[];
   onThemeSelect: (theme: GraphNode | null) => void;
   selectedTheme: GraphNode | null;
+  onSubgraphSelect: (subgraph: GraphNode) => void;
 }
 
 export interface LeftPanelProps {

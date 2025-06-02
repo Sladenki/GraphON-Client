@@ -5,7 +5,7 @@ import { ThemeCardsProps } from './types';
 import { THEME_CONFIG } from './constants';
 import styles from './styles.module.scss';
 
-export const ThemeCards = ({ data, onThemeSelect, selectedTheme }: ThemeCardsProps) => {
+export const ThemeCards = ({ data, onThemeSelect, selectedTheme, onSubgraphSelect }: ThemeCardsProps) => {
   // Find root node first
   const rootNode = useMemo(() => {
     const found = data.find(n => n.name === "КГТУ");
@@ -69,6 +69,7 @@ export const ThemeCards = ({ data, onThemeSelect, selectedTheme }: ThemeCardsPro
                 <div
                   key={subgraph._id.$oid}
                   className={styles.subgraphCard}
+                  onClick={() => onSubgraphSelect(subgraph)}
                 >
                   <div className={styles.cardContent}>
                     <div className={styles.cardInfo}>

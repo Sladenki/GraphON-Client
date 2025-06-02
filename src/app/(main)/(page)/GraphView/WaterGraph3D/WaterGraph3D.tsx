@@ -209,6 +209,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           data={data}
           onThemeSelect={handleThemeSelect}
           selectedTheme={selectedTheme}
+          onSubgraphSelect={handleSubgraphSelect}
         />
       )}
       <SubgraphPopUp 
