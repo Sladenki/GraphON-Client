@@ -9,6 +9,36 @@ export const AdminService = {
         return data;
     },
 
+    // --- Создание глобального графа ---
+    async createGlobalGraph(data: { name: string; city: string; image: File }) {
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('city', data.city);
+        formData.append('image', data.image);
+
+        const { data: response } = await axiosAuth.post('/graph/createGlobalGraph', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    },
+
+    // --- Создание графа-тематики ---
+    async createTopicGraph(data: { name: string; parentGraphId: string; image: File }) {
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('parentGraphId', data.parentGraphId);
+        formData.append('image', data.image);
+
+        const { data: response } = await axiosAuth.post('/graph/createTopicGraph', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response;
+    },
+
     // --- Создание графа --- 
     async createGraph(data: { name: string; parentGraphId: string; image: File }) {
         const formData = new FormData();
@@ -40,5 +70,7 @@ export const AdminService = {
     async getServerResourceStats() {
         const { data } = await axiosAuth.get('/admin/server-stats');
         return data;
-    }
+    },
+
+
 };
