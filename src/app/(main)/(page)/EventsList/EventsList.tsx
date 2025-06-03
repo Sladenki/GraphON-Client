@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './EventsList.module.scss'
 import EventCard from '@/components/ui/EventCard/EventCard';
 import { AxiosResponse } from 'axios';
+import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 
 const EventsList = ({ searchQuery }: { searchQuery: string}) => {
   const queryClient = useQueryClient();
@@ -29,7 +30,7 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
     };
   }, [user]);
 
-  const { data: allEvents } = useQuery<AxiosResponse<any>>({
+  const { data: allEvents, isLoading } = useQuery<AxiosResponse<any>>({
     queryKey: ['eventsList', selectedGraphId],
     queryFn: () => {
       if (!selectedGraphId) return Promise.resolve({
@@ -44,9 +45,9 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
     enabled: !!selectedGraphId
   });
 
-  const events = allEvents?.data;
+  const events = allEvents?.data || [];
 
-  const filteredEvents = events?.filter((event: EventItem) => {
+  const filteredEvents = events.filter((event: EventItem) => {
     if (!event?._id || !event?.name) return false;
     return event.name.toLowerCase().includes(searchQuery.toLowerCase());
   });
@@ -64,8 +65,13 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
     });
   };
 
-  // Если нет событий или отфильтрованный список пуст
-  if (!events?.length || (filteredEvents && filteredEvents.length === 0)) {
+  if (isLoading) {
+    return (
+      <SpinnerLoader/>
+    );
+  }
+
+  if (!events.length) {
     return (
       <div className={styles.emptyMessage}>
         На ближайшее время никакой движухи нет
@@ -73,11 +79,17 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
     );
   }
 
-  console.log(filteredEvents);
+  if (filteredEvents.length === 0 && searchQuery) {
+    return (
+      <div className={styles.emptyMessage}>
+        По вашему запросу ничего не найдено
+      </div>
+    );
+  }
 
   return (
     <div className={styles.eventsListWrapper}>
-      {filteredEvents?.map((event: EventItem) => (
+      {filteredEvents.map((event: EventItem) => (
         event?._id && (
           <div key={event._id}>
             <EventCard 
