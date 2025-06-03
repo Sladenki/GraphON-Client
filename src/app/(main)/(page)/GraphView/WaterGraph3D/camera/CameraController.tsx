@@ -55,15 +55,10 @@ export function CameraController({ activeNodeRef, isMobile }: CameraControllerPr
   // Обработка изменения активного узла
   useEffect(() => {
     if (activeNodeRef.current) {
-      console.log('Active node changed:', activeNodeRef.current);
       const node = activeNodeRef.current;
       const { cameraPosition, lookAt } = calculateOptimalCameraPosition(node, isMobile);
-      console.log('New camera position:', cameraPosition);
-      console.log('New look at:', lookAt);
       animateCamera(cameraPosition, lookAt);
     } else {
-      // Если активный узел сброшен, возвращаем камеру в исходное положение
-      console.log('Resetting camera to default position');
       const { cameraPosition, lookAt } = getDefaultCameraPosition(isMobile);
       animateCamera(cameraPosition, lookAt);
     }
@@ -96,7 +91,7 @@ export function CameraController({ activeNodeRef, isMobile }: CameraControllerPr
         dampingFactor={0.05}
         target={[0, 0, 0]}
       />
-      {!isMobile && (
+      {!isMobile && activeNodeRef.current && (
         <Html position={[0, 0, 0]} center>
           <button 
             className={styles.resetButton}

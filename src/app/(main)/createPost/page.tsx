@@ -59,16 +59,6 @@ const CreatePost = () => {
                     <UserRoleManager />
                 </AdminSection>
             )}
-            
-            {typedUser?.role === UserRole.SysAdmin || typedUser?.role === UserRole.Create && (
-                <AdminSection 
-                    title="Статистика сервера"
-                    emoji="🖥️"
-                    role={UserRole.SysAdmin}
-                >
-                    <ServerStats />
-                </AdminSection>
-            )}
 
             {canAccessCreate && (
                 <AdminSection 
@@ -89,6 +79,17 @@ const CreatePost = () => {
                     <CreateTopicGraphForm globalGraphs={mainTopics.data} />
                 </AdminSection>
             )}
+            
+            {typedUser?.role === UserRole.SysAdmin || typedUser?.role === UserRole.Create && (
+                <AdminSection 
+                    title="Статистика сервера"
+                    emoji="🖥️"
+                    role={UserRole.SysAdmin}
+                >
+                    <ServerStats />
+                </AdminSection>
+            )}
+
             
             {canAccessAdmin && mainTopics && (
                 <AdminSection 
