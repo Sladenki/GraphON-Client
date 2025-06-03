@@ -14,19 +14,64 @@ import { ThemeNode } from './ThemeNode';
 import { LeftPanel } from './LeftPanel';
 import { ThemeCards } from './ThemeCards';
 import { CameraController } from './camera/CameraController';
-import SubgraphPopUp from './SubgraphPopUp/SubgraphPopUp';
+import { useQuery } from '@tanstack/react-query';
+import { GraphService } from '@/services/graph.service';
 import styles from './styles.module.scss';
+
+// Add interface for the API response data
+interface SubgraphData {
+  _id: string;
+  name: string;
+  directorName?: string;
+  directorVkLink?: string;
+  vkLink?: string;
+  ownerUserId: string;
+  subsNum: number;
+  childGraphNum: number;
+  imgPath?: string;
+  parentGraphId: string;
+  graphType: string;
+  globalGraphId: string;
+}
 
 const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
   const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
   const [hoveredThemeId, setHoveredThemeId] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<GraphNode | null>(null);
-  const [selectedSubgraph, setSelectedSubgraph] = useState<GraphNode | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const activeNodeRef = useRef<Object3D | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
+
+  console.log('selectedTheme', selectedTheme)
+
+  // Fetch subgraphs when a theme is selected
+  const { data: subgraphsData } = useQuery<SubgraphData[]>({
+    queryKey: ['subgraphs', selectedTheme?._id.$oid],
+    queryFn: async () => {
+      const response = await GraphService.getAllChildrenByTopic(selectedTheme?._id.$oid as string);
+      return response.data;
+    },
+    enabled: !!selectedTheme?._id.$oid,
+  });
+
+  // Transform and combine data with fetched subgraphs
+  const combinedData = useMemo(() => {
+    if (!subgraphsData || !selectedTheme) return data;
+    
+    // Transform the subgraphs data to match our expected format
+    const transformedSubgraphs = subgraphsData.map((subgraph: SubgraphData) => ({
+      ...subgraph,
+      _id: { $oid: subgraph._id },
+      ownerUserId: { $oid: subgraph.ownerUserId },
+      parentGraphId: { $oid: subgraph.parentGraphId },
+      globalGraphId: { $oid: subgraph.globalGraphId },
+      graphType: subgraph.graphType === 'default' ? 'topic' : subgraph.graphType as 'global' | 'topic'
+    }));
+
+    return [...data, ...transformedSubgraphs] as GraphNode[];
+  }, [data, subgraphsData, selectedTheme]);
 
   const cameraPosition = useMemo<[number, number, number]>(() => 
     isMobile ? [0, 0, 8] : [0, 0, 12],
@@ -91,20 +136,16 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     return () => window.removeEventListener('resize', debouncedResize);
   }, [handleResize]);
 
-  const handleSubgraphSelect = (subgraph: GraphNode) => {
-    setSelectedSubgraph(subgraph);
-  };
-
   if (!root) return null;
 
   return (
     <div ref={containerRef} className={styles.container}>
       {!isMobile && (
         <LeftPanel 
-          data={data}
+          data={combinedData}
           onThemeSelect={handleThemeSelect}
           selectedTheme={selectedTheme}
-          onSubgraphSelect={handleSubgraphSelect}
+          onSubgraphSelect={() => {}}
         />
       )}
       <div className={styles.graphContainer}>
@@ -196,7 +237,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               setActive={setActiveThemeId}
               setHovered={setHoveredThemeId}
               onThemeSelect={handleThemeSelect}
-              data={data}
+              data={combinedData}
               isMobile={isMobile}
               anyActive={!!activeThemeId}
               scale={isMobile ? 0.85 : 1}
@@ -206,16 +247,12 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
       </div>
       {isMobile && (
         <ThemeCards 
-          data={data}
+          data={combinedData}
           onThemeSelect={handleThemeSelect}
           selectedTheme={selectedTheme}
-          onSubgraphSelect={handleSubgraphSelect}
+          onSubgraphSelect={() => {}}
         />
       )}
-      <SubgraphPopUp 
-        subgraph={selectedSubgraph}
-        onClose={() => setSelectedSubgraph(null)}
-      />
     </div>
   );
 };

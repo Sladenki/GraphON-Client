@@ -32,6 +32,12 @@ export const GraphService = {
         return axiosClassic.get(`/graph/getAllChildrenGraphs/${parentGraphId}`)
     },
 
+
+    // --- Получение всех дочерних графов по Id родительского графа-тематики - Для системы графов --- 
+    async getAllChildrenByTopic(parentGraphId: string) {
+        return axiosClassic.get(`/graph/getAllChildrenByTopic/${parentGraphId}`)
+    },
+
     // --- Получение графов тем ---
     async getGraphsByTopic(globalGraphId: string) {
         return axiosClassic.get(`/graph/getTopicGraphs/${globalGraphId}`)

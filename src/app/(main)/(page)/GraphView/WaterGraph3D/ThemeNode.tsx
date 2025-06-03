@@ -71,6 +71,9 @@ export function ThemeNode({
   anyActive,
   scale = 1
 }: ThemeNodeProps & { scale?: number }) {
+
+  console.log('theme', data)
+
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
   const trailRef = useRef<THREE.Mesh>(null);
