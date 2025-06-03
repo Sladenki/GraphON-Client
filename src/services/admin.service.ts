@@ -10,11 +10,13 @@ export const AdminService = {
     },
 
     // --- Создание глобального графа ---
-    async createGlobalGraph(data: { name: string; city: string; image: File }) {
+    async createGlobalGraph(data: { name: string; city: string; image?: File }) {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('city', data.city);
-        formData.append('image', data.image);
+        if (data.image) {
+            formData.append('image', data.image);
+        }
 
         const { data: response } = await axiosAuth.post('/admin/createGlobalGraph', formData, {
             headers: {
@@ -25,11 +27,13 @@ export const AdminService = {
     },
 
     // --- Создание графа-тематики ---
-    async createTopicGraph(data: { name: string; parentGraphId: string; image: File }) {
+    async createTopicGraph(data: { name: string; parentGraphId: string; image?: File }) {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('parentGraphId', data.parentGraphId);
-        formData.append('image', data.image);
+        if (data.image) {
+            formData.append('image', data.image);
+        }
 
         const { data: response } = await axiosAuth.post('/admin/createTopicGraph', formData, {
             headers: {
@@ -40,11 +44,13 @@ export const AdminService = {
     },
 
     // --- Создание графа --- 
-    async createGraph(data: { name: string; parentGraphId: string; image: File }) {
+    async createGraph(data: { name: string; parentGraphId: string; image?: File }) {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('parentGraphId', data.parentGraphId);
-        formData.append('image', data.image);
+        if (data.image) {
+            formData.append('image', data.image);
+        }
 
         const { data: response } = await axiosAuth.post('/admin/createGraph', formData, {
             headers: {

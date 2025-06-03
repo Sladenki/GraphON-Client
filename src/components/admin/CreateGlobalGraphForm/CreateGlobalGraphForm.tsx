@@ -12,8 +12,11 @@ export const CreateGlobalGraphForm = () => {
 
     const { mutate: createGlobalGraph, isPending } = useMutation({
         mutationFn: () => {
-            if (!image) throw new Error('Изображение обязательно');
-            return AdminService.createGlobalGraph({ name, city, image });
+            return AdminService.createGlobalGraph({ 
+                name, 
+                city, 
+                ...(image ? { image } : {})
+            });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['graph/getParentGraphs'] });
@@ -31,11 +34,10 @@ export const CreateGlobalGraphForm = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name.trim() || !city.trim() || !image) {
+        if (!name.trim() || !city.trim()) {
             console.log('Form validation failed:', {
                 name: !name.trim(),
-                city: !city.trim(),
-                image: !image
+                city: !city.trim()
             });
             return;
         }
@@ -51,10 +53,13 @@ export const CreateGlobalGraphForm = () => {
                 setImagePreview(reader.result as string);
             };
             reader.readAsDataURL(file);
+        } else {
+            setImage(null);
+            setImagePreview(null);
         }
     };
 
-    const isFormValid = name.trim() && city.trim() && image;
+    const isFormValid = name.trim() && city.trim();
 
     return (
         <AdminForm
@@ -84,12 +89,11 @@ export const CreateGlobalGraphForm = () => {
                 />
             </FormInputGroup>
 
-            <FormInputGroup label="Изображение графа:">
+            <FormInputGroup label="Изображение графа (необязательно):">
                 <FormInput
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
-                    required
                 />
                 {imagePreview && (
                     <div style={{ marginTop: '10px', maxWidth: '300px' }}>

@@ -76,7 +76,7 @@ const CreatePost = () => {
                     emoji="📑"
                     role={UserRole.Create}
                 >
-                    <CreateTopicGraphForm globalGraphs={mainTopics.data} />
+                    <CreateTopicGraphForm />
                 </AdminSection>
             )}
             

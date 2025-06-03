@@ -1,23 +1,31 @@
 import { AdminService } from '@/services/admin.service';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { GraphService } from '@/services/graph.service';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/ui/AdminForm';
+import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import { IGraphList } from '@/types/graph.interface';
 
-interface CreateTopicGraphFormProps {
-    globalGraphs: Array<{ _id: string; name: string }>;
-}
-
-export const CreateTopicGraphForm: React.FC<CreateTopicGraphFormProps> = ({ globalGraphs }) => {
+export const CreateTopicGraphForm = () => {
     const [name, setName] = useState('');
     const [parentGraphId, setParentGraphId] = useState('');
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const queryClient = useQueryClient();
 
+    // Получение глобальных графов
+    const { data: globalGraphs, isLoading, error } = useQuery<{ data: IGraphList[] }>({
+        queryKey: ['graph/getGlobalGraphs'],
+        queryFn: () => GraphService.getGlobalGraphs()
+    });
+
     const { mutate: createTopicGraph, isPending } = useMutation({
         mutationFn: () => {
-            if (!image) throw new Error('Изображение обязательно');
-            return AdminService.createTopicGraph({ name, parentGraphId, image });
+            return AdminService.createTopicGraph({ 
+                name, 
+                parentGraphId, 
+                ...(image ? { image } : {})
+            });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['graph/getParentGraphs'] });
@@ -35,11 +43,10 @@ export const CreateTopicGraphForm: React.FC<CreateTopicGraphFormProps> = ({ glob
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name.trim() || !parentGraphId || !image) {
+        if (!name.trim() || !parentGraphId) {
             console.log('Form validation failed:', {
                 name: !name.trim(),
-                parentGraphId: !parentGraphId,
-                image: !image
+                parentGraphId: !parentGraphId
             });
             return;
         }
@@ -55,10 +62,16 @@ export const CreateTopicGraphForm: React.FC<CreateTopicGraphFormProps> = ({ glob
                 setImagePreview(reader.result as string);
             };
             reader.readAsDataURL(file);
+        } else {
+            setImage(null);
+            setImagePreview(null);
         }
     };
 
-    const isFormValid = name.trim() && parentGraphId && image;
+    const isFormValid = name.trim() && parentGraphId;
+
+    if (isLoading) return <SpinnerLoader />;
+    if (error) return <div>Ошибка при загрузке глобальных графов</div>;
 
     return (
         <AdminForm
@@ -84,7 +97,7 @@ export const CreateTopicGraphForm: React.FC<CreateTopicGraphFormProps> = ({ glob
                     onChange={(e) => setParentGraphId(e.target.value)}
                     options={[
                         { value: '', label: 'Выберите глобальный граф' },
-                        ...globalGraphs.map(graph => ({
+                        ...(globalGraphs?.data || []).map(graph => ({
                             value: graph._id,
                             label: graph.name
                         }))
@@ -93,12 +106,11 @@ export const CreateTopicGraphForm: React.FC<CreateTopicGraphFormProps> = ({ glob
                 />
             </FormInputGroup>
 
-            <FormInputGroup label="Изображение графа:">
+            <FormInputGroup label="Изображение графа (необязательно):">
                 <FormInput
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
-                    required
                 />
                 {imagePreview && (
                     <div style={{ marginTop: '10px', maxWidth: '300px' }}>

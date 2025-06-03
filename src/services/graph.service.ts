@@ -27,6 +27,11 @@ export const GraphService = {
         return axiosClassic.get(`/graph/getParentGraphs`)
     },
 
+    // --- Получение глобальных графов ---
+    async getGlobalGraphs() {
+        return axiosClassic.get(`/graph/getGlobalGraphs`)
+    },
+
     // --- Получение дочерних графов по ID родительского ---
     async getAllChildrenGraphs(parentGraphId: string) {
         return axiosClassic.get(`/graph/getAllChildrenGraphs/${parentGraphId}`)
