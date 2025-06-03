@@ -12,11 +12,13 @@ export interface GraphNode {
   directorVkLink?: string;
   vkLink?: string;
   emoji?: string;
+  graphType: 'global' | 'topic';
+  city?: string;
 }
 
 export interface WaterGraph3DProps {
   data: GraphNode[];
-  searchQuery?: string;
+  searchQuery: string;
 }
 
 export interface ThemeNodeProps {

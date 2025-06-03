@@ -88,8 +88,8 @@ export function ThemeNode({
   // Обновляем размеры с учетом новой орбитальной системы
   const orbitRadius = useMemo(() => (isMobile ? 1.87 : 3.5) * scale, [isMobile, scale]);
   const nodeScale = useMemo(() => {
-    // Если это центральный граф (КГТУ)
-    if (theme.name === 'КГТУ') {
+    // Если это глобальный граф
+    if (theme.graphType === 'global') {
       if (anyActive) {
         return (isMobile ? 0.09 : 0.18) * scale; // Уменьшаем в 2.5 раза при активации любого графа
       }
@@ -99,7 +99,7 @@ export function ThemeNode({
     if (active) return (isMobile ? 0.17 : 0.3) * scale;
     if (anyActive) return (isMobile ? 0.13 : 0.25) * scale;
     return (isMobile ? 0.23 : 0.45) * scale;
-  }, [isMobile, scale, active, anyActive, theme.name]);
+  }, [isMobile, scale, active, anyActive, theme.graphType]);
   
   const childOrbitRadius = useMemo(() => 
     calculateOrbitRadius(children.length, isMobile) * scale,

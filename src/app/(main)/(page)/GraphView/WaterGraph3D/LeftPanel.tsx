@@ -11,10 +11,10 @@ export function LeftPanel({
   selectedTheme,
   onSubgraphSelect
 }: LeftPanelProps) {
-  const root = useMemo(() => data.find(n => n.name === "КГТУ"), [data]);
+  const root = useMemo(() => data.find(n => n.graphType === 'global'), [data]);
   const themes = useMemo(() => 
-    data.filter(n => n.parentGraphId?.$oid === root?._id.$oid),
-    [data, root]
+    data.filter(n => n.graphType === 'topic'),
+    [data]
   );
 
   const subgraphs = useMemo(() => 
@@ -35,7 +35,7 @@ export function LeftPanel({
     <div className={styles.leftPanel}>
       <div className={styles.panelContent}>
         <h1 className={styles.title}>
-          Планета – КГТУ
+          Планета – {root.name}
           <span className={styles.themeCount}>
             {themeCount} {themeCount === 1 ? 'спутник' : themeCount < 5 ? 'спутника' : 'спутников'}
           </span>

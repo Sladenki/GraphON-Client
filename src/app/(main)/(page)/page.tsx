@@ -101,7 +101,7 @@ const Homepage = () => {
 
         {activeTab === 'graphSystem' && (
           <Suspense fallback={<SpinnerLoader />}>
-            <GraphView searchQuery={searchQuery} />
+            <GraphView searchQuery={searchQuery}  />
           </Suspense>
         )}
       </div>

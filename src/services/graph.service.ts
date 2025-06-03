@@ -37,4 +37,8 @@ export const GraphService = {
         return axiosClassic.get(`/graph/getTopicGraphs/${globalGraphId}`)
     },  
 
+    // --- Получение глобального графа с его графами-тематиками ---
+    async getTopicGraphsWithGlobal(globalGraphId: string) {
+        return axiosClassic.get(`/graph/getTopicGraphsWithGlobal/${globalGraphId}`)
+    }
 }

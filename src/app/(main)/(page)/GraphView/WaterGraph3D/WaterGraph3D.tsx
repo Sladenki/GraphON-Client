@@ -33,10 +33,10 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     [isMobile]
   );
 
-  const root = useMemo(() => data.find(n => n.name === "КГТУ"), [data]);
+  const root = useMemo(() => data.find(n => n.graphType === 'global'), [data]);
   const themes = useMemo(() => 
-    data.filter(n => n.parentGraphId?.$oid === root?._id.$oid),
-    [data, root]
+    data.filter(n => n.graphType === 'topic'),
+    [data]
   );
 
   // Обновляем ссылку на активный узел при изменении выбранной темы
