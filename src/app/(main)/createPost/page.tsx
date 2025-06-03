@@ -17,6 +17,8 @@ import { useRoleAccess } from '@/hooks/useRoleAccess';
 import { AdminSection } from '@/components/admin/AdminSection/AdminSection';
 import { UserStats } from '@/components/admin/UserStats/UserStats';
 import { ServerStats } from '@/components/admin/ServerStats/ServerStats';
+import { CreateGlobalGraphForm } from '@/components/admin/CreateGlobalGraphForm/CreateGlobalGraphForm';
+import { CreateTopicGraphForm } from '@/components/admin/CreateTopicGraphForm/CreateTopicGraphForm';
 
 const CreatePost = () => {
     const { user } = useAuth();
@@ -65,6 +67,26 @@ const CreatePost = () => {
                     role={UserRole.SysAdmin}
                 >
                     <ServerStats />
+                </AdminSection>
+            )}
+
+            {canAccessCreate && (
+                <AdminSection 
+                    title="Создание глобального графа"
+                    emoji="🌍"
+                    role={UserRole.Create}
+                >
+                    <CreateGlobalGraphForm />
+                </AdminSection>
+            )}
+
+            {canAccessCreate && mainTopics && (
+                <AdminSection 
+                    title="Создание графа-тематики"
+                    emoji="📑"
+                    role={UserRole.Create}
+                >
+                    <CreateTopicGraphForm globalGraphs={mainTopics.data} />
                 </AdminSection>
             )}
             

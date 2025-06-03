@@ -16,7 +16,7 @@ export const AdminService = {
         formData.append('city', data.city);
         formData.append('image', data.image);
 
-        const { data: response } = await axiosAuth.post('/graph/createGlobalGraph', formData, {
+        const { data: response } = await axiosAuth.post('/admin/createGlobalGraph', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -31,7 +31,7 @@ export const AdminService = {
         formData.append('parentGraphId', data.parentGraphId);
         formData.append('image', data.image);
 
-        const { data: response } = await axiosAuth.post('/graph/createTopicGraph', formData, {
+        const { data: response } = await axiosAuth.post('/admin/createTopicGraph', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
