@@ -38,6 +38,120 @@
   }
 }
 
+.tabList {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+  
+  @media (max-width: 768px) {
+    gap: 0.25rem;
+  }
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  padding-right: 0.25rem;
+  position: relative;
+  
+  @media (max-width: 768px) {
+    display: none; // Скрываем на мобильных
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--main-text);
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+
+  input:focus + & {
+    opacity: 0.7;
+  }
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  font-size: 0.9rem;
+  color: var(--main-text);
+  width: 200px;
+  transition: width 0.2s ease;
+  
+  &::placeholder {
+    color: var(--main-text);
+    opacity: 0.5;
+  }
+  
+  &:focus {
+    outline: none;
+    width: 250px;
+  }
+}
+
+// Мобильный поиск
+.mobileSearch {
+  display: none;
+  margin-top: 0.5rem;
+  padding: 0 0.5rem;
+  position: relative;
+  
+  @media (max-width: 768px) {
+    display: block;
+    animation: slideDown 0.2s ease;
+  }
+
+  .searchIcon {
+    left: 1.25rem;
+    z-index: 2;
+  }
+
+  .searchInput {
+    position: relative;
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--block-color);
+    color: var(--main-text);
+    font-size: 0.95rem;
+    
+    &::placeholder {
+      color: var(--main-text);
+      opacity: 0.5;
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: rgb(var(--main-Color));
+      width: 100%;
+    }
+    
+    html[data-theme="dark"] & {
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      border-color: var(--glass-border);
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .tabItem {
   position: relative;
   flex: 1;

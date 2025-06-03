@@ -2,6 +2,7 @@
 
 import React, { FC, memo, useCallback, useRef, useEffect, KeyboardEvent } from "react";
 import clsx from "clsx";
+import { Search } from "lucide-react";
 import styles from "./Tabs.module.scss";
 
 interface Tab {
@@ -15,13 +16,21 @@ interface TabsProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   ariaLabel?: string; // Добавляем aria-label для доступности
+  showSearch?: boolean;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  searchPlaceholder?: string;
 }
 
 const Tabs: FC<TabsProps> = ({ 
   tabs, 
   activeTab, 
   setActiveTab, 
-  ariaLabel = "Navigation Tabs" 
+  ariaLabel = "Navigation Tabs",
+  showSearch = false,
+  searchValue = "",
+  onSearchChange,
+  searchPlaceholder = "Поиск..."
 }) => {
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIndex = tabs.findIndex((tab) => tab.name === activeTab);
@@ -65,6 +74,23 @@ const Tabs: FC<TabsProps> = ({
     }
   }, []);
 
+  const searchInput = (
+    <>
+      <Search 
+        size={18} 
+        className={styles.searchIcon} 
+      />
+      <input
+        type="text"
+        className={styles.searchInput}
+        placeholder={searchPlaceholder}
+        value={searchValue}
+        onChange={(e) => onSearchChange?.(e.target.value)}
+        aria-label={searchPlaceholder}
+      />
+    </>
+  );
+
   return (
     <div className={styles.tabWrapper}>
       <div 
@@ -72,28 +98,40 @@ const Tabs: FC<TabsProps> = ({
         role="tablist"
         aria-label={ariaLabel}
       >
-        {tabs.map(({ name, label, icon }, index) => (
-          <button
-            key={name}
-            ref={(el: HTMLButtonElement | null) => {
-              tabsRef.current[index] = el;
-            }}
-            role="tab"
-            aria-selected={activeTab === name}
-            aria-controls={`panel-${name}`}
-            id={`tab-${name}`}
-            tabIndex={activeTab === name ? 0 : -1}
-            className={clsx(styles.tabItem, { [styles.selected]: activeTab === name })}
-            onClick={handleTabClick(name)}
-            onKeyDown={(e) => handleKeyDown(e, index)}
-          >
-            <span className={styles.tabName}>
-              {icon && <span className={styles.tabIcon}>{icon}</span>}
-              {label}
-            </span>
-          </button>
-        ))}
+        <div className={styles.tabList}>
+          {tabs.map(({ name, label, icon }, index) => (
+            <button
+              key={name}
+              ref={(el: HTMLButtonElement | null) => {
+                tabsRef.current[index] = el;
+              }}
+              role="tab"
+              aria-selected={activeTab === name}
+              aria-controls={`panel-${name}`}
+              id={`tab-${name}`}
+              tabIndex={activeTab === name ? 0 : -1}
+              className={clsx(styles.tabItem, { [styles.selected]: activeTab === name })}
+              onClick={handleTabClick(name)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+            >
+              <span className={styles.tabName}>
+                {icon && <span className={styles.tabIcon}>{icon}</span>}
+                {label}
+              </span>
+            </button>
+          ))}
+        </div>
+        {showSearch && onSearchChange && (
+          <div className={styles.searchWrapper}>
+            {searchInput}
+          </div>
+        )}
       </div>
+      {showSearch && onSearchChange && (
+        <div className={styles.mobileSearch}>
+          {searchInput}
+        </div>
+      )}
     </div>
   );
 };
