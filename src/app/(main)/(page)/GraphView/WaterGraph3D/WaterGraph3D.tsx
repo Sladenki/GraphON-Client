@@ -16,6 +16,7 @@ import { ThemeCards } from './ThemeCards';
 import { CameraController } from './camera/CameraController';
 import { useQuery } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
+import SubgraphPopUp from './SubgraphPopUp/SubgraphPopUp';
 import styles from './styles.module.scss';
 
 // Add interface for the API response data
@@ -39,12 +40,11 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
   const [hoveredThemeId, setHoveredThemeId] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<GraphNode | null>(null);
+  const [selectedSubgraph, setSelectedSubgraph] = useState<GraphNode | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const activeNodeRef = useRef<Object3D | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
-
-  console.log('selectedTheme', selectedTheme)
 
   // Fetch subgraphs when a theme is selected
   const { data: subgraphsData } = useQuery<SubgraphData[]>({
@@ -136,6 +136,10 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     return () => window.removeEventListener('resize', debouncedResize);
   }, [handleResize]);
 
+  const handleSubgraphSelect = (subgraph: GraphNode) => {
+    setSelectedSubgraph(subgraph);
+  };
+
   if (!root) return null;
 
   return (
@@ -145,7 +149,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           data={combinedData}
           onThemeSelect={handleThemeSelect}
           selectedTheme={selectedTheme}
-          onSubgraphSelect={() => {}}
+          onSubgraphSelect={handleSubgraphSelect}
         />
       )}
       <div className={styles.graphContainer}>
@@ -250,9 +254,13 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           data={combinedData}
           onThemeSelect={handleThemeSelect}
           selectedTheme={selectedTheme}
-          onSubgraphSelect={() => {}}
+          onSubgraphSelect={handleSubgraphSelect}
         />
       )}
+      <SubgraphPopUp 
+        subgraph={selectedSubgraph}
+        onClose={() => setSelectedSubgraph(null)}
+      />
     </div>
   );
 };
