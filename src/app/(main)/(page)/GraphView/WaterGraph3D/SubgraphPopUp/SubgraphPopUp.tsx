@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraphNode } from '../types';
 import styles from './SubgraphPopUp.module.scss';
+import { useMutation } from '@tanstack/react-query';
+import { ScheduleService } from '@/services/schedule.service';
+import ScheduleList from '@/components/ui/ScheduleList/ScheduleList';
+import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 
 interface SubgraphPopUpProps {
   subgraph: GraphNode | null;
@@ -16,6 +20,17 @@ const SubgraphPopUp = ({ subgraph, onClose }: SubgraphPopUpProps) => {
       setIsVisible(true);
     }
   }, [subgraph]);
+
+  // Получение расписания для графа
+  const { mutate, data, isPending } = useMutation({
+    mutationFn: (graphId: string) => ScheduleService.getFullScheduleByGraphId(graphId),
+  });
+
+  useEffect(() => {
+    if (subgraph?._id) {
+      mutate(subgraph._id.$oid);
+    }
+  }, [subgraph, mutate]);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -63,6 +78,18 @@ const SubgraphPopUp = ({ subgraph, onClose }: SubgraphPopUpProps) => {
                 )}
               </div>
             )}
+            
+            {/* Отображение расписания */}
+            <div className={styles.scheduleContainer}>
+              {isPending ? (
+                <SpinnerLoader />
+              ) : data?.data ? (
+                <ScheduleList
+                  schedule={data.data.schedule}
+                  events={data.data.events}
+                />
+              ) : null}
+            </div>
           </motion.div>
         </motion.div>
       )}

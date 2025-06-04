@@ -2,7 +2,7 @@ import { FC, useMemo } from 'react';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useFetchBunchData } from '@/hooks/useFetchBunchData';
 import styles from './AllGraphs.module.scss';
-import GraphsList from '@/components/ui/GraphsList/GraphsList';
+import GraphsList from '@/app/(main)/(page)/AllGraphs/GraphsList/GraphsList';
 
 interface AllGraphsProps {
   searchQuery: string;

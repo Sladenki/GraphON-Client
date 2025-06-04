@@ -1,9 +1,9 @@
 import React, { FC } from 'react'
 import styles from './GraphList.module.scss'
-import GraphBlock from '../GraphBlock/GraphBlock'
+import GraphBlock from '../../../../../components/ui/GraphBlock/GraphBlock'
 import { IGraphList } from '@/types/graph.interface'
 import { useSchedulePopup } from './useSchedulePopUp'
-import SchedulePopUp from '../SchedulePopUp/SchedulePopUp'
+import SchedulePopUp from '../../../../../components/ui/SchedulePopUp/SchedulePopUp'
 
 const GraphsList: FC<{ allGraphs: any}> = ({ allGraphs }) => {
   
