@@ -1,6 +1,5 @@
 'use client'
 
-import UploadForm from '@/components/global/UploadForm/UploadForm';
 import { GraphService } from '@/services/graph.service';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react'
