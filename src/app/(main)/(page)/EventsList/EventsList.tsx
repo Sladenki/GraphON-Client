@@ -74,7 +74,12 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
   if (!events.length) {
     return (
       <div className={styles.emptyMessage}>
-        На ближайшее время никакой движухи нет
+        <div className={styles.mainText}>
+          Пока что мероприятий нет
+        </div>
+        <div className={styles.subText}>
+          Но скоро здесь появится что-то интересное! Загляните позже, чтобы не пропустить крутые события
+        </div>
       </div>
     );
   }
@@ -82,7 +87,12 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
   if (filteredEvents.length === 0 && searchQuery) {
     return (
       <div className={styles.emptyMessage}>
-        По вашему запросу ничего не найдено
+        <div className={styles.mainText}>
+          Ничего не найдено
+        </div>
+        <div className={styles.subText}>
+          Попробуйте изменить параметры поиска или посмотреть все доступные мероприятия
+        </div>
       </div>
     );
   }
