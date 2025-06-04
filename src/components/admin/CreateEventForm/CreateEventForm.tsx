@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { EventService } from '@/services/event.service';
+import { GraphService } from '@/services/graph.service';
 import { IGraphList } from '@/types/graph.interface';
 import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
 
 interface CreateEventFormProps {
-    mainTopics: IGraphList[];
     globalGraphId: string;
 }
 
-export const CreateEventForm = ({ mainTopics, globalGraphId }: CreateEventFormProps) => {
+export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
     const [eventData, setEventData] = useState({
         name: '',
         description: '',
@@ -20,6 +20,14 @@ export const CreateEventForm = ({ mainTopics, globalGraphId }: CreateEventFormPr
     });
 
     const queryClient = useQueryClient();
+
+    const { data: mainTopics = [], isLoading: isLoadingTopics } = useQuery<IGraphList[]>({
+        queryKey: ['mainTopics', globalGraphId],
+        queryFn: async () => {
+            const response = await GraphService.getAllChildrenByGlobal(globalGraphId);
+            return response.data;
+        }
+    });
 
     const { mutate: createEvent, isPending } = useMutation({
         mutationFn: () => EventService.createEvent({
@@ -48,6 +56,18 @@ export const CreateEventForm = ({ mainTopics, globalGraphId }: CreateEventFormPr
         e.preventDefault();
         if (!eventData.name || !eventData.description || !eventData.eventDate || 
             !eventData.timeFrom || !eventData.timeTo || !eventData.graphId) return;
+            
+        // Validate that end time is after start time
+        const [fromHours, fromMinutes] = eventData.timeFrom.split(':').map(Number);
+        const [toHours, toMinutes] = eventData.timeTo.split(':').map(Number);
+        const fromTime = fromHours * 60 + fromMinutes;
+        const toTime = toHours * 60 + toMinutes;
+        
+        if (toTime <= fromTime) {
+            alert('Время окончания должно быть позже времени начала');
+            return;
+        }
+        
         createEvent();
     };
 
@@ -71,7 +91,7 @@ export const CreateEventForm = ({ mainTopics, globalGraphId }: CreateEventFormPr
             title="Создание нового мероприятия"
             onSubmit={handleSubmit}
             submitButtonText="Создать мероприятие"
-            isSubmitting={isPending}
+            isSubmitting={isPending || isLoadingTopics}
             isSubmitDisabled={!isFormValid}
         >
             <FormInputGroup 
@@ -110,13 +130,14 @@ export const CreateEventForm = ({ mainTopics, globalGraphId }: CreateEventFormPr
                     value={eventData.graphId}
                     onChange={handleChange}
                     options={[
-                        { value: '', label: 'Выберите граф' },
-                        ...mainTopics.map(graph => ({
+                        { value: '', label: isLoadingTopics ? 'Загрузка...' : 'Выберите граф' },
+                        ...mainTopics.map((graph: IGraphList) => ({
                             value: graph._id,
                             label: graph.name
                         }))
                     ]}
                     required
+                    disabled={isLoadingTopics}
                 />
             </FormInputGroup>
 
@@ -127,6 +148,7 @@ export const CreateEventForm = ({ mainTopics, globalGraphId }: CreateEventFormPr
                         type="date"
                         value={eventData.eventDate}
                         onChange={handleChange}
+                        min="2025-01-01"
                         required
                     />
                 </FormInputGroup>

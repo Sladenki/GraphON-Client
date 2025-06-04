@@ -112,11 +112,11 @@ const CreatePost = () => {
             
             {canAccessEditor && mainTopics && (
                 <AdminSection 
-                    title="Создание события"
+                    title="Создание события (мероприятия)"
                     emoji="📅"
                     role={UserRole.Editor}
                 >
-                    <CreateEventForm mainTopics={mainTopics.data} globalGraphId={user?.selectedGraphId || ''} />
+                    <CreateEventForm globalGraphId={user?.selectedGraphId || ''} />
                 </AdminSection>
             )}
             
@@ -126,7 +126,7 @@ const CreatePost = () => {
                     emoji="⏰"
                     role={UserRole.Editor}
                 >
-                    <CreateScheduleForm graphs={mainTopics.data} />
+                    <CreateScheduleForm globalGraphId={user?.selectedGraphId || ''} />
                 </AdminSection>
             )}
         </div>

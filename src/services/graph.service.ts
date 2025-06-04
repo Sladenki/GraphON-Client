@@ -37,6 +37,10 @@ export const GraphService = {
         return axiosClassic.get(`/graph/getAllChildrenGraphs/${parentGraphId}`)
     },
 
+    // --- Получение дочерних графов по ID глобального графа ---
+    async getAllChildrenByGlobal(globalGraphId: string) {
+        return axiosClassic.get(`/graph/getAllChildrenByGlobal/${globalGraphId}`)
+    },
 
     // --- Получение всех дочерних графов по Id родительского графа-тематики - Для системы графов --- 
     async getAllChildrenByTopic(parentGraphId: string) {

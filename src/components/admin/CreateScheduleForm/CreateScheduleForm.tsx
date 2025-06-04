@@ -1,12 +1,13 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { ScheduleService, ICreateScheduleDto } from '@/services/schedule.service';
+import { GraphService } from '@/services/graph.service';
 import { IGraphList } from '@/types/graph.interface';
 import { useState } from 'react';
 import { ScheduleType } from '@/types/schedule.interface';
 import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/ui/AdminForm';
 
 interface CreateScheduleFormProps {
-    graphs: IGraphList[];
+    globalGraphId: string;
 }
 
 const SCHEDULE_TYPES = [
@@ -24,7 +25,7 @@ const DAYS_OF_WEEK = [
     'Воскресенье'
 ];
 
-export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
+export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) => {
     const [formData, setFormData] = useState<ICreateScheduleDto>({
         graphId: '',
         name: '',
@@ -36,6 +37,14 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
     });
 
     const queryClient = useQueryClient();
+
+    const { data: graphs = [], isLoading: isLoadingGraphs } = useQuery<IGraphList[]>({
+        queryKey: ['graphs', globalGraphId],
+        queryFn: async () => {
+            const response = await GraphService.getAllChildrenByGlobal(globalGraphId);
+            return response.data;
+        }
+    });
 
     const { mutate: createSchedule, isPending } = useMutation({
         mutationFn: () => ScheduleService.createSchedule(formData),
@@ -83,7 +92,7 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
             title="Создать расписание"
             onSubmit={handleSubmit}
             submitButtonText="Создать расписание"
-            isSubmitting={isPending}
+            isSubmitting={isPending || isLoadingGraphs}
             isSubmitDisabled={!isFormValid}
         >
             <FormInputGroup 
@@ -95,13 +104,14 @@ export const CreateScheduleForm = ({ graphs }: CreateScheduleFormProps) => {
                     value={formData.graphId}
                     onChange={handleChange}
                     options={[
-                        { value: '', label: 'Выберите граф' },
-                        ...graphs.map(graph => ({
+                        { value: '', label: isLoadingGraphs ? 'Загрузка...' : 'Выберите граф' },
+                        ...graphs.map((graph: IGraphList) => ({
                             value: graph._id,
                             label: graph.name
                         }))
                     ]}
                     required
+                    disabled={isLoadingGraphs}
                 />
             </FormInputGroup>
 
