@@ -4,15 +4,25 @@ import React from 'react';
 import { format, startOfWeek, addDays, parseISO, isSameDay, startOfDay } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import styles from './ScheduleList.module.scss';
-import { EventItem, ScheduleItem } from '@/types/schedule.interface';
+import { ScheduleItem, EventItem } from '../../../types/schedule';
 
-
-interface ScheduleCalendarProps {
+interface ScheduleListProps {
   schedule: ScheduleItem[];
   events: EventItem[];
 }
 
-const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ schedule, events }) => {
+export const ScheduleList: React.FC<ScheduleListProps> = ({ schedule, events }) => {
+  if ((!schedule || schedule.length === 0) && (!events || events.length === 0)) {
+    return (
+      <div className={styles.emptyState}>
+        <h2 className={styles.mainText}>Расписание пока пустое</h2>
+        <p className={styles.subText}>
+          Здесь будет отображаться расписание занятий. Следи за обновлениями и не пропускай важные события!
+        </p>
+      </div>
+    );
+  }
+
   const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
@@ -31,8 +41,8 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ schedule, events })
             <div className={styles.eventContainer}>
               {/* Расписание */}
               {schedule
-                .filter((item) => item.dayOfWeek === index)
-                .map((item) => (
+                .filter((item: ScheduleItem) => item.dayOfWeek === index)
+                .map((item: ScheduleItem) => (
                   <div key={item._id} className={styles.scheduleItem}>
                     <span className={styles.itemTitle}>{item.name}</span>
                     <span className={styles.itemDescription}>
@@ -44,8 +54,10 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ schedule, events })
 
               {/* Мероприятия */}
               {events
-                .filter((event) => isSameDay(startOfDay(parseISO(event.eventDate)), startOfDay(date)))
-                .map((event) => (
+                .filter((event: EventItem) => 
+                  isSameDay(startOfDay(parseISO(event.eventDate)), startOfDay(date))
+                )
+                .map((event: EventItem) => (
                   <div key={event._id} className={styles.eventItem}>
                     <span className={styles.itemTitle}>📝 {event.name}</span>
                     <span className={styles.itemDescription}>{event.description}</span>
@@ -59,5 +71,3 @@ const ScheduleCalendar: React.FC<ScheduleCalendarProps> = ({ schedule, events })
     </div>
   );
 };
-
-export default ScheduleCalendar;

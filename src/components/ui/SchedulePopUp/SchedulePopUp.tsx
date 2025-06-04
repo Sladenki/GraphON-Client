@@ -4,7 +4,8 @@ import React, { FC, useEffect } from 'react'
 
 import { SpinnerLoader } from '../../global/SpinnerLoader/SpinnerLoader';
 import PopUpWrapper from '../PopUpWrapper/PopUpWrapper';
-import ScheduleList from '../ScheduleList/ScheduleList';
+import { ScheduleList } from '../ScheduleList/ScheduleList';
+
 
 interface SchedulePopUpProps {
     graphId: any;

@@ -4,8 +4,9 @@ import { GraphNode } from '../types';
 import styles from './SubgraphPopUp.module.scss';
 import { useMutation } from '@tanstack/react-query';
 import { ScheduleService } from '@/services/schedule.service';
-import ScheduleList from '@/components/ui/ScheduleList/ScheduleList';
+
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import { ScheduleList } from '@/components/ui/ScheduleList/ScheduleList';
 
 interface SubgraphPopUpProps {
   subgraph: GraphNode | null;

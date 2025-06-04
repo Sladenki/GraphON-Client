@@ -1,12 +1,13 @@
 'use client';
 
-import ScheduleList from "@/components/ui/ScheduleList/ScheduleList";
+
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import { GraphSubsService } from "@/services/graphSubs.service";
 import { useQuery } from "@tanstack/react-query";
 
 import styles from './Schedule.module.scss'
 import { WarningText } from "@/components/ui/WarningText/WarningText";
+import { ScheduleList } from "@/components/ui/ScheduleList/ScheduleList";
 
 const Schedule = () => {
 
