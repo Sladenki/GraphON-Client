@@ -18,15 +18,18 @@ export interface ScheduleItem {
   
 export interface EventItem {
     _id: string;
+    graphId: {
+        _id: string;
+        name: string;
+    };
+    globalGraphId: string;
     name: string;
     description: string;
     eventDate: string;
     timeFrom: string;
     timeTo: string;
-    graphId: {
-      name: string;
-    };
-    isAttended?: boolean;
+    regedUsers: number;
+    isAttended: boolean;
 }
 
 export interface ISchedule {

@@ -1,9 +1,11 @@
 .eventsListWrapper {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   width: 100%;
-  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
 .emptyMessage {
@@ -120,6 +122,19 @@
   }
   100% {
     transform: rotate(0deg) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .eventsListWrapper {
+    padding: 0 12px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .eventsListWrapper {
+    padding: 0 16px;
   }
 }
 

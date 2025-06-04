@@ -4,11 +4,24 @@ import { useEventRegistration } from "@/hooks/useEventRegistration";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { EventService } from "@/services/event.service";
-import { useRouter } from "next/navigation";
 import { UserRole } from "@/types/user.interface";
 
 interface EventProps {
-  event: any;
+  event: {
+    _id: string;
+    graphId: {
+      _id: string;
+      name: string;
+    };
+    globalGraphId: string;
+    name: string;
+    description: string;
+    eventDate: string;
+    timeFrom: string;
+    timeTo: string;
+    regedUsers: number;
+    isAttended: boolean;
+  };
   isAttended?: boolean;
   onDelete?: (eventId: string) => void;
 }
@@ -32,7 +45,7 @@ const formatEventTime = (startDate?: string, startTime?: string, endDate?: strin
                         duration >= 2 && duration <= 4 ? 'часа' : 
                         'часов';
 
-    return `Дата: ${start.toLocaleString('ru-RU', { day: 'numeric', month: 'long' })}\nВремя: ${start.toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' })} (${Math.floor(duration)} ${durationText})`;
+    return `${start.toLocaleString('ru-RU', { day: 'numeric', month: 'long' })}\n${start.toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' })} (${Math.floor(duration)} ${durationText})`;
   } catch (error) {
     console.error('Ошибка форматирования времени:', error);
     return 'Ошибка формата времени';
@@ -41,7 +54,6 @@ const formatEventTime = (startDate?: string, startTime?: string, endDate?: strin
 
 const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDelete }) => {
   const { isLoggedIn, user } = useAuth();
-  const router = useRouter();
   const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
   const [isEditing, setIsEditing] = useState(false);
   const [event, setEvent] = useState(initialEvent);
@@ -61,12 +73,11 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
   const handleRegistration = async () => {
     try {
       await toggleRegistration();
-      // Обновляем количество зарегистрированных пользователей
-      setEvent((prev: typeof event) => ({
+      setEvent(prev => ({
         ...prev,
         regedUsers: isRegistered 
-          ? (prev.regedUsers || 1) - 1  // Уменьшаем при отмене регистрации
-          : (prev.regedUsers || 0) + 1  // Увеличиваем при регистрации
+          ? (prev.regedUsers || 1) - 1
+          : (prev.regedUsers || 0) + 1
       }));
     } catch (error) {
       console.error('Ошибка при изменении статуса регистрации:', error);
@@ -75,7 +86,6 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
 
   const handleDelete = async () => {
     if (!event._id) return;
-    
     try {
       await EventService.deleteEvent(event._id);
       onDelete?.(event._id);
@@ -86,11 +96,10 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
 
   const handleEdit = async () => {
     if (!event._id) return;
-    
     try {
       const updatedEvent = await EventService.updateEvent(event._id, {
         ...editedEvent,
-        graphId: event.graphId?._id || ''
+        graphId: event.graphId._id
       });
       setEvent(updatedEvent.data);
       setIsEditing(false);
@@ -109,18 +118,22 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
   return (
     <div className={styles.eventCard}>
       <div className={styles.header}>
-        {isEditing ? (
-          <input
-            type="text"
-            name="name"
-            value={editedEvent.name}
-            onChange={handleChange}
-            className={styles.editInput}
-          />
-        ) : (
-          <h3 className={styles.title}>{event.name || 'Название не указано'}</h3>
-        )}
-        <span className={styles.author}>{event.graphId?.name || 'Автор не указан'}</span>
+        <div className={styles.titleSection}>
+          {isEditing ? (
+            <input
+              type="text"
+              name="name"
+              value={editedEvent.name}
+              onChange={handleChange}
+              className={styles.editInput}
+              placeholder="Название мероприятия"
+            />
+          ) : (
+            <h3 className={styles.title}>{event.name}</h3>
+          )}
+          <span className={styles.author}>{event.graphId.name}</span>
+        </div>
+        
         {canAccessEditor && (
           <div className={styles.actions}>
             {isEditing ? (
@@ -150,21 +163,23 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
                 </button>
               </>
             ) : (
-              <button 
-                className={styles.editButton}
-                onClick={() => setIsEditing(true)}
-                title="Редактировать мероприятие"
-              >
-                ✏️
-              </button>
+              <>
+                <button 
+                  className={styles.editButton}
+                  onClick={() => setIsEditing(true)}
+                  title="Редактировать мероприятие"
+                >
+                  ✏️
+                </button>
+                <button 
+                  className={styles.deleteButton}
+                  onClick={handleDelete}
+                  title="Удалить мероприятие"
+                >
+                  🗑️
+                </button>
+              </>
             )}
-            <button 
-              className={styles.deleteButton}
-              onClick={handleDelete}
-              title="Удалить мероприятие"
-            >
-              🗑️
-            </button>
           </div>
         )}
       </div>
@@ -175,11 +190,10 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
           value={editedEvent.description}
           onChange={handleChange}
           className={styles.editTextarea}
+          placeholder="Описание мероприятия"
         />
       ) : (
-        <p className={styles.description}>
-          {event.description || 'Описание отсутствует'}
-        </p>
+        <p className={styles.description}>{event.description}</p>
       )}
       
       <div className={styles.footer}>
@@ -216,7 +230,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
             </span>
             <div className={styles.usersCount}>
               <span className={styles.usersIcon}>👥</span>
-              <span>{event.regedUsers || 0}</span>
+              <span>{event.regedUsers}</span>
             </div>
           </div>
         )}
@@ -232,7 +246,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
             ? isRegistered 
               ? 'Отменить регистрацию' 
               : 'Зарегистрироваться' 
-            : 'Не авторизирован'
+            : 'Войдите, чтобы зарегистрироваться'
           }
         </button>
       </div>
