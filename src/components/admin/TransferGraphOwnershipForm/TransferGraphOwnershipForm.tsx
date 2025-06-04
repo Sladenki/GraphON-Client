@@ -125,7 +125,7 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
                         { value: '', label: 'Выберите пользователя' },
                         ...users.map((user: IUser) => ({
                             value: user._id,
-                            label: `${user.firstName} ${user.lastName || ''} (${user.email})`
+                            label: `${user.firstName} ${user.lastName || ''} (${user.username})`
                         }))
                     ]}
                     required

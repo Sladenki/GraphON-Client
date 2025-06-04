@@ -1,3 +1,5 @@
+'use client'
+
 import WaterGraph3D from './WaterGraph3D/WaterGraph3D';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';

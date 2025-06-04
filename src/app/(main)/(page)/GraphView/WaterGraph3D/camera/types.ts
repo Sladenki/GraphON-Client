@@ -6,6 +6,6 @@ export interface CameraControllerProps {
 }
 
 export interface OptimalCameraPosition {
-  cameraPosition: THREE.Vector3;
-  lookAt: THREE.Vector3;
+  cameraPosition: any;
+  lookAt: any;
 } 
