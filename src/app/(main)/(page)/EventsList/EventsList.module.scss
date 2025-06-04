@@ -6,6 +6,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
+  box-sizing: border-box;
 }
 
 .emptyMessage {
@@ -127,14 +128,24 @@
 
 @media (max-width: 480px) {
   .eventsListWrapper {
-    padding: 0 12px;
+    padding: 0 8px;
     gap: 16px;
+    margin: 0;
+    width: 100%;
+    
+    > div {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
   }
 }
 
 @media (max-width: 768px) {
   .eventsListWrapper {
-    padding: 0 16px;
+    padding: 0 12px;
+    width: 100%;
+    margin: 0;
   }
 }
 

@@ -307,13 +307,20 @@ $desktop-breakpoint: 1024px;
 // 📱 Медиазапросы для мобильных устройств
 @media (max-width: $mobile-breakpoint) {
   .eventCard {
-    padding: 20px;
+    padding: 16px;
     margin: 0;
-    border-radius: 16px;
+    border-radius: 12px;
+    width: 100%;
+    box-sizing: border-box;
+
+    &::before {
+      border-radius: 12px 12px 0 0;
+    }
   }
 
   .header {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    gap: 12px;
   }
 
   .title {
@@ -329,42 +336,49 @@ $desktop-breakpoint: 1024px;
 
   .description {
     font-size: 0.9375rem;
-    margin-bottom: 20px;
-    line-height: 1.6;
+    margin-bottom: 16px;
+    line-height: 1.5;
   }
 
   .footer {
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     align-items: stretch;
-    padding-top: 20px;
+    padding-top: 16px;
+  }
+
+  .eventInfo {
+    gap: 8px;
+  }
+
+  .time {
+    font-size: 0.875rem;
+  }
+
+  .usersCount {
+    font-size: 0.875rem;
   }
 
   .registerButton {
     width: 100%;
-    padding: 14px 20px;
+    padding: 12px 20px;
+    font-size: 0.9375rem;
   }
 
   .actions {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 8px;
+    right: 8px;
     opacity: 1;
+    background: var(--card-background);
+    padding: 4px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .actionButton {
-    padding: 8px;
+    padding: 6px;
     font-size: 1rem;
-  }
-
-  .editTime {
-    flex-direction: column;
-    gap: 12px;
-
-    .timeInputs {
-      width: 100%;
-      justify-content: space-between;
-    }
   }
 }
 
@@ -372,6 +386,23 @@ $desktop-breakpoint: 1024px;
   .eventCard {
     max-width: 100%;
     margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .editTime {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+
+    .timeInputs {
+      width: 100%;
+      justify-content: space-between;
+      
+      input {
+        width: calc(50% - 6px);
+      }
+    }
   }
 }
 
