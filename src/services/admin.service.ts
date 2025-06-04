@@ -44,10 +44,11 @@ export const AdminService = {
     },
 
     // --- Создание графа --- 
-    async createGraph(data: { name: string; parentGraphId: string; image?: File }) {
+    async createGraph(data: { name: string; parentGraphId: string; image?: File; globalGraphId: string }) {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('parentGraphId', data.parentGraphId);
+        formData.append('globalGraphId', data.globalGraphId);
         if (data.image) {
             formData.append('image', data.image);
         }

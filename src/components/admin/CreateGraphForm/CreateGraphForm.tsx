@@ -29,11 +29,13 @@ export const CreateGraphForm = ({ globalGraphId }: { globalGraphId: string }) =>
             return AdminService.createGraph({
                 name: graphName,
                 parentGraphId: selectedParentGraph,
-                image: image
+                image: image,
+                globalGraphId: globalGraphId
             });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['graph/getParentGraphs'] });
+            queryClient.invalidateQueries({ queryKey: ['graph/getTopicGraphstGraphs'] });
             setGraphName('');
             setSelectedParentGraph('');
             setImage(null);
