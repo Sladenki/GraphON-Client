@@ -5,9 +5,10 @@ import { useFrame, ThreeEvent, useThree } from '@react-three/fiber';
 import { Billboard, Html, MeshDistortMaterial, MeshWobbleMaterial, Text } from '@react-three/drei';
 import { useSpring, a } from '@react-spring/three';
 import * as THREE from 'three';
-import { ThemeNodeProps } from './types';
-import { THEME_CONFIG } from './constants';
-import styles from './styles.module.scss';
+
+import styles from './ThemeNode.module.scss';
+import { ThemeNodeProps } from '../types';
+import { THEME_CONFIG } from '../constants';
 
 // Функция для проверки видимости точки в камере
 const isPointVisible = (point: THREE.Vector3, camera: THREE.Camera): boolean => {

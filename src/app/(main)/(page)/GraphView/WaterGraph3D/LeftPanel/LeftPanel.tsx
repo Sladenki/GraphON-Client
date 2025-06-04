@@ -1,9 +1,9 @@
 'use client'
 
 import { useMemo, useState } from 'react';
-import { LeftPanelProps } from './types';
-import { THEME_CONFIG } from './constants';
-import styles from './styles.module.scss';
+import { LeftPanelProps } from '../types';
+import { THEME_CONFIG } from '../constants';
+import styles from './LeftPanel.module.scss';
 
 export function LeftPanel({ 
   data, 

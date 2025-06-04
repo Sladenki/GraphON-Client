@@ -1,9 +1,9 @@
 'use client'
 
 import { useMemo } from 'react';
-import { ThemeCardsProps } from './types';
-import { THEME_CONFIG } from './constants';
-import styles from './styles.module.scss';
+import { ThemeCardsProps } from '../types';
+import { THEME_CONFIG } from '../constants';
+import styles from './ThemeCards.module.scss';
 
 export const ThemeCards = ({ data, onThemeSelect, selectedTheme, onSubgraphSelect }: ThemeCardsProps) => {
   // Find root node first

@@ -10,14 +10,15 @@ import { Object3D } from 'three';
 import { WaterGraph3DProps, GraphNode } from './types';
 import { useMediaQuery, debounce } from './hooks';
 import { Planet } from './Planet';
-import { ThemeNode } from './ThemeNode';
-import { LeftPanel } from './LeftPanel';
-import { ThemeCards } from './ThemeCards';
+
+import { ThemeCards } from './ThemeCards/ThemeCards';
 import { CameraController } from './camera/CameraController';
 import { useQuery } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
 import SubgraphPopUp from './SubgraphPopUp/SubgraphPopUp';
-import styles from './styles.module.scss';
+import styles from './WaterGraph3D.module.scss';
+import { LeftPanel } from './LeftPanel/LeftPanel';
+import { ThemeNode } from './ThemeNode/ThemeNode';
 
 // Add interface for the API response data
 interface SubgraphData {

@@ -1,0 +1,168 @@
+.themeLabel {
+  background: rgba(13, 4, 35, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  transform: translateZ(0);
+  box-shadow: 
+    0 2px 12px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+  pointer-events: none;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-family, system-ui, -apple-system, sans-serif);
+
+  &.active {
+    background: rgba(0, 255, 255, 0.12);
+    box-shadow: 
+      0 4px 16px rgba(0, 255, 255, 0.2),
+      0 0 0 1px rgba(0, 255, 255, 0.3);
+    transform: scale(1.05);
+    
+    .labelText {
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 500;
+    }
+    
+    .emoji {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.3));
+    }
+  }
+
+  &.inactive {
+    opacity: 0.6;
+    transform: scale(0.95);
+    
+    .emoji {
+      filter: brightness(0.8);
+    }
+    
+    .labelText {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    &:hover {
+      opacity: 0.9;
+      transform: scale(1);
+      
+      .emoji {
+        filter: brightness(1);
+      }
+      
+      .labelText {
+        color: rgba(255, 255, 255, 0.9);
+      }
+    }
+  }
+
+  .emoji {
+    font-size: 1.1em;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .labelText {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.4rem 0.6rem;
+    max-width: 200px;
+    background: rgba(13, 4, 35, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    
+    &.active {
+      background: rgba(0, 255, 255, 0.15);
+      box-shadow: 
+        0 3px 12px rgba(0, 255, 255, 0.25),
+        0 0 0 1px rgba(0, 255, 255, 0.35);
+    }
+    
+    .emoji {
+      font-size: 1em;
+    }
+
+    .labelText {
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    padding: 0.35rem 0.5rem;
+    max-width: 180px;
+    background: rgba(13, 4, 35, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    .emoji {
+      font-size: 0.9em;
+    }
+
+    .labelText {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.childLabel {
+  background: rgba(13, 4, 35, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  transform: translateZ(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+  will-change: transform, opacity;
+  pointer-events: none;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-family, system-ui, -apple-system, sans-serif);
+
+  &.active {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-glow);
+    z-index: 5;
+    
+    .labelText {
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+  }
+
+  .labelText {
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+} 

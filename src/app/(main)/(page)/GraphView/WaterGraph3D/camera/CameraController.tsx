@@ -6,7 +6,7 @@ import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { CameraControllerProps } from './types';
 import { calculateOptimalCameraPosition, getDefaultCameraPosition } from './cameraUtils';
-import styles from '../styles.module.scss';
+import styles from './Camera.module.scss';
 
 export function CameraController({ activeNodeRef, isMobile }: CameraControllerProps) {
   const { camera } = useThree();

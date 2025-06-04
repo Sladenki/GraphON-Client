@@ -1,0 +1,208 @@
+// Theme Cards Container
+.themeCardsContainer {
+  position: relative;
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 10;
+
+  @media (max-width: 768px) {
+    height: 32vh;
+    padding: 0.75rem;
+    margin-top: 0;
+    position: relative;
+    background: transparent;
+    overflow-x: auto;
+    overflow-y: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      backdrop-filter: blur(8px);
+      z-index: -1;
+      background: rgba(26, 27, 61, 0.3);
+    }
+  }
+}
+
+// Theme Cards Grid
+.themeCards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  
+  @media (max-width: 768px) {
+    flex-direction: row;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+    min-width: min-content;
+  }
+}
+
+// Individual Theme Card
+.themeCard {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  
+  @media (max-width: 768px) {
+    width: 240px;
+    min-width: 240px;
+    flex-shrink: 0;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+  
+  &.active {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+}
+
+// Card Content Layout
+.cardContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.emoji {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.cardTitle {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.cardSubtitle {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+// Subgraph Cards
+.subgraphCards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  margin-bottom: 0.5rem;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.cardsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+    min-width: min-content;
+  }
+}
+
+.subgraphCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.75rem;
+  backdrop-filter: blur(8px);
+
+  @media (max-width: 768px) {
+    width: 240px;
+    min-width: 240px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+}
+
+.vkLink {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--accent-color);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: var(--accent-color);
+    color: var(--text-primary);
+  }
+}
+
+.emptyState {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+} 
