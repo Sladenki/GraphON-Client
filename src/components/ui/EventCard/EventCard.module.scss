@@ -200,9 +200,9 @@ $desktop-breakpoint: 1024px;
     }
   }
   
-  &[data-logged="false"] {
-    background: var(--disabled-color);
-  }
+  // &[data-logged="false"] {
+  //   background: var(--disabled-color);
+  // }
 }
 
 .actions {
