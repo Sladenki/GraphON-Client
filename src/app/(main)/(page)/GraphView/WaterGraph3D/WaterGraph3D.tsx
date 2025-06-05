@@ -165,7 +165,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
             sceneRef.current = scene;
             if (isMobile) {
               gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-              gl.setSize(width, width * 0.75);
+              // gl.setSize(width, width * 0.75);
               gl.shadowMap.enabled = false;
             }
           }}
