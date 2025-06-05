@@ -214,11 +214,11 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           {/* Stars background */}
           <Stars 
             radius={isMobile ? 80 : 100}
-            depth={isMobile ? 30 : 50}
-            count={isMobile ? 2000 : 4000}
+            depth={isMobile ? 30 : 40}
+            count={isMobile ? 2000 : 3000}
             factor={isMobile ? 1.5 : 1.8}
             fade
-            speed={isMobile ? 0.5 : 0.9}
+            speed={isMobile ? 0.5 : 0.6}
           />
 
           {/* Camera Controller */}
