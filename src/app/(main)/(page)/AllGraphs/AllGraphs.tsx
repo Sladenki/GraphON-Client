@@ -28,6 +28,19 @@ export const AllGraphs: FC<AllGraphsProps> = ({ searchQuery, selectedGraphId }) 
     );
   }, [allGraphs, searchQuery]);
 
+  if (filteredGraphs.length === 0 && searchQuery) {
+    return (
+      <div className={styles.emptyMessage}>
+        <div className={styles.mainText}>
+          Ничего не найдено
+        </div>
+        <div className={styles.subText}>
+          Попробуйте изменить параметры поиска или посмотреть все доступные группы
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return <div className={styles.error}>Ошибка загрузки данных</div>;
   }
