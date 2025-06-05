@@ -33,9 +33,9 @@ const CreatePost = () => {
     if (isPending) return <SpinnerLoader/>;
     if (isError) return <p>Ошибка: {error.message}</p>;
 
-    if (!canAccessSysAdmin) {
-        return <p>У вас нет доступа к этой странице</p>
-    }
+    // if (!canAccessSysAdmin) {
+    //     return <p>У вас нет доступа к этой странице</p>
+    // }
 
     return (
         <div className={styles.createPostWrapper}>
@@ -79,7 +79,7 @@ const CreatePost = () => {
                 </AdminSection>
             )}
             
-            {typedUser?.role === UserRole.SysAdmin || typedUser?.role === UserRole.Create && (
+            {(typedUser?.role === UserRole.SysAdmin || typedUser?.role === UserRole.Create) && (
                 <AdminSection 
                     title="Статистика сервера"
                     emoji="🖥️"

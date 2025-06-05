@@ -21,6 +21,7 @@ export const useRoleAccess = (userRole: UserRole | undefined) => {
         isEditor: userRole === UserRole.Editor,
         isSysAdmin: userRole === UserRole.SysAdmin,
         isUser: userRole === UserRole.User,
+        
         canAccessEditor: hasAccess(UserRole.Editor),
         canAccessSysAdmin: hasAccess(UserRole.SysAdmin),
         canAccessAdmin: hasAccess(UserRole.Admin),
