@@ -173,7 +173,7 @@ $desktop-breakpoint: 1024px;
   cursor: pointer;
   @include smooth-transition;
   background: var(--primary-color);
-  color: var(--main-text);
+  color: #F4F7FF;
   letter-spacing: -0.01em;
 
   &:hover:not(:disabled) {
