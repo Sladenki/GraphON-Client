@@ -160,7 +160,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
             fov: isMobile ? 40 : 50 
           }}
           onPointerMissed={handlePointerMissed}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', height: '100%', ...(isMobile && { marginTop: '-80px' })  }}
           onCreated={({ scene, gl }) => {
             sceneRef.current = scene;
             if (isMobile) {
@@ -225,29 +225,33 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           <CameraController activeNodeRef={activeNodeRef} isMobile={isMobile} />
    
           {/* Planet */}
-          <Planet scale={activeThemeId 
-            ? (isMobile ? 0.21 : 0.4) 
-            : (isMobile ? 0.35 : 1)} 
-          />
 
-          {/* Theme nodes */}
-          {themes.map((theme, i) => (
-            <ThemeNode
-              key={theme._id.$oid}
-              theme={theme}
-              index={i}
-              total={themes.length}
-              active={activeThemeId === theme._id.$oid}
-              hovered={hoveredThemeId === theme._id.$oid}
-              setActive={setActiveThemeId}
-              setHovered={setHoveredThemeId}
-              onThemeSelect={handleThemeSelect}
-              data={combinedData}
-              isMobile={isMobile}
-              anyActive={!!activeThemeId}
-              scale={isMobile ? 0.7 : 1}
+            <Planet scale={activeThemeId 
+              ? (isMobile ? 0.21 : 0.4) 
+              : (isMobile ? 0.35 : 1)} 
             />
-          ))}
+
+            {/* Theme nodes */}
+            {themes.map((theme, i) => (
+              <ThemeNode
+                key={theme._id.$oid}
+                theme={theme}
+                index={i}
+                total={themes.length}
+                active={activeThemeId === theme._id.$oid}
+                hovered={hoveredThemeId === theme._id.$oid}
+                setActive={setActiveThemeId}
+                setHovered={setHoveredThemeId}
+                onThemeSelect={handleThemeSelect}
+                data={combinedData}
+                isMobile={isMobile}
+                anyActive={!!activeThemeId}
+                scale={isMobile ? 0.7 : 1}
+              />
+            ))}
+ 
+
+
         </Canvas>
       </div>
       {isMobile && (
