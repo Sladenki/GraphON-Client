@@ -30,7 +30,7 @@ const Tabs: FC<TabsProps> = ({
   showSearch = false,
   searchValue = "",
   onSearchChange,
-  searchPlaceholder = "Поиск..."
+  searchPlaceholder = activeTab === "events" ? "Поиск по событиям" : "Поиск по группам"
 }) => {
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIndex = tabs.findIndex((tab) => tab.name === activeTab);
