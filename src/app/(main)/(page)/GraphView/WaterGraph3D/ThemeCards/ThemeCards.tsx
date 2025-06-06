@@ -33,27 +33,31 @@ export const ThemeCards = ({ data, onThemeSelect, selectedTheme, onSubgraphSelec
           ))}
         </div>
       ) : (
-        <div className={styles.subgraphWrapper}>
-          <button className={styles.backButton} onClick={() => onThemeSelect(null)}>Назад</button>
-          <div className={styles.subgraphList}>
-            {subgraphs.length ? subgraphs.map(sub => (
-              <div key={sub._id.$oid} className={styles.subgraphCard} onClick={() => onSubgraphSelect(sub)}>
-                <div>
-                  <span className={styles.cardTitle}>{sub.name}</span>
-                  {sub.directorName && <span className={styles.cardSubtitle}>{sub.directorName}</span>}
+        <div className={styles.subgraphContent}>
+          <button className={styles.backButton} onClick={() => onThemeSelect(null)}>← Назад</button>
+          {subgraphs.length ? (
+            <div className={styles.subgraphGrid}>
+              {subgraphs.map(sub => (
+                <div key={sub._id.$oid} className={styles.subgraphCard} onClick={() => onSubgraphSelect(sub)}>
+                  <div>
+                    <span className={styles.cardTitle}>{sub.name}</span>
+                    {sub.directorName && <span className={styles.cardSubtitle}>{sub.directorName}</span>}
+                  </div>
+                  {sub.vkLink && (
+                    <a
+                      href={sub.vkLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.vkLink}
+                      onClick={(e) => e.stopPropagation()}
+                    >VK</a>
+                  )}
                 </div>
-                {sub.vkLink && (
-                  <a
-                    href={sub.vkLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.vkLink}
-                    onClick={(e) => e.stopPropagation()}
-                  >VK</a>
-                )}
-              </div>
-            )) : <div className={styles.emptyState}>Нет подспутников</div>}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>Нет подспутников</div>
+          )}
         </div>
       )}
     </div>

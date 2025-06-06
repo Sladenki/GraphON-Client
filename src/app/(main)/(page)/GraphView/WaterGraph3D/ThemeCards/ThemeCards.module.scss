@@ -1,16 +1,16 @@
 .themeOverlay {
   position: fixed;
-  bottom: 70px; // отступ от нижнего меню
+  bottom: 70px;
   width: 100%;
-  height: 10vh;
   background: rgba(20, 20, 40, 0.92);
   backdrop-filter: blur(12px);
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
-  z-index: 20;
+  z-index: 2147483647;
   padding: 0.75rem 1rem;
   display: flex;
   flex-direction: column;
+  max-height: 80vh;
 }
 
 .themeScroll {
@@ -63,21 +63,12 @@
   color: var(--text-secondary);
 }
 
-.subgraphWrapper {
-  position: fixed;
-  bottom: 80px; // учёт нижнего меню
-  width: 100%;
-  max-height: calc(100vh - 80px); // с учётом нижнего меню
-  background: rgba(20, 20, 40, 0.92);
-  backdrop-filter: blur(12px);
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  z-index: 20;
-  padding: 1rem;
+.subgraphContent {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  overflow: hidden;
+  overflow-y: auto;
+  max-height: 100%;
 }
 
 .backButton {
@@ -94,32 +85,22 @@
   }
 }
 
-.subgraphList {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 3px;
-  }
+.subgraphGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
 }
 
 .subgraphCard {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 0.75rem;
+  padding: 0.5rem;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 0.5rem;
 
   &:hover {
     background: rgba(255, 255, 255, 0.08);
@@ -127,11 +108,12 @@
 }
 
 .vkLink {
+  align-self: flex-end;
   color: var(--accent-color);
   border: 1px solid var(--accent-color);
   border-radius: 6px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.7rem;
   text-decoration: none;
 
   &:hover {
