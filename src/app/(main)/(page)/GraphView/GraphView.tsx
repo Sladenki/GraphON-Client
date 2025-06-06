@@ -47,6 +47,14 @@ export default function GraphView({ searchQuery }: { searchQuery: string }) {
   const { user } = useAuth();
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
 
+  // Блокируем скролл
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
   useEffect(() => {
     // Инициализация selectedGraphId
     const savedGraphId = localStorage.getItem('selectedGraphId');
