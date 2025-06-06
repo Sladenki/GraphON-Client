@@ -297,7 +297,7 @@ export function ThemeNode({
 
       {/* Подпись основного узла */}
       {labelVisible && (
-        <Billboard position={[0, (isMobile ? 0.5 : 0.8), 0]}>
+        <Billboard position={[0, (isMobile ? 0.3 : 0.8), 0]}>
           <Html center>
             <div 
               className={`${styles.themeLabel} ${active ? styles.active : ''} ${anyActive && !active ? styles.inactive : ''}`}
