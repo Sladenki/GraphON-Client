@@ -74,10 +74,16 @@
 
 .subgraphContent {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  overflow-x: auto;
   gap: 0.75rem;
-  overflow-y: auto;
-  max-height: 100%;
+  align-items: flex-start;
+  scroll-snap-type: x mandatory;
+  padding: 0; // убираем лишние отступы
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .backButton {
@@ -101,6 +107,8 @@
 }
 
 .subgraphCard {
+  flex: 0 0 160px;
+  scroll-snap-align: start;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -108,11 +116,19 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: flex-start;
   gap: 0.5rem;
+  cursor: pointer;
 
   &:hover {
     background: rgba(255, 255, 255, 0.08);
+  }
+
+  &:first-child {
+    margin-left: 1rem;
+  }
+
+  &:last-child {
+    margin-right: 1rem;
   }
 }
 
