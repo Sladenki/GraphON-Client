@@ -4,6 +4,7 @@ import { EventService } from '@/services/event.service';
 import { GraphService } from '@/services/graph.service';
 import { IGraphList } from '@/types/graph.interface';
 import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
+import { notifyError, notifySuccess } from '@/lib/notifications';
 
 interface CreateEventFormProps {
     globalGraphId: string;
@@ -44,11 +45,11 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                 timeTo: '',
                 graphId: ''
             });
-            alert('Мероприятие успешно создано');
+            notifySuccess('Мероприятие успешно создано!');
         },
         onError: (error) => {
             console.error('Failed to create event:', error);
-            alert('Ошибка при создании мероприятия');
+            notifyError('Ошибка при создании мероприятия');
         }
     });
 

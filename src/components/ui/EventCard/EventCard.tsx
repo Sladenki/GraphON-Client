@@ -5,6 +5,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { EventService } from "@/services/event.service";
 import { UserRole } from "@/types/user.interface";
+import { notifyInfo, notifySuccess } from "@/lib/notifications";
 
 interface EventProps {
   event: {
@@ -79,6 +80,13 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
           ? (prev.regedUsers || 1) - 1
           : (prev.regedUsers || 0) + 1
       }));
+
+      if (!isRegistered) {
+        notifySuccess("Вы записались на мероприятие", "Оно появится в вашем личном расписании");
+      } else {
+        notifyInfo("Вы отменили участие", "Мероприятие удалено из вашего расписания");
+      }
+
     } catch (error) {
       console.error('Ошибка при изменении статуса регистрации:', error);
     }
