@@ -5,6 +5,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import Image from "next/image";
 import { PlusSquare, MinusSquare } from "lucide-react";
 import { toast } from "sonner"; 
+import { notifyInfo, notifySuccess } from "@/lib/notifications";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -28,20 +29,12 @@ const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath
     toggleSubscription();
 
     if (!isSubscribed) {
-      toast.success("Вы подписались на граф", {
-        description: "Расписание этого графа будет отображаться в вашем расписании",
-        style: {
-          backgroundColor: "#e3f6e3", // нежно-зелёный
-          color: "#1b4332",
-        },
-      });
+      notifySuccess(
+        "Вы подписались на граф",
+        "Расписание этого графа будет отображаться в вашем расписании"
+      );
     } else {
-      toast.info("Вы отписались от графа", {
-        style: {
-          backgroundColor: "#e9f0fa", // мягкий голубой
-          color: "#1d3557",
-        },
-      });
+      notifyInfo("Вы отписались от графа");
     }
   }, [toggleSubscription, isSubscribed]);
 
