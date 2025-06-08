@@ -2,7 +2,7 @@
   position: fixed;
   bottom: 70px;
   width: 100%;
-  background: rgba(20, 20, 40, 0.92);
+  background: rgba(20, 20, 40, 0.7);
   backdrop-filter: blur(12px);
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
@@ -21,6 +21,7 @@
   height: 100%;
   align-items: center;
   scroll-snap-type: x mandatory;
+  padding: 0;
 
   &::-webkit-scrollbar {
     display: none;
@@ -44,6 +45,14 @@
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:first-child {
+    margin-left: 1rem; // задаём левый отступ только первой карточке
+  }
+
+  &:last-child {
+    margin-right: 2rem; // задаём правый отступ только последней карточке
   }
 }
 
