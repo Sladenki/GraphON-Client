@@ -85,10 +85,12 @@ const SubgraphPopUp = ({ subgraph, onClose }: SubgraphPopUpProps) => {
               {isPending ? (
                 <SpinnerLoader />
               ) : data?.data ? (
-                <ScheduleList
-                  schedule={data.data.schedule}
-                  events={data.data.events}
-                />
+                <div className={styles.lightThemeWrapper}>
+                  <ScheduleList
+                    schedule={data.data.schedule}
+                    events={data.data.events}
+                  />
+                </div>
               ) : null}
             </div>
           </motion.div>
