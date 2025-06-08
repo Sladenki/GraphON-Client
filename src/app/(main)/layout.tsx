@@ -10,6 +10,7 @@ import '../../styles/globals.scss'
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Script from "next/script";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { Toaster } from "sonner";
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
          {/* Подключаем Google Analytics только если есть ID */}
          {process.env.NEXT_PUBLIC_GA_ID && (
           <>
+                          
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
               strategy="afterInteractive"
@@ -42,35 +44,41 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </>
         )}
       </head>
-      <body className={styles.wrapper}>
-        <AllProvers>
-          
-          {/* Sidebar */}
-          <div className={styles.sidebar}>
-            <Sidebar/>
-          </div>
-          
-          {/* Основная страница */}
-          <div className={styles.main}>
-            <div className={styles.content}>
-              {/* Добавляем компонент для отслеживания переходов */}
-              <GoogleAnalytics /> 
-              {children}
-            </div>
-          </div>
-          
-          {/* Ава в углу */}
-          {!small && (
-            <div className={styles.profileCorner}>
-              <ProfileCorner/>
-            </div>
-          )}
+      <body >
+        <Toaster position="top-right" richColors /> 
 
-          <div className={styles.BottomMenu}>
-            <BottomMenu/>
-          </div>
+        <div className={styles.wrapper}>
+          <AllProvers>
+
             
-        </AllProvers>
+            {/* Sidebar */}
+            <div className={styles.sidebar}>
+              <Sidebar/>
+            </div>
+            
+            {/* Основная страница */}
+            <div className={styles.main}>
+              <div className={styles.content}>
+                {/* Добавляем компонент для отслеживания переходов */}
+                <GoogleAnalytics /> 
+                {children}
+              </div>
+            </div>
+            
+            {/* Ава в углу */}
+            {!small && (
+              <div className={styles.profileCorner}>
+                <ProfileCorner/>
+              </div>
+            )}
+
+            <div className={styles.BottomMenu}>
+              <BottomMenu/>
+            </div>
+              
+          </AllProvers>
+        </div>
+
       </body>
     </html>
   );

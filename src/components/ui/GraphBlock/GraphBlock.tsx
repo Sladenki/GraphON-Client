@@ -4,6 +4,7 @@ import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useAuth } from "@/providers/AuthProvider";
 import Image from "next/image";
 import { PlusSquare, MinusSquare } from "lucide-react";
+import { toast } from "sonner"; 
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -22,7 +23,27 @@ const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath
   const { isLoggedIn } = useAuth();
   const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, id);
 
-  const handleSubscription = useCallback(() => toggleSubscription(), [toggleSubscription]);
+
+  const handleSubscription = useCallback(() => {
+    toggleSubscription();
+
+    if (!isSubscribed) {
+      toast.success("Вы подписались на граф", {
+        description: "Расписание этого графа будет отображаться в вашем расписании",
+        style: {
+          backgroundColor: "#e3f6e3", // нежно-зелёный
+          color: "#1b4332",
+        },
+      });
+    } else {
+      toast.info("Вы отписались от графа", {
+        style: {
+          backgroundColor: "#e9f0fa", // мягкий голубой
+          color: "#1d3557",
+        },
+      });
+    }
+  }, [toggleSubscription, isSubscribed]);
 
   // Нажали на кнопку расписания графа
   const clickSchedule = (id: string) => {
