@@ -84,7 +84,11 @@ export default function GraphView({ searchQuery }: { searchQuery: string }) {
 
   if (isLoading) return <SpinnerLoader />;
   if (error) return <div>Ошибка при загрузке данных</div>;
-  if (!data?.globalGraph) return <div>Нет данных для отображения</div>;
+  if (!isLoading && data?.globalGraph === null) {
+    return <div>Нет данных для отображения</div>;
+  }
+
+  if (!data) return null;
 
   // Преобразуем данные в формат, ожидаемый компонентом WaterGraph3D
   const graphData: GraphNode[] = [
