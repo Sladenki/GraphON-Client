@@ -13,6 +13,8 @@ import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '@/components/ui/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
 
+import NoImage from '../../../../public/noImage.png'
+
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
@@ -59,7 +61,7 @@ export default function Profile() {
                     <div className={styles.header}>
                         {
                             <Image 
-                                src={typedUser.avaPath} 
+                                src={typedUser.avaPath ? typedUser.avaPath : NoImage} 
                                 className={styles.avatar} 
                                 alt="Аватар" 
                                 width={120}

@@ -7,6 +7,8 @@ import Image from "next/image";
 
 import styles from './ProfileUser.module.scss'
 
+import NoImage from '../../../../../public/noImage.png'
+
 
 const ProfileUser: FC<{user: IUser}> = ({ user }) => {
 
@@ -15,15 +17,13 @@ const ProfileUser: FC<{user: IUser}> = ({ user }) => {
             <div 
                 className={styles.ProfileCornerWrapper}  
             >
-                {user?.avaPath && (
-                    <Image
-                        className={styles.img} 
-                        src={user.avaPath} 
-                        alt="Аватар"
-                        width={55}
-                        height={55} 
-                    />
-                )}
+                <Image
+                    className={styles.img} 
+                    src={user.avaPath ? user.avaPath : NoImage} 
+                    alt="Аватар"
+                    width={55}
+                    height={55} 
+                />
             </div>
         </Link>
     )
