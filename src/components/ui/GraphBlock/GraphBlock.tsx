@@ -13,6 +13,7 @@ interface GraphBlockProps {
   isSubToGraph: boolean;
   imgPath?: string;
   handleScheduleButtonClick: () => void;
+  handleInfoGraphButtonClick: () => void;
   setSelectedGraphId: (id: string) => void;
   handleInfoButtonClick?: () => void;
 }
@@ -23,6 +24,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   isSubToGraph, 
   imgPath, 
   handleScheduleButtonClick, 
+  handleInfoGraphButtonClick,
   setSelectedGraphId,
   handleInfoButtonClick 
 }) => {
@@ -40,17 +42,17 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
     }
   }, [toggleSubscription, isLoading]);
 
+  // Расписание
   const handleScheduleClick = useCallback(() => {
     handleScheduleButtonClick();
     setSelectedGraphId(id);
   }, [handleScheduleButtonClick, setSelectedGraphId, id]);
 
+  // Информация
   const handleInfoClick = useCallback(() => {
-    if (handleInfoButtonClick) {
-      handleInfoButtonClick();
-      setSelectedGraphId(id);
-    }
-  }, [handleInfoButtonClick, setSelectedGraphId, id]);
+    handleInfoGraphButtonClick();
+    setSelectedGraphId(id);
+  }, [handleInfoGraphButtonClick, setSelectedGraphId, id]);
 
   return (
     <article className={styles.graphBlock}>

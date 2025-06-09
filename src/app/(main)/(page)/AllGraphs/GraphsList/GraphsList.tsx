@@ -4,11 +4,16 @@ import GraphBlock from '../../../../../components/ui/GraphBlock/GraphBlock'
 import { IGraphList } from '@/types/graph.interface'
 import { useSchedulePopup } from './useSchedulePopUp'
 import SchedulePopUp from '../../../../../components/ui/SchedulePopUp/SchedulePopUp'
+import { useInfoGraphPopup } from './useInfoGraphPopUp copy'
+import InfoGraphPopUp from '@/components/ui/InfoGraphPopUp/InfoGraphPopUp'
 
 const GraphsList: FC<{ allGraphs: any}> = ({ allGraphs }) => {
   
   // Открытие PopUp расписания
   const { isSchedulePopupOpen, handleScheduleButtonClick, closeSchedulePopup } = useSchedulePopup();
+
+  // Информация про граф
+  const { isInfoGraphPopupOpen, handleInfoGraphButtonClick, closeInfoGraphPopup } = useInfoGraphPopup();
 
   // Id выбранного объединения
   const [selectedGraphId, setSelectedGraphId] = React.useState<string | null>(null);
@@ -26,6 +31,7 @@ const GraphsList: FC<{ allGraphs: any}> = ({ allGraphs }) => {
 
               // Для PopUp расписания
               handleScheduleButtonClick={handleScheduleButtonClick}
+              handleInfoGraphButtonClick={handleInfoGraphButtonClick}
               setSelectedGraphId={setSelectedGraphId}
             />
           </div>
@@ -36,7 +42,20 @@ const GraphsList: FC<{ allGraphs: any}> = ({ allGraphs }) => {
 
       {/* Модальное окно расписания */}
       {isSchedulePopupOpen && (
-        <SchedulePopUp graphId={selectedGraphId} isSchedulePopupOpen={isSchedulePopupOpen} closeSchedulePopup={closeSchedulePopup} />
+        <SchedulePopUp 
+          graphId={selectedGraphId} 
+          isSchedulePopupOpen={isSchedulePopupOpen} 
+          closeSchedulePopup={closeSchedulePopup} 
+        />
+      )}
+
+      {/* Информация про граф */}
+      {isInfoGraphPopupOpen && (
+        <InfoGraphPopUp 
+          graphId={selectedGraphId} 
+          isInfoGraphPopupOpen={isInfoGraphPopupOpen} 
+          closeInfoGraphPopup={closeInfoGraphPopup} 
+        />
       )}
     </div>
   )
