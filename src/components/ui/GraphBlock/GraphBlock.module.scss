@@ -139,7 +139,7 @@ $desktop: 1024px;
     color: $background-white;
     
     &:hover {
-      background: darken($danger-color, 10%);
+      // background: darken($danger-color, 10%);
       transform: scale(1.05);
       box-shadow: $shadow-md;
     }
