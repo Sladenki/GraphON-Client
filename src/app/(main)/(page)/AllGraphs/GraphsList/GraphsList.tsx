@@ -31,7 +31,11 @@ const GraphsList: FC<{ allGraphs: any}> = ({ allGraphs }) => {
 
               // Для PopUp расписания
               handleScheduleButtonClick={handleScheduleButtonClick}
+
+              // Для PopUp информации
               handleInfoGraphButtonClick={handleInfoGraphButtonClick}
+
+              // Для выбора графа
               setSelectedGraphId={setSelectedGraphId}
             />
           </div>

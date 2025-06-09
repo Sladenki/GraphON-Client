@@ -251,9 +251,9 @@ $desktop: 1024px;
   cursor: pointer;
   transition: $transition-fast;
   
-  &:first-child {
-    border-right: 1px solid rgba(0, 0, 0, 0.05);
-  }
+  // &:first-child {
+  //   border-right: 1px solid rgba(0, 0, 0, 0.05);
+  // }
   
   &:hover {
     background: var(--background-color, $background-light);
@@ -291,20 +291,20 @@ $desktop: 1024px;
 }
 
 // Accessibility improvements
-.graphBlock {
-  &:focus-within {
-    outline: 2px solid $primary-color;
-    outline-offset: 2px;
-  }
-}
+// .graphBlock {
+//   &:focus-within {
+//     outline: 2px solid $primary-color;
+//     outline-offset: 2px;
+//   }
+// }
 
-.subscriptionButton,
-.actionButton {
-  &:focus {
-    outline: 2px solid $primary-color;
-    outline-offset: 2px;
-  }
-}
+// .subscriptionButton,
+// .actionButton {
+//   &:focus {
+//     outline: 2px solid $primary-color;
+//     outline-offset: 2px;
+//   }
+// }
 
 // Dark theme support
 @media (prefers-color-scheme: dark) {

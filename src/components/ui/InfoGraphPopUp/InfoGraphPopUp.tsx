@@ -3,6 +3,7 @@ import PopUpWrapper from '../PopUpWrapper/PopUpWrapper';
 import { useMutation } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import styles from './InfoGraphPopUp.module.scss'
 
 interface InfoGraphPopUpProps {
     graphId: any;
@@ -36,8 +37,8 @@ const InfoGraphPopUp: FC<InfoGraphPopUpProps> = ({
     console.log('data', data)
 
   return (
-    <PopUpWrapper isOpen={isInfoGraphPopupOpen} onClose={closeInfoGraphPopup} width={1300} height={900}>
-    <div>InfoGraphPopUp</div>
+    <PopUpWrapper isOpen={isInfoGraphPopupOpen} onClose={closeInfoGraphPopup} width={900} height={900}>
+    <div className={styles.InfoGraphPopUp}>InfoGraphPopUp</div>
     </PopUpWrapper>
   )
 }

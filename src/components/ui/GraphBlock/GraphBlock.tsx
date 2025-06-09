@@ -4,6 +4,7 @@ import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useAuth } from "@/providers/AuthProvider";
 import Image from "next/image";
 import { PlusSquare, MinusSquare, Calendar, Info } from "lucide-react";
+import { notifyInfo, notifySuccess } from "@/lib/notifications";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -15,7 +16,6 @@ interface GraphBlockProps {
   handleScheduleButtonClick: () => void;
   handleInfoGraphButtonClick: () => void;
   setSelectedGraphId: (id: string) => void;
-  handleInfoButtonClick?: () => void;
 }
 
 const GraphBlock: React.FC<GraphBlockProps> = ({ 
@@ -26,7 +26,6 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   handleScheduleButtonClick, 
   handleInfoGraphButtonClick,
   setSelectedGraphId,
-  handleInfoButtonClick 
 }) => {
   const fullImageUrl = useMemo(() => 
     imgPath ? `${BASE_S3_URL}/${imgPath}` : "", 
@@ -37,10 +36,17 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, id);
 
   const handleSubscription = useCallback(() => {
-    if (!isLoading) {
-      toggleSubscription();
+    toggleSubscription();
+
+    if (!isSubscribed) {
+      notifySuccess(
+        "Вы подписались на граф",
+        "Расписание этого графа будет отображаться в вашем расписании"
+      );
+    } else {
+      notifyInfo("Вы отписались от графа");
     }
-  }, [toggleSubscription, isLoading]);
+  }, [toggleSubscription, isSubscribed]);
 
   // Расписание
   const handleScheduleClick = useCallback(() => {
