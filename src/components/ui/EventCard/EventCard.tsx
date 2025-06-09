@@ -19,6 +19,7 @@ interface EventProps {
     globalGraphId: string;
     name: string;
     description: string;
+    place: string;
     eventDate: string;
     timeFrom: string;
     timeTo: string;
@@ -263,6 +264,10 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
           <div className={styles.eventInfo}>
             <span className={styles.time}>
               {formatEventTime(event.eventDate, event.timeFrom, event.eventDate, event.timeTo)}
+            </span>
+            <span className={styles.location}>
+              <span className={styles.locationIcon}>📍</span>
+              <span>{event.place}</span>
             </span>
             <div className={styles.usersCount}>
               <span className={styles.usersIcon}>👥</span>

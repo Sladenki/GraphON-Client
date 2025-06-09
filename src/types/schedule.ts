@@ -15,6 +15,7 @@ export interface EventItem {
   timeFrom: string;
   timeTo: string;
   description: string;
+  place: string;
   location: string;
 }
 

@@ -13,6 +13,7 @@ interface CreateEventFormProps {
 export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
     const [eventData, setEventData] = useState({
         name: '',
+        place: '',
         description: '',
         eventDate: '',
         timeFrom: '',
@@ -39,6 +40,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             queryClient.invalidateQueries({ queryKey: ['eventsList'] });
             setEventData({
                 name: '',
+                place: '',
                 description: '',
                 eventDate: '',
                 timeFrom: '',
@@ -55,7 +57,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!eventData.name || !eventData.description || !eventData.eventDate || 
+        if (!eventData.name || !eventData.description || !eventData.place || !eventData.eventDate || 
             !eventData.timeFrom || !eventData.timeTo || !eventData.graphId) return;
             
         // Validate that end time is after start time
@@ -82,6 +84,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
 
     const isFormValid = eventData.name && 
         eventData.description && 
+        eventData.place &&
         eventData.eventDate && 
         eventData.timeFrom && 
         eventData.timeTo && 
@@ -105,6 +108,20 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                     value={eventData.name}
                     onChange={handleChange}
                     placeholder="Введите название мероприятия"
+                    required
+                />
+            </FormInputGroup>
+
+            <FormInputGroup 
+                label="Место проведения"
+                description="Укажите место проведения мероприятия"
+            >
+                <FormInput
+                    name="place"
+                    type="text"
+                    value={eventData.place}
+                    onChange={handleChange}
+                    placeholder="Введите место проведения мероприятия"
                     required
                 />
             </FormInputGroup>

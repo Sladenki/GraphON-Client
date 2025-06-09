@@ -151,6 +151,19 @@ $desktop-breakpoint: 1024px;
   }
 }
 
+.location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--main-text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  
+  .usersIcon {
+    font-size: 1.25rem;
+  }
+}
+
 .usersCount {
   display: flex;
   align-items: center;

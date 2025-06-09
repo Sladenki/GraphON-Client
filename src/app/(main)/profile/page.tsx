@@ -21,7 +21,7 @@ export default function Profile() {
     const { setTheme, theme } = useTheme();
     const queryClient = useQueryClient();
     
-    const { data: allEvents } = useQuery({
+    const { data: allEvents, isLoading: loadingEvents } = useQuery({
         queryKey: ['eventsList'],
         queryFn: () => EventRegService.getEventsByUserId(),
         enabled: !!user
@@ -41,7 +41,7 @@ export default function Profile() {
         setTheme(theme === "dark" ? "light" : "dark");
     };
 
-    if(loading) {
+    if(loading || loadingEvents) {
       return <SpinnerLoader/>
     }
 

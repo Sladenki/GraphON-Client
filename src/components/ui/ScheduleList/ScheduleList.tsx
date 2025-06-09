@@ -61,6 +61,7 @@ export const ScheduleList: React.FC<ScheduleListProps> = ({ schedule, events }) 
                   <div key={event._id} className={styles.eventItem}>
                     <span className={styles.itemTitle}>📝 {event.name}</span>
                     <span className={styles.itemDescription}>{event.description}</span>
+                    <span className={styles.itemDescription}>📍 {event.place}</span>
                     <span className={styles.itemTime}>⏰ {event.timeFrom} - {event.timeTo}</span>
                   </div>
                 ))}
