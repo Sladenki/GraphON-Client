@@ -6,6 +6,8 @@ import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { EventService } from "@/services/event.service";
 import { UserRole } from "@/types/user.interface";
 import { notifyError, notifyInfo, notifySuccess } from "@/lib/notifications";
+import { useRouter } from "next/navigation";
+
 
 interface EventProps {
   event: {
@@ -71,7 +73,16 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
     isAttended
   );
 
+  const router = useRouter();
+
   const handleRegistration = async () => {
+    console.log('123')
+
+    if (!isLoggedIn) {
+      router.push('/signIn');
+      return;
+    }
+
     try {
       await toggleRegistration();
 
@@ -263,7 +274,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
         <button 
           className={styles.registerButton} 
           onClick={handleRegistration}
-          disabled={isLoading || !isLoggedIn}
+          disabled={isLoading}
           data-registered={isRegistered}
           data-logged={isLoggedIn}
         >

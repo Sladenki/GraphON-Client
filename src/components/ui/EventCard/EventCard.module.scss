@@ -185,10 +185,10 @@ $desktop-breakpoint: 1024px;
     transform: translateY(0);
   }
 
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+  // &:disabled {
+  //   opacity: 0.6;
+  //   cursor: not-allowed;
+  // }
 
   &[data-registered="true"] {
     background: #9f1239;

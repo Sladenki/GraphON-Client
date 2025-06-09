@@ -1,14 +1,14 @@
 'use client'
 
 import LoginButton from "@/components/global/ProfileCorner/LoginButton/LoginButton";
+import styles from './signIn.module.scss'
 
 
 const Signin = () => {
   return (
-    <>
-      <h1>Авторизация</h1>
+    <div className={styles.SigninWrapper}>
       <LoginButton/>
-    </>
+    </div>
   );
 }
 

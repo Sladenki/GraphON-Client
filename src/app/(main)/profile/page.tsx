@@ -99,19 +99,17 @@ export default function Profile() {
                     } 
                    
 
-                    {
-                        subsEvents && subsEvents.length > 0 && subsEvents.map((event: any) => (
-                            <div key={event._id}>
-                                {event.eventId && (
-                                    <EventCard 
-                                        event={event.eventId} 
-                                        isAttended={event.isAttended} 
-                                        onDelete={handleDelete}
-                                    />
-                                )}
-                            </div>
-                        ))
-                    }
+                    {subsEvents && subsEvents.length > 0 && subsEvents.map((event: any) => (
+                        <div className={styles.eventsList} key={event._id}>
+                            {event.eventId && (
+                                <EventCard 
+                                    event={event.eventId} 
+                                    isAttended={event.isAttended} 
+                                    onDelete={handleDelete}
+                                />
+                            )}
+                        </div>
+                    ))}
 
                     <LogOut/>
                  
