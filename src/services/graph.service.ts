@@ -1,24 +1,11 @@
 import { axiosAuth, axiosClassic } from "@/api/interceptors"
-
-interface IGraphData {
-    _id: string;
-    name: string;
-    ownerUserId: string;
-    subsNum: number;
-    childGraphNum: number;
-    imgPath: string;
-}
+import { GraphInfo } from "@/types/graph.interface";
 
 export const GraphService = {
 
-    // --- Создание графа ---
-    // async createGraph(name: string) {
-    //     return axiosAuth.post(`/graph`, { name })
-    // },
-
     // --- Получение графа по id ---
-    async getGraphById(graphId: string): Promise<IGraphData> {
-        const response = await axiosClassic.get<IGraphData>(`/graph/getById/${graphId}`);
+    async getGraphById(graphId: string): Promise<GraphInfo> {
+        const response = await axiosClassic.get<GraphInfo>(`/graph/getById/${graphId}`);
         return response.data;
     },
 
