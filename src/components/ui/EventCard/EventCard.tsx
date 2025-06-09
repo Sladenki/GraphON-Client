@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./EventCard.module.scss";
 import { useEventRegistration } from "@/hooks/useEventRegistration";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { EventService } from "@/services/event.service";
 import { UserRole } from "@/types/user.interface";
-import { notifyInfo, notifySuccess } from "@/lib/notifications";
+import { notifyError, notifyInfo, notifySuccess } from "@/lib/notifications";
 
 interface EventProps {
   event: {
@@ -66,7 +66,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
     timeTo: initialEvent.timeTo
   });
 
-  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
+  const { isRegistered, toggleRegistration, isLoading, error } = useEventRegistration(
     event?._id || '', 
     isAttended
   );
@@ -74,13 +74,8 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
   const handleRegistration = async () => {
     try {
       await toggleRegistration();
-      setEvent(prev => ({
-        ...prev,
-        regedUsers: isRegistered 
-          ? (prev.regedUsers || 1) - 1
-          : (prev.regedUsers || 0) + 1
-      }));
 
+      // Уведомления показываем сразу на основе оптимистичного состояния
       if (!isRegistered) {
         notifySuccess("Вы записались на мероприятие", "Оно появится в вашем личном расписании");
       } else {
@@ -89,8 +84,30 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
 
     } catch (error) {
       console.error('Ошибка при изменении статуса регистрации:', error);
+      // Показываем уведомление об ошибке
+      notifyError("Произошла ошибка", "Не удалось изменить статус регистрации");
     }
   };
+
+  // Синхронизируем локальное состояние с текущим статусом регистрации
+  useEffect(() => {
+    const originalCount = initialEvent.regedUsers || 0;
+    const wasInitiallyRegistered = isAttended || false;
+    
+    let updatedCount = originalCount;
+    
+    // Обновляем счетчик только если статус изменился от начального
+    if (isRegistered !== wasInitiallyRegistered) {
+      updatedCount = isRegistered 
+        ? originalCount + 1
+        : Math.max(0, originalCount - 1);
+    }
+    
+    setEvent(prev => ({
+      ...prev,
+      regedUsers: updatedCount
+    }));
+  }, [isRegistered, initialEvent.regedUsers, isAttended]);
 
   const handleDelete = async () => {
     if (!event._id) return;
