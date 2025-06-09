@@ -93,15 +93,6 @@ export const UniversitySelect = () => {
           ))}
         </select>
       </div>
-      {user && (
-        <div className={styles.note}>
-          <Settings size={16} />
-          <span>
-            Вы можете изменить университет в{' '}
-            <Link href="/profile">настройках профиля</Link>
-          </span>
-        </div>
-      )}
     </div>
   );
 }; 

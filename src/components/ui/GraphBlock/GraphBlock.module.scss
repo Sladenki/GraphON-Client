@@ -256,8 +256,8 @@ $desktop: 1024px;
   // }
   
   &:hover {
-    background: var(--background-color, $background-light);
-    color: $primary-color;
+    background: var(--light-main);
+    color: rgb(var(--main-Color));
     
     svg {
       transform: scale(1.1);
