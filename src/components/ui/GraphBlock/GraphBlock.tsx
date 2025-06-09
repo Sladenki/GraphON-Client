@@ -3,9 +3,7 @@ import styles from "./GraphBlock.module.scss";
 import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useAuth } from "@/providers/AuthProvider";
 import Image from "next/image";
-import { PlusSquare, MinusSquare } from "lucide-react";
-import { toast } from "sonner"; 
-import { notifyInfo, notifySuccess } from "@/lib/notifications";
+import { PlusSquare, MinusSquare, Calendar, Info } from "lucide-react";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -14,78 +12,116 @@ interface GraphBlockProps {
   name: string;
   isSubToGraph: boolean;
   imgPath?: string;
-  handleScheduleButtonClick: any
-  setSelectedGraphId: any
+  handleScheduleButtonClick: () => void;
+  setSelectedGraphId: (id: string) => void;
+  handleInfoButtonClick?: () => void;
 }
 
-const GraphBlock: React.FC<GraphBlockProps> = ({ id, name, isSubToGraph, imgPath, handleScheduleButtonClick, setSelectedGraphId }) => {
-  const fullImageUrl = useMemo(() => imgPath ? `${BASE_S3_URL}/${imgPath}` : "", [imgPath]);
+const GraphBlock: React.FC<GraphBlockProps> = ({ 
+  id, 
+  name, 
+  isSubToGraph, 
+  imgPath, 
+  handleScheduleButtonClick, 
+  setSelectedGraphId,
+  handleInfoButtonClick 
+}) => {
+  const fullImageUrl = useMemo(() => 
+    imgPath ? `${BASE_S3_URL}/${imgPath}` : "", 
+    [imgPath]
+  );
 
   const { isLoggedIn } = useAuth();
   const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, id);
 
-
   const handleSubscription = useCallback(() => {
-    toggleSubscription();
-
-    if (!isSubscribed) {
-      notifySuccess(
-        "Вы подписались на граф",
-        "Расписание этого графа будет отображаться в вашем расписании"
-      );
-    } else {
-      notifyInfo("Вы отписались от графа");
+    if (!isLoading) {
+      toggleSubscription();
     }
-  }, [toggleSubscription, isSubscribed]);
+  }, [toggleSubscription, isLoading]);
 
-  // Нажали на кнопку расписания графа
-  const clickSchedule = (id: string) => {
-    handleScheduleButtonClick()
-    setSelectedGraphId(id)
-  }
+  const handleScheduleClick = useCallback(() => {
+    handleScheduleButtonClick();
+    setSelectedGraphId(id);
+  }, [handleScheduleButtonClick, setSelectedGraphId, id]);
+
+  const handleInfoClick = useCallback(() => {
+    if (handleInfoButtonClick) {
+      handleInfoButtonClick();
+      setSelectedGraphId(id);
+    }
+  }, [handleInfoButtonClick, setSelectedGraphId, id]);
 
   return (
-    <div className={styles.graphBlock}>
+    <article className={styles.graphBlock}>
+      {/* Основной контент блока */}
       <div className={styles.contentWrapper}>
-        {/* Контейнер с изображением */}
-        {imgPath ? (
-          <div className={styles.imageContainer}>
+        {/* Заголовок и кнопка подписки */}
+        <header className={styles.header}>
+          <h3 className={styles.title}>{name}</h3>
+          {isLoggedIn && (
+            <button
+              onClick={handleSubscription}
+              disabled={isLoading}
+              className={`${styles.subscriptionButton} ${
+                isSubscribed ? styles.subscribed : styles.unsubscribed
+              }`}
+              aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
+              title={isSubscribed ? "Отписаться" : "Подписаться"}
+            >
+              {isLoading ? (
+                <div className={styles.loader} />
+              ) : isSubscribed ? (
+                <MinusSquare size={18} />
+              ) : (
+                <PlusSquare size={18} />
+              )}
+            </button>
+          )}
+        </header>
+
+        {/* Фотография графа */}
+        <div className={styles.imageContainer}>
+          {imgPath ? (
             <Image
               src={fullImageUrl}
-              alt="Graph Image"
+              alt={`Фотография ${name}`}
               width={400}
               height={300}
-              className={styles.postImage}
+              className={styles.graphImage}
+              priority={false}
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+hxZLjN8pbGkT7z8D2ElwSjL1eX5/lLn8YQFaRGhTK0j6/u0Vj/9k="
             />
-          </div>
-        ) : (
-          <div className={styles.placeholderContainer} />
-        )}
-
-        {/* Название объединения (всегда видимое) */}
-        <div className={styles.nameOverlay}>
-          <span className={styles.nameText}>{name}</span>
+          ) : (
+            <div className={styles.placeholderImage}>
+              <div className={styles.placeholderIcon}>📷</div>
+            </div>
+          )}
         </div>
 
-        {/* Кнопка подписки */}
-        {isLoggedIn && (
-          <button
-            onClick={handleSubscription}
-            disabled={isLoading}
-            className={`${styles.subscriptionButton} ${
-              isSubscribed ? styles.subscribed : styles.unsubscribed
-            }`}
+        {/* Нижние кнопки */}
+        <footer className={styles.footer}>
+          <button 
+            className={styles.actionButton}
+            onClick={handleScheduleClick}
+            aria-label="Открыть расписание"
           >
-            {isLoading ? "..." : isSubscribed ? <MinusSquare size={20} /> : <PlusSquare size={20} />}
+            <Calendar size={16} />
+            <span>Расписание</span>
           </button>
-        )}
+          
+          <button 
+            className={styles.actionButton}
+            onClick={handleInfoClick}
+            aria-label="Показать информацию"
+          >
+            <Info size={16} />
+            <span>Инфо</span>
+          </button>
+        </footer>
       </div>
-
-      {/* Кнопка расписания */}
-      <button className={styles.scheduleButton} onClick={() => clickSchedule(id)}>
-        📅 Расписание
-      </button>
-    </div>
+    </article>
   );
 };
 
