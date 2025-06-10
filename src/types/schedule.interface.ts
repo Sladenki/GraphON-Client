@@ -25,6 +25,7 @@ export interface EventItem {
     globalGraphId: string;
     name: string;
     description: string;
+    place: string;
     eventDate: string;
     timeFrom: string;
     timeTo: string;

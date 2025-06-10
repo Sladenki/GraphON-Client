@@ -20,11 +20,17 @@ const Homepage = () => {
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Инициализация selectedGraphId
+    // Retrieve saved tab from localStorage or default to 'events'
+    const savedTab = localStorage.getItem('activeTab') as 'events' | 'groups' | 'graphSystem';
+    if (savedTab) {
+      setActiveTab(savedTab);
+    }
+
+    // Initialize selectedGraphId
     const savedGraphId = localStorage.getItem('selectedGraphId');
     setSelectedGraphId(user?.selectedGraphId || savedGraphId || null);
 
-    // Слушаем событие изменения графа
+    // Listen for graph selection event
     const handleGraphSelected = (event: CustomEvent<string>) => {
       setSelectedGraphId(event.detail);
     };
@@ -37,7 +43,10 @@ const Homepage = () => {
   }, [user]);
 
   const handleTabChange = useCallback((tab: string) => {
-    setActiveTab(tab as 'events' | 'groups' | 'graphSystem');
+    const newTab = tab as 'events' | 'groups' | 'graphSystem';
+    setActiveTab(newTab);
+    // Save active tab to localStorage
+    localStorage.setItem('activeTab', newTab);
   }, []);
 
   // Проверяем наличие выбранного университета как у авторизованного пользователя, так и в localStorage
