@@ -1,5 +1,31 @@
 import React, { useEffect, useState } from "react";
-import styles from "./EventCard.module.scss";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Button,
+  Input,
+  Textarea,
+  Chip,
+  Tooltip,
+  Divider,
+  ButtonGroup,
+  Spinner
+} from "@heroui/react";
+import { 
+  MapPin, 
+  Users, 
+  Clock, 
+  Calendar,
+  Edit3, 
+  Trash2, 
+  Save, 
+  X,
+  UserPlus,
+  UserX,
+  LogIn
+} from "lucide-react";
 import { useEventRegistration } from "@/hooks/useEventRegistration";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
@@ -7,7 +33,6 @@ import { EventService } from "@/services/event.service";
 import { UserRole } from "@/types/user.interface";
 import { notifyError, notifyInfo, notifySuccess } from "@/lib/notifications";
 import { useRouter } from "next/navigation";
-
 
 interface EventProps {
   event: {
@@ -77,8 +102,6 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
   const router = useRouter();
 
   const handleRegistration = async () => {
-    console.log('123')
-
     if (!isLoggedIn) {
       router.push('/signIn');
       return;
@@ -87,28 +110,23 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
     try {
       await toggleRegistration();
 
-      // Уведомления показываем сразу на основе оптимистичного состояния
       if (!isRegistered) {
         notifySuccess("Вы записались на мероприятие", "Оно появится в вашем личном расписании");
       } else {
         notifyInfo("Вы отменили участие", "Мероприятие удалено из вашего расписания");
       }
-
     } catch (error) {
       console.error('Ошибка при изменении статуса регистрации:', error);
-      // Показываем уведомление об ошибке
       notifyError("Произошла ошибка", "Не удалось изменить статус регистрации");
     }
   };
 
-  // Синхронизируем локальное состояние с текущим статусом регистрации
   useEffect(() => {
     const originalCount = initialEvent.regedUsers || 0;
     const wasInitiallyRegistered = isAttended || false;
     
     let updatedCount = originalCount;
     
-    // Обновляем счетчик только если статус изменился от начального
     if (isRegistered !== wasInitiallyRegistered) {
       updatedCount = isRegistered 
         ? originalCount + 1
@@ -145,153 +163,220 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setEditedEvent(prev => ({ ...prev, [name]: value }));
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedEvent({
+      name: event.name,
+      description: event.description,
+      eventDate: event.eventDate?.split('T')[0] || new Date().toISOString().split('T')[0],
+      timeFrom: event.timeFrom,
+      timeTo: event.timeTo
+    });
   };
 
   if (!event || !event._id) return null;
 
   return (
-    <div className={styles.eventCard}>
-      <div className={styles.header}>
-        <div className={styles.titleSection}>
+    <Card 
+      className="w-full max-w-2xl mx-auto shadow-md hover:shadow-lg transition-all duration-300"
+      style={{ 
+        '--heroui-primary': 'rgb(150, 130, 238)',
+        '--heroui-primary-50': 'rgba(150, 130, 238, 0.1)',
+        '--heroui-primary-100': 'rgba(150, 130, 238, 0.2)'
+      } as React.CSSProperties}
+    >
+      {/* Header */}
+      <CardHeader className="flex justify-between items-start gap-4 pb-2">
+        <div className="flex flex-col gap-2 flex-1 min-w-0">
           {isEditing ? (
-            <input
-              type="text"
-              name="name"
+            <Input
               value={editedEvent.name}
-              onChange={handleChange}
-              className={styles.editInput}
+              onChange={(e) => setEditedEvent(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Название мероприятия"
+              variant="bordered"
+              size="lg"
+              classNames={{
+                input: "text-lg font-semibold"
+              }}
             />
           ) : (
-            <h3 className={styles.title}>{event.name}</h3>
+            <h3 className="text-xl font-bold text-foreground line-clamp-2 leading-tight">
+              {event.name}
+            </h3>
           )}
-          <span className={styles.author}>{event.graphId.name}</span>
+          
+          <Chip
+            variant="flat"
+            size="sm"
+            className="w-fit"
+            style={{ backgroundColor: 'rgba(150, 130, 238, 0.1)', color: 'rgb(150, 130, 238)' }}
+          >
+            {event.graphId.name}
+          </Chip>
         </div>
         
         {canAccessEditor && (
-          <div className={styles.actions}>
+          <ButtonGroup variant="flat" size="sm">
             {isEditing ? (
               <>
-                <button 
-                  className={styles.saveButton}
-                  onClick={handleEdit}
-                  title="Сохранить изменения"
-                >
-                  💾
-                </button>
-                <button 
-                  className={styles.cancelButton}
-                  onClick={() => {
-                    setIsEditing(false);
-                    setEditedEvent({
-                      name: event.name,
-                      description: event.description,
-                      eventDate: event.eventDate?.split('T')[0] || new Date().toISOString().split('T')[0],
-                      timeFrom: event.timeFrom,
-                      timeTo: event.timeTo
-                    });
-                  }}
-                  title="Отменить редактирование"
-                >
-                  ❌
-                </button>
+                <Tooltip content="Сохранить изменения">
+                  <Button
+                    isIconOnly
+                    color="success"
+                    variant="flat"
+                    onPress={handleEdit}
+                  >
+                    <Save size={16} />
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Отменить редактирование">
+                  <Button
+                    isIconOnly
+                    color="default"
+                    variant="flat"
+                    onPress={handleCancel}
+                  >
+                    <X size={16} />
+                  </Button>
+                </Tooltip>
               </>
             ) : (
               <>
-                <button 
-                  className={styles.editButton}
-                  onClick={() => setIsEditing(true)}
-                  title="Редактировать мероприятие"
-                >
-                  ✏️
-                </button>
-                <button 
-                  className={styles.deleteButton}
-                  onClick={handleDelete}
-                  title="Удалить мероприятие"
-                >
-                  🗑️
-                </button>
+                <Tooltip content="Редактировать мероприятие">
+                  <Button
+                    isIconOnly
+                    color="primary"
+                    variant="flat"
+                    onPress={() => setIsEditing(true)}
+                  >
+                    <Edit3 size={16} />
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Удалить мероприятие">
+                  <Button
+                    isIconOnly
+                    color="danger"
+                    variant="flat"
+                    onPress={handleDelete}
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </Tooltip>
               </>
             )}
-          </div>
+          </ButtonGroup>
         )}
-      </div>
+      </CardHeader>
       
-      {isEditing ? (
-        <textarea
-          name="description"
-          value={editedEvent.description}
-          onChange={handleChange}
-          className={styles.editTextarea}
-          placeholder="Описание мероприятия"
-        />
-      ) : (
-        <p className={styles.description}>{event.description}</p>
-      )}
-      
-      <div className={styles.footer}>
+      {/* Body */}
+      <CardBody className="pt-0 pb-4">
         {isEditing ? (
-          <div className={styles.editTime}>
-            <input
+          <Textarea
+            value={editedEvent.description}
+            onChange={(e) => setEditedEvent(prev => ({ ...prev, description: e.target.value }))}
+            placeholder="Описание мероприятия"
+            variant="bordered"
+            minRows={3}
+            maxRows={6}
+          />
+        ) : (
+          <p className="text-default-600 leading-relaxed">
+            {event.description}
+          </p>
+        )}
+      </CardBody>
+
+      <Divider />
+      
+      {/* Footer */}
+      <CardFooter className="flex flex-col gap-4 pt-4">
+        {isEditing ? (
+          <div className="flex flex-col gap-3 w-full">
+            <Input
               type="date"
-              name="eventDate"
+              label="Дата мероприятия"
               value={editedEvent.eventDate}
-              onChange={handleChange}
-              className={styles.editInput}
+              onChange={(e) => setEditedEvent(prev => ({ ...prev, eventDate: e.target.value }))}
+              variant="bordered"
+              startContent={<Calendar size={16} />}
             />
-            <div className={styles.timeInputs}>
-              <input
+            <div className="flex gap-2">
+              <Input
                 type="time"
-                name="timeFrom"
+                label="Время начала"
                 value={editedEvent.timeFrom}
-                onChange={handleChange}
-                className={styles.editInput}
+                onChange={(e) => setEditedEvent(prev => ({ ...prev, timeFrom: e.target.value }))}
+                variant="bordered"
+                startContent={<Clock size={16} />}
               />
-              <input
+              <Input
                 type="time"
-                name="timeTo"
+                label="Время окончания"
                 value={editedEvent.timeTo}
-                onChange={handleChange}
-                className={styles.editInput}
+                onChange={(e) => setEditedEvent(prev => ({ ...prev, timeTo: e.target.value }))}
+                variant="bordered"
+                startContent={<Clock size={16} />}
               />
             </div>
           </div>
         ) : (
-          <div className={styles.eventInfo}>
-            <span className={styles.time}>
-              {formatEventTime(event.eventDate, event.timeFrom, event.eventDate, event.timeTo)}
-            </span>
-            <span className={styles.location}>
-              <span className={styles.locationIcon}>📍</span>
-              <span>{event.place}</span>
-            </span>
-            <div className={styles.usersCount}>
-              <span className={styles.usersIcon}>👥</span>
-              <span>{event.regedUsers}</span>
+          <div className="flex flex-col sm:flex-row gap-4 w-full items-start sm:items-center justify-between">
+            <div className="flex flex-col gap-2 text-small">
+              <div className="flex items-center gap-2 text-default-600">
+                <Clock size={16} />
+                <span className="whitespace-pre-line">
+                  {formatEventTime(event.eventDate, event.timeFrom, event.eventDate, event.timeTo)}
+                </span>
+              </div>
+              
+              <div className="flex items-center gap-2 text-default-600">
+                <MapPin size={16} />
+                <span>{event.place}</span>
+              </div>
+              
+              <div className="flex items-center gap-2 text-default-600">
+                <Users size={16} />
+                <span>{event.regedUsers} участников</span>
+              </div>
             </div>
+            
+            <Button
+              color={isLoggedIn ? (isRegistered ? "danger" : "primary") : "default"}
+              variant={isRegistered ? "flat" : "solid"}
+              size="md"
+              onPress={handleRegistration}
+              isDisabled={isLoading}
+              startContent={
+                isLoading ? (
+                  <Spinner size="sm" />
+                ) : !isLoggedIn ? (
+                  <LogIn size={16} />
+                ) : isRegistered ? (
+                  <UserX size={16} />
+                ) : (
+                  <UserPlus size={16} />
+                )
+              }
+              className="min-w-fit whitespace-nowrap"
+              style={
+                !isLoggedIn 
+                  ? {} 
+                  : isRegistered 
+                    ? { backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'rgb(239, 68, 68)' }
+                    : { backgroundColor: 'rgb(150, 130, 238)', color: 'white' }
+              }
+            >
+              {isLoggedIn 
+                ? isRegistered 
+                  ? 'Отменить регистрацию' 
+                  : 'Зарегистрироваться' 
+                : 'Войдите, чтобы зарегистрироваться'
+              }
+            </Button>
           </div>
         )}
-        
-        <button 
-          className={styles.registerButton} 
-          onClick={handleRegistration}
-          disabled={isLoading}
-          data-registered={isRegistered}
-          data-logged={isLoggedIn}
-        >
-          {isLoggedIn 
-            ? isRegistered 
-              ? 'Отменить регистрацию' 
-              : 'Зарегистрироваться' 
-            : 'Войдите, чтобы зарегистрироваться'
-          }
-        </button>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };
 

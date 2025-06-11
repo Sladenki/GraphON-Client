@@ -11,6 +11,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Script from "next/script";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Toaster } from "sonner";
+import { HeroUIProvider } from "@heroui/react";
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         )}
       </head>
       <body >
+         <HeroUIProvider>
         <Toaster position="top-right" richColors /> 
 
         <div className={styles.wrapper}>
@@ -78,7 +80,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               
           </AllProvers>
         </div>
-
+            </HeroUIProvider>
       </body>
     </html>
   );
