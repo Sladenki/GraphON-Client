@@ -191,7 +191,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
   console.log('event', event)
 
   const fullImageUrl = useMemo(() => 
-    event ? `${BASE_S3_URL}${event.graphId.imgPath}` : "", 
+    event ? `${BASE_S3_URL}/${event.graphId.imgPath}` : "", 
     [event]
   );
 

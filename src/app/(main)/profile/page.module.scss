@@ -1,0 +1,180 @@
+// Variables
+$primary-color: rgb(150, 130, 238);
+$accent-color: rgb(100, 210, 255);
+$danger-color: rgb(239, 68, 68);
+$gradient-start: rgba(150, 130, 238, 0.1);
+$gradient-end: rgba(100, 210, 255, 0.05);
+
+// Mixins
+@mixin glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@mixin neon-glow {
+  box-shadow: 0 0 15px rgba($primary-color, 0.3);
+}
+
+@mixin gradient-text {
+  background: linear-gradient(135deg, $primary-color, $accent-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.profile {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  @include glass-effect;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    @include neon-glow;
+    transform: translateY(-2px);
+  }
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 2px solid rgba($primary-color, 0.2);
+  background: linear-gradient(135deg, $gradient-start, $gradient-end);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: rgba($primary-color, 0.4);
+    transform: scale(1.02);
+  }
+}
+
+.name {
+  font-size: 2rem;
+  font-weight: 600;
+  @include gradient-text;
+  margin-bottom: 0.5rem;
+}
+
+.role {
+  font-size: 1.1rem;
+  color: var(--heroui-default);
+  background: linear-gradient(135deg, rgba($primary-color, 0.1), rgba($accent-color, 0.05));
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba($primary-color, 0.2);
+}
+
+.themeSwitchWrapper {
+  @include glass-effect;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 2rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    @include neon-glow;
+  }
+}
+
+.themeLabel {
+  font-size: 1.1rem;
+  color: var(--heroui-default);
+}
+
+.themeSwitch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    
+    &:checked + .slider {
+      background: linear-gradient(135deg, $primary-color, $accent-color);
+      
+      &:before {
+        transform: translateX(26px);
+      }
+    }
+  }
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($primary-color, 0.2);
+  transition: .4s;
+  border-radius: 34px;
+  border: 1px solid rgba($primary-color, 0.3);
+  
+  &:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.eventsHeader {
+  font-size: 1.5rem;
+  font-weight: 600;
+  @include gradient-text;
+  margin: 2rem 0 1rem;
+  padding: 1rem;
+  @include glass-effect;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    @include neon-glow;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  .avatar {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .name {
+    font-size: 1.5rem;
+  }
+  
+  .themeSwitchWrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+} 
