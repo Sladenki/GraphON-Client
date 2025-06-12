@@ -3,8 +3,9 @@ import styles from "./GraphBlock.module.scss";
 import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useAuth } from "@/providers/AuthProvider";
 import Image from "next/image";
-import { PlusSquare, MinusSquare, Calendar, Info } from "lucide-react";
+import { Calendar, Info } from "lucide-react";
 import { notifyInfo, notifySuccess } from "@/lib/notifications";
+import { Card, Button } from "@heroui/react";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -13,6 +14,7 @@ interface GraphBlockProps {
   name: string;
   isSubToGraph: boolean;
   imgPath?: string;
+  about?: string;
   handleScheduleButtonClick: () => void;
   handleInfoGraphButtonClick: () => void;
   setSelectedGraphId: (id: string) => void;
@@ -22,13 +24,12 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   id, 
   name, 
   isSubToGraph, 
-  imgPath, 
+  imgPath,
+  about,
   handleScheduleButtonClick, 
   handleInfoGraphButtonClick,
   setSelectedGraphId,
 }) => {
-  console.log('imgPath', imgPath)
-
   const fullImageUrl = useMemo(() => 
     imgPath ? `${BASE_S3_URL}/${imgPath}` : "", 
     [imgPath]
@@ -50,47 +51,19 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
     }
   }, [toggleSubscription, isSubscribed]);
 
-  // Расписание
   const handleScheduleClick = useCallback(() => {
     handleScheduleButtonClick();
     setSelectedGraphId(id);
   }, [handleScheduleButtonClick, setSelectedGraphId, id]);
 
-  // Информация
   const handleInfoClick = useCallback(() => {
     handleInfoGraphButtonClick();
     setSelectedGraphId(id);
   }, [handleInfoGraphButtonClick, setSelectedGraphId, id]);
 
   return (
-    <article className={styles.graphBlock}>
-      {/* Основной контент блока */}
+    <Card className={styles.graphBlock}>
       <div className={styles.contentWrapper}>
-        {/* Заголовок и кнопка подписки */}
-        <header className={styles.header}>
-          <h3 className={styles.title}>{name}</h3>
-          {isLoggedIn && (
-            <button
-              onClick={handleSubscription}
-              disabled={isLoading}
-              className={`${styles.subscriptionButton} ${
-                isSubscribed ? styles.subscribed : styles.unsubscribed
-              }`}
-              aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
-              title={isSubscribed ? "Отписаться" : "Подписаться"}
-            >
-              {isLoading ? (
-                <div className={styles.loader} />
-              ) : isSubscribed ? (
-                <MinusSquare size={18} />
-              ) : (
-                <PlusSquare size={18} />
-              )}
-            </button>
-          )}
-        </header>
-
-        {/* Фотография графа */}
         <div className={styles.imageContainer}>
           {imgPath ? (
             <Image
@@ -108,30 +81,59 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
               <div className={styles.placeholderIcon}>📷</div>
             </div>
           )}
+          <div className={styles.overlay}>
+            <h3 className={styles.title}>{name}</h3>
+            {isLoggedIn && (
+              <Button
+                onClick={handleSubscription}
+                disabled={isLoading}
+                variant="solid"
+                color={isSubscribed ? "danger" : "primary"}
+                className={styles.subscriptionButton}
+                aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
+                title={isSubscribed ? "Отписаться" : "Подписаться"}
+              >
+                {isLoading ? (
+                  <div className={styles.loader} />
+                ) : isSubscribed ? (
+                  "Отписаться"
+                ) : (
+                  "Подписаться"
+                )}
+              </Button>
+            )}
+          </div>
         </div>
 
-        {/* Нижние кнопки */}
+        <div className={styles.infoSection}>
+          <p className={styles.about}>{about || "Описание отсутствует"}</p>
+        </div>
+
         <footer className={styles.footer}>
-          <button 
-            className={styles.actionButton}
+          <Button 
+            variant="solid"
+            color="primary"
             onClick={handleScheduleClick}
+            className={styles.actionButton}
             aria-label="Открыть расписание"
           >
             <Calendar size={16} />
             <span>Расписание</span>
-          </button>
+          </Button>
           
-          <button 
-            className={styles.actionButton}
+          <Button 
+            variant="solid"
+            color="secondary"
             onClick={handleInfoClick}
+            className={styles.actionButton}
             aria-label="Показать информацию"
           >
             <Info size={16} />
             <span>Инфо</span>
-          </button>
+          </Button>
         </footer>
       </div>
-    </article>
+    </Card>
   );
 };
 

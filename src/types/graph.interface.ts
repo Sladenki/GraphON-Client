@@ -3,6 +3,7 @@ export interface IGraphList {
     name: string,
     isSubscribed: boolean
     imgPath: string
+    about?: string
 }
 
 export interface CreateGraphDto {

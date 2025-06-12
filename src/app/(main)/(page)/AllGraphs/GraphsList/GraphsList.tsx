@@ -28,6 +28,8 @@ const GraphsList: FC<{ allGraphs: any}> = ({ allGraphs }) => {
               name={graph.name}
               isSubToGraph={graph.isSubscribed}
               imgPath={graph.imgPath}
+              about={graph.about}
+
 
               // Для PopUp расписания
               handleScheduleButtonClick={handleScheduleButtonClick}
