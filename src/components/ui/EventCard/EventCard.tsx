@@ -214,10 +214,10 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
       {/* Header */}
       <CardHeader className={styles.cardHeader}>
         <div className={styles.headerContent}>
-          {event.graphId.imgPath && (
+          {event?.graphId?.imgPath && (
             <div className={styles.graphAvatar}>
               <Image
-                src={fullImageUrl}
+                src={fullImageUrl || ""}
                 alt={event.graphId.name}
                 className={styles.avatarImage}
               />

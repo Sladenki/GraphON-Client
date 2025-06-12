@@ -52,7 +52,7 @@ export default function Profile() {
     const typedUser = user as IUser | null;
     const subsEvents = allEvents?.data
 
-    console.log('typedUser', typedUser)
+    console.log('subsEvents', subsEvents)
 
     return (
         <div className={styles.profileWrapper}>
@@ -103,7 +103,7 @@ export default function Profile() {
                         <div className={styles.eventsList} key={event._id}>
                             {event.eventId && (
                                 <EventCard 
-                                    event={event} 
+                                    event={event.eventId} 
                                     isAttended={event.isAttended} 
                                     onDelete={handleDelete}
                                 />
