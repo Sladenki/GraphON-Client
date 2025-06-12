@@ -1,428 +1,475 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@use "sass:color";
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
-// 🎨 Переменные
-// $primary-color: #007aff;
-// $secondary-color: #f0f4f8;
-// $text-color: #222;
-// $hover-color: #005ecb;
 
-// 📱 Mobile-first адаптивность
-$mobile-breakpoint: 480px;
-$tablet-breakpoint: 768px;
-$desktop-breakpoint: 1024px;
+// Variables
+$primary-color: rgb(150, 130, 238);
+$primary-glow: rgba(150, 130, 238, 0.25);
+$accent-color: #00ffff;
+$accent-glow: rgba(0, 255, 255, 0.25);
+$glass-bg: rgba(255, 255, 255, 0.03);
+$glass-border: rgba(255, 255, 255, 0.08);
+$glass-hover: rgba(255, 255, 255, 0.05);
+$danger-color: #ff4d4d;
+$danger-glow: rgba(255, 77, 77, 0.25);
+$gradient-start: rgba(150, 130, 238, 0.1);
+$gradient-end: rgba(0, 255, 255, 0.05);
 
-// Миксин для плавного перехода
-@mixin smooth-transition {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-// Миксин для карточки
-@mixin card-shadow {
+// Mixins
+@mixin glass-effect {
+  background: linear-gradient(135deg, $glass-bg, rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $glass-border;
   box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    0 4px 24px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-// 🏷️ Основной стиль карточки
+@mixin neon-glow($color, $intensity: 0.5) {
+  box-shadow: 
+    0 0 10px rgba($color, $intensity),
+    0 0 20px rgba($color, $intensity * 0.5),
+    0 0 30px rgba($color, $intensity * 0.3);
+}
+
+@mixin gradient-text {
+  background: linear-gradient(135deg, $primary-color, $accent-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Component Styles
 .eventCard {
-  position: relative;
-  background: var(--card-background);
-  border-radius: 24px;
-  padding: 32px;
-  @include smooth-transition;
-  border: 1px solid var(--border-color);
-  @include card-shadow;
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  @include glass-effect;
+  border-radius: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
-
-
+  position: relative;
+  
   &::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(
-      90deg,
-      var(--primary-color) 0%,
-      var(--primary-gradient-end) 100%
-    );
+    bottom: 0;
+    background: linear-gradient(135deg, $gradient-start, $gradient-end);
     opacity: 0;
-    @include smooth-transition;
+    transition: opacity 0.3s ease;
   }
-
+  
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 
-      0 10px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
+    @include neon-glow($primary-color, 0.15);
+    
     &::before {
       opacity: 1;
     }
   }
 }
 
-// 🏷️ Заголовок и автор
-.header {
+.cardHeader {
+  padding: 1.5rem;
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 24px;
-  gap: 20px;
-}
-
-.titleSection {
-  flex: 1;
-}
-
-.title {
-  font-size: 1.75rem;
-  font-weight: 600;
-    color: var(--main-text);
-  margin: 0 0 12px 0;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-  font-feature-settings: "salt" on, "ss01" on;
-}
-
-.author {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9375rem;
-  color: var(--main-text);
-  background: var(--tag-background);
-  padding: 6px 16px;
-  border-radius: 30px;
-  margin-bottom: 16px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-
-  &::before {
-    content: "📚";
-    font-size: 1.1rem;
+  align-items: flex-start;
+  gap: 1rem;
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 1.5rem;
+    right: 1.5rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $glass-border, transparent);
   }
 }
 
-// 🏷️ Описание события
-.description {
-  color: var(--main-text);
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  margin: 0 0 32px 0;
-  white-space: pre-wrap;
-  letter-spacing: -0.01em;
+.headerContent {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
 }
 
-// 🏷️ Подвал с временем
-.footer {
+.graphAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  @include glass-effect;
+  border: 1px solid rgba($primary-color, 0.2);
+  background: linear-gradient(135deg, rgba($primary-color, 0.1), rgba($accent-color, 0.05));
+  
+  .avatarImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.titleSection {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-top: auto;
-  padding-top: 24px;
-  border-top: 1px solid var(--border-color);
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  @include gradient-text;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.titleInput {
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+}
+
+.graphChip {
+  width: fit-content;
+  background: linear-gradient(135deg, rgba($primary-color, 0.15), rgba($accent-color, 0.05)) !important;
+  color: $primary-color !important;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  border: 1px solid rgba($primary-color, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionButton {
+  @include glass-effect;
+  border-radius: 12px !important;
+  transition: all 0.2s ease !important;
+  
+  &:hover {
+    transform: translateY(-2px);
+    @include neon-glow($primary-color, 0.4);
+  }
+}
+
+.cardBody {
+  padding: 1.5rem;
+}
+
+.description {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.descriptionInput {
+  font-family: 'Inter', sans-serif !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: $glass-border !important;
+  
+  &:focus {
+    border-color: $primary-color !important;
+    @include neon-glow($primary-color, 0.2);
+  }
+}
+
+.divider {
+  background: linear-gradient(90deg, transparent, $glass-border, transparent);
+  height: 1px;
+  margin: 0;
+}
+
+.cardFooter {
+  padding: 1.5rem;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.dateInput,
+.timeInput,
+.placeInput {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: $glass-border !important;
+  
+  &:focus {
+    border-color: $primary-color !important;
+    @include neon-glow($primary-color, 0.2);
+  }
+}
+
+.placeInput {
+  width: 100%;
+  margin-top: 0.5rem;
+  
+  input {
+    font-family: 'Inter', sans-serif !important;
+  }
+}
+
+.timeInputs {
+  display: flex;
+  gap: 1rem;
 }
 
 .eventInfo {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-}
-
-.time {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--main-text);
-  font-size: 0.9375rem;
-  white-space: pre-wrap;
-  font-weight: 500;
-
-  &::before {
-    content: "🗓️";
-    font-size: 1.25rem;
+  gap: 1.5rem;
+  width: 100%;
+  
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 
-.location {
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.infoItem {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--main-text);
-  font-size: 0.9375rem;
-  font-weight: 500;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
   
-  .usersIcon {
-    font-size: 1.25rem;
+  &:nth-child(1) {
+    background: linear-gradient(135deg, rgba($primary-color, 0.05), rgba($primary-color, 0.02));
+    border: 1px solid rgba($primary-color, 0.1);
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba($primary-color, 0.08), rgba($primary-color, 0.03));
+      transform: translateX(2px);
+      
+      svg {
+        color: rgba($primary-color, 0.9);
+        filter: drop-shadow(0 0 4px rgba($primary-color, 0.2));
+      }
+    }
+    
+    svg {
+      color: rgba($primary-color, 0.7);
+    }
+  }
+  
+  &:nth-child(2) {
+    background: linear-gradient(135deg, rgba($accent-color, 0.05), rgba($accent-color, 0.02));
+    border: 1px solid rgba($accent-color, 0.1);
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba($accent-color, 0.08), rgba($accent-color, 0.03));
+      transform: translateX(2px);
+      
+      svg {
+        color: rgba($accent-color, 0.9);
+        filter: drop-shadow(0 0 4px rgba($accent-color, 0.2));
+      }
+    }
+    
+    svg {
+      color: rgba($accent-color, 0.7);
+    }
+  }
+  
+  &:nth-child(3) {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+      transform: translateX(2px);
+      
+      svg {
+        color: rgba(255, 255, 255, 0.9);
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
+      }
+    }
+    
+    svg {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+  
+  svg {
+    transition: all 0.3s ease;
+    width: 18px;
+    height: 18px;
   }
 }
 
-.usersCount {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--main-text);
-  font-size: 0.9375rem;
-  font-weight: 500;
+.infoText {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  white-space: pre-line;
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.3s ease;
   
-  .usersIcon {
-    font-size: 1.25rem;
+  .infoItem:hover & {
+    color: rgba(255, 255, 255, 0.95);
   }
 }
 
 .registerButton {
-  padding: 12px 28px;
-  border-radius: 30px;
-  border: none;
-  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
-  cursor: pointer;
-  @include smooth-transition;
-  background: var(--primary-color);
-  color: #F4F7FF;
-  letter-spacing: -0.01em;
-
-  &:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  // &:disabled {
-  //   opacity: 0.6;
-  //   cursor: not-allowed;
-  // }
-
-  &[data-registered="true"] {
-    background: #9f1239;
-    color: white;
-
-    &:hover:not(:disabled) {
-      background: #881337;
-      box-shadow: 0 4px 12px rgba(159, 18, 57, 0.3);
-    }
-  }
-  
-  // &[data-logged="false"] {
-  //   background: var(--disabled-color);
-  // }
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-  opacity: 0;
-  @include smooth-transition;
-
-  .eventCard:hover & {
-    opacity: 1;
-  }
-}
-
-.actionButton {
-  padding: 10px;
+  padding: 0.75rem 1.5rem;
   border-radius: 12px;
-  border: none;
-  background: var(--button-secondary-background);
-  color: var(--main-text);
-  cursor: pointer;
-  @include smooth-transition;
-  font-size: 1.125rem;
+  transition: all 0.3s ease;
+  min-width: fit-content;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
   
-  &:hover {
-    background: var(--button-secondary-hover);
-    color: var(--main-text);
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-.editButton {
-  @extend .actionButton;
-}
-
-.deleteButton {
-  @extend .actionButton;
-  &:hover {
-    background: var(--danger-color);
-    color: white;
-  }
-}
-
-.saveButton {
-  @extend .actionButton;
-  &:hover {
-    background: var(--success-color);
-    color: white;
-  }
-}
-
-.cancelButton {
-  @extend .actionButton;
-}
-
-// Стили для режима редактирования
-.editInput {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 2px solid var(--border-color);
-  background: var(--input-background);
-  color: var(--main-text);
-  font-size: 1rem;
-  @include smooth-transition;
-  font-family: inherit;
-
-  &::placeholder {
-    color: var(--main-text);
-    opacity: 0.7;
-  }
-
-  &:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
-  }
-}
-
-.editTextarea {
-  @extend .editInput;
-  min-height: 120px;
-  resize: vertical;
-  margin-bottom: 24px;
-  line-height: 1.6;
-}
-
-.editTime {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-
-  .timeInputs {
-    display: flex;
-    gap: 12px;
-  }
-}
-
-// 📱 Медиазапросы для мобильных устройств
-@media (max-width: $mobile-breakpoint) {
-  .eventCard {
-    padding: 16px;
-    margin: 0;
-    border-radius: 12px;
-    width: 100%;
-    box-sizing: border-box;
-
-    &::before {
-      border-radius: 12px 12px 0 0;
-    }
-  }
-
-  .header {
-    margin-bottom: 12px;
-    gap: 12px;
-  }
-
-  .title {
-    font-size: 1.25rem;
-    margin-bottom: 8px;
-  }
-
-  .author {
-    font-size: 0.875rem;
-    padding: 4px 12px;
-    margin-bottom: 12px;
-  }
-
-  .description {
-    font-size: 0.9375rem;
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
-
-  .footer {
-    flex-direction: column;
-    gap: 16px;
-    align-items: stretch;
-    padding-top: 16px;
-  }
-
-  .eventInfo {
-    gap: 8px;
-  }
-
-  .time {
-    font-size: 0.875rem;
-  }
-
-  .usersCount {
-    font-size: 0.875rem;
-  }
-
-  .registerButton {
-    width: 100%;
-    padding: 12px 20px;
-    font-size: 0.9375rem;
-  }
-
-  .actions {
+  &::before {
+    content: '';
     position: absolute;
-    top: 8px;
-    right: 8px;
-    opacity: 1;
-    background: var(--card-background);
-    padding: 4px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
-
-  .actionButton {
-    padding: 6px;
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: $tablet-breakpoint) {
-  .eventCard {
-    max-width: 100%;
-    margin: 0;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .editTime {
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-
-    .timeInputs {
-      width: 100%;
-      justify-content: space-between;
+  
+  &:not(:disabled) {
+    @include glass-effect;
+    
+    &:hover {
+      transform: translateY(-1px);
+      @include neon-glow($primary-color, 0.2);
       
-      input {
-        width: calc(50% - 6px);
+      &::before {
+        opacity: 1;
       }
     }
   }
+  
+  &[data-color="primary"] {
+    background: linear-gradient(135deg, 
+      color.adjust($primary-color, $lightness: 2%), 
+      color.adjust($primary-color, $lightness: -5%)
+    ) !important;
+    border: none !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, 
+        color.adjust($primary-color, $lightness: 5%), 
+        color.adjust($primary-color, $lightness: -2%)
+      ) !important;
+    }
+  }
+  
+  &[data-color="danger"] {
+    background: linear-gradient(135deg, 
+      rgba($danger-color, 0.15), 
+      rgba($danger-color, 0.08)
+    ) !important;
+    color: $danger-color !important;
+    border: 1px solid rgba($danger-color, 0.2) !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, 
+        rgba($danger-color, 0.18), 
+        rgba($danger-color, 0.12)
+      ) !important;
+      @include neon-glow($danger-color, 0.15);
+    }
+  }
+  
+  &[data-color="default"] {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.08), 
+      rgba(255, 255, 255, 0.03)
+    ) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.12), 
+        rgba(255, 255, 255, 0.05)
+      ) !important;
+      color: rgba(255, 255, 255, 0.9) !important;
+    }
+  }
 }
 
-@media (min-width: $desktop-breakpoint) {
+// Dark theme adjustments
+:global(.dark-theme) {
   .eventCard {
-    max-width: 800px;
-    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(13, 4, 35, 0.65), rgba(13, 4, 35, 0.45));
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba(13, 4, 35, 0.75), rgba(13, 4, 35, 0.55));
+    }
+  }
+  
+  .description {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .infoItem {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+// Mobile adjustments
+@media (max-width: 640px) {
+  .cardHeader {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 1.25rem;
+  }
+  
+  .graphAvatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .cardBody,
+  .cardFooter {
+    padding: 1rem;
+  }
+  
+  .timeInputs {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .registerButton {
+    width: 100%;
   }
 }
 

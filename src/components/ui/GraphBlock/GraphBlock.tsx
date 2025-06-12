@@ -27,6 +27,8 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   handleInfoGraphButtonClick,
   setSelectedGraphId,
 }) => {
+  console.log('imgPath', imgPath)
+
   const fullImageUrl = useMemo(() => 
     imgPath ? `${BASE_S3_URL}/${imgPath}` : "", 
     [imgPath]

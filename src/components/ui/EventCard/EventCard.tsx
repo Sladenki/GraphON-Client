@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+'use client'
+
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Card,
   CardHeader,
@@ -11,7 +13,8 @@ import {
   Tooltip,
   Divider,
   ButtonGroup,
-  Spinner
+  Spinner,
+  Image
 } from "@heroui/react";
 import { 
   MapPin, 
@@ -24,7 +27,10 @@ import {
   X,
   UserPlus,
   UserX,
-  LogIn
+  LogIn,
+  CalendarClock,
+  MapPinned,
+  UsersRound
 } from "lucide-react";
 import { useEventRegistration } from "@/hooks/useEventRegistration";
 import { useAuth } from "@/providers/AuthProvider";
@@ -33,6 +39,9 @@ import { EventService } from "@/services/event.service";
 import { UserRole } from "@/types/user.interface";
 import { notifyError, notifyInfo, notifySuccess } from "@/lib/notifications";
 import { useRouter } from "next/navigation";
+import styles from './EventCard.module.scss';
+
+const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
 interface EventProps {
   event: {
@@ -40,6 +49,7 @@ interface EventProps {
     graphId: {
       _id: string;
       name: string;
+      imgPath?: string;
     };
     globalGraphId: string;
     name: string;
@@ -82,6 +92,8 @@ const formatEventTime = (startDate?: string, startTime?: string, endDate?: strin
 };
 
 const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDelete }) => {
+  console.log('EventCard render with props:', { initialEvent, isAttended });
+  
   const { isLoggedIn, user } = useAuth();
   const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
   const [isEditing, setIsEditing] = useState(false);
@@ -91,7 +103,8 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
     description: initialEvent.description,
     eventDate: initialEvent.eventDate?.split('T')[0] || new Date().toISOString().split('T')[0],
     timeFrom: initialEvent.timeFrom,
-    timeTo: initialEvent.timeTo
+    timeTo: initialEvent.timeTo,
+    place: initialEvent.place
   });
 
   const { isRegistered, toggleRegistration, isLoading, error } = useEventRegistration(
@@ -170,15 +183,28 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
       description: event.description,
       eventDate: event.eventDate?.split('T')[0] || new Date().toISOString().split('T')[0],
       timeFrom: event.timeFrom,
-      timeTo: event.timeTo
+      timeTo: event.timeTo,
+      place: event.place
     });
   };
 
-  if (!event || !event._id) return null;
+  console.log('event', event)
+
+  const fullImageUrl = useMemo(() => 
+    event ? `${BASE_S3_URL}${event.graphId.imgPath}` : "", 
+    [event]
+  );
+
+  console.log('fullImageUrl', fullImageUrl)
+
+  if (!event || !event._id) {
+    console.error('Invalid event data:', event);
+    return null;
+  }
 
   return (
     <Card 
-      className="w-full max-w-2xl mx-auto shadow-md hover:shadow-lg transition-all duration-300"
+      className={styles.eventCard}
       style={{ 
         '--heroui-primary': 'rgb(150, 130, 238)',
         '--heroui-primary-50': 'rgba(150, 130, 238, 0.1)',
@@ -186,37 +212,47 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
       } as React.CSSProperties}
     >
       {/* Header */}
-      <CardHeader className="flex justify-between items-start gap-4 pb-2">
-        <div className="flex flex-col gap-2 flex-1 min-w-0">
-          {isEditing ? (
-            <Input
-              value={editedEvent.name}
-              onChange={(e) => setEditedEvent(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Название мероприятия"
-              variant="bordered"
-              size="lg"
-              classNames={{
-                input: "text-lg font-semibold"
-              }}
-            />
-          ) : (
-            <h3 className="text-xl font-bold text-foreground line-clamp-2 leading-tight">
-              {event.name}
-            </h3>
+      <CardHeader className={styles.cardHeader}>
+        <div className={styles.headerContent}>
+          {event.graphId.imgPath && (
+            <div className={styles.graphAvatar}>
+              <Image
+                src={fullImageUrl}
+                alt={event.graphId.name}
+                className={styles.avatarImage}
+              />
+            </div>
           )}
-          
-          <Chip
-            variant="flat"
-            size="sm"
-            className="w-fit"
-            style={{ backgroundColor: 'rgba(150, 130, 238, 0.1)', color: 'rgb(150, 130, 238)' }}
-          >
-            {event.graphId.name}
-          </Chip>
+          <div className={styles.titleSection}>
+            {isEditing ? (
+              <Input
+                value={editedEvent.name}
+                onChange={(e) => setEditedEvent(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Название мероприятия"
+                variant="bordered"
+                size="lg"
+                classNames={{
+                  input: styles.titleInput
+                }}
+              />
+            ) : (
+              <h3 className={styles.title}>
+                {event.name}
+              </h3>
+            )}
+            
+            <Chip
+              variant="flat"
+              size="sm"
+              className={styles.graphChip}
+            >
+              {event.graphId.name}
+            </Chip>
+          </div>
         </div>
         
         {canAccessEditor && (
-          <ButtonGroup variant="flat" size="sm">
+          <ButtonGroup variant="flat" size="sm" className={styles.actionButtons}>
             {isEditing ? (
               <>
                 <Tooltip content="Сохранить изменения">
@@ -225,6 +261,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
                     color="success"
                     variant="flat"
                     onPress={handleEdit}
+                    className={styles.actionButton}
                   >
                     <Save size={16} />
                   </Button>
@@ -235,6 +272,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
                     color="default"
                     variant="flat"
                     onPress={handleCancel}
+                    className={styles.actionButton}
                   >
                     <X size={16} />
                   </Button>
@@ -248,6 +286,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
                     color="primary"
                     variant="flat"
                     onPress={() => setIsEditing(true)}
+                    className={styles.actionButton}
                   >
                     <Edit3 size={16} />
                   </Button>
@@ -258,6 +297,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
                     color="danger"
                     variant="flat"
                     onPress={handleDelete}
+                    className={styles.actionButton}
                   >
                     <Trash2 size={16} />
                   </Button>
@@ -269,7 +309,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
       </CardHeader>
       
       {/* Body */}
-      <CardBody className="pt-0 pb-4">
+      <CardBody className={styles.cardBody}>
         {isEditing ? (
           <Textarea
             value={editedEvent.description}
@@ -278,20 +318,21 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
             variant="bordered"
             minRows={3}
             maxRows={6}
+            className={styles.descriptionInput}
           />
         ) : (
-          <p className="text-default-600 leading-relaxed">
+          <p className={styles.description}>
             {event.description}
           </p>
         )}
       </CardBody>
 
-      <Divider />
+      <Divider className={styles.divider} />
       
       {/* Footer */}
-      <CardFooter className="flex flex-col gap-4 pt-4">
+      <CardFooter className={styles.cardFooter}>
         {isEditing ? (
-          <div className="flex flex-col gap-3 w-full">
+          <div className={styles.editForm}>
             <Input
               type="date"
               label="Дата мероприятия"
@@ -299,8 +340,9 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
               onChange={(e) => setEditedEvent(prev => ({ ...prev, eventDate: e.target.value }))}
               variant="bordered"
               startContent={<Calendar size={16} />}
+              className={styles.dateInput}
             />
-            <div className="flex gap-2">
+            <div className={styles.timeInputs}>
               <Input
                 type="time"
                 label="Время начала"
@@ -308,6 +350,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
                 onChange={(e) => setEditedEvent(prev => ({ ...prev, timeFrom: e.target.value }))}
                 variant="bordered"
                 startContent={<Clock size={16} />}
+                className={styles.timeInput}
               />
               <Input
                 type="time"
@@ -316,27 +359,37 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
                 onChange={(e) => setEditedEvent(prev => ({ ...prev, timeTo: e.target.value }))}
                 variant="bordered"
                 startContent={<Clock size={16} />}
+                className={styles.timeInput}
               />
             </div>
+            <Input
+              label="Место проведения"
+              value={editedEvent.place}
+              onChange={(e) => setEditedEvent(prev => ({ ...prev, place: e.target.value }))}
+              variant="bordered"
+              startContent={<MapPinned size={16} />}
+              placeholder="Введите место проведения"
+              className={styles.placeInput}
+            />
           </div>
         ) : (
-          <div className="flex flex-col sm:flex-row gap-4 w-full items-start sm:items-center justify-between">
-            <div className="flex flex-col gap-2 text-small">
-              <div className="flex items-center gap-2 text-default-600">
-                <Clock size={16} />
-                <span className="whitespace-pre-line">
+          <div className={styles.eventInfo}>
+            <div className={styles.infoSection}>
+              <div className={styles.infoItem}>
+                <CalendarClock size={18} />
+                <span className={styles.infoText}>
                   {formatEventTime(event.eventDate, event.timeFrom, event.eventDate, event.timeTo)}
                 </span>
               </div>
               
-              <div className="flex items-center gap-2 text-default-600">
-                <MapPin size={16} />
-                <span>{event.place}</span>
+              <div className={styles.infoItem}>
+                <MapPinned size={18} />
+                <span className={styles.infoText}>{event.place}</span>
               </div>
               
-              <div className="flex items-center gap-2 text-default-600">
-                <Users size={16} />
-                <span>{event.regedUsers} участников</span>
+              <div className={styles.infoItem}>
+                <UsersRound size={18} />
+                <span className={styles.infoText}>{event.regedUsers} участников</span>
               </div>
             </div>
             
@@ -357,14 +410,7 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
                   <UserPlus size={16} />
                 )
               }
-              className="min-w-fit whitespace-nowrap"
-              style={
-                !isLoggedIn 
-                  ? {} 
-                  : isRegistered 
-                    ? { backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'rgb(239, 68, 68)' }
-                    : { backgroundColor: 'rgb(150, 130, 238)', color: 'white' }
-              }
+              className={styles.registerButton}
             >
               {isLoggedIn 
                 ? isRegistered 

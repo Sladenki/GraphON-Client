@@ -103,7 +103,7 @@ export default function Profile() {
                         <div className={styles.eventsList} key={event._id}>
                             {event.eventId && (
                                 <EventCard 
-                                    event={event.eventId} 
+                                    event={event} 
                                     isAttended={event.isAttended} 
                                     onDelete={handleDelete}
                                 />
