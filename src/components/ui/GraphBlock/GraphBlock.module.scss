@@ -37,6 +37,7 @@ $desktop: 1024px;
 
 // Component Styles
 .graphBlock {
+  
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -138,14 +139,37 @@ $desktop: 1024px;
   padding: 8px 16px !important;
   border-radius: $border-radius-md !important;
   transition: $transition-fast !important;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
   font-weight: 600 !important;
   font-size: 14px !important;
   min-width: 120px !important;
   
+  &[data-color="primary"] {
+    background: rgba(99, 102, 241, 0.9) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    color: white !important;
+    
+    &:hover {
+      background: rgba(99, 102, 241, 1) !important;
+      border-color: rgba(99, 102, 241, 0.5) !important;
+    }
+  }
+  
+  &[data-color="danger"] {
+    background: rgba(239, 68, 68, 0.9) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    color: white !important;
+    
+    &:hover {
+      background: rgba(239, 68, 68, 1) !important;
+      border-color: rgba(239, 68, 68, 0.5) !important;
+    }
+  }
+  
   &:hover {
     transform: translateY(-2px);
-    box-shadow: $shadow-md;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
   
   &:disabled {
@@ -239,10 +263,31 @@ $desktop: 1024px;
   font-size: 14px !important;
   font-weight: 600 !important;
   transition: $transition-fast !important;
+  color: white !important;
+  
+  &[data-color="primary"] {
+    background: rgba(99, 102, 241, 0.9) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    
+    &:hover {
+      background: rgba(99, 102, 241, 1) !important;
+      border-color: rgba(99, 102, 241, 0.5) !important;
+    }
+  }
+  
+  &[data-color="secondary"] {
+    background: rgba(59, 130, 246, 0.9) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    
+    &:hover {
+      background: rgba(59, 130, 246, 1) !important;
+      border-color: rgba(59, 130, 246, 0.5) !important;
+    }
+  }
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: $shadow-md;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
   
   &:active {
@@ -281,17 +326,31 @@ $desktop: 1024px;
     background: #1F2937;
   }
   
+  .imageContainer {
+    background: #111827;
+  }
+  
   .infoSection {
     background: #1F2937;
     border-bottom-color: rgba(255, 255, 255, 0.1);
   }
   
   .about {
-    color: $text-light;
+    color: #E5E7EB;
   }
   
   .footer {
     background: #1F2937;
+  }
+
+  .subscriptionButton,
+  .actionButton {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  .overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
   }
 }
 
