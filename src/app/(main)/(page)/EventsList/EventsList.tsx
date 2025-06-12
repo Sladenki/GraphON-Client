@@ -2,13 +2,16 @@ import { EventService } from '@/services/event.service';
 import { EventItem } from '@/types/schedule.interface';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/providers/AuthProvider';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import styles from './EventsList.module.scss'
 import EventCard from '@/components/ui/EventCard/EventCard';
 import { AxiosResponse } from 'axios';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 
-const EventsList = ({ searchQuery }: { searchQuery: string}) => {
+// Кэш для хранения отфильтрованных событий
+const filterCache = new Map<string, EventItem[]>();
+
+const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
@@ -21,6 +24,7 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
     // Слушаем событие изменения графа
     const handleGraphSelected = (event: CustomEvent<string>) => {
       setSelectedGraphId(event.detail);
+      localStorage.setItem('selectedGraphId', event.detail);
     };
 
     window.addEventListener('graphSelected', handleGraphSelected as EventListener);
@@ -42,76 +46,105 @@ const EventsList = ({ searchQuery }: { searchQuery: string}) => {
       } as AxiosResponse<any>);
       return EventService.getUpcomingEvents(selectedGraphId);
     },
-    enabled: !!selectedGraphId
+    enabled: !!selectedGraphId,
+    gcTime: 10 * 60 * 1000, // 10 минут
+    staleTime: 5 * 60 * 1000, // 5 минут
   });
 
   const events = allEvents?.data || [];
 
-  const filteredEvents = events.filter((event: EventItem) => {
-    if (!event?._id || !event?.name) return false;
-    return event.name.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  // Мемоизированная фильтрация событий
+  const filteredEvents = useMemo(() => {
+    const cacheKey = `${selectedGraphId}-${searchQuery}`;
 
-  const handleDelete = (eventId: string) => {
+    if (filterCache.has(cacheKey)) {
+      return filterCache.get(cacheKey)!;
+    }
+
+    const filtered = events.filter((event: EventItem) => {
+      if (!event?._id || !event?.name) return false;
+      return event.name.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
+    filterCache.set(cacheKey, filtered);
+    return filtered;
+  }, [events, searchQuery, selectedGraphId]);
+
+  // Очистка кэша при изменении графа
+  useEffect(() => {
+    return () => {
+      filterCache.clear();
+    };
+  }, [selectedGraphId]);
+
+  const handleDelete = useCallback((eventId: string) => {
     queryClient.setQueryData(['eventsList', selectedGraphId], (old: AxiosResponse<any> | undefined) => {
       if (!old) return old;
-      return {
+      const newData = {
         ...old,
         data: {
           ...old.data,
           data: old.data.data.filter((event: EventItem) => event._id !== eventId)
         }
       };
+      
+      // Обновляем кэш фильтрации
+      filterCache.clear();
+      return newData;
     });
-  };
+  }, [queryClient, selectedGraphId]);
 
-  if (isLoading) {
-    return (
-      <SpinnerLoader/>
+  // Мемоизированный рендер карточки события
+  const renderEventCard = useCallback((event: EventItem) => (
+    <div key={event._id} className={styles.eventCardWrapper}>
+      <EventCard 
+        event={event} 
+        isAttended={event.isAttended} 
+        onDelete={handleDelete}
+      />
+    </div>
+  ), [handleDelete]);
+
+  // Мемоизированный рендер пустого состояния
+  const renderEmptyState = useCallback((message: string, subMessage: string) => (
+    <div className={styles.emptyMessage}>
+      <div className={styles.mainText}>
+        {message}
+      </div>
+      <div className={styles.subText}>
+        {subMessage}
+      </div>
+    </div>
+  ), []);
+
+  // Показываем загрузку только при первом запросе
+  if (isLoading && !allEvents) {
+    return <SpinnerLoader />;
+  }
+
+  // Проверяем результаты поиска только после загрузки данных
+  if (!isLoading && searchQuery && filteredEvents.length === 0) {
+    return renderEmptyState(
+      'Ничего не найдено',
+      'Попробуйте изменить параметры поиска или посмотреть все доступные мероприятия'
     );
   }
 
-  if (!events.length) {
-    return (
-      <div className={styles.emptyMessage}>
-        <div className={styles.mainText}>
-          Пока что мероприятий нет
-        </div>
-        <div className={styles.subText}>
-          Но скоро здесь появится что-то интересное! Загляните позже, чтобы не пропустить крутые события
-        </div>
-      </div>
-    );
-  }
-
-  if (filteredEvents.length === 0 && searchQuery) {
-    return (
-      <div className={styles.emptyMessage}>
-        <div className={styles.mainText}>
-          Ничего не найдено
-        </div>
-        <div className={styles.subText}>
-          Попробуйте изменить параметры поиска или посмотреть все доступные мероприятия
-        </div>
-      </div>
+  // Показываем пустое состояние только после загрузки данных
+  if (events.length === 0) {
+    return renderEmptyState(
+      'Пока что мероприятий нет',
+      'Но скоро здесь появится что-то интересное! Загляните позже, чтобы не пропустить крутые события'
     );
   }
 
   return (
     <div className={styles.eventsListWrapper}>
-      {filteredEvents.map((event: EventItem) => (
-        event?._id && (
-          <div key={event._id}>
-            <EventCard 
-              event={event} 
-              isAttended={event.isAttended} 
-              onDelete={handleDelete}
-            />
-          </div>
-        )
-      ))}
+      {filteredEvents.map(renderEventCard)}
     </div>
   );
-};
+});
+
+EventsList.displayName = 'EventsList';
 
 export default EventsList;

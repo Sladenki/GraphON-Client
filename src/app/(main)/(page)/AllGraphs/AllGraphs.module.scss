@@ -1,9 +1,33 @@
 // Список графов
 .postsList {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+  position: relative;
+  min-height: 200px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.loaderWrapper {
   display: flex;
   justify-content: center;
-  min-height: 200px; // Фиксируем минимальную высоту
-  align-items: center;
+  padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.graphsListWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
 }
 
 .emptyMessage {
@@ -23,7 +47,7 @@
   font-family: var(--font-family, 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
   
   &::before {
-    content: '🎓';
+    content: '🔍';
     font-size: 4rem;
     margin-bottom: 20px;
     animation: bounce 2s infinite;
@@ -85,10 +109,55 @@
   }
 }
 
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--glass-bg);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  margin: 20px;
+  animation: fadeIn 0.5s ease-out;
+
+  .errorIcon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: shake 0.5s ease-in-out;
+  }
+
+  .errorText {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--error-color);
+    margin-bottom: 16px;
+  }
+
+  .retryButton {
+    padding: 12px 24px;
+    background: var(--theme-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(var(--main-Color), 0.2);
+    }
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -123,13 +192,41 @@
   }
 }
 
-.error {
-  color: var(--text-primary);
-  text-align: center;
-  padding: 2rem;
-  font-size: 1rem;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+@media (max-width: 480px) {
+  .postsList {
+    padding: 0 8px;
+  }
+
+  .graphsListWrapper {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .postsList {
+    padding: 0 12px;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 } 

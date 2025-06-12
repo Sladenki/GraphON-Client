@@ -1,44 +1,74 @@
 .postsListWrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); // Гибкая сетка
-    gap: 30px;
-    // padding: 20px;
-    justify-items: center;
+  width: 100%;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.graphsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.graphItem {
+  width: 100%;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards;
+  animation-delay: var(--delay);
+  will-change: transform, opacity;
+
+  // Оптимизация производительности анимаций
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
   }
-  
-  /* Анимация появления */
-  .graphItem {
+}
+
+@keyframes fadeInUp {
+  from {
     opacity: 0;
     transform: translateY(20px);
-    animation: fadeInUp 0.5s ease-out forwards;
-    animation-delay: var(--delay);
-    width: 100%;
-    max-width: 400px;
   }
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* Адаптивность */
-  @media (max-width: 1024px) {
-    .postsListWrapper {
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
+}
+
+// Оптимизация для мобильных устройств
+@media (max-width: 768px) {
+  .postsListWrapper {
+    padding: 0.5rem;
   }
-  
-  @media (max-width: 768px) {
-    .postsListWrapper {
-      grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
-      gap: 15px;
-    }
+
+  .graphsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
+}
+
+// Оптимизация для планшетов
+@media (min-width: 769px) and (max-width: 1024px) {
+  .postsListWrapper {
+    padding: 0.75rem;
+  }
+
+  .graphsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+// Оптимизация для больших экранов
+@media (min-width: 1025px) {
+  .postsListWrapper {
+    padding: 1.5rem;
+  }
+
+  .graphsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+}
   
