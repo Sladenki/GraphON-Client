@@ -166,10 +166,10 @@
   color: var(--main-text);
   opacity: 0.7;
   font-size: 0.95rem;
-  font-variation-settings: "wght" 400;
+  font-variation-settings: "wght" 450;
   letter-spacing: 0.01em;
   cursor: pointer;
-  transition: color 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+  transition: color 0.25s ease, opacity 0.25s ease, background-color 0.25s ease;
   border-radius: 8px;
   
   @media (max-width: 768px) {
@@ -178,8 +178,8 @@
   }
   
   &:hover:not(.selected) {
-    opacity: 0.9;
-    background: rgba(var(--main-Color), 0.05);
+    opacity: 0.95;
+    background: rgba(var(--main-Color), 0.07);
   }
   
   &:focus-visible {
@@ -190,7 +190,7 @@
   &.selected {
     color: rgb(var(--main-Color));
     opacity: 1;
-    font-variation-settings: "wght" 600;
+    font-variation-settings: "wght" 650;
   }
 }
 
@@ -205,13 +205,14 @@
   &::before {
     content: '';
     position: absolute;
-    bottom: -2px;
+    bottom: -6px;
     left: 0;
     width: 100%;
     height: 2px;
     background: rgb(var(--main-Color));
     transform: scaleX(0);
-    transition: transform 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 2px;
     
     .selected & {
       transform: scaleX(1);

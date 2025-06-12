@@ -15,6 +15,7 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   useEffect(() => {
     // Инициализация selectedGraphId
@@ -34,7 +35,7 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
     };
   }, [user]);
 
-  const { data: allEvents, isLoading } = useQuery<AxiosResponse<any>>({
+  const { data: allEvents, isLoading, isSuccess } = useQuery<AxiosResponse<any>>({
     queryKey: ['eventsList', selectedGraphId],
     queryFn: () => {
       if (!selectedGraphId) return Promise.resolve({
@@ -50,6 +51,13 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
     gcTime: 10 * 60 * 1000, // 10 минут
     staleTime: 5 * 60 * 1000, // 5 минут
   });
+  
+  // Устанавливаем флаг после первой загрузки
+  useEffect(() => {
+    if (isSuccess || (!isLoading && allEvents)) {
+      setIsFirstLoad(false);
+    }
+  }, [isLoading, isSuccess, allEvents]);
 
   const events = allEvents?.data || [];
 
@@ -117,8 +125,8 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
     </div>
   ), []);
 
-  // Показываем загрузку только при первом запросе
-  if (isLoading && !allEvents) {
+  // Показываем загрузку при первой загрузке данных
+  if (isFirstLoad || (isLoading && !allEvents)) {
     return <SpinnerLoader />;
   }
 
@@ -130,8 +138,8 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
     );
   }
 
-  // Показываем пустое состояние только после загрузки данных
-  if (events.length === 0) {
+  // Показываем пустое состояние только после полной загрузки данных
+  if (!isFirstLoad && events.length === 0 && !isLoading) {
     return renderEmptyState(
       'Пока что мероприятий нет',
       'Но скоро здесь появится что-то интересное! Загляните позже, чтобы не пропустить крутые события'
