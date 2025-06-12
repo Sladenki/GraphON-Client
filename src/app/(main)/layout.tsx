@@ -4,7 +4,7 @@ import Sidebar from "@/components/global/Sidebar/Sidebar";
 import styles from './layout.module.scss'
 import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
 import { AllProvers } from "@/providers/main";
-import { ProfileCorner } from "@/components/global/ProfileCorner/ProfileCorner";
+
 
 import '../../styles/globals.scss'
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -12,6 +12,7 @@ import Script from "next/script";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
+import ProfileCorner from "@/components/global/ProfileCorner/ProfileCorner";
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -46,41 +47,41 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         )}
       </head>
       <body >
-         <HeroUIProvider>
-        <Toaster position="top-right" richColors /> 
+        <HeroUIProvider>
+          <Toaster position="top-right" richColors /> 
 
-        <div className={styles.wrapper}>
-          <AllProvers>
+          <div className={styles.wrapper}>
+            <AllProvers>
 
-            
-            {/* Sidebar */}
-            <div className={styles.sidebar}>
-              <Sidebar/>
-            </div>
-            
-            {/* Основная страница */}
-            <div className={styles.main}>
-              <div className={styles.content}>
-                {/* Добавляем компонент для отслеживания переходов */}
-                <GoogleAnalytics /> 
-                {children}
-              </div>
-            </div>
-            
-            {/* Ава в углу */}
-            {!small && (
-              <div className={styles.profileCorner}>
-                <ProfileCorner/>
-              </div>
-            )}
-
-            <div className={styles.BottomMenu}>
-              <BottomMenu/>
-            </div>
               
-          </AllProvers>
-        </div>
-            </HeroUIProvider>
+              {/* Sidebar */}
+              <div className={styles.sidebar}>
+                <Sidebar/>
+              </div>
+              
+              {/* Основная страница */}
+              <div className={styles.main}>
+                <div className={styles.content}>
+                  {/* Добавляем компонент для отслеживания переходов */}
+                  <GoogleAnalytics /> 
+                  {children}
+                </div>
+              </div>
+              
+              {/* Ава в углу */}
+              {!small && (
+                <div className={styles.profileCorner}>
+                  <ProfileCorner/>
+                </div>
+              )}
+
+              <div className={styles.BottomMenu}>
+                <BottomMenu/>
+              </div>
+                
+            </AllProvers>
+          </div>
+        </HeroUIProvider>
       </body>
     </html>
   );

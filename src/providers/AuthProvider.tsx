@@ -6,6 +6,7 @@ interface User {
     email: string;
     role: string;
     selectedGraphId: string | null;
+    avaPath?: string;
     // ... other existing properties ...
 }
 
