@@ -118,9 +118,12 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, tabs }) 
             {/* Settings Section */}
             <div className={styles.settingsSection}>
               <div className={styles.settingsHeader}>
+                <div className={styles.settingsIcon}>
+                  <Settings size={16} />
+                </div>
                 <div className={styles.settingsText}>
                   <div className={styles.settingsTitle}>Настройки</div>
-                  <div className={styles.settingsSubtitle}>Смена темы</div>
+                  <div className={styles.settingsSubtitle}>Внешний вид</div>
                 </div>
               </div>
               <div className={styles.themeToggleWrapper}>

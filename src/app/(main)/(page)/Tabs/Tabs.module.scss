@@ -223,6 +223,22 @@
   }
 }
 
+.tabIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  svg {
+    transition: all 0.3s ease;
+  }
+  
+  .selected & svg {
+    filter: drop-shadow(0 2px 4px rgba(var(--main-Color), 0.3));
+    transform: scale(1.05);
+  }
+}
+
 // Анимация при появлении
 @keyframes fadeIn {
   from {

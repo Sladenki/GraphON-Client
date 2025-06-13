@@ -8,6 +8,7 @@ import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import React from "react";
 import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
 import { AllGraphs } from "@/app/(main)/(page)/AllGraphs/AllGraphs";
+import { Users, Calendar, Heart, Network } from "lucide-react";
 
 const Tabs = dynamic(() => import("./Tabs/Tabs"), { ssr: false });
 const GraphView = dynamic(() => import("./GraphView/GraphView"), { ssr: false });
@@ -71,10 +72,10 @@ const Homepage = () => {
       <div className={styles.headerPart}>
         <Tabs
           tabs={[
-            { name: "groups", label: "Группы" },
-            { name: "events", label: "События" },
-            { name: "subs", label: "Подписки" },
-            { name: "graphSystem", label: "Графы" },
+            { name: "groups", label: "Группы", icon: <Users size={18} /> },
+            { name: "events", label: "События", icon: <Calendar size={18} /> },
+            { name: "subs", label: "Подписки", icon: <Heart size={18} /> },
+            { name: "graphSystem", label: "Графы", icon: <Network size={18} /> },
           ]}
           activeTab={activeTab}
           setActiveTab={handleTabChange}

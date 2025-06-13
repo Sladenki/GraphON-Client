@@ -259,7 +259,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   animation: slideInLeft 0.5s ease-out forwards;
 
   // Icon and text spacing
-  :global(.heroui-button-content) {
+  .heroui-button-content {
     gap: 0.75rem !important;
   }
 
