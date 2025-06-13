@@ -17,12 +17,12 @@ const EventsList = dynamic(() => import("./EventsList/EventsList"), { ssr: false
 const Homepage = () => {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'events' | 'groups' | 'graphSystem'>('events');
+  const [activeTab, setActiveTab] = useState<'events' | 'groups' | 'graphSystem' | 'subs'>('events');
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
 
   useEffect(() => {
     // Retrieve saved tab from localStorage or default to 'events'
-    const savedTab = localStorage.getItem('activeTab') as 'events' | 'groups' | 'graphSystem';
+    const savedTab = localStorage.getItem('activeTab') as 'events' | 'groups' | 'graphSystem' | 'subs';
     if (savedTab) {
       setActiveTab(savedTab);
     }
@@ -79,7 +79,7 @@ const Homepage = () => {
           ]}
           activeTab={activeTab}
           setActiveTab={handleTabChange}
-          showSearch={activeTab === "groups" || activeTab === "events"}
+          showSearch={activeTab === "groups" || activeTab === "events" || activeTab === "subs"}
           searchValue={searchQuery}
           onSearchChange={setSearchQuery}
         />

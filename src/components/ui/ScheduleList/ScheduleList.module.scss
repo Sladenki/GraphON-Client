@@ -163,112 +163,131 @@
   color: #333;
 }
 
-.emptyState {
+/* Заголовок события */
+.eventHeader {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+/* Название графа */
+.graphName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  background: rgba(108, 117, 125, 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+  align-self: flex-start;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Действия события */
+.eventActions {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  text-align: center;
-  background: var(--glass-bg);
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  margin: 20px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Количество зарегистрированных */
+.registeredCount {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Кнопка подписки */
+.subscriptionButton {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.3s ease;
-  animation: fadeIn 0.5s ease-out;
-  font-family: var(--font-family, 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  backdrop-filter: blur(10px);
+  border: 1px solid transparent;
+  letter-spacing: 0.3px;
   
-  &::before {
-    content: '📚';
-    font-size: 4rem;
-    margin-bottom: 20px;
-    animation: float 3s ease-in-out infinite;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
-  }
+  /* Glassmorphism эффект */
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
   
-  .mainText {
-    font-size: 1.75rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--theme-color) 0%, rgba(var(--main-Color), 0.8) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 16px;
-    letter-spacing: -0.02em;
-    font-feature-settings: "salt" on, "ss01" on;
-  }
-  
-  .subText {
-    font-size: 1.1rem;
-    color: var(--main-text);
-    max-width: 460px;
-    line-height: 1.6;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-  }
-
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(var(--main-Color), 0.15);
-    border-color: var(--glass-hover);
-    background: var(--glass-hover);
-    
-    &::before {
-      animation: wave 0.5s ease-in-out;
-    }
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
 
-  @media (max-width: 768px) {
-    padding: 32px 16px;
-    margin: 16px;
-
-    &::before {
-      font-size: 3.5rem;
-    }
-
-    .mainText {
-      font-size: 1.5rem;
-    }
-
-    .subText {
-      font-size: 1rem;
-      max-width: 320px;
-    }
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
+  &:active {
     transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
+/* Подписан */
+.subscribed {
+  background: linear-gradient(135deg, 
+    rgba(40, 167, 69, 0.8) 0%, 
+    rgba(32, 136, 56, 0.9) 100%);
+  color: white;
+  border-color: rgba(40, 167, 69, 0.3);
+  
+  &:hover {
+    background: linear-gradient(135deg, 
+      rgba(40, 167, 69, 0.9) 0%, 
+      rgba(32, 136, 56, 1) 100%);
+    border-color: rgba(40, 167, 69, 0.5);
   }
 }
 
-@keyframes wave {
-  0% {
-    transform: rotate(0deg) scale(1);
+/* Не подписан */
+.unsubscribed {
+  background: linear-gradient(135deg, 
+    rgba(108, 117, 125, 0.6) 0%, 
+    rgba(73, 80, 87, 0.7) 100%);
+  color: white;
+  border-color: rgba(108, 117, 125, 0.3);
+  
+  &:hover {
+    background: linear-gradient(135deg, 
+      rgba(150, 130, 238, 0.8) 0%, 
+      rgba(120, 100, 200, 0.9) 100%);
+    border-color: rgba(150, 130, 238, 0.5);
+    color: white;
   }
-  25% {
-    transform: rotate(-15deg) scale(1.1);
+}
+
+
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 480px) {
+  .eventActions {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
   }
-  75% {
-    transform: rotate(15deg) scale(1.1);
+  
+  .subscriptionButton {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 13px;
   }
-  100% {
-    transform: rotate(0deg) scale(1);
+  
+  .registeredCount {
+    text-align: center;
+    font-size: 11px;
+  }
+  
+  .graphName {
+    font-size: 11px;
+    padding: 1px 6px;
   }
 }

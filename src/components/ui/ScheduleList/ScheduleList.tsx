@@ -1,25 +1,53 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { format, startOfWeek, addDays, parseISO, isSameDay, startOfDay } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import styles from './ScheduleList.module.scss';
 import { ScheduleItem, EventItem } from '../../../types/schedule';
+import { EmptyState } from '@/components/global/EmptyState/EmptyState';
+
 
 interface ScheduleListProps {
   schedule: ScheduleItem[];
   events: EventItem[];
+  onToggleSubscription?: (eventId: string, isAttended: boolean) => void;
 }
 
-export const ScheduleList: React.FC<ScheduleListProps> = ({ schedule, events }) => {
-  if ((!schedule || schedule.length === 0) && (!events || events.length === 0)) {
+export const ScheduleList: React.FC<ScheduleListProps> = ({ 
+  schedule, 
+  events, 
+  onToggleSubscription 
+}) => {
+  const [localEvents, setLocalEvents] = useState(events);
+
+  const handleToggleSubscription = (eventId: string, currentStatus: boolean) => {
+    // Оптимистичное обновление UI
+    setLocalEvents(prev => 
+      prev.map(event => 
+        event._id === eventId 
+          ? { 
+              ...event, 
+              isAttended: !currentStatus,
+              regedUsers: currentStatus ? event.regedUsers - 1 : event.regedUsers + 1
+            }
+          : event
+      )
+    );
+
+    // Вызов callback функции для обновления на сервере
+    if (onToggleSubscription) {
+      onToggleSubscription(eventId, !currentStatus);
+    }
+  };
+
+  if ((!schedule || schedule.length === 0) && (!localEvents || localEvents.length === 0)) {
     return (
-      <div className={styles.emptyState}>
-        <h2 className={styles.mainText}>Расписание пока пустое</h2>
-        <p className={styles.subText}>
-          Здесь будет отображаться расписание занятий. Следи за обновлениями и не пропускай важные события!
-        </p>
-      </div>
+      <EmptyState
+        message="Расписание пока пустое"
+        subMessage="Здесь будет отображаться расписание занятий. Следи за обновлениями и не пропускай важные события!"
+        emoji="📚"
+      />
     );
   }
 
@@ -53,16 +81,35 @@ export const ScheduleList: React.FC<ScheduleListProps> = ({ schedule, events }) 
                 ))}
 
               {/* Мероприятия */}
-              {events
+              {localEvents
                 .filter((event: EventItem) => 
                   isSameDay(startOfDay(parseISO(event.eventDate)), startOfDay(date))
                 )
                 .map((event: EventItem) => (
                   <div key={event._id} className={styles.eventItem}>
-                    <span className={styles.itemTitle}>📝 {event.name}</span>
+                    <div className={styles.eventHeader}>
+                      <span className={styles.itemTitle}>📝 {event.name}</span>
+                      {event.graphId && (
+                        <span className={styles.graphName}>{event.graphId.name}</span>
+                      )}
+                    </div>
                     <span className={styles.itemDescription}>{event.description}</span>
                     <span className={styles.itemDescription}>📍 {event.place}</span>
                     <span className={styles.itemTime}>⏰ {event.timeFrom} - {event.timeTo}</span>
+                    
+                    <div className={styles.eventActions}>
+                      <span className={styles.registeredCount}>
+                        👥 {event.regedUsers} участников
+                      </span>
+                      <button
+                        className={`${styles.subscriptionButton} ${
+                          event.isAttended ? styles.subscribed : styles.unsubscribed
+                        }`}
+                        onClick={() => handleToggleSubscription(event._id, event.isAttended)}
+                      >
+                        {event.isAttended ? '✓ Участвую' : '+ Участвовать'}
+                      </button>
+                    </div>
                   </div>
                 ))}
             </div>

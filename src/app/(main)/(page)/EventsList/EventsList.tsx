@@ -7,6 +7,8 @@ import styles from './EventsList.module.scss'
 import EventCard from '@/components/ui/EventCard/EventCard';
 import { AxiosResponse } from 'axios';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import { EmptyState } from '@/components/global/EmptyState/EmptyState';
+
 
 // Кэш для хранения отфильтрованных событий
 const filterCache = new Map<string, EventItem[]>();
@@ -114,15 +116,12 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
   ), [handleDelete]);
 
   // Мемоизированный рендер пустого состояния
-  const renderEmptyState = useCallback((message: string, subMessage: string) => (
-      <div className={styles.emptyMessage}>
-        <div className={styles.mainText}>
-        {message}
-        </div>
-        <div className={styles.subText}>
-        {subMessage}
-      </div>
-    </div>
+  const renderEmptyState = useCallback((message: string, subMessage: string, emoji: string = '🎉') => (
+    <EmptyState
+      message={message}
+      subMessage={subMessage}
+      emoji={emoji}
+    />
   ), []);
 
   // Показываем загрузку при первой загрузке данных
@@ -134,7 +133,8 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
   if (!isLoading && searchQuery && filteredEvents.length === 0) {
     return renderEmptyState(
       'Ничего не найдено',
-      'Попробуйте изменить параметры поиска или посмотреть все доступные мероприятия'
+      'Попробуйте изменить параметры поиска или посмотреть все доступные мероприятия',
+      '🔍'
     );
   }
 
@@ -142,7 +142,8 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
   if (!isFirstLoad && events.length === 0 && !isLoading) {
     return renderEmptyState(
       'Пока что мероприятий нет',
-      'Но скоро здесь появится что-то интересное! Загляните позже, чтобы не пропустить крутые события'
+      'Но скоро здесь появится что-то интересное! Загляните позже, чтобы не пропустить крутые события',
+      '🎉'
     );
   }
 

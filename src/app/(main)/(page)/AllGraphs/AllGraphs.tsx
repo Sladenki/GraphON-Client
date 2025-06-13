@@ -4,6 +4,7 @@ import { useFetchBunchData } from '@/hooks/useFetchBunchData';
 import styles from './AllGraphs.module.scss';
 import GraphsList from '@/app/(main)/(page)/AllGraphs/GraphsList/GraphsList';
 import { useQueryClient } from '@tanstack/react-query';
+import { EmptyState } from '@/components/global/EmptyState/EmptyState';
 
 // Кэш для хранения отфильтрованных данных
 const filterCache = new Map<string, any[]>();
@@ -55,15 +56,12 @@ export const AllGraphs: FC<AllGraphsProps> = ({ searchQuery, selectedGraphId }) 
   }, [selectedGraphId]);
 
   // Оптимизированный рендер пустого состояния
-  const renderEmptyState = useCallback(() => (
-    <div className={styles.emptyMessage}>
-      <div className={styles.mainText}>
-        Ничего не найдено
-      </div>
-      <div className={styles.subText}>
-        Попробуйте изменить параметры поиска или посмотреть все доступные группы
-      </div>
-    </div>
+  const renderEmptyState = useCallback((message: string, subMessage: string, emoji: string = '🎉') => (
+    <EmptyState
+      message={message}
+      subMessage={subMessage}
+      emoji={emoji}
+    />
   ), []);
 
   // Оптимизированный рендер ошибки
@@ -85,7 +83,11 @@ export const AllGraphs: FC<AllGraphsProps> = ({ searchQuery, selectedGraphId }) 
   }
 
   if (filteredGraphs.length === 0 && searchQuery) {
-    return renderEmptyState();
+    return renderEmptyState(
+      'Ничего не найдено',
+      'Попробуйте изменить параметры поиска или посмотреть все доступные группы',
+      '🔍'
+    );
   }
 
   return (
