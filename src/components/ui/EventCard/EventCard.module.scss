@@ -44,7 +44,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 .eventCard {
   max-width: 800px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--block-color);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -435,30 +435,19 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 
     &::before {
       opacity: 1;
-  }
-}
-
-  &[variant="solid"][color="default"] {
-    background: linear-gradient(135deg, rgba(100, 116, 139, 0.15), rgba(100, 116, 139, 0.08)) !important;
-    border: 1px solid rgba(100, 116, 139, 0.25) !important;
-    color: var(--heroui-default) !important;
-    
-  &:hover {
-      background: linear-gradient(135deg, rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.12)) !important;
-      border-color: rgba(100, 116, 139, 0.35) !important;
     }
   }
-  
+
   &[variant="solid"][color="primary"] {
     background: rgb(150, 130, 238) !important;
     border: 1px solid rgb(150, 130, 238) !important;
     color: white !important;
     
-  &:hover {
+    &:hover {
       background: rgba(150, 130, 238, 0.9) !important;
       border-color: rgb(150, 130, 238) !important;
+    }
   }
-}
 
   &[variant="flat"][color="danger"] {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(239, 68, 68, 0.15)) !important;
@@ -468,6 +457,17 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     &:hover {
       background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2)) !important;
       border-color: rgba(239, 68, 68, 0.4) !important;
+    }
+  }
+
+  &[variant="solid"][color="default"] {
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.15), rgba(100, 116, 139, 0.08)) !important;
+    border: 1px solid rgba(100, 116, 139, 0.25) !important;
+    color: var(--heroui-default) !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.12)) !important;
+      border-color: rgba(100, 116, 139, 0.35) !important;
     }
   }
   
@@ -480,7 +480,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     &:hover {
       transform: none;
       box-shadow: none;
-}
+    }
   }
   
   svg {

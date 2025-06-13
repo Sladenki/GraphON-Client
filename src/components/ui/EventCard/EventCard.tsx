@@ -411,6 +411,23 @@ const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDe
                 )
               }
               className={styles.registerButton}
+              style={{
+                backgroundColor: isLoggedIn 
+                  ? (isRegistered 
+                    ? 'rgba(239, 68, 68, 0.2)' 
+                    : 'rgb(150, 130, 238)') 
+                  : 'rgba(100, 116, 139, 0.15)',
+                color: isLoggedIn 
+                  ? (isRegistered 
+                    ? 'rgb(239, 68, 68)' 
+                    : 'white') 
+                  : 'var(--heroui-default)',
+                border: isLoggedIn 
+                  ? (isRegistered 
+                    ? '1px solid rgba(239, 68, 68, 0.3)' 
+                    : '1px solid rgb(150, 130, 238)') 
+                  : '1px solid rgba(100, 116, 139, 0.25)'
+              }}
             >
               {isLoggedIn 
                 ? isRegistered 
