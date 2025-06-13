@@ -33,7 +33,7 @@ const Tabs: FC<TabsProps> = ({
   showSearch = false,
   searchValue = "",
   onSearchChange,
-  searchPlaceholder = activeTab === "events" ? "Поиск по событиям" : "Поиск по группам"
+  searchPlaceholder = activeTab === "events" ? "Поиск по событиям" : activeTab === "groups" ? "Поиск по группам" : activeTab === "graphSystem" ? "Поиск по графам" : "Поиск по подпискам"
 }) => {
   const isMobile = useMediaQuery("(max-width: 680px)");
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);

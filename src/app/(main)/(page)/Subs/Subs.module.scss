@@ -1,0 +1,52 @@
+.eventsListWrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.eventCardWrapper {
+  width: 100%;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: calc(var(--index, 0) * 0.1s);
+  will-change: transform, opacity;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+@media (max-width: 480px) {
+  .eventsListWrapper {
+    padding: 0 8px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .eventsListWrapper {
+    padding: 0 12px;
+  }
+}
+

@@ -9,6 +9,7 @@ import React from "react";
 import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
 import { AllGraphs } from "@/app/(main)/(page)/AllGraphs/AllGraphs";
 import { Users, Calendar, Heart, Network } from "lucide-react";
+import Subs from "./Subs/Subs";
 
 const Tabs = dynamic(() => import("./Tabs/Tabs"), { ssr: false });
 const GraphView = dynamic(() => import("./GraphView/GraphView"), { ssr: false });
@@ -20,10 +21,17 @@ const Homepage = () => {
   const [activeTab, setActiveTab] = useState<'events' | 'groups' | 'graphSystem' | 'subs'>('events');
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
 
+  console.log('user', user)
+
   useEffect(() => {
     // Retrieve saved tab from localStorage or default to 'events'
     const savedTab = localStorage.getItem('activeTab') as 'events' | 'groups' | 'graphSystem' | 'subs';
-    if (savedTab) {
+    
+    // Если сохраненный таб - "subs", но у пользователя нет подписок, переключаем на "events"
+    if (savedTab === 'subs' && (!user?.graphSubsNum || user.graphSubsNum === 0)) {
+      setActiveTab('events');
+      localStorage.setItem('activeTab', 'events');
+    } else if (savedTab) {
       setActiveTab(savedTab);
     }
 
@@ -66,17 +74,20 @@ const Homepage = () => {
     );
   }
 
+  // Создаем массив табов с условным включением подписок
+  const tabs = [
+    { name: "groups", label: "Группы", icon: <Users size={18} /> },
+    { name: "events", label: "События", icon: <Calendar size={18} /> },
+    ...(user?.graphSubsNum && user.graphSubsNum > 0 ? [{ name: "subs", label: "Подписки", icon: <Heart size={18} /> }] : []),
+    { name: "graphSystem", label: "Графы", icon: <Network size={18} /> },
+  ];
+
   return (
     <>
       {/* Шапка: Табы + Поиск */}
       <div className={styles.headerPart}>
         <Tabs
-          tabs={[
-            { name: "groups", label: "Группы", icon: <Users size={18} /> },
-            { name: "events", label: "События", icon: <Calendar size={18} /> },
-            { name: "subs", label: "Подписки", icon: <Heart size={18} /> },
-            { name: "graphSystem", label: "Графы", icon: <Network size={18} /> },
-          ]}
+          tabs={tabs}
           activeTab={activeTab}
           setActiveTab={handleTabChange}
           showSearch={activeTab === "groups" || activeTab === "events" || activeTab === "subs"}
@@ -105,6 +116,12 @@ const Homepage = () => {
         {activeTab === 'graphSystem' && (
           <Suspense fallback={<SpinnerLoader />}>
             <GraphView searchQuery={searchQuery}  />
+          </Suspense>
+        )}
+
+        {activeTab === 'subs' && user?.graphSubsNum && user.graphSubsNum > 0 && (
+          <Suspense fallback={<SpinnerLoader />}>
+            <Subs searchQuery={searchQuery} />
           </Suspense>
         )}
       </div>

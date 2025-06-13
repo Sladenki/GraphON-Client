@@ -1,13 +1,9 @@
 'use client';
 import { createContext, useState, useEffect, useContext } from 'react';
+import { IUser } from '@/types/user.interface';
 
-interface User {
-    _id: string;
+interface User extends IUser {
     email: string;
-    role: string;
-    selectedGraphId: string | null;
-    avaPath?: string;
-    // ... other existing properties ...
 }
 
 interface AuthContextType {
@@ -116,8 +112,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser({
             _id: userData.sub,
             email: userData.email,
-            role: 'user', // Default role
-            selectedGraphId: null
+            role: 'user' as any, // Default role
+            selectedGraphId: null,
+            firstName: '',
+            lastName: '',
+            username: '',
+            avaPath: '',
+            telegramId: '',
+            graphSubsNum: 0,
+            postsNum: 0,
+            attentedEventsNum: 0
         });
     };
 
