@@ -50,7 +50,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   border-radius: 16px;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
@@ -126,7 +126,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   font-family: 'Orbitron', sans-serif !important;
   font-size: 1.5rem !important;
   font-weight: 600 !important;
-  color: var(--main-text);
+    color: var(--main-text);
   background: transparent;
   border: none;
   
@@ -205,9 +205,9 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     &:hover {
       background: linear-gradient(135deg, rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.12));
       border-color: rgba(100, 116, 139, 0.3);
-    }
   }
-  
+}
+
   svg {
     width: 16px;
     height: 16px;
@@ -286,7 +286,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   
   input {
     font-family: 'Inter', sans-serif !important;
-  }
+}
 }
 
 .timeInputs {
@@ -311,12 +311,12 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   @media (max-width: 640px) {
     flex-direction: column;
     gap: 0.75rem;
-  }
-  
+}
+
   .infoItem {
     flex: 1;
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
     border-radius: 12px;
@@ -324,7 +324,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     
     @media (max-width: 640px) {
       padding: 0.625rem 0.875rem;
-    }
+  }
     
     &:nth-child(1) {
       background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08));
@@ -332,7 +332,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
       
       svg {
         color: rgb(150, 130, 238);
-      }
+  }
       
       &:hover {
         background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(150, 130, 238, 0.12));
@@ -362,8 +362,8 @@ $gradient-end: rgba(0, 255, 255, 0.05);
           filter: drop-shadow(0 0 4px rgba(100, 210, 255, 0.4));
         }
       }
-    }
-    
+  }
+
     &:nth-child(3) {
       background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));
       border: 1px solid rgba(34, 197, 94, 0.2);
@@ -371,7 +371,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
       svg {
         color: rgb(34, 197, 94);
       }
-      
+
       &:hover {
         background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.12));
         border-color: rgba(34, 197, 94, 0.3);
@@ -379,8 +379,8 @@ $gradient-end: rgba(0, 255, 255, 0.05);
         
         svg {
           filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.4));
-        }
-      }
+    }
+  }
     }
     
     .infoText {
@@ -432,18 +432,18 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   &:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-    
+
     &::before {
       opacity: 1;
-    }
   }
-  
+}
+
   &[variant="solid"][color="default"] {
     background: linear-gradient(135deg, rgba(100, 116, 139, 0.15), rgba(100, 116, 139, 0.08)) !important;
     border: 1px solid rgba(100, 116, 139, 0.25) !important;
     color: var(--heroui-default) !important;
     
-    &:hover {
+  &:hover {
       background: linear-gradient(135deg, rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.12)) !important;
       border-color: rgba(100, 116, 139, 0.35) !important;
     }
@@ -454,17 +454,17 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     border: 1px solid rgb(150, 130, 238) !important;
     color: white !important;
     
-    &:hover {
+  &:hover {
       background: rgba(150, 130, 238, 0.9) !important;
       border-color: rgb(150, 130, 238) !important;
-    }
   }
-  
+}
+
   &[variant="flat"][color="danger"] {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(239, 68, 68, 0.15)) !important;
     border: 1px solid rgba(239, 68, 68, 0.3) !important;
     color: var(--heroui-danger) !important;
-    
+
     &:hover {
       background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2)) !important;
       border-color: rgba(239, 68, 68, 0.4) !important;
@@ -480,7 +480,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     &:hover {
       transform: none;
       box-shadow: none;
-    }
+}
   }
   
   svg {
@@ -506,15 +506,15 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   
   .infoItem {
     color: rgba(255, 255, 255, 0.8);
+    }
   }
-}
 
 // Mobile adjustments
 @media (max-width: 640px) {
   .cardHeader {
     padding: 1rem;
   }
-  
+
   .title {
     font-size: 1.25rem;
   }
@@ -523,17 +523,17 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     width: 40px;
     height: 40px;
   }
-  
+
   .cardBody,
   .cardFooter {
     padding: 1rem;
   }
-  
+
   .timeInputs {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .registerButton {
     width: 100%;
   }

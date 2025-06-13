@@ -5,17 +5,17 @@
 }
 
 .graphsGrid {
-  display: grid;
+    display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
   width: 100%;
-}
-
-.graphItem {
+  }
+  
+  .graphItem {
   width: 100%;
-  opacity: 0;
-  animation: fadeInUp 0.5s ease-out forwards;
-  animation-delay: var(--delay);
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
+    animation-delay: var(--delay);
   will-change: transform, opacity;
 
   // Оптимизация производительности анимаций
@@ -23,22 +23,22 @@
     animation: none;
     opacity: 1;
   }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-}
-
+  
 // Оптимизация для мобильных устройств
 @media (max-width: 768px) {
-  .postsListWrapper {
+    .postsListWrapper {
     padding: 0.5rem;
   }
 
@@ -57,18 +57,18 @@
   .graphsGrid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 1.25rem;
+    }
   }
-}
-
+  
 // Оптимизация для больших экранов
 @media (min-width: 1025px) {
-  .postsListWrapper {
+    .postsListWrapper {
     padding: 1.5rem;
   }
 
   .graphsGrid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
+    }
   }
-}
   

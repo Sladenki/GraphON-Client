@@ -36,7 +36,7 @@ const GraphsList: FC<{ allGraphs: IGraphList[] }> = React.memo(({ allGraphs }) =
     const cachedState = graphStateCache.get(graph._id);
     const isSubscribed = cachedState?.isSubscribed ?? graph.isSubscribed;
 
-    return (
+  return (
       <div 
         key={graph._id} 
         className={styles.graphItem}
@@ -44,17 +44,17 @@ const GraphsList: FC<{ allGraphs: IGraphList[] }> = React.memo(({ allGraphs }) =
           "--delay": `${index * 0.1}s`,
         } as React.CSSProperties}
       >
-        <GraphBlock 
-          id={graph._id}
-          name={graph.name}
+            <GraphBlock 
+              id={graph._id}
+              name={graph.name}
           isSubToGraph={isSubscribed}
-          imgPath={graph.imgPath}
-          about={graph.about}
+              imgPath={graph.imgPath}
+              about={graph.about}
           handleScheduleButtonClick={() => handleScheduleClick(graph._id)}
           handleInfoGraphButtonClick={() => handleInfoClick(graph._id)}
           setSelectedGraphId={handleGraphSelect}
-        />
-      </div>
+            />
+          </div>
     );
   }, [handleScheduleClick, handleInfoClick, handleGraphSelect]);
 
@@ -62,7 +62,7 @@ const GraphsList: FC<{ allGraphs: IGraphList[] }> = React.memo(({ allGraphs }) =
     <div className={styles.postsListWrapper}>
       <div className={styles.graphsGrid}>
         {allGraphs.map((graph, index) => renderGraph(graph, index))}
-      </div>
+        </div>
 
       {/* Модальные окна */}
       {isSchedulePopupOpen && selectedGraphId && (

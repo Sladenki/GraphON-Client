@@ -24,7 +24,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   id, 
   name, 
   isSubToGraph, 
-  imgPath,
+  imgPath, 
   about,
   handleScheduleButtonClick, 
   handleInfoGraphButtonClick,

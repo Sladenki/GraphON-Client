@@ -70,9 +70,9 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
     }
 
     const filtered = events.filter((event: EventItem) => {
-      if (!event?._id || !event?.name) return false;
-      return event.name.toLowerCase().includes(searchQuery.toLowerCase());
-    });
+    if (!event?._id || !event?.name) return false;
+    return event.name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
     filterCache.set(cacheKey, filtered);
     return filtered;
@@ -115,11 +115,11 @@ const EventsList = React.memo(({ searchQuery }: { searchQuery: string}) => {
 
   // Мемоизированный рендер пустого состояния
   const renderEmptyState = useCallback((message: string, subMessage: string) => (
-    <div className={styles.emptyMessage}>
-      <div className={styles.mainText}>
+      <div className={styles.emptyMessage}>
+        <div className={styles.mainText}>
         {message}
-      </div>
-      <div className={styles.subText}>
+        </div>
+        <div className={styles.subText}>
         {subMessage}
       </div>
     </div>

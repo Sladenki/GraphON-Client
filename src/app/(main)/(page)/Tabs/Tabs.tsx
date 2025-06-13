@@ -4,6 +4,8 @@ import React, { FC, memo, useCallback, useRef, useEffect, KeyboardEvent } from "
 import clsx from "clsx";
 import { Search } from "lucide-react";
 import styles from "./Tabs.module.scss";
+import MobileNav from "./MobileNav";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 interface Tab {
   name: string;
@@ -32,6 +34,7 @@ const Tabs: FC<TabsProps> = ({
   onSearchChange,
   searchPlaceholder = activeTab === "events" ? "Поиск по событиям" : "Поиск по группам"
 }) => {
+  const isMobile = useMediaQuery("(max-width: 680px)");
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIndex = tabs.findIndex((tab) => tab.name === activeTab);
 
@@ -91,6 +94,23 @@ const Tabs: FC<TabsProps> = ({
     </>
   );
 
+  if (isMobile) {
+    return (
+      <>
+        <MobileNav
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          tabs={tabs}
+        />
+        {showSearch && onSearchChange && (
+          <div className={styles.mobileSearch}>
+            {searchInput}
+          </div>
+        )}
+      </>
+    );
+  }
+
   return (
     <div className={styles.tabWrapper}>
       <div 
@@ -127,11 +147,6 @@ const Tabs: FC<TabsProps> = ({
           </div>
         )}
       </div>
-      {showSearch && onSearchChange && (
-        <div className={styles.mobileSearch}>
-          {searchInput}
-        </div>
-      )}
     </div>
   );
 };

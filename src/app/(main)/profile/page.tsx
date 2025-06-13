@@ -40,11 +40,11 @@ export default function Profile() {
     };
 
     if(loading || loadingEvents) {
-        return <SpinnerLoader/>
+      return <SpinnerLoader/>
     }
 
     if(error) {
-        return <div>{error}</div>
+      return <div>{error}</div>
     }
 
     const typedUser = user as IUser | null;
@@ -55,13 +55,13 @@ export default function Profile() {
             {typedUser ? (
                 <>
                     <div className={styles.header}>
-                        <Image 
-                            src={typedUser.avaPath ? typedUser.avaPath : NoImage} 
-                            className={styles.avatar} 
-                            alt="Аватар" 
-                            width={120}
-                            height={120}
-                        />
+                            <Image 
+                                src={typedUser.avaPath ? typedUser.avaPath : NoImage} 
+                                className={styles.avatar} 
+                                alt="Аватар" 
+                                width={120}
+                                height={120}
+                            />    
                        
                         <span className={styles.name}>
                             {typedUser.firstName}
@@ -85,7 +85,7 @@ export default function Profile() {
                                 onChange={toggleTheme} 
                                 checked={theme === "light"} 
                             />
-                            <span className={styles.slider}></span>
+                        <span className={styles.slider}></span>
                         </label>
                     </div>
                   
@@ -102,12 +102,12 @@ export default function Profile() {
                         <div className={styles.eventsList}>
                             {subsEvents.map((event: any) => (
                                 event.eventId && (
-                                    <EventCard 
+                                <EventCard 
                                         key={event._id}
-                                        event={event.eventId} 
-                                        isAttended={event.isAttended} 
-                                        onDelete={handleDelete}
-                                    />
+                                    event={event.eventId} 
+                                    isAttended={event.isAttended} 
+                                    onDelete={handleDelete}
+                                />
                                 )
                             ))}
                         </div>

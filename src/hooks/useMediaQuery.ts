@@ -1,18 +1,27 @@
-import { useSyncExternalStore } from 'react'
+import { useState, useEffect } from 'react';
 
-// Подписка на изменения размера окна
-const subscribe = (callback: () => void) => {
-  window.addEventListener('resize', callback)
-  return () => window.removeEventListener('resize', callback)
-}
+export function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
 
-// Основной хук
-export const useMediaQuery = (maxWidth: number) => {
-  const windowWidth = useSyncExternalStore(
-    subscribe,
-    () => window.innerWidth, // Получение текущего состояния
-    () => 1024 // Значение для серверного рендеринга
-  )
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    
+    // Устанавливаем начальное значение
+    setMatches(media.matches);
 
-  return windowWidth <= maxWidth
+    // Создаем функцию-обработчик
+    const listener = (e: MediaQueryListEvent) => {
+      setMatches(e.matches);
+    };
+
+    // Добавляем слушатель
+    media.addEventListener('change', listener);
+
+    // Очищаем слушатель при размонтировании
+    return () => {
+      media.removeEventListener('change', listener);
+    };
+  }, [query]);
+
+  return matches;
 }
