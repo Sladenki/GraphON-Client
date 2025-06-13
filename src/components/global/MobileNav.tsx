@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import clsx from 'clsx';
+import ThemeToggle from './ThemeToggle/ThemeToggle';
 
 interface MobileNavProps {
   activeTab: string;
@@ -64,7 +65,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, tabs }) 
 
           {/* Панель меню */}
           <div 
-            className="fixed inset-y-0 left-0 w-80 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 ease-in-out"
+            className="fixed inset-y-0 left-0 w-80 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col"
             style={{
               transform: isOpen ? 'translateX(0)' : 'translateX(-100%)'
             }}
@@ -82,7 +83,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, tabs }) 
               </button>
             </div>
 
-            <nav className="py-4">
+            <nav className="py-4 flex-1">
               {tabs.map((tab) => (
                 <button
                   key={tab.name}
@@ -104,6 +105,13 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, tabs }) 
                 </button>
               ))}
             </nav>
+
+            {/* Переключатель темы внизу */}
+            <div className="border-t border-gray-200 dark:border-gray-800 p-4">
+              <div className="flex items-center justify-between">
+                <ThemeToggle size="sm" />
+              </div>
+            </div>
           </div>
         </>
       )}

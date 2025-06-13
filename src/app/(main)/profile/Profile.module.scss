@@ -61,74 +61,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.themeSwitchWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
 
-.themeLabel {
-  font-size: 1rem;
-  color: var(--main-text);
-  opacity: 0.9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.themeSwitch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-
-    &:checked + .slider {
-      background: linear-gradient(135deg, rgba(var(--main-Color-rgb), 0.9), rgba(var(--main-Color-rgb), 0.7));
-    }
-
-    &:checked + .slider:before {
-      transform: translateX(26px);
-    }
-  }
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.1);
-  transition: 0.4s;
-  border-radius: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  &:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 3px;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-}
 
 .eventsHeader {
   font-size: 1.5rem;
@@ -185,14 +118,7 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   }
 
-  .themeSwitchWrapper {
-    background: rgba(31, 41, 55, 0.3);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  }
 
-  .slider {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
 }
 
 /* Поддержка уменьшенного движения */

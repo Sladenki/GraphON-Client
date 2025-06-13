@@ -6,17 +6,16 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { IUser, RoleTitles } from '@/types/user.interface';
 import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButton';
 import Image from 'next/image'
-import { useTheme } from 'next-themes';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '@/components/ui/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
-import { Sun, Moon } from 'lucide-react';
 import NoImage from '../../../../public/noImage.png'
+import ThemeToggle from '@/components/global/ThemeToggle/ThemeToggle';
+
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
-    const { setTheme, theme } = useTheme();
     const queryClient = useQueryClient();
     
     const { data: allEvents, isLoading: loadingEvents } = useQuery({
@@ -33,10 +32,6 @@ export default function Profile() {
                 data: old.data.filter((event: any) => event.eventId?._id !== eventId)
             };
         });
-    };
-
-    const toggleTheme = () => {
-        setTheme(theme === "dark" ? "light" : "dark");
     };
 
     if(loading || loadingEvents) {
@@ -75,19 +70,7 @@ export default function Profile() {
                         )}
                     </div>
 
-                    <div className={styles.themeSwitchWrapper}>
-                        <span className={styles.themeLabel}>
-                            {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
-                        </span>
-                        <label className={styles.themeSwitch}>
-                            <input 
-                                type="checkbox" 
-                                onChange={toggleTheme} 
-                                checked={theme === "light"} 
-                            />
-                        <span className={styles.slider}></span>
-                        </label>
-                    </div>
+                    <ThemeToggle size="md" />
                   
                     {/* <span className={styles.text}>Количество постов: {typedUser.postsNum}</span> */}
                         
