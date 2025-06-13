@@ -4,8 +4,9 @@ import React, { FC, memo, useCallback, useRef, useEffect, KeyboardEvent } from "
 import clsx from "clsx";
 import { Search } from "lucide-react";
 import styles from "./Tabs.module.scss";
-import MobileNav from "../../../../components/global/MobileNav";
+
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import MobileNav from "@/components/global/MobileNav/MobileNav";
 
 interface Tab {
   name: string;

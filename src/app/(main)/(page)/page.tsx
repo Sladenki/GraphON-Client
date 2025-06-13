@@ -73,6 +73,7 @@ const Homepage = () => {
           tabs={[
             { name: "groups", label: "Группы" },
             { name: "events", label: "События" },
+            { name: "subs", label: "Подписки" },
             { name: "graphSystem", label: "Графы" },
           ]}
           activeTab={activeTab}
