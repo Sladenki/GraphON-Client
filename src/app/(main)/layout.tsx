@@ -17,7 +17,7 @@ import ProfileCorner from "@/components/global/ProfileCorner/ProfileCorner";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
-  const small = useMediaQuery(650)
+  const small = useMediaQuery('(max-width: 650px)')
 
   return (
     <html lang="en">

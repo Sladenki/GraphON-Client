@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { format, startOfWeek, addDays, isSameDay, parseISO, getDay } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Card, CardBody, Divider, Chip, Button } from '@heroui/react';
@@ -25,6 +25,7 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
   const { isLoggedIn } = useAuth();
   const [selectedDay, setSelectedDay] = useState<Date>(new Date());
   const [localEvents, setLocalEvents] = useState(events);
+  const daysContainerRef = useRef<HTMLDivElement>(null);
 
   // Синхронизируем localEvents с входящими props
   React.useEffect(() => {
@@ -33,6 +34,39 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
 
   const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+
+  // Автоскролл к текущему дню при загрузке
+  useEffect(() => {
+    const scrollToToday = () => {
+      if (daysContainerRef.current) {
+        const today = new Date();
+        const todayIndex = daysOfWeek.findIndex(day => isSameDay(day, today));
+        
+        if (todayIndex !== -1) {
+          const container = daysContainerRef.current;
+          const dayButton = container.children[todayIndex] as HTMLElement;
+          
+          if (dayButton) {
+            const containerWidth = container.offsetWidth;
+            const buttonWidth = dayButton.offsetWidth;
+            const buttonLeft = dayButton.offsetLeft;
+            
+            // Вычисляем позицию для центрирования кнопки
+            const scrollPosition = buttonLeft - (containerWidth / 2) + (buttonWidth / 2);
+            
+            container.scrollTo({
+              left: Math.max(0, scrollPosition),
+              behavior: 'smooth'
+            });
+          }
+        }
+      }
+    };
+
+    // Небольшая задержка для корректного расчета размеров
+    const timer = setTimeout(scrollToToday, 100);
+    return () => clearTimeout(timer);
+  }, [daysOfWeek]);
 
   const handleToggleSubscription = (eventId: string, currentStatus: boolean) => {
     // Оптимистичное обновление UI
@@ -52,6 +86,46 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
     if (onToggleSubscription) {
       onToggleSubscription(eventId, !currentStatus);
     }
+  };
+
+  // Функция для скролла к выбранному дню (показывает предыдущие дни)
+  const scrollToSelectedDay = (day: Date) => {
+    if (daysContainerRef.current) {
+      const dayIndex = daysOfWeek.findIndex(d => isSameDay(d, day));
+      
+      if (dayIndex !== -1) {
+        const container = daysContainerRef.current;
+        
+        // Определяем целевой индекс для скролла (показываем 1-2 дня до выбранного)
+        let targetIndex;
+        if (dayIndex === 0) {
+          targetIndex = 0; // Понедельник - остаемся на месте
+        } else if (dayIndex === 1) {
+          targetIndex = 0; // Вторник - показываем с понедельника
+        } else {
+          targetIndex = dayIndex - 2; // Остальные дни - показываем 2 дня до
+        }
+        
+        const targetButton = container.children[targetIndex] as HTMLElement;
+        
+        if (targetButton) {
+          const targetLeft = targetButton.offsetLeft;
+          
+          console.log(`Скролл к дню ${dayIndex}, целевой индекс: ${targetIndex}, позиция: ${targetLeft}`);
+          
+          container.scrollTo({
+            left: targetLeft,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }
+  };
+
+  // Обработчик выбора дня с мягким автоскроллом
+  const handleDaySelect = (day: Date) => {
+    setSelectedDay(day);
+    scrollToSelectedDay(day);
   };
 
   // Фильтруем события и расписание для выбранного дня
@@ -74,7 +148,7 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
               size="sm"
               variant="flat"
               className={styles.todayButton}
-              onClick={() => setSelectedDay(new Date())}
+              onClick={() => handleDaySelect(new Date())}
               startContent="📅"
             >
               Сегодня
@@ -89,7 +163,7 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
           </div>
         </div>
         
-        <div className={styles.daysContainer}>
+        <div className={styles.daysContainer} ref={daysContainerRef}>
           {daysOfWeek.map((day, index) => {
             const isSelected = isSameDay(day, selectedDay);
             const isToday = isSameDay(day, new Date());
@@ -103,7 +177,7 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
               <button
                 key={index}
                 className={`${styles.dayButton} ${isSelected ? styles.selected : ''} ${isToday ? styles.today : ''}`}
-                onClick={() => setSelectedDay(day)}
+                onClick={() => handleDaySelect(day)}
               >
                 <span className={styles.dayName}>
                   {format(day, 'EE', { locale: ru })}

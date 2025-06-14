@@ -218,6 +218,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   scrollbar-width: none;
   -ms-overflow-style: none;
   padding: 0.5rem 0;
+  scroll-behavior: smooth; // Плавный скролл
 
   &::-webkit-scrollbar {
     display: none;
