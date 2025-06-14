@@ -1,28 +1,49 @@
 @use "sass:color";
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
-// Variables - same as EventCard
+// Variables - optimized for both themes
 $primary-color: rgb(150, 130, 238);
 $primary-glow: rgba(150, 130, 238, 0.25);
 $accent-color: #00ffff;
 $accent-glow: rgba(0, 255, 255, 0.25);
-$glass-bg: rgba(255, 255, 255, 0.03);
-$glass-border: rgba(255, 255, 255, 0.08);
-$glass-hover: rgba(255, 255, 255, 0.05);
 $danger-color: #ff4d4d;
 $danger-glow: rgba(255, 77, 77, 0.25);
-$gradient-start: rgba(150, 130, 238, 0.1);
-$gradient-end: rgba(0, 255, 255, 0.05);
 
-// Mixins - same as EventCard
+// Dark theme variables
+$glass-bg-dark: rgba(255, 255, 255, 0.03);
+$glass-border-dark: rgba(255, 255, 255, 0.08);
+$glass-hover-dark: rgba(255, 255, 255, 0.05);
+$gradient-start-dark: rgba(150, 130, 238, 0.1);
+$gradient-end-dark: rgba(0, 255, 255, 0.05);
+
+// Light theme variables
+$primary-color-light: #6366f1;
+$accent-color-light: #3b82f6;
+$glass-bg-light: rgba(0, 0, 0, 0.03);
+$glass-border-light: rgba(0, 0, 0, 0.08);
+$glass-hover-light: rgba(0, 0, 0, 0.05);
+$gradient-start-light: rgba(99, 102, 241, 0.1);
+$gradient-end-light: rgba(59, 130, 246, 0.05);
+
+// Mixins - optimized for both themes
 @mixin glass-effect {
-  background: linear-gradient(135deg, $glass-bg, rgba(255, 255, 255, 0.02));
+  // Dark theme
+  background: linear-gradient(135deg, $glass-bg-dark, rgba(255, 255, 255, 0.02));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid $glass-border;
+  border: 1px solid $glass-border-dark;
   box-shadow: 
     0 4px 24px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(255, 255, 255, 0.05);
+  
+  // Light theme
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, $glass-bg-light, rgba(0, 0, 0, 0.02));
+    border: 1px solid $glass-border-light;
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.05),
+      0 0 0 1px rgba(0, 0, 0, 0.03);
+  }
 }
 
 @mixin neon-glow($color, $intensity: 0.5) {
@@ -33,10 +54,19 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 }
 
 @mixin gradient-text {
+  // Dark theme
   background: linear-gradient(135deg, $primary-color, $accent-color);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  
+  // Light theme
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, $primary-color-light, $accent-color-light);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 // Animations
@@ -102,11 +132,20 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   transition: all 0.3s ease;
 
   &:hover {
-    background: linear-gradient(135deg, $glass-hover, rgba(255, 255, 255, 0.03));
+    // Dark theme
+    background: linear-gradient(135deg, $glass-hover-dark, rgba(255, 255, 255, 0.03));
     transform: translateY(-2px);
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.15),
       0 0 0 1px rgba(255, 255, 255, 0.08);
+    
+    // Light theme
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, $glass-hover-light, rgba(0, 0, 0, 0.03));
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
   }
 
   @media (max-width: 768px) {
@@ -124,7 +163,13 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   align-items: center;
   margin-bottom: 1.25rem; // Уменьшил отступ
   padding-bottom: 0.75rem; // Уменьшил отступ
+  // Dark theme
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
+  // Light theme
+  html[data-theme="light"] & {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -252,9 +297,15 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, $gradient-start, transparent);
+    // Dark theme
+    background: linear-gradient(135deg, $gradient-start-dark, transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
+    
+    // Light theme
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, $gradient-start-light, transparent);
+    }
   }
 
   &:hover {
@@ -269,6 +320,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   }
 
   &.selected {
+    // Dark theme
     background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(150, 130, 238, 0.1));
     border-color: rgba(150, 130, 238, 0.3);
     color: rgb(150, 130, 238);
@@ -279,9 +331,22 @@ $gradient-end: rgba(0, 255, 255, 0.05);
       opacity: 0.15;
       background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), transparent);
     }
+    
+    // Light theme
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.1));
+      border-color: rgba(99, 102, 241, 0.3);
+      color: rgb(99, 102, 241);
+      @include neon-glow(rgb(99, 102, 241), 0.3);
+      
+      &::before {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), transparent);
+      }
+    }
   }
 
   &.today {
+    // Dark theme
     border-color: rgba(0, 255, 255, 0.4);
     
     .dayDate {
@@ -290,6 +355,19 @@ $gradient-end: rgba(0, 255, 255, 0.05);
       -webkit-text-fill-color: transparent;
       background-clip: text;
       font-weight: 700;
+    }
+    
+    // Light theme
+    html[data-theme="light"] & {
+      border-color: rgba(59, 130, 246, 0.4);
+      
+      .dayDate {
+        background: linear-gradient(135deg, $accent-color-light, rgba(59, 130, 246, 0.8));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+      }
     }
   }
 
@@ -482,10 +560,19 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 
   &:hover {
     transform: translateY(-2px);
-    background: linear-gradient(135deg, $glass-hover, rgba(255, 255, 255, 0.03));
+    // Dark theme
+    background: linear-gradient(135deg, $glass-hover-dark, rgba(255, 255, 255, 0.03));
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.12),
       0 0 0 1px rgba(255, 255, 255, 0.1);
+    
+    // Light theme
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, $glass-hover-light, rgba(0, 0, 0, 0.03));
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
   }
 
   @media (max-width: 768px) {
@@ -520,15 +607,30 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     left: 0;
     right: 0;
     height: 3px;
+    // Dark theme
     background: linear-gradient(90deg, $primary-color, $accent-color);
+    
+    // Light theme
+    html[data-theme="light"] & {
+      background: linear-gradient(90deg, $primary-color-light, $accent-color-light);
+    }
   }
 
   &:hover {
     transform: translateY(-2px);
-    background: linear-gradient(135deg, $glass-hover, rgba(255, 255, 255, 0.03));
+    // Dark theme
+    background: linear-gradient(135deg, $glass-hover-dark, rgba(255, 255, 255, 0.03));
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.12),
       0 0 0 1px rgba(255, 255, 255, 0.1);
+    
+    // Light theme
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, $glass-hover-light, rgba(0, 0, 0, 0.03));
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
   }
 
   @media (max-width: 768px) {
@@ -566,10 +668,18 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   width: 40px;
   height: 40px;
   border-radius: 10px;
+  // Dark theme
   background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08));
   border: 1px solid rgba(150, 130, 238, 0.2);
   flex-shrink: 0;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+  
+  // Light theme
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.08));
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05));
+  }
 
   @media (max-width: 768px) {
     width: 36px;
@@ -648,8 +758,14 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   opacity: 0.9;
 
   svg {
+    // Dark theme
     color: rgba(150, 130, 238, 0.8);
     flex-shrink: 0;
+    
+    // Light theme
+    html[data-theme="light"] & {
+      color: rgba(99, 102, 241, 0.8);
+    }
   }
 
   @media (max-width: 768px) {
@@ -684,8 +800,14 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 }
 
 .cardDivider {
-  background: linear-gradient(90deg, transparent, $glass-border, transparent) !important;
+  // Dark theme
+  background: linear-gradient(90deg, transparent, $glass-border-dark, transparent) !important;
   margin: 1rem 0 !important;
+  
+  // Light theme
+  html[data-theme="light"] & {
+    background: linear-gradient(90deg, transparent, $glass-border-light, transparent) !important;
+  }
 
   @media (max-width: 768px) {
     margin: 0.75rem 0 !important;
@@ -715,7 +837,13 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   opacity: 0.8;
 
   svg {
+    // Dark theme
     color: rgba(150, 130, 238, 0.8);
+    
+    // Light theme
+    html[data-theme="light"] & {
+      color: rgba(99, 102, 241, 0.8);
+    }
   }
 
   @media (max-width: 768px) {
@@ -729,10 +857,53 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   border-radius: 12px !important;
   backdrop-filter: blur(8px) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  
+  // Default state (Subscribe) - Dark theme
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1)) !important;
+  border: 1px solid rgba(34, 197, 94, 0.3) !important;
+  color: rgb(34, 197, 94) !important;
+  
+  // Default state (Subscribe) - Light theme
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08)) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    color: rgb(16, 185, 129) !important;
+  }
+  
+  // Subscribed state - Dark theme
+  &[data-subscribed="true"] {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1)) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    color: rgb(239, 68, 68) !important;
+    
+    // Subscribed state - Light theme
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(220, 38, 38, 0.08)) !important;
+      border: 1px solid rgba(220, 38, 38, 0.3) !important;
+      color: rgb(220, 38, 38) !important;
+    }
+  }
 
   &:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+    
+    // Hover for subscribe state
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.15)) !important;
+    
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.12)) !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+    }
+    
+    // Hover for subscribed state
+    &[data-subscribed="true"] {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.15)) !important;
+      
+      html[data-theme="light"] & {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.25), rgba(220, 38, 38, 0.12)) !important;
+      }
+    }
   }
 
   @media (max-width: 768px) {
