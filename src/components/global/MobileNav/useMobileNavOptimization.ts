@@ -19,13 +19,11 @@ export const useMobileNavOptimization = ({
       // Сохраняем текущее значение overflow
       bodyOverflowRef.current = document.body.style.overflow || '';
       document.body.style.overflow = 'hidden';
-      
-      // Добавляем класс для дополнительной стилизации
-      document.body.classList.add('mobile-nav-open');
+      document.body.style.touchAction = 'none';
       
       return () => {
         document.body.style.overflow = bodyOverflowRef.current;
-        document.body.classList.remove('mobile-nav-open');
+        document.body.style.touchAction = '';
       };
     }
   }, [isOpen]);

@@ -554,16 +554,21 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   }
 }
 
-// Global styles for mobile nav open state
-:global(.mobile-nav-open) {
-  overflow: hidden !important;
-  touch-action: none;
-  -webkit-overflow-scrolling: touch;
+// Global styles for mobile nav open state (moved to global CSS)
+.mobileNavOpenState {
+  // This class is used to trigger global styles via JS
+  // Global styles should be in _globals.scss or similar
 }
 
 // Reduce motion for users who prefer it
 @media (prefers-reduced-motion: reduce) {
-  :global(*) {
+  .sidebar,
+  .backdrop,
+  .navButton,
+  .menuButton,
+  .closeButton,
+  .header,
+  .settingsSection {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

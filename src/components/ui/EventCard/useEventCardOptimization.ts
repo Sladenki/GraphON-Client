@@ -174,7 +174,7 @@ export const useEventCardOptimization = ({
 
     debounceTimeoutRef.current = setTimeout(() => {
       setEditedEvent(prev => ({ ...prev, [key]: value }));
-    }, 150);
+    }, 150) as NodeJS.Timeout;
   }, []);
 
   // Мемоизированные стили кнопки регистрации
