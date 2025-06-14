@@ -2,54 +2,86 @@
   width: 100%;
   padding: 1rem;
   overflow: hidden;
+  contain: layout style;
 }
 
 .graphsGrid {
-    display: grid;
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
   width: 100%;
-  }
-  
-  .graphItem {
-  width: 100%;
-    opacity: 0;
-    animation: fadeInUp 0.5s ease-out forwards;
-    animation-delay: var(--delay);
-  will-change: transform, opacity;
+  contain: layout style;
+}
 
-  // Оптимизация производительности анимаций
+.graphItem {
+  width: 100%;
+  opacity: 1;
+  contain: layout style paint;
+  
+  // Анимации только на десктопе
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    animation: fadeInUp 0.4s ease-out forwards;
+    animation-delay: var(--delay);
+    will-change: transform, opacity;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    animation: none;
+    animation: none !important;
     opacity: 1;
+    transform: none !important;
   }
+}
+
+// Упрощенная анимация только для десктопа
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-// Оптимизация для мобильных устройств
-@media (max-width: 768px) {
-    .postsListWrapper {
+}
+
+// Мобильные оптимизации
+@media (max-width: 767px) {
+  .postsListWrapper {
     padding: 0.5rem;
+    // Упрощенная отрисовка на мобильных
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .graphsGrid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
+  
+  .graphItem {
+    // Полностью отключаем анимации на мобильных
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+    
+    // GPU acceleration только для transform
+    transform: translateZ(0);
+  }
 }
 
-// Оптимизация для планшетов
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (max-width: 480px) {
+  .postsListWrapper {
+    padding: 0.25rem;
+  }
+
+  .graphsGrid {
+    gap: 0.75rem;
+  }
+}
+
+// Планшеты
+@media (min-width: 768px) and (max-width: 1024px) {
   .postsListWrapper {
     padding: 0.75rem;
   }
@@ -57,18 +89,18 @@
   .graphsGrid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 1.25rem;
-    }
   }
-  
-// Оптимизация для больших экранов
+}
+
+// Большие экраны
 @media (min-width: 1025px) {
-    .postsListWrapper {
+  .postsListWrapper {
     padding: 1.5rem;
   }
 
   .graphsGrid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
-    }
   }
+}
   

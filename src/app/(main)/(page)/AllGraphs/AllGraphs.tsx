@@ -1,111 +1,86 @@
-import { FC, useMemo, useCallback, useEffect } from 'react';
+import React from 'react';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
-import { useFetchBunchData } from '@/hooks/useFetchBunchData';
-import styles from './AllGraphs.module.scss';
-import GraphsList from '@/app/(main)/(page)/AllGraphs/GraphsList/GraphsList';
-import { useQueryClient } from '@tanstack/react-query';
 import { EmptyState } from '@/components/global/EmptyState/EmptyState';
-
-// Кэш для хранения отфильтрованных данных
-const filterCache = new Map<string, any[]>();
+import { useAllGraphsOptimization } from './useAllGraphsOptimization';
+import GraphsList from './GraphsList/GraphsList';
+import styles from './AllGraphs.module.scss';
 
 interface AllGraphsProps {
   searchQuery: string;
   selectedGraphId: string;
 }
 
-export const AllGraphs: FC<AllGraphsProps> = ({ searchQuery, selectedGraphId }) => {
-  const queryClient = useQueryClient();
-  
-  // Кэшируем запрос с помощью React Query
+// Мемоизированные компоненты состояний
+const LoadingComponent = React.memo(() => (
+  <div className={styles.loaderWrapper}>
+    <SpinnerLoader />
+  </div>
+));
+LoadingComponent.displayName = 'LoadingComponent';
+
+const NoSearchResultsComponent = React.memo(() => (
+  <EmptyState
+    message="Ничего не найдено"
+    subMessage="Попробуйте изменить параметры поиска или посмотреть все доступные группы"
+    emoji="🔍"
+  />
+));
+NoSearchResultsComponent.displayName = 'NoSearchResultsComponent';
+
+const ErrorComponent = React.memo<{ onRetry: () => void }>(({ onRetry }) => (
+  <div className={styles.error}>
+    <div className={styles.errorIcon}>⚠️</div>
+    <div className={styles.errorText}>Ошибка загрузки данных</div>
+    <button className={styles.retryButton} onClick={onRetry}>
+      Повторить
+    </button>
+  </div>
+));
+ErrorComponent.displayName = 'ErrorComponent';
+
+// Мемоизированный компонент списка графов
+const GraphsListWrapper = React.memo<{ graphs: any[] }>(({ graphs }) => (
+  <div className={styles.graphsListWrapper}>
+    <GraphsList allGraphs={graphs} />
+  </div>
+));
+GraphsListWrapper.displayName = 'GraphsListWrapper';
+
+export const AllGraphs: React.FC<AllGraphsProps> = React.memo(({ 
+  searchQuery, 
+  selectedGraphId 
+}) => {
   const { 
-    allPosts: allGraphs, 
-    isPostsFetching, 
-    isEndPosts, 
-    loaderRef, 
-    error 
-  } = useFetchBunchData(
-    `graph/getAllChildrenGraphs/${selectedGraphId}`,
-    [],
-    true
-  );
+    filteredGraphs, 
+    allGraphs, 
+    handleRetry, 
+    loadingState, 
+    loaderRef 
+  } = useAllGraphsOptimization({ 
+    searchQuery, 
+    selectedGraphId 
+  });
 
-  // Оптимизированная фильтрация с кэшированием
-  const filteredGraphs = useMemo(() => {
-    const cacheKey = `${selectedGraphId}-${searchQuery}`;
-    
-    if (filterCache.has(cacheKey)) {
-      return filterCache.get(cacheKey) || [];
-    }
-
-    const filtered = !searchQuery 
-      ? allGraphs 
-      : allGraphs.filter((graph) =>
-          graph.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
-    filterCache.set(cacheKey, filtered);
-    return filtered;
-  }, [allGraphs, searchQuery, selectedGraphId]);
-
-  // Очистка кэша при изменении selectedGraphId
-  useEffect(() => {
-    return () => {
-      filterCache.clear();
-    };
-  }, [selectedGraphId]);
-
-  // Оптимизированный рендер пустого состояния
-  const renderEmptyState = useCallback((message: string, subMessage: string, emoji: string = '🎉') => (
-    <EmptyState
-      message={message}
-      subMessage={subMessage}
-      emoji={emoji}
-    />
-  ), []);
-
-  // Оптимизированный рендер ошибки
-  const renderError = useCallback(() => (
-    <div className={styles.error}>
-      <div className={styles.errorIcon}>⚠️</div>
-      <div className={styles.errorText}>Ошибка загрузки данных</div>
-      <button 
-        className={styles.retryButton}
-        onClick={() => queryClient.invalidateQueries({ queryKey: ['graph', selectedGraphId] })}
-      >
-        Повторить
-      </button>
-    </div>
-  ), [queryClient, selectedGraphId]);
-
-  if (error) {
-    return renderError();
+  // Early returns для различных состояний
+  if (loadingState.hasError) {
+    return <ErrorComponent onRetry={handleRetry} />;
   }
 
-  if (filteredGraphs.length === 0 && searchQuery) {
-    return renderEmptyState(
-      'Ничего не найдено',
-      'Попробуйте изменить параметры поиска или посмотреть все доступные группы',
-      '🔍'
-    );
+  if (loadingState.noSearchResults) {
+    return <NoSearchResultsComponent />;
   }
 
   return (
     <div className={styles.postsList}>
-      {isPostsFetching && !isEndPosts && (
-        <div className={styles.loaderWrapper}>
-          <SpinnerLoader />
-        </div>
+      {loadingState.isLoading && <LoadingComponent />}
+      
+      {loadingState.hasData && (
+        <GraphsListWrapper graphs={filteredGraphs} />
       )}
       
-      {allGraphs.length > 0 && (
-        <div className={styles.graphsListWrapper}>
-          <GraphsList 
-            allGraphs={filteredGraphs} 
-          />
-        </div>
-      )}
       <div ref={loaderRef} />
     </div>
   );
-}; 
+});
+
+AllGraphs.displayName = 'AllGraphs'; 

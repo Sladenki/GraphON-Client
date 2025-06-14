@@ -7,7 +7,16 @@
   box-sizing: border-box;
   position: relative;
   min-height: 200px;
-  animation: fadeIn 0.3s ease-out;
+  contain: layout style;
+  
+  // Анимации только на десктопе
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
 }
 
 .loaderWrapper {
@@ -19,6 +28,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
+  contain: layout style paint;
 }
 
 .graphsListWrapper {
@@ -27,7 +37,16 @@
   flex-direction: column;
   gap: 24px;
   position: relative;
-  animation: slideUp 0.3s ease-out;
+  contain: layout style;
+  
+  // Анимации только на десктопе
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
 }
 
 .emptyMessage {
@@ -118,15 +137,28 @@
   text-align: center;
   background: var(--glass-bg);
   border-radius: 16px;
-  backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
   margin: 20px;
-  animation: fadeIn 0.5s ease-out;
+  contain: layout style paint;
+  
+  // Тяжелые эффекты только на десктопе
+  @media (min-width: 768px) {
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
 
   .errorIcon {
     font-size: 4rem;
     margin-bottom: 20px;
-    animation: shake 0.5s ease-in-out;
+    
+    // Анимация только на десктопе
+    @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+      animation: shake 0.5s ease-in-out;
+    }
   }
 
   .errorText {
@@ -145,19 +177,30 @@
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease;
+    touch-action: manipulation;
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(var(--main-Color), 0.2);
+    // Hover эффекты только на десктопе
+    @media (min-width: 768px) {
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--main-Color), 0.2);
+      }
+    }
+
+    &:active {
+      transform: scale(0.98);
     }
   }
 }
 
+// Упрощенные анимации
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -197,33 +240,72 @@
     transform: translateX(0);
   }
   25% {
-    transform: translateX(-10px);
+    transform: translateX(-8px);
   }
   75% {
-    transform: translateX(10px);
+    transform: translateX(8px);
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 767px) {
+  .postsList {
+    padding: 0 8px;
+    // Упрощенная отрисовка на мобильных
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .graphsListWrapper {
+    gap: 16px;
+    // Отключаем все анимации на мобильных
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .error {
+    padding: 32px 16px;
+    margin: 16px;
+    // Убираем тяжелые эффекты на мобильных
+    backdrop-filter: none;
+    animation: none !important;
+    
+    .errorIcon {
+      font-size: 3.5rem;
+      animation: none !important;
+    }
+    
+    .errorText {
+      font-size: 1.3rem;
+    }
   }
 }
 
 @media (max-width: 480px) {
   .postsList {
-    padding: 0 8px;
+    padding: 0 4px;
   }
 
   .graphsListWrapper {
-    gap: 16px;
+    gap: 12px;
   }
 }
 
-@media (max-width: 768px) {
+// Планшеты
+@media (min-width: 768px) and (max-width: 1024px) {
   .postsList {
     padding: 0 12px;
+  }
+  
+  .graphsListWrapper {
+    gap: 20px;
   }
 }
 
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;

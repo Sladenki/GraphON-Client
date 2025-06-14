@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styles from './GraphList.module.scss';
 import GraphBlock from '../../../../../components/ui/GraphBlock/GraphBlock';
 import { IGraphList } from '@/types/graph.interface';
@@ -7,10 +7,61 @@ import SchedulePopUp from '../../../../../components/ui/SchedulePopUp/SchedulePo
 import { useInfoGraphPopup } from './useInfoGraphPopUp copy';
 import InfoGraphPopUp from '@/components/ui/InfoGraphPopUp/InfoGraphPopUp';
 
-// Кэш для хранения состояний графов
-const graphStateCache = new Map<string, { isSubscribed: boolean }>();
+interface GraphsListProps {
+  allGraphs: IGraphList[];
+}
 
-const GraphsList: FC<{ allGraphs: IGraphList[] }> = React.memo(({ allGraphs }) => {
+// Мемоизированный компонент графа
+const GraphItem = React.memo<{
+  graph: IGraphList;
+  index: number;
+  onScheduleClick: (id: string) => void;
+  onInfoClick: (id: string) => void;
+  onGraphSelect: (id: string) => void;
+}>(({ graph, index, onScheduleClick, onInfoClick, onGraphSelect }) => (
+  <div 
+    className={styles.graphItem}
+    style={{ 
+      "--delay": `${index * 0.05}s`, // Уменьшенная задержка
+    } as React.CSSProperties}
+  >
+    <GraphBlock 
+      id={graph._id}
+      name={graph.name}
+      isSubToGraph={graph.isSubscribed}
+      imgPath={graph.imgPath}
+      about={graph.about}
+      handleScheduleButtonClick={() => onScheduleClick(graph._id)}
+      handleInfoGraphButtonClick={() => onInfoClick(graph._id)}
+      setSelectedGraphId={onGraphSelect}
+    />
+  </div>
+));
+GraphItem.displayName = 'GraphItem';
+
+// Мемоизированная сетка графов
+const GraphsGrid = React.memo<{
+  graphs: IGraphList[];
+  onScheduleClick: (id: string) => void;
+  onInfoClick: (id: string) => void;
+  onGraphSelect: (id: string) => void;
+}>(({ graphs, onScheduleClick, onInfoClick, onGraphSelect }) => (
+  <div className={styles.graphsGrid}>
+    {graphs.map((graph, index) => (
+      <GraphItem
+        key={graph._id}
+        graph={graph}
+        index={index}
+        onScheduleClick={onScheduleClick}
+        onInfoClick={onInfoClick}
+        onGraphSelect={onGraphSelect}
+      />
+    ))}
+  </div>
+));
+GraphsGrid.displayName = 'GraphsGrid';
+
+const GraphsList: React.FC<GraphsListProps> = React.memo(({ allGraphs }) => {
   // Состояния для PopUp
   const { isSchedulePopupOpen, handleScheduleButtonClick, closeSchedulePopup } = useSchedulePopup();
   const { isInfoGraphPopupOpen, handleInfoGraphButtonClick, closeInfoGraphPopup } = useInfoGraphPopup();
@@ -31,38 +82,14 @@ const GraphsList: FC<{ allGraphs: IGraphList[] }> = React.memo(({ allGraphs }) =
     handleInfoGraphButtonClick();
   }, [handleInfoGraphButtonClick]);
 
-  // Мемоизированный рендер графа
-  const renderGraph = useCallback((graph: IGraphList, index: number) => {
-    const cachedState = graphStateCache.get(graph._id);
-    const isSubscribed = cachedState?.isSubscribed ?? graph.isSubscribed;
-
-  return (
-      <div 
-        key={graph._id} 
-        className={styles.graphItem}
-        style={{ 
-          "--delay": `${index * 0.1}s`,
-        } as React.CSSProperties}
-      >
-            <GraphBlock 
-              id={graph._id}
-              name={graph.name}
-          isSubToGraph={isSubscribed}
-              imgPath={graph.imgPath}
-              about={graph.about}
-          handleScheduleButtonClick={() => handleScheduleClick(graph._id)}
-          handleInfoGraphButtonClick={() => handleInfoClick(graph._id)}
-          setSelectedGraphId={handleGraphSelect}
-            />
-          </div>
-    );
-  }, [handleScheduleClick, handleInfoClick, handleGraphSelect]);
-
   return (
     <div className={styles.postsListWrapper}>
-      <div className={styles.graphsGrid}>
-        {allGraphs.map((graph, index) => renderGraph(graph, index))}
-        </div>
+      <GraphsGrid
+        graphs={allGraphs}
+        onScheduleClick={handleScheduleClick}
+        onInfoClick={handleInfoClick}
+        onGraphSelect={handleGraphSelect}
+      />
 
       {/* Модальные окна */}
       {isSchedulePopupOpen && selectedGraphId && (
