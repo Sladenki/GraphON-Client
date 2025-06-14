@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { notifyError } from "@/lib/notifications";
 import { AxiosError } from "axios";
 import { EmptyState } from "@/components/global/EmptyState/EmptyState";
+import SchedulePage from "../(page)/Schedule/page";
 
 const Schedule = () => {
   const router = useRouter();
@@ -44,7 +45,8 @@ const Schedule = () => {
           subMessage="На этой неделе нет занятий или мероприятий"
         />
       ) : (
-        <ScheduleList schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
+        // <ScheduleList schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
+        <SchedulePage schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
       )}
     </div>
   );
