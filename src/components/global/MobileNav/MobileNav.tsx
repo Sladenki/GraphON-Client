@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Menu, X, Settings } from 'lucide-react';
 import { Button, Card, CardBody, CardHeader, Divider } from '@heroui/react';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import { useMobileNavOptimization } from './useMobileNavOptimization';
 import styles from './MobileNav.module.scss';
 
 interface MobileNavProps {
@@ -14,33 +15,50 @@ interface MobileNavProps {
   }>;
 }
 
-const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, tabs }) => {
+const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTab, tabs }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Блокируем скролл при открытом меню
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  // Используем оптимизированный хук
+  const { handleOpenMenu, handleCloseMenu, handleBackdropClick, handleTabChange } = 
+    useMobileNavOptimization({ isOpen, setIsOpen, setActiveTab });
 
-  const activeTabLabel = tabs.find(tab => tab.name === activeTab)?.label || '';
+  // Мемоизируем активную вкладку
+  const activeTabLabel = useMemo(() => 
+    tabs.find(tab => tab.name === activeTab)?.label || '', 
+    [tabs, activeTab]
+  );
+
+  // Мемоизируем элементы навигации
+  const navigationItems = useMemo(() => 
+    tabs.map((tab) => {
+      const isActiveTab = activeTab === tab.name;
+      
+      return (
+        <Button
+          key={tab.name}
+          variant={isActiveTab ? "flat" : "light"}
+          color={isActiveTab ? "primary" : "default"}
+          onPress={() => handleTabChange(tab.name)}
+          className={`${styles.navButton} ${isActiveTab ? styles.navButtonActive : ''}`}
+          startContent={tab.icon}
+        >
+          {tab.label}
+        </Button>
+      );
+    }),
+    [tabs, activeTab, handleTabChange]
+  );
 
   return (
     <>
       {/* Header */}
-      <div className={styles.header}>
+      <header className={styles.header}>
         <div className={styles.headerContent}>
           {/* Menu Button */}
           <Button
             isIconOnly
             variant="flat"
-            onPress={() => setIsOpen(true)}
+            onPress={handleOpenMenu}
             className={styles.menuButton}
             aria-label="Открыть меню"
           >
@@ -57,30 +75,33 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, tabs }) 
             {activeTabLabel}
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Backdrop */}
       {isOpen && (
         <div 
           className={styles.backdrop}
-          onClick={() => setIsOpen(false)}
+          onClick={handleBackdropClick}
           aria-hidden="true"
         />
       )}
 
       {/* Sidebar */}
-      <div className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
+      <aside 
+        className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}
+        aria-hidden={!isOpen}
+      >
         <Card className={styles.sidebarCard}>
           {/* Sidebar Header */}
           <CardHeader className={styles.sidebarHeader}>
-            <div className={styles.sidebarTitle}>
+            <h2 className={styles.sidebarTitle}>
               Навигация
-            </div>
+            </h2>
             <Button
               isIconOnly
               variant="flat"
               size="sm"
-              onPress={() => setIsOpen(false)}
+              onPress={handleCloseMenu}
               className={styles.closeButton}
               aria-label="Закрыть меню"
             >
@@ -92,25 +113,8 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, tabs }) 
 
           {/* Navigation Items */}
           <CardBody className={styles.sidebarBody}>
-            <nav className={styles.nav}>
-              {tabs.map((tab, index) => (
-                <Button
-                  key={tab.name}
-                  variant={activeTab === tab.name ? "flat" : "light"}
-                  color={activeTab === tab.name ? "primary" : "default"}
-                  onPress={() => {
-                    setActiveTab(tab.name);
-                    setIsOpen(false);
-                  }}
-                  className={`${styles.navButton} ${activeTab === tab.name ? styles.navButtonActive : ''}`}
-                  startContent={tab.icon}
-                  style={{
-                    animationDelay: `${index * 100}ms`
-                  }}
-                >
-                  {tab.label}
-                </Button>
-              ))}
+            <nav className={styles.nav} aria-label="Основная навигация">
+              {navigationItems}
             </nav>
 
             <Divider className={styles.divider} />
@@ -118,12 +122,9 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, tabs }) 
             {/* Settings Section */}
             <div className={styles.settingsSection}>
               <div className={styles.settingsHeader}>
-                <div className={styles.settingsIcon}>
-                  <Settings size={16} />
-                </div>
                 <div className={styles.settingsText}>
                   <div className={styles.settingsTitle}>Настройки</div>
-                  <div className={styles.settingsSubtitle}>Внешний вид</div>
+                  <div className={styles.settingsSubtitle}>Смена темы</div>
                 </div>
               </div>
               <div className={styles.themeToggleWrapper}>
@@ -132,9 +133,11 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab, tabs }) 
             </div>
           </CardBody>
         </Card>
-      </div>
+      </aside>
     </>
   );
-};
+});
+
+MobileNav.displayName = 'MobileNav';
 
 export default MobileNav; 

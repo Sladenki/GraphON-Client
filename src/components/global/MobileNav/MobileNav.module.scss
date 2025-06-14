@@ -1,7 +1,7 @@
 @use "sass:color";
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
-// Variables - same as EventCard
+// Variables - optimized
 $primary-color: rgb(150, 130, 238);
 $primary-glow: rgba(150, 130, 238, 0.25);
 $accent-color: #00ffff;
@@ -14,22 +14,34 @@ $danger-glow: rgba(255, 77, 77, 0.25);
 $gradient-start: rgba(150, 130, 238, 0.1);
 $gradient-end: rgba(0, 255, 255, 0.05);
 
-// Mixins - same as EventCard
-@mixin glass-effect {
-  background: linear-gradient(135deg, $glass-bg, rgba(255, 255, 255, 0.02));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+// Mixins - optimized for mobile
+@mixin glass-effect-light {
+  background: $glass-bg;
   border: 1px solid $glass-border;
-  box-shadow: 
-    0 4px 24px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+  // Reduced shadows for mobile performance
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-@mixin neon-glow($color, $intensity: 0.5) {
-  box-shadow: 
-    0 0 10px rgba($color, $intensity),
-    0 0 20px rgba($color, $intensity * 0.5),
-    0 0 30px rgba($color, $intensity * 0.3);
+@mixin glass-effect {
+  @include glass-effect-light;
+  
+  // Only apply heavy effects on desktop
+  @media (min-width: 768px) {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.1),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+}
+
+@mixin neon-glow($color, $intensity: 0.3) {
+  // Reduced glow intensity for mobile
+  @media (min-width: 768px) {
+    box-shadow: 
+      0 0 5px rgba($color, $intensity),
+      0 0 10px rgba($color, $intensity * 0.5);
+  }
 }
 
 @mixin gradient-text {
@@ -39,7 +51,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   background-clip: text;
 }
 
-// Header styles
+// Header styles - optimized
 .header {
   position: fixed;
   top: 0;
@@ -47,10 +59,15 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   right: 0;
   z-index: 50;
   background: var(--block-color);
-  backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: none; // Remove transitions for mobile
+  
+  // Only apply blur on desktop
+  @media (min-width: 768px) {
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
 
   &::after {
     content: '';
@@ -76,19 +93,25 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   width: 40px !important;
   height: 40px !important;
   border-radius: 12px !important;
-  background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08)) !important;
+  background: rgba(150, 130, 238, 0.15) !important;
   border: 1px solid rgba(150, 130, 238, 0.2) !important;
-  transition: all 0.3s ease !important;
+  transition: background-color 0.2s ease !important;
   
-  &:hover {
-    background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(150, 130, 238, 0.12)) !important;
-    border-color: rgba(150, 130, 238, 0.3) !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(150, 130, 238, 0.2);
+  @media (min-width: 768px) {
+    background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08)) !important;
+    transition: all 0.2s ease !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(150, 130, 238, 0.12)) !important;
+      border-color: rgba(150, 130, 238, 0.3) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(150, 130, 238, 0.2);
+    }
   }
 
   &:active {
     transform: translateY(0);
+    background: rgba(150, 130, 238, 0.2) !important;
   }
 
   svg {
@@ -101,25 +124,32 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   font-size: 1.5rem;
   font-weight: 700;
   color: rgb(150, 130, 238);
-  text-shadow: 0 2px 4px rgba(150, 130, 238, 0.2);
   letter-spacing: 0.05em;
+  
+  @media (min-width: 768px) {
+    text-shadow: 0 2px 4px rgba(150, 130, 238, 0.2);
+  }
 }
 
 .activeTabBadge {
   padding: 0.5rem 1rem;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(150, 130, 238, 0.1), rgba(0, 255, 255, 0.1));
+  background: rgba(150, 130, 238, 0.1);
   border: 1px solid rgba(150, 130, 238, 0.2);
   color: var(--main-text);
   font-family: 'Inter', sans-serif;
   font-weight: 500;
   font-size: 0.875rem;
-  backdrop-filter: blur(8px);
-  transition: all 0.3s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 120px;
+  
+  @media (min-width: 768px) {
+    background: linear-gradient(135deg, rgba(150, 130, 238, 0.1), rgba(0, 255, 255, 0.1));
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+  }
 
   @media (max-width: 480px) {
     max-width: 80px;
@@ -128,17 +158,21 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   }
 }
 
-// Backdrop
+// Backdrop - optimized
 .backdrop {
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  animation: fadeIn 0.3s ease-out;
+  background: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.2s ease-out;
+  
+  @media (min-width: 768px) {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+  }
 }
 
-// Sidebar
+// Sidebar - optimized for mobile
 .sidebar {
   position: fixed;
   top: 0;
@@ -148,7 +182,8 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   width: 320px;
   max-width: 85vw;
   transform: translateX(-100%);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s ease;
+  will-change: transform;
 
   &.sidebarOpen {
     transform: translateX(0);
@@ -159,14 +194,18 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   height: 100%;
   border-radius: 0 !important;
   background: var(--block-color) !important;
-  backdrop-filter: blur(10px);
   border: none !important;
   border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25) !important;
   
-  // Gradient border effect
+  @media (min-width: 768px) {
+    backdrop-filter: blur(8px);
+    box-shadow: 
+      0 25px 50px -12px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  }
+  
+  // Simplified gradient border
   &::before {
     content: '';
     position: absolute;
@@ -187,8 +226,12 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+  background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
+  @media (min-width: 768px) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+  }
   
   &::after {
     content: '';
@@ -214,15 +257,24 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   width: 32px !important;
   height: 32px !important;
   border-radius: 8px !important;
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08)) !important;
+  background: rgba(239, 68, 68, 0.15) !important;
   border: 1px solid rgba(239, 68, 68, 0.2) !important;
-  transition: all 0.2s ease !important;
+  transition: background-color 0.2s ease !important;
   
-  &:hover {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.12)) !important;
-    border-color: rgba(239, 68, 68, 0.3) !important;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+  @media (min-width: 768px) {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08)) !important;
+    transition: all 0.2s ease !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.12)) !important;
+      border-color: rgba(239, 68, 68, 0.3) !important;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+    }
+  }
+
+  &:active {
+    background: rgba(239, 68, 68, 0.2) !important;
   }
 
   svg {
@@ -238,7 +290,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   height: 100%;
 }
 
-// Navigation
+// Navigation - optimized
 .nav {
   display: flex;
   flex-direction: column;
@@ -252,11 +304,13 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   border-radius: 12px !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 500 !important;
-  transition: all 0.3s ease !important;
   background: transparent !important;
   border: 1px solid transparent !important;
+  transition: background-color 0.2s ease !important;
+  
+  // Animation using CSS custom properties
   opacity: 0;
-  animation: slideInLeft 0.5s ease-out forwards;
+  animation: slideInLeft 0.4s ease-out forwards;
 
   // Icon and text spacing
   :global(.heroui-button-content) {
@@ -265,37 +319,60 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 
   // Icon styles
   svg {
-    transition: all 0.3s ease;
     flex-shrink: 0;
+    transition: filter 0.2s ease;
   }
 
-  &:hover {
-    background: linear-gradient(135deg, rgba(150, 130, 238, 0.1), rgba(150, 130, 238, 0.05)) !important;
-    border-color: rgba(150, 130, 238, 0.2) !important;
-    transform: translateX(4px);
+  @media (min-width: 768px) {
+    transition: all 0.2s ease !important;
+    
+    &:hover {
+      background: rgba(150, 130, 238, 0.1) !important;
+      border-color: rgba(150, 130, 238, 0.2) !important;
+      transform: translateX(4px);
 
-    svg {
-      filter: drop-shadow(0 2px 4px rgba(150, 130, 238, 0.3));
+      svg {
+        filter: drop-shadow(0 2px 4px rgba(150, 130, 238, 0.3));
+      }
     }
   }
 
+  &:active {
+    background: rgba(150, 130, 238, 0.15) !important;
+  }
+
   &.navButtonActive {
-    background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08)) !important;
+    background: rgba(150, 130, 238, 0.15) !important;
     border: 1px solid rgba(150, 130, 238, 0.2) !important;
     color: rgb(150, 130, 238) !important;
-    box-shadow: 0 4px 12px rgba(150, 130, 238, 0.15);
+    
+    @media (min-width: 768px) {
+      background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08)) !important;
+      box-shadow: 0 2px 8px rgba(150, 130, 238, 0.15);
 
-    &:hover {
-      background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(150, 130, 238, 0.12)) !important;
-      border-color: rgba(150, 130, 238, 0.3) !important;
+      &:hover {
+        background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(150, 130, 238, 0.12)) !important;
+        border-color: rgba(150, 130, 238, 0.3) !important;
+      }
     }
 
     svg {
       color: rgb(150, 130, 238) !important;
-      filter: drop-shadow(0 2px 4px rgba(150, 130, 238, 0.3));
+      
+      @media (min-width: 768px) {
+        filter: drop-shadow(0 2px 4px rgba(150, 130, 238, 0.3));
+      }
     }
   }
 }
+
+// Use specific classes for animation delays
+.navButton:nth-child(1) { animation-delay: 0ms; }
+.navButton:nth-child(2) { animation-delay: 100ms; }
+.navButton:nth-child(3) { animation-delay: 200ms; }
+.navButton:nth-child(4) { animation-delay: 300ms; }
+.navButton:nth-child(5) { animation-delay: 400ms; }
+.navButton:nth-child(6) { animation-delay: 500ms; }
 
 // Divider
 .divider {
@@ -304,7 +381,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   margin: 0 !important;
 }
 
-// Settings Section
+// Settings Section - optimized
 .settingsSection {
   margin-top: auto;
   display: flex;
@@ -312,14 +389,19 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   justify-content: space-between;
   padding: 1rem;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease;
+  
+  @media (min-width: 768px) {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
 
-  &:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-    border-color: rgba(255, 255, 255, 0.15);
+    &:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+      border-color: rgba(255, 255, 255, 0.15);
+    }
   }
 }
 
@@ -333,12 +415,17 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08));
+  background: rgba(150, 130, 238, 0.15);
   border: 1px solid rgba(150, 130, 238, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease;
+  
+  @media (min-width: 768px) {
+    background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08));
+    transition: all 0.2s ease;
+  }
 
   svg {
     color: rgb(150, 130, 238);
@@ -375,7 +462,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-// Animations
+// Optimized animations
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -387,7 +474,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 
 @keyframes slideInLeft {
   from {
-    transform: translateX(-20px);
+    transform: translateX(-10px);
     opacity: 0;
   }
   to {
@@ -399,11 +486,19 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 // Dark theme adjustments
 :global(.dark-theme) {
   .header {
-    background: linear-gradient(135deg, rgba(13, 4, 35, 0.65), rgba(13, 4, 35, 0.45));
+    background: rgba(13, 4, 35, 0.85);
+    
+    @media (min-width: 768px) {
+      background: linear-gradient(135deg, rgba(13, 4, 35, 0.65), rgba(13, 4, 35, 0.45));
+    }
   }
 
   .sidebarCard {
-    background: linear-gradient(135deg, rgba(13, 4, 35, 0.75), rgba(13, 4, 35, 0.55)) !important;
+    background: rgba(13, 4, 35, 0.85) !important;
+    
+    @media (min-width: 768px) {
+      background: linear-gradient(135deg, rgba(13, 4, 35, 0.75), rgba(13, 4, 35, 0.55)) !important;
+    }
   }
 
   .settingsTitle,
@@ -447,5 +542,30 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 @media (max-width: 480px) {
   .sidebar {
     width: 260px;
+  }
+  
+  .sidebarHeader,
+  .sidebarBody {
+    padding: 0.875rem !important;
+  }
+
+  .settingsSection {
+    padding: 0.625rem;
+  }
+}
+
+// Global styles for mobile nav open state
+:global(.mobile-nav-open) {
+  overflow: hidden !important;
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+// Reduce motion for users who prefer it
+@media (prefers-reduced-motion: reduce) {
+  :global(*) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 } 
