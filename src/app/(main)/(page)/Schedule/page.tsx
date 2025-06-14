@@ -106,7 +106,7 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
                 onClick={() => setSelectedDay(day)}
               >
                 <span className={styles.dayName}>
-                  {format(day, 'EEE', { locale: ru })}
+                  {format(day, 'EE', { locale: ru })}
                 </span>
                 <span className={styles.dayDate}>
                   {format(day, 'dd', { locale: ru })}

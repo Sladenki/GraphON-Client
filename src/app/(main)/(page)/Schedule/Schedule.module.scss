@@ -163,26 +163,52 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 .todayButton {
   font-family: 'Inter', sans-serif !important;
   font-weight: 600 !important;
-  background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(0, 255, 255, 0.08)) !important;
-  border: 1px solid rgba(0, 255, 255, 0.2) !important;
-  color: rgb(0, 255, 255) !important;
   backdrop-filter: blur(8px) !important;
   transition: all 0.3s ease !important;
 
+  // Темная тема
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(0, 255, 255, 0.08)) !important;
+  border: 1px solid rgba(0, 255, 255, 0.2) !important;
+  color: rgb(0, 255, 255) !important;
+
+  // Светлая тема
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    color: rgb(59, 130, 246) !important;
+  }
+
   &:hover {
-    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.12)) !important;
     transform: translateY(-2px) !important;
+    
+    // Темная тема hover
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.12)) !important;
     box-shadow: 0 6px 20px rgba(0, 255, 255, 0.2) !important;
+
+    // Светлая тема hover
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.12)) !important;
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2) !important;
+    }
   }
 }
 
 .eventsCount {
-  background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08)) !important;
-  border: 1px solid rgba(150, 130, 238, 0.2) !important;
-  color: rgb(150, 130, 238) !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 600 !important;
   backdrop-filter: blur(8px);
+
+  // Темная тема
+  background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08)) !important;
+  border: 1px solid rgba(150, 130, 238, 0.2) !important;
+  color: rgb(150, 130, 238) !important;
+
+  // Светлая тема
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.08)) !important;
+    border: 1px solid rgba(139, 92, 246, 0.3) !important;
+    color: rgb(139, 92, 246) !important;
+  }
 }
 
 .daysContainer {
@@ -385,7 +411,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   padding: 0 0.5rem;
 
   @media (max-width: 768px) {
-    padding: 0 0.25rem;
+    padding: 0; // Убираю боковые отступы на мобильных для большей ширины
   }
 }
 
@@ -406,12 +432,21 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 }
 
 .groupCount {
-  background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08)) !important;
-  border: 1px solid rgba(150, 130, 238, 0.2) !important;
-  color: rgb(150, 130, 238) !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 600 !important;
   backdrop-filter: blur(8px);
+
+  // Темная тема
+  background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08)) !important;
+  border: 1px solid rgba(150, 130, 238, 0.2) !important;
+  color: rgb(150, 130, 238) !important;
+
+  // Светлая тема
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.08)) !important;
+    border: 1px solid rgba(139, 92, 246, 0.3) !important;
+    color: rgb(139, 92, 246) !important;
+  }
 }
 
 .groupContent {
@@ -455,6 +490,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   @media (max-width: 768px) {
     border-radius: 14px !important;
     max-width: 100%; // На мобильных убираю ограничение ширины
+    margin: 0; // Убираю центрирование на мобильных
   }
 }
 
@@ -462,7 +498,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   padding: 1.25rem !important;
 
   @media (max-width: 768px) {
-    padding: 1rem !important;
+    padding: 1.25rem !important; // Увеличил отступы на мобильных
   }
 }
 
@@ -497,6 +533,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   @media (max-width: 768px) {
     border-radius: 14px !important;
     max-width: 100%; // На мобильных убираю ограничение ширины
+    margin: 0; // Убираю центрирование на мобильных
   }
 }
 
@@ -504,7 +541,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   padding: 1.25rem !important;
 
   @media (max-width: 768px) {
-    padding: 1rem !important;
+    padding: 1.25rem !important; // Увеличил отступы на мобильных
   }
 }
 
@@ -622,14 +659,23 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 
 .typeChip,
 .graphChip {
-  background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(0, 255, 255, 0.08)) !important;
-  border: 1px solid rgba(0, 255, 255, 0.2) !important;
-  color: rgb(0, 255, 255) !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 600 !important;
   font-size: 0.75rem !important;
   backdrop-filter: blur(8px);
   flex-shrink: 0;
+
+  // Темная тема
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(0, 255, 255, 0.08)) !important;
+  border: 1px solid rgba(0, 255, 255, 0.2) !important;
+  color: rgb(0, 255, 255) !important;
+
+  // Светлая тема
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08)) !important;
+    border: 1px solid rgba(34, 197, 94, 0.3) !important;
+    color: rgb(34, 197, 94) !important;
+  }
 
   @media (max-width: 768px) {
     font-size: 0.7rem !important;
