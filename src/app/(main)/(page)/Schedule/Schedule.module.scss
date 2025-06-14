@@ -74,7 +74,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 // Main page container
 .schedulePage {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px; // Уменьшил с 1200px до 1000px
   margin: 0 auto;
   padding: 1.5rem;
   min-height: 100vh;
@@ -82,6 +82,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 
   @media (max-width: 768px) {
     padding: 1rem;
+    max-width: 100%;
   }
 
   @media (max-width: 480px) {
@@ -92,12 +93,12 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 // Week selector
 .weekSelector {
   position: sticky;
-  top: 80px;
+  top: 40px;
   z-index: 10;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem; // Уменьшил отступ снизу
   @include glass-effect;
-  border-radius: 20px;
-  padding: 1.5rem;
+  border-radius: 18px; // Немного уменьшил скругление
+  padding: 1.25rem; // Уменьшил внутренние отступы
   transition: all 0.3s ease;
 
   &:hover {
@@ -113,6 +114,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     top: 0;
     padding: 1rem;
     border-radius: 16px;
+    margin-bottom: 1rem;
   }
 }
 
@@ -120,8 +122,8 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1.25rem; // Уменьшил отступ
+  padding-bottom: 0.75rem; // Уменьшил отступ
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   @media (max-width: 768px) {
@@ -353,6 +355,11 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 // Schedule section
 .scheduleSection {
   animation: fadeInUp 0.8s ease-out 0.2s both;
+  padding-top: 1.5rem; // Увеличил отступ чтобы контент точно не перекрывался липким селектором
+  
+  @media (max-width: 768px) {
+    padding-top: 0; // На мобильных убираю отступ так как селектор не липкий
+  }
 }
 
 .eventsList {
@@ -424,6 +431,8 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   position: relative;
+  max-width: 800px; // Ограничиваю максимальную ширину карточек
+  margin: 0 auto; // Центрирую карточки
 
   &::before {
     content: '';
@@ -445,6 +454,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 
   @media (max-width: 768px) {
     border-radius: 14px !important;
+    max-width: 100%; // На мобильных убираю ограничение ширины
   }
 }
 
@@ -463,6 +473,8 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   position: relative;
+  max-width: 800px; // Ограничиваю максимальную ширину карточек
+  margin: 0 auto; // Центрирую карточки
 
   &::before {
     content: '';
@@ -484,6 +496,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 
   @media (max-width: 768px) {
     border-radius: 14px !important;
+    max-width: 100%; // На мобильных убираю ограничение ширины
   }
 }
 
