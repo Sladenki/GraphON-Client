@@ -63,20 +63,41 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
 
   return (
     <div className={styles.schedulePage}>
-      {/* Заголовок страницы */}
-      <div className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>Расписание</h1>
-        <p className={styles.pageSubtitle}>
-          Следите за своими занятиями и мероприятиями
-        </p>
-      </div>
-
       {/* Селектор дней недели */}
       <div className={styles.weekSelector}>
+        <div className={styles.selectorHeader}>
+          <h2 className={styles.weekTitle}>
+            {format(selectedDay, 'EEEE, dd MMMM', { locale: ru })}
+          </h2>
+          <div className={styles.quickActions}>
+            <Button
+              size="sm"
+              variant="flat"
+              className={styles.todayButton}
+              onClick={() => setSelectedDay(new Date())}
+              startContent="📅"
+            >
+              Сегодня
+            </Button>
+            <Chip
+              size="sm"
+              variant="flat"
+              className={styles.eventsCount}
+            >
+              {selectedDaySchedule.length + selectedDayEvents.length} событий
+            </Chip>
+          </div>
+        </div>
+        
         <div className={styles.daysContainer}>
           {daysOfWeek.map((day, index) => {
             const isSelected = isSameDay(day, selectedDay);
             const isToday = isSameDay(day, new Date());
+            const dayScheduleCount = schedule.filter(item => item.dayOfWeek === index).length;
+            const dayEventsCount = localEvents.filter(event => 
+              isSameDay(parseISO(event.eventDate), day)
+            ).length;
+            const totalEvents = dayScheduleCount + dayEventsCount;
             
             return (
               <button
@@ -93,6 +114,11 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
                 <span className={styles.dayMonth}>
                   {format(day, 'MMM', { locale: ru })}
                 </span>
+                {totalEvents > 0 && (
+                  <span className={styles.eventsBadge}>
+                    {totalEvents}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -101,44 +127,53 @@ const SchedulePage: React.FC<SchedulePageProps> = ({
 
       {/* Секция расписания на день */}
       <div className={styles.scheduleSection}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>
-            {format(selectedDay, 'EEEE, dd MMMM', { locale: ru })}
-          </h2>
-          <Chip
-            size="sm"
-            variant="flat"
-            className={styles.itemsCount}
-          >
-            {selectedDaySchedule.length + selectedDayEvents.length} событий
-          </Chip>
-        </div>
-
-        <div className={styles.scheduleContent}>
-          {selectedDaySchedule.length === 0 && selectedDayEvents.length === 0 ? (
-            <EmptyState
-              message="Нет событий на этот день"
-              subMessage="Выберите другой день или создайте новое мероприятие"
-              emoji="📅"
-            />
-          ) : (
-            <div className={styles.eventsList}>
-              {/* Расписание занятий */}
-              {selectedDaySchedule.map((item) => (
-                <ScheduleCard key={item._id} scheduleItem={item} />
-              ))}
-              
-              {/* Мероприятия */}
-              {selectedDayEvents.map((event) => (
-                <EventCard
-                  key={event._id}
-                  event={event}
-                  onToggleSubscription={handleToggleSubscription}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        {selectedDaySchedule.length === 0 && selectedDayEvents.length === 0 ? (
+          <EmptyState
+            message="Нет событий на этот день"
+            subMessage="Выберите другой день или создайте новое мероприятие"
+            emoji="📅"
+          />
+        ) : (
+          <div className={styles.eventsList}>
+            {/* Расписание занятий */}
+            {selectedDaySchedule.length > 0 && (
+              <div className={styles.eventsGroup}>
+                <div className={styles.groupHeader}>
+                  <h3 className={styles.groupTitle}>📚 Занятия</h3>
+                  <Chip size="sm" variant="flat" className={styles.groupCount}>
+                    {selectedDaySchedule.length}
+                  </Chip>
+                </div>
+                <div className={styles.groupContent}>
+                  {selectedDaySchedule.map((item) => (
+                    <ScheduleCard key={item._id} scheduleItem={item} />
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Мероприятия */}
+            {selectedDayEvents.length > 0 && (
+              <div className={styles.eventsGroup}>
+                <div className={styles.groupHeader}>
+                  <h3 className={styles.groupTitle}>🎯 Мероприятия</h3>
+                  <Chip size="sm" variant="flat" className={styles.groupCount}>
+                    {selectedDayEvents.length}
+                  </Chip>
+                </div>
+                <div className={styles.groupContent}>
+                  {selectedDayEvents.map((event) => (
+                    <EventCard
+                      key={event._id}
+                      event={event}
+                      onToggleSubscription={handleToggleSubscription}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
