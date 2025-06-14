@@ -10,7 +10,8 @@ import { useRouter } from "next/navigation";
 import { notifyError } from "@/lib/notifications";
 import { AxiosError } from "axios";
 import { EmptyState } from "@/components/global/EmptyState/EmptyState";
-import SchedulePage from "../(page)/Schedule/page";
+import SchedulePage from "../(page)/Schedule/Schedule";
+
 
 const Schedule = () => {
   const router = useRouter();

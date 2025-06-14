@@ -12,7 +12,7 @@ import RenderMenuList from './RenderMenuList/RenderMenuList';
 
 const Sidebar: React.FC<{}> = ({}) => {
 
-  const small = useMediaQuery(1000)
+  const small = useMediaQuery('(max-width: 1000px)')
 
   return (
     <div className={styles.sidebar}>
