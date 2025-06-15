@@ -306,13 +306,20 @@ const EventCard: React.FC<EventProps> = React.memo(({
               </h3>
             )}
             
-            <Chip
-              variant="flat"
-              size="sm"
-              className={styles.graphChip}
+            <Tooltip 
+              content={event.graphId.name}
+              placement="bottom"
+              showArrow
+              delay={500}
             >
-              {event.graphId.name}
-            </Chip>
+              <Chip
+                variant="flat"
+                size="sm"
+                className={styles.graphChip}
+              >
+                {event.graphId.name}
+              </Chip>
+            </Tooltip>
           </div>
         </div>
         

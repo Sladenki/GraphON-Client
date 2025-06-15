@@ -80,6 +80,12 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   position: relative;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden; // Предотвращаем выход контента за границы
+  
+  @media (max-width: 480px) {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
   
   @media (min-width: 768px) {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
@@ -93,6 +99,11 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     right: 1.5rem;
     height: 1px;
     background: linear-gradient(90deg, transparent, $glass-border, transparent);
+    
+    @media (max-width: 480px) {
+      left: 1rem;
+      right: 1rem;
+    }
   }
 }
 
@@ -100,7 +111,9 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   display: flex;
   gap: 1rem;
   flex: 1;
-  min-width: 0;
+  min-width: 0; // Важно для flex-элементов с текстом
+  align-items: flex-start;
+  overflow: hidden; // Предотвращаем выход за границы
 }
 
 .graphAvatar {
@@ -132,7 +145,8 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   flex-direction: column;
   gap: 0.5rem;
   flex: 1;
-  min-width: 0;
+  min-width: 0; // Важно для правильного обрезания текста
+  overflow: hidden; // Предотвращаем выход за границы
 }
 
 .title {
@@ -142,6 +156,19 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   margin: 0;
   line-height: 1.4;
   font-family: 'Orbitron', sans-serif;
+  
+  // Обрезание длинного заголовка
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; // Максимум 2 строки
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+  
+  @media (max-width: 480px) {
+    font-size: 1.25rem;
+    -webkit-line-clamp: 1; // На мобильных только 1 строка
+  }
 }
 
 .titleInput {
@@ -159,6 +186,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 }
 
 .graphChip {
+  max-width: 200px; // Ограничиваем максимальную ширину
   width: fit-content;
   background: rgba(150, 130, 238, 0.1);
   border: 1px solid rgba(150, 130, 238, 0.2);
@@ -170,10 +198,32 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   border-radius: 12px;
   transition: background-color 0.2s ease;
   
+  // Обрезание длинного текста
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  // Адаптивная ширина для мобильных
+  @media (max-width: 480px) {
+    max-width: 150px;
+    font-size: 0.75rem;
+  }
+  
   @media (min-width: 768px) {
+    max-width: 250px; // Больше места на десктопе
     background: linear-gradient(135deg, rgba(150, 130, 238, 0.1), rgba(0, 255, 255, 0.1));
     backdrop-filter: blur(4px);
     transition: all 0.2s ease;
+    
+    // Показываем полное название при наведении
+    &:hover {
+      overflow: visible;
+      white-space: normal;
+      word-break: break-word;
+      z-index: 10;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
   }
 }
 
