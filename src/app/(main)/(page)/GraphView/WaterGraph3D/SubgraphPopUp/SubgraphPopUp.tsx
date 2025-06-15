@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GraphNode } from '../types';
 import styles from './SubgraphPopUp.module.scss';
@@ -7,6 +8,7 @@ import { ScheduleService } from '@/services/schedule.service';
 
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { ScheduleList } from '@/components/ui/ScheduleList/ScheduleList';
+import { useModalManager } from '@/components/ui/PopUpWrapper/useModalManager';
 
 interface SubgraphPopUpProps {
   subgraph: GraphNode | null;
@@ -21,6 +23,15 @@ const SubgraphPopUp = ({ subgraph, onClose }: SubgraphPopUpProps) => {
       setIsVisible(true);
     }
   }, [subgraph]);
+
+  // Используем хук для управления модальным окном
+  const { handleOverlayClick } = useModalManager({ 
+    isOpen: isVisible && !!subgraph, 
+    onClose: () => {
+      setIsVisible(false);
+      setTimeout(onClose, 300);
+    }
+  });
 
   // Получение расписания для графа
   const { mutate, data, isPending } = useMutation({
@@ -38,7 +49,7 @@ const SubgraphPopUp = ({ subgraph, onClose }: SubgraphPopUpProps) => {
     setTimeout(onClose, 300);
   };
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {isVisible && subgraph && (
         <motion.div
@@ -46,7 +57,7 @@ const SubgraphPopUp = ({ subgraph, onClose }: SubgraphPopUpProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={handleClose}
+          onClick={handleOverlayClick}
         >
           <motion.div
             className={styles.popup}
@@ -98,6 +109,11 @@ const SubgraphPopUp = ({ subgraph, onClose }: SubgraphPopUpProps) => {
       )}
     </AnimatePresence>
   );
+
+  // Рендерим модальное окно в body через портал
+  return typeof document !== 'undefined' 
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };
 
 export default SubgraphPopUp; 

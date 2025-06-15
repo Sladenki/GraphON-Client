@@ -4,13 +4,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
-  z-index: 2147483647;
+  z-index: 999999;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   pointer-events: all;
+  // Принудительное позиционирование относительно viewport
+  inset: 0;
+  overflow: hidden;
 }
 
 .popup {
@@ -19,15 +24,19 @@
   padding: 24px;
   width: 100%;
   max-width: 600px;
-  max-height: 80vh;
+  max-height: 85vh;
   overflow-y: auto;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
   position: relative;
-  z-index: 2147483647;
+  z-index: 1000000;
+  // Улучшенная прокрутка
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 
   @media (max-width: 768px) {
     max-width: 100%;
     padding: 20px;
+    max-height: calc(100vh - 2rem);
   }
 }
 

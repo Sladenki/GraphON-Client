@@ -1,6 +1,8 @@
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC } from "react";
+import { createPortal } from "react-dom";
 import styles from "./PopUpWrapper.module.scss";
 import { X } from 'lucide-react';
+import { useModalManager } from './useModalManager';
 
 interface PopUpWrapperProps {
   isOpen: boolean; // Управляет открытием/закрытием попапа
@@ -18,41 +20,26 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   height = 'auto' // Дефолтное значение для высоты
  }) => {
 
-  // Блокируем/разблокируем общий скролл при изменении isOpen
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    return () => {
-      document.body.style.overflow = ''; // Восстановление при размонтировании
-    };
-  }, [isOpen]);
-
-  // Обработчик клика вне окна для его закрытия
-  const handleOverlayClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (e.target === e.currentTarget) {
-        onClose();
-      }
-    },
-    [onClose]
-  );
+  // Используем хук для управления модальным окном
+  const { handleOverlayClick } = useModalManager({ isOpen, onClose });
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div className={styles.popupOverlay} onClick={handleOverlayClick}>
       <div className={styles.popupContent} style={{ width, height }}>
-        <button onClick={onClose} className={styles.closeButton}>
+        <button onClick={onClose} className={styles.closeButton} aria-label="Закрыть">
           <X size={24} /> 
         </button>
         {children}
       </div>
     </div>
   );
+
+  // Рендерим модальное окно в body через портал
+  return typeof document !== 'undefined' 
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };
 
 export default PopUpWrapper;
