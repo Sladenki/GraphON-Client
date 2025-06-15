@@ -19,8 +19,8 @@ export const useHomepageOptimization = ({
 
   // Мемоизированная проверка наличия подписок
   const hasSubscriptions = useMemo(() => {
-    return user?.graphSubsNum && user.graphSubsNum > 0;
-  }, [user?.graphSubsNum]);
+    return (user?.graphSubsNum && user.graphSubsNum > 0) || (user?.attentedEventsNum && user.attentedEventsNum > 0);
+  }, [user?.graphSubsNum, user?.attentedEventsNum]);
 
   // Мемоизированная проверка выбранного университета
   const hasSelectedGraph = useMemo(() => {
