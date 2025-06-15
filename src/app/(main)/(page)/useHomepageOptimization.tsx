@@ -15,7 +15,7 @@ export const useHomepageOptimization = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
-  const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Мемоизированная проверка наличия подписок
   const hasSubscriptions = useMemo(() => {
@@ -32,7 +32,7 @@ export const useHomepageOptimization = ({
 
   // Мемоизированный массив табов с кэшированием
   const tabs = useMemo(() => {
-    const iconProps = { size: 18, 'aria-hidden': 'true' };
+    const iconProps = { size: 18, 'aria-hidden': true };
     const baseTabs: Array<{ name: TabType; label: string; icon: React.ReactElement }> = [
       { name: "groups" as const, label: "Группы", icon: <Users {...iconProps} /> },
       { name: "events" as const, label: "События", icon: <Calendar {...iconProps} /> },
