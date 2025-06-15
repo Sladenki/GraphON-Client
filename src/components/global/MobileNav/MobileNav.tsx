@@ -3,6 +3,7 @@ import { Menu, X, Settings, ChevronRight } from 'lucide-react';
 import { Button, Card, CardBody, CardHeader, Divider } from '@heroui/react';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import { useMobileNavOptimization } from './useMobileNavOptimization';
+import { useUIState } from '@/contexts/UIStateContext';
 import styles from './MobileNav.module.scss';
 
 interface MobileNavProps {
@@ -18,6 +19,7 @@ interface MobileNavProps {
 const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTab, tabs }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSwipeHint, setShowSwipeHint] = useState(true);
+  const { setMobileNavOpen } = useUIState();
 
   // Используем оптимизированный хук
   const { handleOpenMenu, handleCloseMenu, handleBackdropClick, handleTabChange } = 
@@ -66,6 +68,11 @@ const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTa
       setShowSwipeHint(false);
     }
   }, []);
+
+  // Синхронизируем состояние с контекстом
+  useEffect(() => {
+    setMobileNavOpen(isOpen);
+  }, [isOpen, setMobileNavOpen]);
 
   // Определяем, показывать ли swipe индикатор
   const shouldShowSwipeIndicator = useMemo(() => {

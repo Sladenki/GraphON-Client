@@ -1,8 +1,9 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "./PopUpWrapper.module.scss";
 import { X } from 'lucide-react';
 import { useModalManager } from './useModalManager';
+import { useUIState } from '@/contexts/UIStateContext';
 
 interface PopUpWrapperProps {
   isOpen: boolean; // Управляет открытием/закрытием попапа
@@ -10,6 +11,7 @@ interface PopUpWrapperProps {
   children: React.ReactNode; // Контент внутри попапа
   width?: number | string; // Необязательная ширина
   height?: number | string; // Необязательная высота
+  popupType?: 'schedule' | 'info' | 'other'; // Тип попапа для контекста
 }
 
 const PopUpWrapper: FC<PopUpWrapperProps> = ({ 
@@ -17,8 +19,20 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   onClose, 
   children,
   width = 'auto', // Дефолтное значение для ширины
-  height = 'auto' // Дефолтное значение для высоты
+  height = 'auto', // Дефолтное значение для высоты
+  popupType = 'other'
  }) => {
+
+  const { setSchedulePopUpOpen, setInfoPopUpOpen } = useUIState();
+
+  // Синхронизируем состояние с контекстом
+  useEffect(() => {
+    if (popupType === 'schedule') {
+      setSchedulePopUpOpen(isOpen);
+    } else if (popupType === 'info') {
+      setInfoPopUpOpen(isOpen);
+    }
+  }, [isOpen, popupType, setSchedulePopUpOpen, setInfoPopUpOpen]);
 
   // Используем хук для управления модальным окном
   const { handleOverlayClick } = useModalManager({ isOpen, onClose });

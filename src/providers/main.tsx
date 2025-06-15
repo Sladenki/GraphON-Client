@@ -4,6 +4,7 @@ import React from 'react'
 import { AuthProvider } from "@/providers/AuthProvider";
 import { ThemeProviders } from "@/providers/ThemeProvider";
 import { ReactQueryProvider } from './ReactQueryProvider';
+import { UIStateProvider } from '@/contexts/UIStateContext';
 
 
 export const AllProvers = ({ children }: { children: React.ReactNode }) => {
@@ -11,7 +12,9 @@ export const AllProvers = ({ children }: { children: React.ReactNode }) => {
     <AuthProvider>
         <ReactQueryProvider>
             <ThemeProviders>
-              {children}
+              <UIStateProvider>
+                {children}
+              </UIStateProvider>
             </ThemeProviders>
         </ReactQueryProvider>
     </AuthProvider>

@@ -38,7 +38,13 @@ const SchedulePopUp: FC<SchedulePopUpProps> = ({
     }
 
     return (
-        <PopUpWrapper isOpen={isSchedulePopupOpen} onClose={closeSchedulePopup} width={1000} height={900}>
+        <PopUpWrapper 
+            isOpen={isSchedulePopupOpen} 
+            onClose={closeSchedulePopup} 
+            width={1000} 
+            height={900}
+            popupType="schedule"
+        >
             {data && (
                 <ScheduleList
                     schedule={data?.data?.schedule}

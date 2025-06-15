@@ -19,6 +19,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: var(--font-family, system-ui, -apple-system, sans-serif);
+  z-index: 25;
 
   &.active {
     background: rgba(0, 255, 255, 0.12);
@@ -142,12 +143,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: var(--font-family, system-ui, -apple-system, sans-serif);
+  z-index: 15;
 
   &.active {
     background: rgba(0, 255, 255, 0.15);
     border-color: var(--accent-color);
     box-shadow: 0 0 15px var(--accent-glow);
-    z-index: 5;
+    z-index: 20;
     
     .labelText {
       color: var(--accent-color);

@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import styles from './ThemeNode.module.scss';
 import { ThemeNodeProps } from '../types';
 import { THEME_CONFIG } from '../constants';
+import { useUIState } from '@/contexts/UIStateContext';
 
 // Функция для проверки видимости точки в камере
 const isPointVisible = (point: THREE.Vector3, camera: THREE.Camera): boolean => {
@@ -79,6 +80,7 @@ export function ThemeNode({
   const { camera } = useThree();
   const [labelVisible, setLabelVisible] = useState(true);
   const [childLabelsVisible, setChildLabelsVisible] = useState<Record<string, boolean>>({});
+  const { hasAnyModalOpen } = useUIState();
   const [labelPosition, setLabelPosition] = useState<THREE.Vector3>(new THREE.Vector3());
   
   // Получаем дочерние узлы
@@ -157,8 +159,10 @@ export function ThemeNode({
       const nodePosition = groupRef.current.position.clone();
       const isNodeVisible = isPointVisible(nodePosition, camera);
       
-      // На мобильных показываем все подписи по умолчанию, но скрываем неактивные при выборе
-      if (isMobile) {
+      // Скрываем подписи если открыты модальные окна или боковая панель
+      if (hasAnyModalOpen) {
+        setLabelVisible(false);
+      } else if (isMobile) {
         setLabelVisible(isNodeVisible && (!anyActive || active));
       } else {
         setLabelVisible(isNodeVisible);
@@ -174,6 +178,12 @@ export function ThemeNode({
         const childY = Math.sin(childAngle) * childOrbitRadius;
         const childPos = nodePosition.clone().add(new THREE.Vector3(childX, childY, 0));
         
+        // Скрываем подписи дочерних узлов если открыты модальные окна
+        if (hasAnyModalOpen) {
+          newChildLabelsVisible[child._id.$oid] = false;
+          return;
+        }
+
         // На мобильных показываем подписи дочерних узлов только для активного графа
         if (isMobile && !active) {
           newChildLabelsVisible[child._id.$oid] = false;
@@ -215,7 +225,7 @@ export function ThemeNode({
       // @ts-expect-error 123
       camera.removeEventListener('change', updateOnCameraChange);
     };
-  }, [camera, children, childOrbitRadius, active, anyActive, isMobile]);
+  }, [camera, children, childOrbitRadius, active, anyActive, isMobile, hasAnyModalOpen]);
 
   // Анимация вращения
   useFrame((_, delta) => {

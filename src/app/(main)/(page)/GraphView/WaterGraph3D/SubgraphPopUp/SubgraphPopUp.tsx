@@ -9,6 +9,7 @@ import { ScheduleService } from '@/services/schedule.service';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { ScheduleList } from '@/components/ui/ScheduleList/ScheduleList';
 import { useModalManager } from '@/components/ui/PopUpWrapper/useModalManager';
+import { useUIState } from '@/contexts/UIStateContext';
 
 interface SubgraphPopUpProps {
   subgraph: GraphNode | null;
@@ -17,12 +18,18 @@ interface SubgraphPopUpProps {
 
 const SubgraphPopUp = ({ subgraph, onClose }: SubgraphPopUpProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const { setSubgraphPopUpOpen } = useUIState();
 
   useEffect(() => {
     if (subgraph) {
       setIsVisible(true);
     }
   }, [subgraph]);
+
+  // Синхронизируем состояние с контекстом
+  useEffect(() => {
+    setSubgraphPopUpOpen(isVisible && !!subgraph);
+  }, [isVisible, subgraph, setSubgraphPopUpOpen]);
 
   // Используем хук для управления модальным окном
   const { handleOverlayClick } = useModalManager({ 
