@@ -1,132 +1,156 @@
 "use client";
 
-import { useAuth } from "@/providers/AuthProvider";
+import React, { Suspense } from "react";
 import styles from "./page.module.scss";
 import dynamic from "next/dynamic";
-import { useState, useCallback, Suspense, useEffect } from "react";
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
-import React from "react";
 import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
 import { AllGraphs } from "@/app/(main)/(page)/AllGraphs/AllGraphs";
-import { Users, Calendar, Heart, Network } from "lucide-react";
-import Subs from "./Subs/Subs";
+import { useHomepageOptimization } from "./useHomepageOptimization";
 
-const Tabs = dynamic(() => import("./Tabs/Tabs"), { ssr: false });
-const GraphView = dynamic(() => import("./GraphView/GraphView"), { ssr: false });
-const EventsList = dynamic(() => import("./EventsList/EventsList"), { ssr: false });
+// Оптимизированная динамическая загрузка компонентов
+const Tabs = dynamic(() => import("./Tabs/Tabs"), { 
+  ssr: false,
+  loading: () => <div className={styles.tabsSkeleton} />
+});
 
-const Homepage = () => {
-  const { user } = useAuth();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'events' | 'groups' | 'graphSystem' | 'subs'>('events');
-  const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
+const GraphView = dynamic(() => import("./GraphView/GraphView"), { 
+  ssr: false,
+  loading: () => <SpinnerLoader />
+});
 
-  console.log('user', user)
+const EventsList = dynamic(() => import("./EventsList/EventsList"), { 
+  ssr: false,
+  loading: () => <SpinnerLoader />
+});
 
-  useEffect(() => {
-    // Retrieve saved tab from localStorage or default to 'events'
-    const savedTab = localStorage.getItem('activeTab') as 'events' | 'groups' | 'graphSystem' | 'subs';
-    
-    // Если сохраненный таб - "subs", но у пользователя нет подписок, переключаем на "events"
-    if (savedTab === 'subs' && (!user?.graphSubsNum || user.graphSubsNum === 0)) {
-      setActiveTab('events');
-      localStorage.setItem('activeTab', 'events');
-    } else if (savedTab) {
-      setActiveTab(savedTab);
-    }
+const Subs = dynamic(() => import("./Subs/Subs"), { 
+  ssr: false,
+  loading: () => <SpinnerLoader />
+});
 
-    // Initialize selectedGraphId
-    const savedGraphId = localStorage.getItem('selectedGraphId');
-    setSelectedGraphId(user?.selectedGraphId || savedGraphId || null);
+// Мемоизированный компонент выбора университета
+const UniversitySelectScreen = React.memo(() => (
+  <div className={styles.universitySelectContainer} role="main">
+    <UniversitySelect />
+  </div>
+));
+UniversitySelectScreen.displayName = 'UniversitySelectScreen';
 
-    // Listen for graph selection event
-    const handleGraphSelected = (event: CustomEvent<string>) => {
-      setSelectedGraphId(event.detail);
-    };
+// Мемоизированные компоненты контента
+const GroupsContent = React.memo<{ 
+  searchQuery: string; 
+  selectedGraphId: string; 
+}>(({ searchQuery, selectedGraphId }) => (
+  <Suspense fallback={<SpinnerLoader />}>
+    <AllGraphs 
+      searchQuery={searchQuery} 
+      selectedGraphId={selectedGraphId} 
+    />
+  </Suspense>
+));
+GroupsContent.displayName = 'GroupsContent';
 
-    window.addEventListener('graphSelected', handleGraphSelected as EventListener);
+const EventsContent = React.memo<{ 
+  searchQuery: string; 
+}>(({ searchQuery }) => (
+  <Suspense fallback={<SpinnerLoader />}>
+    <EventsList searchQuery={searchQuery} />
+  </Suspense>
+));
+EventsContent.displayName = 'EventsContent';
 
-    return () => {
-      window.removeEventListener('graphSelected', handleGraphSelected as EventListener);
-    };
-  }, [user]);
+const GraphSystemContent = React.memo<{ 
+  searchQuery: string; 
+}>(({ searchQuery }) => (
+  <Suspense fallback={<SpinnerLoader />}>
+    <GraphView searchQuery={searchQuery} />
+  </Suspense>
+));
+GraphSystemContent.displayName = 'GraphSystemContent';
 
-  const handleTabChange = useCallback((tab: string) => {
-    const newTab = tab as 'events' | 'groups' | 'graphSystem';
-    setActiveTab(newTab);
-    // Save active tab to localStorage
-    localStorage.setItem('activeTab', newTab);
-  }, []);
+const SubsContent = React.memo<{ 
+  searchQuery: string; 
+  hasSubscriptions: boolean; 
+}>(({ searchQuery, hasSubscriptions }) => {
+  if (!hasSubscriptions) return null;
+  
+  return (
+    <Suspense fallback={<SpinnerLoader />}>
+      <Subs searchQuery={searchQuery} />
+    </Suspense>
+  );
+});
+SubsContent.displayName = 'SubsContent';
 
-  // Проверяем наличие выбранного университета как у авторизованного пользователя, так и в localStorage
-  const savedGraphId = localStorage.getItem('selectedGraphId');
-  if (!user?.selectedGraphId && !savedGraphId) {
-    return (
-      <div style={{ 
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, var(--primary-bg) 0%, #2a2b5d 100%)'
-      }}>
-        <UniversitySelect />
-      </div>
-    );
+// Мемоизированный компонент контента
+const ContentRenderer = React.memo<{
+  activeTab: string;
+  searchQuery: string;
+  selectedGraphId: string;
+  hasSubscriptions: boolean;
+}>(({ activeTab, searchQuery, selectedGraphId, hasSubscriptions }) => {
+  switch (activeTab) {
+    case "groups":
+      return <GroupsContent searchQuery={searchQuery} selectedGraphId={selectedGraphId} />;
+    case "events":
+      return <EventsContent searchQuery={searchQuery} />;
+    case "graphSystem":
+      return <GraphSystemContent searchQuery={searchQuery} />;
+    case "subs":
+      return <SubsContent searchQuery={searchQuery} hasSubscriptions={hasSubscriptions} />;
+    default:
+      return <EventsContent searchQuery={searchQuery} />;
+  }
+});
+ContentRenderer.displayName = 'ContentRenderer';
+
+// Основной компонент Homepage
+const Homepage: React.FC = React.memo(() => {
+  const {
+    searchQuery,
+    activeTab,
+    selectedGraphId,
+    hasSelectedGraph,
+    hasSubscriptions,
+    showSearch,
+    tabs,
+    handleTabChange,
+    handleSearchChange,
+  } = useHomepageOptimization();
+
+  // Early return для экрана выбора университета
+  if (!hasSelectedGraph) {
+    return <UniversitySelectScreen />;
   }
 
-  // Создаем массив табов с условным включением подписок
-  const tabs = [
-    { name: "groups", label: "Группы", icon: <Users size={18} /> },
-    { name: "events", label: "События", icon: <Calendar size={18} /> },
-    ...(user?.graphSubsNum && user.graphSubsNum > 0 ? [{ name: "subs", label: "Подписки", icon: <Heart size={18} /> }] : []),
-    { name: "graphSystem", label: "Графы", icon: <Network size={18} /> },
-  ];
-
   return (
-    <>
+    <main className={styles.homepage}>
       {/* Шапка: Табы + Поиск */}
-      <div className={styles.headerPart}>
+      <header className={styles.headerPart}>
         <Tabs
           tabs={tabs}
           activeTab={activeTab}
           setActiveTab={handleTabChange}
-          showSearch={activeTab === "groups" || activeTab === "events" || activeTab === "subs"}
+          showSearch={showSearch}
           searchValue={searchQuery}
-          onSearchChange={setSearchQuery}
+          onSearchChange={handleSearchChange}
         />
-      </div>
+      </header>
 
       {/* Контент в зависимости от активного таба */}
-      <div className={styles.contentWrapper}>
-        {activeTab === "groups" && (
-          <Suspense fallback={<SpinnerLoader />}>
-            <AllGraphs 
-              searchQuery={searchQuery} 
-              selectedGraphId={selectedGraphId || ''} 
-            />
-          </Suspense>
-        )}
-
-        {activeTab === 'events' && (
-          <Suspense fallback={<SpinnerLoader />}>
-            <EventsList searchQuery={searchQuery} />
-          </Suspense>
-        )}
-
-        {activeTab === 'graphSystem' && (
-          <Suspense fallback={<SpinnerLoader />}>
-            <GraphView searchQuery={searchQuery}  />
-          </Suspense>
-        )}
-
-        {activeTab === 'subs' && user?.graphSubsNum && user.graphSubsNum > 0 && (
-          <Suspense fallback={<SpinnerLoader />}>
-            <Subs searchQuery={searchQuery} />
-          </Suspense>
-        )}
-      </div>
-    </>
+      <section className={styles.contentWrapper}>
+        <ContentRenderer
+          activeTab={activeTab}
+          searchQuery={searchQuery}
+          selectedGraphId={selectedGraphId}
+          hasSubscriptions={!!hasSubscriptions}
+        />
+      </section>
+    </main>
   );
-};
+});
+
+Homepage.displayName = 'Homepage';
 
 export default Homepage;
