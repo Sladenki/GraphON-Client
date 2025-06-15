@@ -5,7 +5,9 @@ import { Chip, Button } from '@heroui/react';
 import { EmptyState } from '@/components/global/EmptyState/EmptyState';
 import { ScheduleItem, EventItem } from '@/types/schedule';
 import { useScheduleOptimization } from './useScheduleOptimization';
+import { useMobileScheduleOptimization } from './useMobileScheduleOptimization';
 import { ScheduleCard, EventCard, DayButton, EventsGroup } from './ScheduleComponents';
+import { VirtualizedEventsList } from './VirtualizedEventsList';
 import styles from './Schedule.module.scss';
 
 interface SchedulePageProps {
@@ -76,31 +78,49 @@ const EventsList = React.memo<{
   selectedDaySchedule: ScheduleItem[];
   selectedDayEvents: EventItem[];
   onToggleSubscription: (eventId: string, currentStatus: boolean) => void;
-}>(({ selectedDaySchedule, selectedDayEvents, onToggleSubscription }) => (
-  <div className={styles.eventsList}>
-    {/* Расписание занятий */}
-    {selectedDaySchedule.length > 0 && (
-      <EventsGroup title="Занятия" icon="📚" count={selectedDaySchedule.length}>
-        {selectedDaySchedule.map((item) => (
-          <ScheduleCard key={item._id} scheduleItem={item} />
-        ))}
-      </EventsGroup>
-    )}
-    
-    {/* Мероприятия */}
-    {selectedDayEvents.length > 0 && (
-      <EventsGroup title="Мероприятия" icon="🎯" count={selectedDayEvents.length}>
-        {selectedDayEvents.map((event) => (
-          <EventCard
-            key={event._id}
-            event={event}
-            onToggleSubscription={onToggleSubscription}
-          />
-        ))}
-      </EventsGroup>
-    )}
-  </div>
-));
+  shouldUseVirtualization?: boolean;
+  maxVisibleItems?: number;
+}>(({ selectedDaySchedule, selectedDayEvents, onToggleSubscription, shouldUseVirtualization = false, maxVisibleItems = 10 }) => {
+  
+  // Используем виртуализацию для больших списков или на слабых устройствах
+  if (shouldUseVirtualization || (selectedDaySchedule.length + selectedDayEvents.length) > maxVisibleItems) {
+    return (
+      <VirtualizedEventsList
+        scheduleItems={selectedDaySchedule}
+        eventItems={selectedDayEvents}
+        onToggleSubscription={onToggleSubscription}
+        maxVisibleItems={maxVisibleItems}
+      />
+    );
+  }
+
+  // Обычный рендеринг для небольших списков
+  return (
+    <div className={styles.eventsList}>
+      {/* Расписание занятий */}
+      {selectedDaySchedule.length > 0 && (
+        <EventsGroup title="Занятия" icon="📚" count={selectedDaySchedule.length}>
+          {selectedDaySchedule.map((item) => (
+            <ScheduleCard key={item._id} scheduleItem={item} />
+          ))}
+        </EventsGroup>
+      )}
+      
+      {/* Мероприятия */}
+      {selectedDayEvents.length > 0 && (
+        <EventsGroup title="Мероприятия" icon="🎯" count={selectedDayEvents.length}>
+          {selectedDayEvents.map((event) => (
+            <EventCard
+              key={event._id}
+              event={event}
+              onToggleSubscription={onToggleSubscription}
+            />
+          ))}
+        </EventsGroup>
+      )}
+    </div>
+  );
+});
 EventsList.displayName = 'EventsList';
 
 // Мемоизированный компонент пустого состояния
@@ -132,8 +152,18 @@ const SchedulePage: React.FC<SchedulePageProps> = React.memo(({
     onToggleSubscription
   });
 
+  // Мобильная оптимизация
+  const mobileOptimization = useMobileScheduleOptimization({ isActive: true });
+  const { 
+    getOptimizationClasses, 
+    shouldUseSimplifiedRendering, 
+    getMaxVisibleCards,
+    isMobile,
+    isLowPerformanceDevice 
+  } = mobileOptimization;
+
   return (
-    <div className={styles.schedulePage}>
+    <div className={`${styles.schedulePage} ${getOptimizationClasses}`}>
       {/* Селектор дней недели */}
       <div className={styles.weekSelector}>
         <ScheduleHeader
@@ -158,6 +188,8 @@ const SchedulePage: React.FC<SchedulePageProps> = React.memo(({
             selectedDaySchedule={selectedDayData.selectedDaySchedule}
             selectedDayEvents={selectedDayData.selectedDayEvents}
             onToggleSubscription={handleToggleSubscription}
+            shouldUseVirtualization={isMobile || isLowPerformanceDevice}
+            maxVisibleItems={getMaxVisibleCards()}
           />
         )}
       </div>

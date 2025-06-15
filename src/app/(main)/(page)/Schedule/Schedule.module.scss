@@ -911,6 +911,115 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   }
 }
 
+// Мобильные оптимизации
+.mobile-optimized {
+  // Упрощенные стили для мобильных устройств
+  .weekSelector {
+    backdrop-filter: none !important;
+    background: var(--block-color) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .dayButton {
+    backdrop-filter: none !important;
+    transition: background-color 0.2s ease !important;
+    
+    &:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    
+    &::before {
+      display: none !important;
+    }
+  }
+  
+  .scheduleCard,
+  .eventCard {
+    backdrop-filter: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    
+    &:hover {
+      transform: none !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+  }
+}
+
+.low-performance {
+  // Стили для слабых устройств
+  * {
+    animation: none !important;
+    transition: none !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+  }
+  
+  .weekSelector,
+  .dayButton,
+  .scheduleCard,
+  .eventCard {
+    background: var(--block-color) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: none !important;
+  }
+}
+
+.reduced-motion {
+  // Стили для пользователей с ограниченной анимацией
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.1s !important;
+  }
+}
+
+.slow-connection {
+  // Стили для медленного соединения
+  .eventsList {
+    // Уменьшаем количество одновременно видимых элементов
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+}
+
+// Виртуализированный контейнер
+.virtualizedContainer {
+  width: 100%;
+  position: relative;
+  
+  // Оптимизированная прокрутка
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  
+  // Кастомный скроллбар
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(150, 130, 238, 0.3);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(150, 130, 238, 0.5);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    height: 50vh !important;
+    
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+  }
+}
+
 // Responsive adjustments
 @media (max-width: 480px) {
   .schedulePage {
