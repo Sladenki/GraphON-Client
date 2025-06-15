@@ -84,12 +84,10 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
           <div className={styles.overlay}>
             <h3 className={styles.title}>{name}</h3>
             {isLoggedIn && (
-              <Button
+              <button
                 onClick={handleSubscription}
                 disabled={isLoading}
-                variant="solid"
-                color={isSubscribed ? "danger" : "primary"}
-                className={styles.subscriptionButton}
+                className={`${styles.subscriptionButton} ${isSubscribed ? styles.unsubscribe : styles.subscribe}`}
                 aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
                 title={isSubscribed ? "Отписаться" : "Подписаться"}
               >
@@ -100,7 +98,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
                 ) : (
                   "Подписаться"
                 )}
-              </Button>
+              </button>
             )}
           </div>
         </div>
@@ -110,27 +108,23 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
         </div>
 
         <footer className={styles.footer}>
-          <Button 
-            variant="solid"
-            color="primary"
+          <button 
             onClick={handleScheduleClick}
-            className={styles.actionButton}
+            className={`${styles.actionButton} ${styles.scheduleButton}`}
             aria-label="Открыть расписание"
           >
             <Calendar size={16} />
             <span>Расписание</span>
-          </Button>
+          </button>
           
-          <Button 
-            variant="solid"
-            color="secondary"
+          <button 
             onClick={handleInfoClick}
-            className={styles.actionButton}
+            className={`${styles.actionButton} ${styles.infoButton}`}
             aria-label="Показать информацию"
           >
             <Info size={16} />
             <span>Инфо</span>
-          </Button>
+          </button>
         </footer>
       </div>
     </Card>

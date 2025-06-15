@@ -1,55 +1,20 @@
-// SCSS Variables
-$primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
-$secondary-gradient: linear-gradient(135deg, #3b82f6, #2dd4bf);
-$danger-gradient: linear-gradient(135deg, #ef4444, #f97316);
-$success-gradient: linear-gradient(135deg, #22c55e, #10b981);
-
-$text-primary: #1F2937;
-$text-secondary: #6B7280;
-$text-light: #9CA3AF;
-
-$background-light: #F9FAFB;
-$background-white: #FFFFFF;
-$background-overlay: rgba(0, 0, 0, 0.6);
-
-$border-radius-sm: 6px;
-$border-radius-md: 12px;
-$border-radius-lg: 16px;
-$border-radius-xl: 20px;
-
-$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-$shadow-neon: 0 0 20px rgba(99, 102, 241, 0.3);
-
-$transition-fast: all 0.15s ease;
-$transition-normal: all 0.25s ease;
-$transition-slow: all 0.3s ease;
-
-$font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-$font-family-secondary: 'Poppins', sans-serif;
-
-// Breakpoints
-$mobile: 480px;
-$tablet: 768px;
-$desktop: 1024px;
+// GraphBlock Component Styles - Using project's CSS variables
 
 // Component Styles
 .graphBlock {
-  
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 380px;
   height: 420px;
   margin: 0 auto;
-  background: $background-white;
-  border-radius: $border-radius-lg;
-  box-shadow: $shadow-lg;
+  background: var(--block-color);
+  border-radius: 16px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  transition: $transition-normal;
+  transition: all 0.25s ease;
   position: relative;
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
 
   &::before {
     content: '';
@@ -58,16 +23,17 @@ $desktop: 1024px;
     left: 0;
     right: 0;
     height: 4px;
-    background: $primary-gradient;
+    background: linear-gradient(135deg, rgba(var(--main-Color), 0.8), rgba(var(--main-Color), 1));
     z-index: 1;
   }
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: $shadow-xl, $shadow-neon;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: rgba(var(--main-Color), 0.2);
   }
 
-  @media (max-width: $mobile) {
+  @media (max-width: 480px) {
     max-width: 100%;
     height: 360px;
     margin: 0;
@@ -82,7 +48,7 @@ $desktop: 1024px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: $background-white;
+  background: var(--block-color);
 }
 
 .imageContainer {
@@ -90,9 +56,9 @@ $desktop: 1024px;
   width: 100%;
   height: 240px;
   overflow: hidden;
-  background: $background-light;
+  background: var(--background-color);
 
-  @media (max-width: $mobile) {
+  @media (max-width: 480px) {
     height: 200px;
   }
 }
@@ -101,7 +67,7 @@ $desktop: 1024px;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: $transition-slow;
+  transition: all 0.3s ease;
   
   &:hover {
     transform: scale(1.05);
@@ -122,54 +88,54 @@ $desktop: 1024px;
 }
 
 .title {
-  font-family: $font-family-secondary;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 24px;
   font-weight: 700;
-  color: $background-white;
+  color: #ffffff;
   margin: 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   max-width: 80%;
   
-  @media (max-width: $mobile) {
+  @media (max-width: 480px) {
     font-size: 20px;
   }
 }
 
 .subscriptionButton {
-  padding: 8px 16px !important;
-  border-radius: $border-radius-md !important;
-  transition: $transition-fast !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  font-weight: 600 !important;
-  font-size: 14px !important;
-  min-width: 120px !important;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: all 0.15s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 120px;
+  border: none;
+  cursor: pointer;
+  color: white;
   
-  &[data-color="primary"] {
-    background: rgba(99, 102, 241, 0.9) !important;
-    border: 1px solid rgba(99, 102, 241, 0.3) !important;
-    color: white !important;
+  &.subscribe {
+    background: rgba(var(--main-Color), 0.9);
+    border: 1px solid rgba(var(--main-Color), 0.3);
     
-    &:hover {
-      background: rgba(99, 102, 241, 1) !important;
-      border-color: rgba(99, 102, 241, 0.5) !important;
+    &:hover:not(:disabled) {
+      background: rgba(var(--main-Color), 1);
+      border-color: rgba(var(--main-Color), 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(var(--main-Color), 0.3);
     }
   }
   
-  &[data-color="danger"] {
-    background: rgba(239, 68, 68, 0.9) !important;
-    border: 1px solid rgba(239, 68, 68, 0.3) !important;
-    color: white !important;
+  &.unsubscribe {
+    background: rgba(239, 68, 68, 0.9);
+    border: 1px solid rgba(239, 68, 68, 0.3);
     
-    &:hover {
-      background: rgba(239, 68, 68, 1) !important;
-      border-color: rgba(239, 68, 68, 0.5) !important;
+    &:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 1);
+      border-color: rgba(239, 68, 68, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
-  }
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
   
   &:disabled {
@@ -178,10 +144,10 @@ $desktop: 1024px;
     transform: none !important;
   }
 
-  @media (max-width: $mobile) {
-    padding: 6px 12px !important;
-    font-size: 13px !important;
-    min-width: 100px !important;
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 13px;
+    min-width: 100px;
   }
 }
 
@@ -205,23 +171,23 @@ $desktop: 1024px;
   justify-content: center;
   width: 100%;
   height: 100%;
-  background: $primary-gradient;
-  color: $background-white;
+  background: linear-gradient(135deg, rgba(var(--main-Color), 0.8), rgba(var(--main-Color), 1));
+  color: #ffffff;
 }
 
 .placeholderIcon {
   font-size: 48px;
   opacity: 0.8;
 
-  @media (max-width: $mobile) {
+  @media (max-width: 480px) {
     font-size: 36px;
   }
 }
 
 .infoSection {
   padding: 16px 20px;
-  background: $background-white;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: var(--block-color);
+  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.05));
   flex: 1;
   overflow-y: auto;
 }
@@ -229,7 +195,8 @@ $desktop: 1024px;
 .about {
   font-size: 14px;
   line-height: 1.6;
-  color: $text-secondary;
+  color: var(--main-text);
+  opacity: 0.8;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -237,7 +204,7 @@ $desktop: 1024px;
   overflow: hidden;
   text-overflow: ellipsis;
 
-  @media (max-width: $mobile) {
+  @media (max-width: 480px) {
     font-size: 13px;
     -webkit-line-clamp: 2;
   }
@@ -247,47 +214,48 @@ $desktop: 1024px;
   display: flex;
   padding: 16px 20px;
   gap: 12px;
-  background: $background-white;
+  background: var(--block-color);
   margin-top: auto;
 }
 
 .actionButton {
-  flex: 1 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  padding: 12px !important;
-  border-radius: $border-radius-md !important;
-  font-family: $font-family-primary !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  transition: $transition-fast !important;
-  color: white !important;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  color: white;
+  border: none;
+  cursor: pointer;
   
-  &[data-color="primary"] {
-    background: rgba(99, 102, 241, 0.9) !important;
-    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  &.scheduleButton {
+    background: rgba(var(--main-Color), 0.9);
+    border: 1px solid rgba(var(--main-Color), 0.3);
     
     &:hover {
-      background: rgba(99, 102, 241, 1) !important;
-      border-color: rgba(99, 102, 241, 0.5) !important;
+      background: rgba(var(--main-Color), 1);
+      border-color: rgba(var(--main-Color), 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(var(--main-Color), 0.3);
     }
   }
   
-  &[data-color="secondary"] {
-    background: rgba(59, 130, 246, 0.9) !important;
-    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  &.infoButton {
+    background: rgba(59, 130, 246, 0.9);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     
     &:hover {
-      background: rgba(59, 130, 246, 1) !important;
-      border-color: rgba(59, 130, 246, 0.5) !important;
+      background: rgba(59, 130, 246, 1);
+      border-color: rgba(59, 130, 246, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
-  }
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
   
   &:active {
@@ -295,7 +263,7 @@ $desktop: 1024px;
   }
   
   svg {
-    transition: $transition-fast;
+    transition: all 0.15s ease;
     flex-shrink: 0;
   }
   
@@ -305,9 +273,9 @@ $desktop: 1024px;
     text-overflow: ellipsis;
   }
 
-  @media (max-width: $mobile) {
-    padding: 10px !important;
-    font-size: 13px !important;
+  @media (max-width: 480px) {
+    padding: 10px;
+    font-size: 13px;
     
     svg {
       width: 14px;
@@ -317,36 +285,37 @@ $desktop: 1024px;
 }
 
 // Dark theme support
-@media (prefers-color-scheme: dark) {
+html[data-theme="dark"] {
   .graphBlock {
-    background: #1F2937;
+    background: var(--block-color);
+    border-color: rgba(255, 255, 255, 0.1);
   }
   
   .contentWrapper {
-    background: #1F2937;
+    background: var(--block-color);
   }
   
   .imageContainer {
-    background: #111827;
+    background: var(--background-color);
   }
   
   .infoSection {
-    background: #1F2937;
+    background: var(--block-color);
     border-bottom-color: rgba(255, 255, 255, 0.1);
   }
   
   .about {
-    color: #E5E7EB;
+    color: var(--main-text);
   }
   
   .footer {
-    background: #1F2937;
+    background: var(--block-color);
   }
 
   .subscriptionButton,
   .actionButton {
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .overlay {
