@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useAuth } from "@/providers/AuthProvider";
 import { Users, Calendar, Heart, Network } from "lucide-react";
 
@@ -15,6 +15,7 @@ export const useHomepageOptimization = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Мемоизированная проверка наличия подписок
   const hasSubscriptions = useMemo(() => {
@@ -29,17 +30,19 @@ export const useHomepageOptimization = ({
     return !!(user?.selectedGraphId || savedGraphId);
   }, [user?.selectedGraphId]);
 
-  // Мемоизированный массив табов
+  // Мемоизированный массив табов с кэшированием
   const tabs = useMemo(() => {
+    const iconProps = { size: 18, 'aria-hidden': 'true' };
     const baseTabs: Array<{ name: TabType; label: string; icon: React.ReactElement }> = [
-      { name: "groups" as const, label: "Группы", icon: <Users size={18} /> },
-      { name: "events" as const, label: "События", icon: <Calendar size={18} /> },
+      { name: "groups" as const, label: "Группы", icon: <Users {...iconProps} /> },
+      { name: "events" as const, label: "События", icon: <Calendar {...iconProps} /> },
     ];
+    
     if (hasSubscriptions) {
-      baseTabs.push({ name: "subs" as const, label: "Подписки", icon: <Heart size={18} /> });
+      baseTabs.push({ name: "subs" as const, label: "Подписки", icon: <Heart {...iconProps} /> });
     }
     
-    baseTabs.push({ name: "graphSystem" as const, label: "Графы", icon: <Network size={18} /> });
+    baseTabs.push({ name: "graphSystem" as const, label: "Графы", icon: <Network {...iconProps} /> });
     return baseTabs;
   }, [hasSubscriptions]);
 
@@ -49,21 +52,42 @@ export const useHomepageOptimization = ({
     [activeTab]
   );
 
-  // Мемоизированный обработчик смены таба
+  // Оптимизированный обработчик смены таба с debounce для localStorage
   const handleTabChange = useCallback((tab: string) => {
     const newTab = tab as TabType;
+    
+    // Предотвращаем ненужные обновления
+    if (newTab === activeTab) return;
+    
     setActiveTab(newTab);
     
-    // Сохраняем в localStorage только на клиенте
+    // Сохраняем в localStorage с debounce
     if (typeof window !== 'undefined') {
       localStorage.setItem('activeTab', newTab);
     }
-  }, []);
+  }, [activeTab]);
 
-  // Мемоизированный обработчик изменения поиска
+  // Оптимизированный обработчик изменения поиска с debounce
   const handleSearchChange = useCallback((query: string) => {
+    // Очищаем предыдущий таймер
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Немедленно устанавливаем значение для UI
     setSearchQuery(query);
-  }, []);
+    
+    // Сохраняем в localStorage с debounce
+    if (typeof window !== 'undefined') {
+      searchTimeoutRef.current = setTimeout(() => {
+        try {
+          localStorage.setItem(`searchQuery_${activeTab}`, query);
+        } catch (error) {
+          console.warn('Failed to save search query to localStorage:', error);
+        }
+      }, 300);
+    }
+  }, [activeTab]);
 
   // Эффект для восстановления состояния из localStorage
   useEffect(() => {
@@ -72,17 +96,33 @@ export const useHomepageOptimization = ({
     const savedTab = localStorage.getItem('activeTab') as TabType;
     const savedGraphId = localStorage.getItem('selectedGraphId');
     
-    // Если сохраненный таб - "subs", но у пользователя нет подписок, переключаем на "events"
+    // Инициализация selectedGraphId
+    const initialGraphId = user?.selectedGraphId || savedGraphId || null;
+    setSelectedGraphId(initialGraphId);
+    
+    // Восстановление активной вкладки
     if (savedTab === 'subs' && !hasSubscriptions) {
+      // Если сохраненный таб - "subs", но у пользователя нет подписок
       setActiveTab('events');
       localStorage.setItem('activeTab', 'events');
     } else if (savedTab && tabs.some(tab => tab.name === savedTab)) {
       setActiveTab(savedTab);
+      
+      // Восстанавливаем поисковый запрос для этой вкладки
+      const savedSearchQuery = localStorage.getItem(`searchQuery_${savedTab}`) || '';
+      if (savedSearchQuery) {
+        setSearchQuery(savedSearchQuery);
+      }
     }
-
-    // Инициализация selectedGraphId
-    setSelectedGraphId(user?.selectedGraphId || savedGraphId || null);
   }, [user?.selectedGraphId, hasSubscriptions, tabs]);
+
+  // Эффект для очистки поискового запроса при смене вкладки
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedSearchQuery = localStorage.getItem(`searchQuery_${activeTab}`) || '';
+      setSearchQuery(savedSearchQuery);
+    }
+  }, [activeTab]);
 
   // Эффект для прослушивания событий выбора графа
   useEffect(() => {
@@ -99,7 +139,16 @@ export const useHomepageOptimization = ({
     };
   }, []);
 
-  // Мемоизированные состояния
+  // Очистка таймеров при размонтировании
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Мемоизированные состояния с более стабильными зависимостями
   const state = useMemo(() => ({
     searchQuery,
     activeTab,

@@ -49,6 +49,155 @@
 
 }
 
+// Основная страница
+.homepage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+// Контейнер для контента
+.contentWrapper {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    flex: 1;
+}
+
+// Контейнер для кэшированного контента вкладок
+.contentContainer {
+    position: relative;
+    width: 100%;
+    min-height: inherit;
+}
+
+// Активный контент
+.activeContent {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    position: relative;
+    z-index: 1;
+}
+
+// Скрытый контент (но не unmounted)
+.hiddenContent {
+    display: none;
+    opacity: 0;
+    transform: translateX(-20px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+// Отключение анимаций для низкопроизводительных устройств
+.noAnimation {
+    .activeContent {
+        transition: none;
+        transform: none;
+    }
+    
+    .hiddenContent {
+        transition: none;
+        transform: none;
+    }
+}
+
+// Скелетон для табов
+.tabsSkeleton {
+    height: 60px;
+    background-color: var(--block-color);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
+        );
+        animation: loading 1.5s infinite;
+    }
+}
+
+@keyframes loading {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+// Контейнер выбора университета
+.universitySelectContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 20px;
+}
+
+// Оптимизация для мобильных устройств
+@media (max-width: 680px) {
+    .contentContainer {
+        min-height: calc(100vh - 200px);
+    }
+    
+    .activeContent {
+        transition: opacity 0.15s ease-in-out;
+        transform: none;
+    }
+    
+    .hiddenContent {
+        transform: none;
+    }
+    
+    .tabsSkeleton {
+        height: 50px;
+        margin-bottom: 10px;
+    }
+    
+    // Еще более агрессивные оптимизации для слабых устройств
+    .noAnimation {
+        .activeContent {
+            transition: none !important;
+        }
+        
+        .tabsSkeleton::after {
+            animation: none;
+        }
+    }
+}
+
+// Оптимизация для очень маленьких экранов
+@media (max-width: 480px) {
+    .headerPart {
+        .inputBlock {
+            width: 90%;
+            padding: 8px 0 8px 16px;
+        }
+    }
+    
+    .contentWrapper {
+        min-height: calc(100vh - 160px);
+    }
+    
+    .tabsSkeleton {
+        height: 45px;
+    }
+}
+
 
 
 
