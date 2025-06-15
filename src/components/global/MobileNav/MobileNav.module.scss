@@ -51,6 +51,58 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   background-clip: text;
 }
 
+// Swipe indicator styles
+.swipeIndicator {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 4px;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, $primary-color, transparent);
+  border-radius: 0 4px 4px 0;
+  opacity: 0.6;
+  animation: swipePulse 2s ease-in-out infinite;
+  pointer-events: none;
+  
+  // Показываем только на touch устройствах
+  @media (hover: hover) {
+    display: none;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid $primary-color;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    opacity: 0.8;
+  }
+}
+
+@keyframes swipePulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-50%) translateX(2px);
+  }
+}
+
+// Скрываем индикатор когда меню открыто
+.sidebarOpen ~ .swipeIndicator {
+  opacity: 0;
+  pointer-events: none;
+}
+
 // Header styles - optimized
 .header {
   position: fixed;
@@ -381,6 +433,112 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   margin: 0 !important;
 }
 
+// Swipe hint card
+.swipeHintCard {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(150, 130, 238, 0.1);
+  border: 1px solid rgba(150, 130, 238, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: swipeHintFadeIn 0.5s ease-out;
+  
+  @media (min-width: 768px) {
+    background: linear-gradient(135deg, rgba(150, 130, 238, 0.1), rgba(0, 255, 255, 0.05));
+    backdrop-filter: blur(4px);
+  }
+}
+
+.swipeHintIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(150, 130, 238, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  
+  svg {
+    color: rgb(150, 130, 238);
+    animation: swipeArrow 1.5s ease-in-out infinite;
+  }
+}
+
+.swipeHintText {
+  flex: 1;
+  min-width: 0;
+}
+
+.swipeHintTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--main-text);
+  margin-bottom: 0.25rem;
+}
+
+.swipeHintDescription {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: var(--main-text);
+  opacity: 0.8;
+  line-height: 1.3;
+}
+
+@keyframes swipeHintFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes swipeArrow {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+// Улучшенный swipe индикатор с подсказкой
+.swipeHint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(150, 130, 238, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: swipeHintPulse 1.5s ease-in-out infinite;
+  
+  svg {
+    color: rgb(150, 130, 238);
+  }
+}
+
+@keyframes swipeHintPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+}
+
 // Settings Section - optimized
 .settingsSection {
   margin-top: auto;
@@ -537,6 +695,15 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   .settingsSection {
     padding: 0.75rem;
   }
+  
+  .swipeHintCard {
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  
+  .swipeHintDescription {
+    font-size: 0.7rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -551,6 +718,18 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 
   .settingsSection {
     padding: 0.625rem;
+  }
+  
+  .swipeHintCard {
+    padding: 0.625rem;
+  }
+  
+  .swipeHintTitle {
+    font-size: 0.8rem;
+  }
+  
+  .swipeHintDescription {
+    font-size: 0.65rem;
   }
 }
 
@@ -568,9 +747,16 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   .menuButton,
   .closeButton,
   .header,
-  .settingsSection {
+  .settingsSection,
+  .swipeIndicator,
+  .swipeHintCard {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  
+  .swipeHint,
+  .swipeHintIcon svg {
+    animation: none !important;
   }
 } 

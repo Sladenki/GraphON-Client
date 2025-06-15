@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Menu, X, Settings } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Menu, X, Settings, ChevronRight } from 'lucide-react';
 import { Button, Card, CardBody, CardHeader, Divider } from '@heroui/react';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import { useMobileNavOptimization } from './useMobileNavOptimization';
@@ -17,6 +17,7 @@ interface MobileNavProps {
 
 const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTab, tabs }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showSwipeHint, setShowSwipeHint] = useState(true);
 
   // Используем оптимизированный хук
   const { handleOpenMenu, handleCloseMenu, handleBackdropClick, handleTabChange } = 
@@ -49,6 +50,30 @@ const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTa
     [tabs, activeTab, handleTabChange]
   );
 
+  // Скрываем подсказку после первого открытия меню
+  useEffect(() => {
+    if (isOpen && showSwipeHint) {
+      setShowSwipeHint(false);
+      // Сохраняем в localStorage что пользователь уже видел подсказку
+      localStorage.setItem('swipeHintShown', 'true');
+    }
+  }, [isOpen, showSwipeHint]);
+
+  // Проверяем при загрузке, показывали ли уже подсказку
+  useEffect(() => {
+    const hintShown = localStorage.getItem('swipeHintShown');
+    if (hintShown) {
+      setShowSwipeHint(false);
+    }
+  }, []);
+
+  // Определяем, показывать ли swipe индикатор
+  const shouldShowSwipeIndicator = useMemo(() => {
+    // Показываем только на touch устройствах и если не показали подсказку
+    const isTouchDevice = 'ontouchstart' in window;
+    return isTouchDevice && showSwipeHint && !isOpen;
+  }, [showSwipeHint, isOpen]);
+
   return (
     <>
       {/* Header */}
@@ -76,6 +101,15 @@ const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTa
           </div>
         </div>
       </header>
+
+      {/* Swipe Indicator */}
+      {shouldShowSwipeIndicator && (
+        <div className={styles.swipeIndicator} aria-hidden="true">
+          <div className={styles.swipeHint}>
+            <ChevronRight size={12} />
+          </div>
+        </div>
+      )}
 
       {/* Backdrop */}
       {isOpen && (
@@ -131,6 +165,21 @@ const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTa
                 <ThemeToggle size="sm" />
               </div>
             </div>
+
+            {/* Swipe Hint для первого использования */}
+            {showSwipeHint && (
+              <div className={styles.swipeHintCard}>
+                <div className={styles.swipeHintIcon}>
+                  <ChevronRight size={16} />
+                </div>
+                <div className={styles.swipeHintText}>
+                  <div className={styles.swipeHintTitle}>Подсказка</div>
+                  <div className={styles.swipeHintDescription}>
+                    Свайпните от левого края экрана для быстрого открытия меню
+                  </div>
+                </div>
+              </div>
+            )}
           </CardBody>
         </Card>
       </aside>
