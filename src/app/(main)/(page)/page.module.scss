@@ -49,48 +49,42 @@
 
 }
 
-// Основная страница
+// Основная страница - убираем ограничения по высоте
 .homepage {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    min-height: 100vh; // Минимальная высота, но может быть больше
 }
 
-// Контейнер для контента
+// Контейнер для контента - убираем фиксированную высоту
 .contentWrapper {
     position: relative;
     width: 100%;
-    min-height: 400px;
-    flex: 1;
+    // Убираем min-height и flex: 1, чтобы контент мог расширяться
 }
 
 // Контейнер для кэшированного контента вкладок
 .contentContainer {
     position: relative;
     width: 100%;
-    min-height: inherit;
+    // Убираем min-height: inherit
 }
 
-// Активный контент
+// Активный контент - остается в нормальном потоке
 .activeContent {
     display: block;
     opacity: 1;
     transform: translateX(0);
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
-    position: relative;
+    position: static; // Изменено с relative на static
     z-index: 1;
+    // Позволяем контенту расширяться естественно
 }
 
-// Скрытый контент (но не unmounted)
+// Скрытый контент - используем display: none для полного удаления из потока
 .hiddenContent {
-    display: none;
+    display: none; // Возвращаем display: none
     opacity: 0;
-    transform: translateX(-20px);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 0;
     pointer-events: none;
 }
 
@@ -150,10 +144,6 @@
 
 // Оптимизация для мобильных устройств
 @media (max-width: 680px) {
-    .contentContainer {
-        min-height: calc(100vh - 200px);
-    }
-    
     .activeContent {
         transition: opacity 0.15s ease-in-out;
         transform: none;
@@ -187,10 +177,6 @@
             width: 90%;
             padding: 8px 0 8px 16px;
         }
-    }
-    
-    .contentWrapper {
-        min-height: calc(100vh - 160px);
     }
     
     .tabsSkeleton {

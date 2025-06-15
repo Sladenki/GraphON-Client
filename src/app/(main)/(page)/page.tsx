@@ -197,7 +197,7 @@ const ContentRenderer = React.memo<{
     setRenderedTabs(prev => new Set([...prev, activeTab]));
   }, [activeTab]);
   
-  // Умная предзагрузка соседних вкладок
+  // Умная предзагрузка соседних вкладок - только кэшируем, но не рендерим
   useEffect(() => {
     const tabOrder = ["groups", "events", "graphSystem", "subs"];
     const currentIndex = tabOrder.indexOf(activeTab);
@@ -213,52 +213,72 @@ const ContentRenderer = React.memo<{
       }
       
       const timer = setTimeout(() => {
-        setRenderedTabs(prev => new Set([...prev, ...preloadTabs]));
+        // Предзагружаем данные для кэша, но не добавляем в renderedTabs
+        preloadTabs.forEach(tab => {
+          // Триггерим кэширование компонентов без рендера
+          switch (tab) {
+            case "groups":
+              const groupsKey = `groups-${searchQuery}-${selectedGraphId}`;
+              if (!tabContentCache.get(groupsKey)) {
+                // Кэшируем только если еще не закэширован
+                const groupsContent = <AllGraphs searchQuery={searchQuery} selectedGraphId={selectedGraphId} />;
+                tabContentCache.set(groupsKey, groupsContent);
+              }
+              break;
+            case "events":
+              const eventsKey = `events-${searchQuery}`;
+              if (!tabContentCache.get(eventsKey)) {
+                const eventsContent = <EventsList searchQuery={searchQuery} />;
+                tabContentCache.set(eventsKey, eventsContent);
+              }
+              break;
+            case "graphSystem":
+              const graphKey = `graph-${searchQuery}`;
+              if (!tabContentCache.get(graphKey)) {
+                const graphContent = <GraphView searchQuery={searchQuery} />;
+                tabContentCache.set(graphKey, graphContent);
+              }
+              break;
+            case "subs":
+              if (hasSubscriptions) {
+                const subsKey = `subs-${searchQuery}`;
+                if (!tabContentCache.get(subsKey)) {
+                  const subsContent = <Subs searchQuery={searchQuery} />;
+                  tabContentCache.set(subsKey, subsContent);
+                }
+              }
+              break;
+          }
+        });
       }, mobileOptimization.getPreloadDelay());
       
       return () => clearTimeout(timer);
     }
-  }, [activeTab, mobileOptimization, getMaxPreloadComponents]);
+  }, [activeTab, searchQuery, selectedGraphId, hasSubscriptions, mobileOptimization, getMaxPreloadComponents]);
 
   const animationClass = shouldUseAnimations() ? '' : styles.noAnimation;
 
+  // Рендерим только активную вкладку для предотвращения проблем со скроллом
+  const renderActiveContent = () => {
+    switch (activeTab) {
+      case "groups":
+        return <GroupsContent searchQuery={searchQuery} selectedGraphId={selectedGraphId} />;
+      case "events":
+        return <EventsContent searchQuery={searchQuery} />;
+      case "graphSystem":
+        return <GraphSystemContent searchQuery={searchQuery} />;
+      case "subs":
+        return hasSubscriptions ? <SubsContent searchQuery={searchQuery} hasSubscriptions={hasSubscriptions} /> : null;
+      default:
+        return <EventsContent searchQuery={searchQuery} />;
+    }
+  };
+
   return (
     <div className={`${styles.contentContainer} ${animationClass}`}>
-      {renderedTabs.has("groups") && (
-        <div 
-          className={activeTab === "groups" ? styles.activeContent : styles.hiddenContent}
-          aria-hidden={activeTab !== "groups"}
-        >
-          <GroupsContent searchQuery={searchQuery} selectedGraphId={selectedGraphId} />
-        </div>
-      )}
-      
-      {renderedTabs.has("events") && (
-        <div 
-          className={activeTab === "events" ? styles.activeContent : styles.hiddenContent}
-          aria-hidden={activeTab !== "events"}
-        >
-          <EventsContent searchQuery={searchQuery} />
-        </div>
-      )}
-      
-      {renderedTabs.has("graphSystem") && (
-        <div 
-          className={activeTab === "graphSystem" ? styles.activeContent : styles.hiddenContent}
-          aria-hidden={activeTab !== "graphSystem"}
-        >
-          <GraphSystemContent searchQuery={searchQuery} />
-        </div>
-      )}
-      
-      {renderedTabs.has("subs") && hasSubscriptions && (
-        <div 
-          className={activeTab === "subs" ? styles.activeContent : styles.hiddenContent}
-          aria-hidden={activeTab !== "subs"}
-        >
-          <SubsContent searchQuery={searchQuery} hasSubscriptions={hasSubscriptions} />
-        </div>
-      )}
+      <div className={styles.activeContent}>
+        {renderActiveContent()}
+      </div>
     </div>
   );
 });
