@@ -1,27 +1,51 @@
 import { useState, useEffect } from 'react';
 
+// Кэш для медиа-запросов
+const mediaQueryCache = new Map<string, MediaQueryList>();
+
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false);
+  const [matches, setMatches] = useState<boolean>(() => {
+    // SSR-безопасная инициализация
+    if (typeof window === 'undefined') return false;
+    
+    // Используем кэш для повторных запросов
+    let media = mediaQueryCache.get(query);
+    if (!media) {
+      media = window.matchMedia(query);
+      mediaQueryCache.set(query, media);
+    }
+    
+    return media.matches;
+  });
 
   useEffect(() => {
-    const media = window.matchMedia(query);
+    // Получаем из кэша или создаем новый
+    let media = mediaQueryCache.get(query);
+    if (!media) {
+      media = window.matchMedia(query);
+      mediaQueryCache.set(query, media);
+    }
     
-    // Устанавливаем начальное значение
-    setMatches(media.matches);
+    // Проверяем начальное значение
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
 
-    // Создаем функцию-обработчик
-    const listener = (e: MediaQueryListEvent) => {
+    // Оптимизированный обработчик
+    const handleChange = (e: MediaQueryListEvent) => {
       setMatches(e.matches);
     };
 
-    // Добавляем слушатель
-    media.addEventListener('change', listener);
-
-    // Очищаем слушатель при размонтировании
-    return () => {
-      media.removeEventListener('change', listener);
-    };
-  }, [query]);
+    // Используем современный API
+    if (media.addEventListener) {
+      media.addEventListener('change', handleChange);
+      return () => media!.removeEventListener('change', handleChange);
+    } else {
+      // Fallback для старых браузеров
+      media.addListener(handleChange);
+      return () => media!.removeListener(handleChange);
+    }
+  }, [query, matches]);
 
   return matches;
 }
