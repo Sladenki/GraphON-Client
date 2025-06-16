@@ -131,6 +131,17 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   }
 }
 
+.betaLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.625rem;
+  font-weight: 400;
+  color: rgba(150, 130, 238, 0.6);
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
 .activeTabBadge {
   padding: 0.5rem 1rem;
   border-radius: 12px;

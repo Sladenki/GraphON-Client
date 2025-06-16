@@ -68,7 +68,11 @@ const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTa
           {/* Logo */}
           <div className={styles.logo}>
             GraphON
+            <div className={styles.betaLabel}>
+              Альфа версия
+            </div>
           </div>
+          
 
           {/* Active Tab Badge */}
           <div className={styles.activeTabBadge}>
