@@ -2,7 +2,7 @@
   width: 100%;
   padding: 1rem;
   overflow: hidden;
-  contain: layout style;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
 }
 
 .graphsGrid {
@@ -10,13 +10,14 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
   width: 100%;
-  contain: layout style;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
 }
 
 .graphItem {
   width: 100%;
   opacity: 1;
-  contain: layout style paint;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
+  // contain: layout style paint;
   
   // Анимации только на десктопе
   @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {

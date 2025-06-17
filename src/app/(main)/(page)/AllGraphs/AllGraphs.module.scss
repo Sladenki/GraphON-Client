@@ -7,7 +7,7 @@
   box-sizing: border-box;
   position: relative;
   min-height: 200px;
-  contain: layout style;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
   
   // Анимации только на десктопе
   @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
@@ -28,6 +28,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
+  // Оставляем contain для лоадера, так как он не влияет на popup-ы
   contain: layout style paint;
 }
 
@@ -37,7 +38,7 @@
   flex-direction: column;
   gap: 24px;
   position: relative;
-  contain: layout style;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
   
   // Анимации только на десктопе
   @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
@@ -139,6 +140,7 @@
   border-radius: 16px;
   border: 1px solid var(--glass-border);
   margin: 20px;
+  // Оставляем contain для error блока, так как он не влияет на popup-ы
   contain: layout style paint;
   
   // Тяжелые эффекты только на десктопе

@@ -11,9 +11,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
-    "@heroui/button": "^2.2.21",
     "@heroui/react": "^2.7.10",
-    "@heroui/system": "^2.4.17",
     "@heroui/theme": "^2.4.17",
     "@react-spring/three": "^10.0.1",
     "@react-three/drei": "^10.0.8",

@@ -1,6 +1,8 @@
 import React, { FC, useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import styles from "./PopUpWrapper.module.scss";
 import { X } from 'lucide-react';
+import { useModalManager } from "./useModalManager";
 
 interface PopUpWrapperProps {
   isOpen: boolean; // Управляет открытием/закрытием попапа
@@ -17,6 +19,7 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   width = 'auto', // Дефолтное значение для ширины
   height = 'auto' // Дефолтное значение для высоты
  }) => {
+  const modalContainer = useModalManager();
 
   // Блокируем/разблокируем общий скролл при изменении isOpen
   useEffect(() => {
@@ -41,9 +44,10 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
     [onClose]
   );
 
-  if (!isOpen) return null;
+  if (!isOpen || !modalContainer) return null;
 
-  return (
+  // Рендерим через портал в специальный контейнер
+  return createPortal(
     <div className={styles.popupOverlay} onClick={handleOverlayClick}>
       <div className={styles.popupContent} style={{ width, height }}>
         <button onClick={onClose} className={styles.closeButton}>
@@ -51,7 +55,8 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
         </button>
         {children}
       </div>
-    </div>
+    </div>,
+    modalContainer
   );
 };
 
