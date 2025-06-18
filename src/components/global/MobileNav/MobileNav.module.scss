@@ -125,6 +125,10 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   font-weight: 700;
   color: rgb(150, 130, 238);
   letter-spacing: 0.05em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
   
   @media (min-width: 768px) {
     text-shadow: 0 2px 4px rgba(150, 130, 238, 0.2);
@@ -134,12 +138,33 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 .betaLabel {
   font-family: 'Inter', sans-serif;
   font-size: 0.625rem;
-  font-weight: 400;
-  color: rgba(150, 130, 238, 0.6);
-  letter-spacing: 0.02em;
-  margin-top: 2px;
+  font-weight: 500;
+  color: rgba(150, 130, 238, 0.7);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.8;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(0, 255, 255, 0.1));
+  border: 1px solid rgba(150, 130, 238, 0.2);
+  border-radius: 8px;
+  padding: 2px 6px;
+  box-shadow: 0 1px 3px rgba(150, 130, 238, 0.15);
+  
+  @media (min-width: 768px) {
+    backdrop-filter: blur(4px);
+    background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(0, 255, 255, 0.15));
+    box-shadow: 
+      0 2px 4px rgba(150, 130, 238, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: linear-gradient(135deg, rgba(150, 130, 238, 0.25), rgba(0, 255, 255, 0.2));
+      transform: translateY(-1px);
+      box-shadow: 
+        0 4px 8px rgba(150, 130, 238, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    }
+  }
 }
 
 .activeTabBadge {

@@ -12,11 +12,13 @@ import EventCard from '@/components/ui/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
 import NoImage from '../../../../public/noImage.png'
 import ThemeToggle from '@/components/global/ThemeToggle/ThemeToggle';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 
 export default function Profile() {
     const { user, loading, error } = useAuth();
     const queryClient = useQueryClient();
+    const small = useMediaQuery('(max-width: 650px)')
     
     const { data: allEvents, isLoading: loadingEvents } = useQuery({
         queryKey: ['eventsList'],
@@ -70,7 +72,7 @@ export default function Profile() {
                         )}
                     </div>
 
-                    <ThemeToggle size="md" />
+                    {!small && <ThemeToggle size="md" />}   
                   
                     {/* <span className={styles.text}>Количество постов: {typedUser.postsNum}</span> */}
                         
@@ -96,7 +98,9 @@ export default function Profile() {
                         </div>
                     )}
 
-                    <LogOut/>
+                    <div className={styles.logoutContainer}>
+                        <LogOut/>
+                    </div>
                  
                 </>
             ) : <LoginButton/>}

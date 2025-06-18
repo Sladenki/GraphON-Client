@@ -121,6 +121,15 @@
 
 }
 
+/* LogOut контейнер для центрирования */
+.logoutContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  width: 100%;
+}
+
 /* Поддержка уменьшенного движения */
 @media (prefers-reduced-motion: reduce) {
   .avatar {

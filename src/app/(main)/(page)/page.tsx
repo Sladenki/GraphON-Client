@@ -21,8 +21,6 @@ const Homepage = () => {
   const [activeTab, setActiveTab] = useState<'events' | 'groups' | 'graphSystem' | 'subs'>('events');
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
 
-  console.log('user', user)
-
   useEffect(() => {
     // Retrieve saved tab from localStorage or default to 'events'
     const savedTab = localStorage.getItem('activeTab') as 'events' | 'groups' | 'graphSystem' | 'subs';
