@@ -12,9 +12,9 @@ const LogOut = () => {
   const { logout } = useAuth();
 
   const handleLogout = async () => {
-      await logout();
-      push("/"); // Перенаправление на главную страницу после выхода
-    };
+    await logout();
+    push("/"); // Перенаправление на главную страницу после выхода
+  };
 
   return (
     <Link href="#" onClick={handleLogout} className={styles.logoutLink}>

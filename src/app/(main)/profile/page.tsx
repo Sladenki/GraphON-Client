@@ -87,12 +87,14 @@ export default function Profile() {
                         <div className={styles.eventsList}>
                             {subsEvents.map((event: any) => (
                                 event.eventId && (
-                                <EventCard 
-                                        key={event._id}
-                                    event={event.eventId} 
-                                    isAttended={event.isAttended} 
-                                    onDelete={handleDelete}
-                                />
+                                    <div className={styles.eventCardWrapper}>
+                                        <EventCard 
+                                            key={event._id}
+                                            event={event.eventId} 
+                                            isAttended={event.isAttended} 
+                                            onDelete={handleDelete}
+                                        />
+                                    </div>
                                 )
                             ))}
                         </div>
