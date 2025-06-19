@@ -93,8 +93,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        'orbitron': ['Orbitron', 'sans-serif'],
-        'inter': ['Inter', 'sans-serif'],
+        'orbitron': ['var(--font-orbitron)', 'Orbitron', 'Space Grotesk', 'Trebuchet MS', 'sans-serif'],
+        'inter': ['var(--font-inter)', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       fontSize: {
         'xs': ['0.75rem', { lineHeight: '1rem' }],

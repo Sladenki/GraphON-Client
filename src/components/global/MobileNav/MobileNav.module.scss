@@ -1,5 +1,4 @@
 @use "sass:color";
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 // Variables - optimized
 $primary-color: rgb(150, 130, 238);
@@ -120,7 +119,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 }
 
 .logo {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-orbitron), 'Orbitron', 'Space Grotesk', 'Trebuchet MS', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: rgb(150, 130, 238);
@@ -129,6 +128,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  font-display: swap;
   
   @media (min-width: 768px) {
     text-shadow: 0 2px 4px rgba(150, 130, 238, 0.2);
@@ -136,7 +136,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 }
 
 .betaLabel {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 0.625rem;
   font-weight: 500;
   color: rgba(150, 130, 238, 0.7);
@@ -148,6 +148,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   border-radius: 8px;
   padding: 2px 6px;
   box-shadow: 0 1px 3px rgba(150, 130, 238, 0.15);
+  font-display: swap;
   
   @media (min-width: 768px) {
     backdrop-filter: blur(4px);
@@ -173,13 +174,14 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   background: rgba(150, 130, 238, 0.1);
   border: 1px solid rgba(150, 130, 238, 0.2);
   color: var(--main-text);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
   font-weight: 500;
   font-size: 0.875rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 120px;
+  font-display: swap;
   
   @media (min-width: 768px) {
     background: linear-gradient(135deg, rgba(150, 130, 238, 0.1), rgba(0, 255, 255, 0.1));
@@ -281,11 +283,12 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 }
 
 .sidebarTitle {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
   color: rgb(150, 130, 238);
   margin: 0;
+  font-display: swap;
 }
 
 .closeButton {
@@ -338,7 +341,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   padding: 0.75rem 1rem !important;
   height: auto !important;
   border-radius: 12px !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif !important;
   font-weight: 500 !important;
   background: transparent !important;
   border: 1px solid transparent !important;
@@ -474,19 +477,21 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 }
 
 .settingsTitle {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--main-text);
   line-height: 1.2;
+  font-display: swap;
 }
 
 .settingsSubtitle {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 0.75rem;
   color: var(--main-text);
   opacity: 0.7;
   line-height: 1.2;
+  font-display: swap;
 }
 
 .themeToggleWrapper {
