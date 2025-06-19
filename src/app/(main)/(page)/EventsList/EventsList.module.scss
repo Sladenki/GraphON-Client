@@ -53,6 +53,8 @@
     // Упрощенная отрисовка на мобильных
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    // Используем flex-grow вместо min-height
+    flex-grow: 1;
   }
   
   .eventCardWrapper {
@@ -70,6 +72,8 @@
   .eventsListWrapper {
     padding: 0 4px;
     gap: 12px;
+    // Используем flex-grow вместо min-height
+    flex-grow: 1;
   }
 }
 
@@ -96,6 +100,8 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    // Используем flex-grow вместо min-height
+    flex-grow: 1;
     
     &::-webkit-scrollbar {
       display: none;

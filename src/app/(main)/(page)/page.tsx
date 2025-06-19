@@ -81,7 +81,7 @@ const Homepage = () => {
   ];
 
   return (
-    <>
+    <div className={styles.mainPage}>
       {/* Шапка: Табы + Поиск */}
       <div className={styles.headerPart}>
         <Tabs
@@ -95,7 +95,7 @@ const Homepage = () => {
       </div>
 
       {/* Контент в зависимости от активного таба */}
-      <div className={styles.contentWrapper}>
+      <div className={styles.pageContent}>
         {activeTab === "groups" && (
           <Suspense fallback={<SpinnerLoader />}>
             <AllGraphs 
@@ -123,7 +123,7 @@ const Homepage = () => {
           </Suspense>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

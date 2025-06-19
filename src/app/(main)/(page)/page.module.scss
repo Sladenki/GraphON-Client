@@ -1,3 +1,11 @@
+// Основной контейнер страницы
+.mainPage {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0; // Позволяет flex-grow работать правильно
+}
+
 // Шапка
 .headerPart{
     display: flex;
@@ -5,6 +13,7 @@
     align-items: center;
     gap: 15px;
     margin-bottom: 0px;
+    flex-shrink: 0; // Не сжимается
 
     .tabsContainer {
         padding-top: 15px;
@@ -46,7 +55,14 @@
             width: 80%;
         }
     }
+}
 
+// Контент страницы
+.pageContent {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
 }
 
 

@@ -57,6 +57,7 @@
   @media (max-width: 768px) {
     padding: 32px 16px;
     margin: 16px;
+    flex-grow: 1;
 
     &::before {
       font-size: 3.5rem;
