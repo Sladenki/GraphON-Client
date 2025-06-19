@@ -3,8 +3,37 @@ import { Card, CardBody, Divider, Chip, Button } from '@heroui/react';
 import { Clock, MapPin, Users } from 'lucide-react';
 import { useEventRegistration } from '@/hooks/useEventRegistration';
 import { useAuth } from '@/providers/AuthProvider';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { ScheduleItem, EventItem } from '@/types/schedule';
 import styles from './Schedule.module.scss';
+
+// Оптимизированный хук для EventCard в Schedule
+const useScheduleEventCardOptimization = (event: EventItem) => {
+  const { elementRef, isVisible } = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '50px',
+    once: true
+  });
+
+  // Ленивая загрузка изображения графа
+  const graphImageUrl = React.useMemo(() => {
+    if (!isVisible || !event?.graphId || !('imgPath' in event.graphId)) return null;
+    const baseUrl = process.env.NEXT_PUBLIC_S3_URL;
+    return `${baseUrl}/${(event.graphId as any).imgPath}`;
+  }, [isVisible, event?.graphId]);
+
+  // Мемоизируем форматированное время
+  const formattedTime = React.useMemo(() => {
+    return `${event.timeFrom} - ${event.timeTo}`;
+  }, [event.timeFrom, event.timeTo]);
+
+  return {
+    elementRef,
+    isVisible,
+    graphImageUrl,
+    formattedTime
+  };
+};
 
 // Мемоизированный компонент карточки расписания
 interface ScheduleCardProps {
@@ -70,6 +99,8 @@ export const EventCard = React.memo<EventCardProps>(({ event, onToggleSubscripti
     }
   }, [isLoggedIn, toggleRegistration, onToggleSubscription, event._id, event.isAttended]);
 
+  const { elementRef, isVisible, graphImageUrl, formattedTime } = useScheduleEventCardOptimization(event);
+
   return (
     <Card className={styles.eventCard}>
       <CardBody className={styles.eventCardBody}>
@@ -94,7 +125,7 @@ export const EventCard = React.memo<EventCardProps>(({ event, onToggleSubscripti
             <div className={styles.cardMeta}>
               <div className={styles.metaItem}>
                 <Clock size={14} />
-                <span>{event.timeFrom} - {event.timeTo}</span>
+                <span>{formattedTime}</span>
               </div>
               <div className={styles.metaItem}>
                 <MapPin size={14} />
@@ -152,10 +183,20 @@ export const DayButton = React.memo<DayButtonProps>(({ dayData, onDaySelect }) =
     onDaySelect(dayData.day);
   }, [onDaySelect, dayData.day]);
 
+  // Мемоизируем класснейм для оптимизации
+  const buttonClassName = React.useMemo(() => {
+    let className = styles.dayButton;
+    if (dayData.isSelected) className += ` ${styles.selected}`;
+    if (dayData.isToday) className += ` ${styles.today}`;
+    return className;
+  }, [dayData.isSelected, dayData.isToday]);
+
   return (
     <button
-      className={`${styles.dayButton} ${dayData.isSelected ? styles.selected : ''} ${dayData.isToday ? styles.today : ''}`}
+      className={buttonClassName}
       onClick={handleClick}
+      aria-pressed={dayData.isSelected}
+      aria-label={`${dayData.dayName}, ${dayData.dayDate} ${dayData.dayMonth}${dayData.totalEvents > 0 ? `, ${dayData.totalEvents} событий` : ''}`}
     >
       <span className={styles.dayName}>{dayData.dayName}</span>
       <span className={styles.dayDate}>{dayData.dayDate}</span>

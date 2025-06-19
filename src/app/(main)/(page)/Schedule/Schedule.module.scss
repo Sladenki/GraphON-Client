@@ -44,6 +44,15 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
       0 4px 24px rgba(0, 0, 0, 0.05),
       0 0 0 1px rgba(0, 0, 0, 0.03);
   }
+
+  // Mobile optimizations - disable heavy effects
+  @media (max-width: 768px) {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(var(--background), 0.95) !important;
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
 }
 
 @mixin neon-glow($color, $intensity: 0.5) {
@@ -126,10 +135,11 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   top: 40px;
   z-index: 10;
   margin-bottom: 1.5rem; // Уменьшил отступ снизу
-  @include glass-effect;
   border-radius: 18px; // Немного уменьшил скругление
   padding: 1.25rem; // Уменьшил внутренние отступы
   transition: all 0.3s ease;
+  
+  @include glass-effect;
 
   &:hover {
     // Dark theme
@@ -145,6 +155,12 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
       box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.08),
         0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+
+    // Mobile optimizations - disable expensive hover effects
+    @media (max-width: 768px) {
+      transform: none !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
     }
   }
 
@@ -163,10 +179,8 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   align-items: center;
   margin-bottom: 1.25rem; // Уменьшил отступ
   padding-bottom: 0.75rem; // Уменьшил отступ
-  // Dark theme
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   
-  // Light theme
   html[data-theme="light"] & {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
@@ -184,10 +198,11 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   font-family: 'Orbitron', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  @include gradient-text;
   margin: 0;
   text-transform: capitalize;
   letter-spacing: -0.01em;
+  
+  @include gradient-text;
 
   @media (max-width: 768px) {
     font-size: 1.25rem;
@@ -297,12 +312,10 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
     content: '';
     position: absolute;
     inset: 0;
-    // Dark theme
     background: linear-gradient(135deg, $gradient-start-dark, transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
     
-    // Light theme
     html[data-theme="light"] & {
       background: linear-gradient(135deg, $gradient-start-light, transparent);
     }
@@ -320,7 +333,6 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   }
 
   &.selected {
-    // Dark theme
     background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(150, 130, 238, 0.1));
     border-color: rgba(150, 130, 238, 0.3);
     color: rgb(150, 130, 238);
@@ -332,7 +344,6 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
       background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), transparent);
     }
     
-    // Light theme
     html[data-theme="light"] & {
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.1));
       border-color: rgba(99, 102, 241, 0.3);
@@ -346,7 +357,6 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   }
 
   &.today {
-    // Dark theme
     border-color: rgba(0, 255, 255, 0.4);
     
     .dayDate {
@@ -357,7 +367,6 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
       font-weight: 700;
     }
     
-    // Light theme
     html[data-theme="light"] & {
       border-color: rgba(59, 130, 246, 0.4);
       
@@ -443,6 +452,95 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
     padding: 0.15rem 0.3rem;
     min-width: 14px;
     height: 14px;
+  }
+}
+
+// Virtual container styles
+.virtualContainer {
+  width: 100%;
+  position: relative;
+  border-radius: 12px;
+  background: rgba(var(--background), 0.5);
+  
+  // Optimized scrolling for mobile
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  // Performance optimizations
+  contain: layout style paint;
+  will-change: scroll-position;
+  transform: translateZ(0); // Force GPU acceleration
+  
+  @media (max-width: 768px) {
+    border-radius: 8px;
+    background: rgba(var(--background), 0.8);
+  }
+}
+
+// Schedule loader styles
+.scheduleLoader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  
+  p {
+    margin-top: 1rem;
+    color: var(--main-text);
+    opacity: 0.7;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+  }
+}
+
+.loaderSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(var(--main-Color), 0.1);
+  border-top: 3px solid rgb(var(--main-Color));
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Mobile performance optimizations
+@media (max-width: 768px) {
+  // Disable animations for better performance
+  .dayButton,
+  .weekSelector,
+  .schedulePage {
+    animation: none !important;
+    transition: none !important;
+    
+    &:hover {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+  
+  // Reduce motion for mobile
+  @media (prefers-reduced-motion: reduce) {
+    .schedulePage,
+    .weekSelector,
+    .dayButton,
+    .scheduleCard,
+    .eventCard,
+    .loaderSpinner {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
@@ -540,13 +638,14 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
 
 // Schedule card styles
 .scheduleCard {
-  @include glass-effect;
   border-radius: 16px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   position: relative;
   max-width: 800px; // Ограничиваю максимальную ширину карточек
   margin: 0 auto; // Центрирую карточки
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  @include glass-effect;
 
   &::before {
     content: '';
@@ -560,13 +659,11 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
 
   &:hover {
     transform: translateY(-2px);
-    // Dark theme
     background: linear-gradient(135deg, $glass-hover-dark, rgba(255, 255, 255, 0.03));
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.12),
       0 0 0 1px rgba(255, 255, 255, 0.1);
     
-    // Light theme
     html[data-theme="light"] & {
       background: linear-gradient(135deg, $glass-hover-light, rgba(0, 0, 0, 0.03));
       box-shadow: 
@@ -592,13 +689,14 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
 
 // Event card styles
 .eventCard {
-  @include glass-effect;
   border-radius: 16px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   position: relative;
   max-width: 800px; // Ограничиваю максимальную ширину карточек
   margin: 0 auto; // Центрирую карточки
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  @include glass-effect;
 
   &::before {
     content: '';
@@ -607,10 +705,8 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
     left: 0;
     right: 0;
     height: 3px;
-    // Dark theme
     background: linear-gradient(90deg, $primary-color, $accent-color);
     
-    // Light theme
     html[data-theme="light"] & {
       background: linear-gradient(90deg, $primary-color-light, $accent-color-light);
     }
@@ -618,13 +714,11 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
 
   &:hover {
     transform: translateY(-2px);
-    // Dark theme
     background: linear-gradient(135deg, $glass-hover-dark, rgba(255, 255, 255, 0.03));
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.12),
       0 0 0 1px rgba(255, 255, 255, 0.1);
     
-    // Light theme
     html[data-theme="light"] & {
       background: linear-gradient(135deg, $glass-hover-light, rgba(0, 0, 0, 0.03));
       box-shadow: 
@@ -668,7 +762,6 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  // Dark theme
   background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08));
   border: 1px solid rgba(150, 130, 238, 0.2);
   flex-shrink: 0;

@@ -14,6 +14,75 @@ interface SchedulePageProps {
   onToggleSubscription?: (eventId: string, isAttended: boolean) => void;
 }
 
+// Виртуализированный список событий для мобильных устройств
+const VirtualizedEventsList = React.memo<{
+  events: EventItem[];
+  onToggleSubscription: (eventId: string, currentStatus: boolean) => void;
+  title: string;
+  icon: string;
+}>(({ events, onToggleSubscription, title, icon }) => {
+  const [visibleRange, setVisibleRange] = React.useState({ start: 0, end: 8 });
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const handleScroll = React.useCallback(() => {
+    if (!containerRef.current) return;
+    
+    const { scrollTop, clientHeight } = containerRef.current;
+    const itemHeight = 120; // Примерная высота элемента
+    
+    const start = Math.floor(scrollTop / itemHeight);
+    const end = Math.min(start + Math.ceil(clientHeight / itemHeight) + 2, events.length);
+    
+    setVisibleRange({ start, end });
+  }, [events.length]);
+
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const debouncedScroll = (() => {
+      let timeout: NodeJS.Timeout;
+      return () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(handleScroll, 16);
+      };
+    })();
+
+    container.addEventListener('scroll', debouncedScroll, { passive: true });
+    handleScroll(); // Инициализация
+
+    return () => container.removeEventListener('scroll', debouncedScroll);
+  }, [handleScroll]);
+
+  const visibleEvents = events.slice(visibleRange.start, visibleRange.end);
+  const totalHeight = events.length * 120;
+  const offsetY = visibleRange.start * 120;
+
+  return (
+    <EventsGroup title={title} icon={icon} count={events.length}>
+      <div 
+        ref={containerRef}
+        className={styles.virtualContainer}
+        style={{ height: '400px', overflowY: 'auto' }}
+      >
+        <div style={{ height: totalHeight, position: 'relative' }}>
+          <div style={{ transform: `translateY(${offsetY}px)` }}>
+            {visibleEvents.map((event, index) => (
+              <div key={event._id} style={{ height: '120px' }}>
+                <EventCard
+                  event={event}
+                  onToggleSubscription={onToggleSubscription}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </EventsGroup>
+  );
+});
+VirtualizedEventsList.displayName = 'VirtualizedEventsList';
+
 // Мемоизированный компонент заголовка
 const ScheduleHeader = React.memo<{
   title: string;
@@ -71,36 +140,53 @@ const WeekSelector = React.memo<{
 ));
 WeekSelector.displayName = 'WeekSelector';
 
-// Мемоизированный компонент списка событий
+// Оптимизированный компонент списка событий
 const EventsList = React.memo<{
   selectedDaySchedule: ScheduleItem[];
   selectedDayEvents: EventItem[];
   onToggleSubscription: (eventId: string, currentStatus: boolean) => void;
-}>(({ selectedDaySchedule, selectedDayEvents, onToggleSubscription }) => (
-  <div className={styles.eventsList}>
-    {/* Расписание занятий */}
-    {selectedDaySchedule.length > 0 && (
-      <EventsGroup title="Занятия" icon="📚" count={selectedDaySchedule.length}>
-        {selectedDaySchedule.map((item) => (
-          <ScheduleCard key={item._id} scheduleItem={item} />
-        ))}
-      </EventsGroup>
-    )}
-    
-    {/* Мероприятия */}
-    {selectedDayEvents.length > 0 && (
-      <EventsGroup title="Мероприятия" icon="🎯" count={selectedDayEvents.length}>
-        {selectedDayEvents.map((event) => (
-          <EventCard
-            key={event._id}
-            event={event}
-            onToggleSubscription={onToggleSubscription}
-          />
-        ))}
-      </EventsGroup>
-    )}
-  </div>
-));
+}>(({ selectedDaySchedule, selectedDayEvents, onToggleSubscription }) => {
+  // Используем виртуализацию для больших списков событий на мобильных устройствах
+  const shouldVirtualize = selectedDayEvents.length > 10;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
+  return (
+    <div className={styles.eventsList}>
+      {/* Расписание занятий */}
+      {selectedDaySchedule.length > 0 && (
+        <EventsGroup title="Занятия" icon="📚" count={selectedDaySchedule.length}>
+          {selectedDaySchedule.map((item) => (
+            <ScheduleCard key={item._id} scheduleItem={item} />
+          ))}
+        </EventsGroup>
+      )}
+      
+      {/* Мероприятия с условной виртуализацией */}
+      {selectedDayEvents.length > 0 && (
+        <>
+          {shouldVirtualize && isMobile ? (
+            <VirtualizedEventsList
+              events={selectedDayEvents}
+              onToggleSubscription={onToggleSubscription}
+              title="Мероприятия"
+              icon="🎯"
+            />
+          ) : (
+            <EventsGroup title="Мероприятия" icon="🎯" count={selectedDayEvents.length}>
+              {selectedDayEvents.map((event) => (
+                <EventCard
+                  key={event._id}
+                  event={event}
+                  onToggleSubscription={onToggleSubscription}
+                />
+              ))}
+            </EventsGroup>
+          )}
+        </>
+      )}
+    </div>
+  );
+});
 EventsList.displayName = 'EventsList';
 
 // Мемоизированный компонент пустого состояния
@@ -112,6 +198,15 @@ const EmptySchedule = React.memo(() => (
   />
 ));
 EmptySchedule.displayName = 'EmptySchedule';
+
+// Компонент загрузки
+const ScheduleLoader = React.memo(() => (
+  <div className={styles.scheduleLoader}>
+    <div className={styles.loaderSpinner}></div>
+    <p>Загрузка расписания...</p>
+  </div>
+));
+ScheduleLoader.displayName = 'ScheduleLoader';
 
 const SchedulePage: React.FC<SchedulePageProps> = React.memo(({ 
   schedule, 
@@ -125,12 +220,18 @@ const SchedulePage: React.FC<SchedulePageProps> = React.memo(({
     daysContainerRef,
     handleDaySelect,
     handleToggleSubscription,
-    handleTodayClick
+    handleTodayClick,
+    isFirstLoad
   } = useScheduleOptimization({
     schedule,
     events,
     onToggleSubscription
   });
+
+  // Показываем лоадер только при первой загрузке
+  if (isFirstLoad) {
+    return <ScheduleLoader />;
+  }
 
   return (
     <div className={styles.schedulePage}>
