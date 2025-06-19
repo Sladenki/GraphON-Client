@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/providers/AuthProvider';
 import { EventService } from '@/services/event.service';
 import { EventItem } from '@/types/schedule.interface';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface UseEventsListOptimizationProps {
   searchQuery: string;
@@ -13,6 +14,9 @@ export const useEventsListOptimization = ({ searchQuery }: UseEventsListOptimiza
   const { user } = useAuth();
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  // Дебаунсинг поискового запроса для лучшей производительности
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   // Мемоизированный обработчик изменения графа
   const handleGraphSelected = useCallback((event: CustomEvent<string>) => {
@@ -60,13 +64,13 @@ export const useEventsListOptimization = ({ searchQuery }: UseEventsListOptimiza
 
   const events = useMemo(() => allEvents?.data || [], [allEvents?.data]);
 
-  // Простая фильтрация без кэширования
+  // Оптимизированная фильтрация с дебаунсингом
   const filteredEvents = useMemo(() => {
-    if (!searchQuery.trim()) {
+    if (!debouncedSearchQuery.trim()) {
       return events;
     }
 
-    const query = searchQuery.toLowerCase().trim();
+    const query = debouncedSearchQuery.toLowerCase().trim();
     
     return events.filter((event: EventItem) => {
       if (!event?._id || !event?.name) return false;
@@ -80,7 +84,7 @@ export const useEventsListOptimization = ({ searchQuery }: UseEventsListOptimiza
       
       return eventName.includes(query);
     });
-  }, [events, searchQuery]);
+  }, [events, debouncedSearchQuery]);
 
   // Оптимизированный обработчик удаления
   const handleDelete = useCallback((eventId: string) => {
@@ -96,20 +100,22 @@ export const useEventsListOptimization = ({ searchQuery }: UseEventsListOptimiza
     });
   }, [queryClient, selectedGraphId]);
 
-  // Мемоизированные состояния
+  // Мемоизированные состояния с учетом дебаунсинга
   const loadingState = useMemo(() => ({
     isFirstLoad,
     isLoading: isFirstLoad || (isLoading && !allEvents),
     hasData: !isFirstLoad && events.length > 0,
     isEmpty: !isFirstLoad && events.length === 0 && !isLoading,
-    hasSearchResults: !isLoading && searchQuery && filteredEvents.length > 0,
-    noSearchResults: !isLoading && searchQuery && filteredEvents.length === 0
-  }), [isFirstLoad, isLoading, allEvents, events.length, searchQuery, filteredEvents.length]);
+    hasSearchResults: !isLoading && debouncedSearchQuery && filteredEvents.length > 0,
+    noSearchResults: !isLoading && debouncedSearchQuery && filteredEvents.length === 0,
+    isSearching: searchQuery !== debouncedSearchQuery // Показывает что поиск еще обрабатывается
+  }), [isFirstLoad, isLoading, allEvents, events.length, debouncedSearchQuery, filteredEvents.length, searchQuery]);
 
   return {
     filteredEvents,
     handleDelete,
     loadingState,
-    selectedGraphId
+    selectedGraphId,
+    isSearching: loadingState.isSearching
   };
 }; 

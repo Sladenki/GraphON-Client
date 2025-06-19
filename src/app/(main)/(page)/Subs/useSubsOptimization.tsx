@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { EventItem } from '@/types/schedule.interface';
 import { GraphSubsService } from '@/services/graphSubs.service';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface UseSubsOptimizationProps {
   searchQuery: string;
@@ -11,6 +12,9 @@ interface UseSubsOptimizationProps {
 export const useSubsOptimization = ({ searchQuery }: UseSubsOptimizationProps) => {
   const queryClient = useQueryClient();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  // Дебаунсинг поискового запроса для лучшей производительности
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   // Оптимизированный запрос данных
   const { data: allEvents, isLoading, isSuccess, error } = useQuery<AxiosResponse<any>>({
@@ -32,13 +36,13 @@ export const useSubsOptimization = ({ searchQuery }: UseSubsOptimizationProps) =
   // Мемоизированные события
   const events = useMemo(() => allEvents?.data || [], [allEvents?.data]);
 
-  // Простая фильтрация без кэширования (используем только React мемоизацию)
+  // Оптимизированная фильтрация с дебаунсингом
   const filteredEvents = useMemo(() => {
-    if (!searchQuery.trim()) {
+    if (!debouncedSearchQuery.trim()) {
       return events;
     }
 
-    const query = searchQuery.toLowerCase().trim();
+    const query = debouncedSearchQuery.toLowerCase().trim();
     
     return events.filter((event: EventItem) => {
       if (!event?._id || !event?.name) return false;
@@ -52,7 +56,7 @@ export const useSubsOptimization = ({ searchQuery }: UseSubsOptimizationProps) =
       
       return eventName.includes(query);
     });
-  }, [events, searchQuery]);
+  }, [events, debouncedSearchQuery]);
 
   // Мемоизированный обработчик удаления
   const handleDelete = useCallback((eventId: string) => {
@@ -73,16 +77,17 @@ export const useSubsOptimization = ({ searchQuery }: UseSubsOptimizationProps) =
     });
   }, [queryClient]);
 
-  // Мемоизированные состояния
+  // Мемоизированные состояния с учетом дебаунсинга
   const loadingState = useMemo(() => ({
     isFirstLoad,
     isLoading: isLoading && !allEvents,
     hasData: events.length > 0,
     isEmpty: events.length === 0 && !isLoading && !isFirstLoad,
-    hasSearchResults: searchQuery && filteredEvents.length > 0,
-    noSearchResults: searchQuery && filteredEvents.length === 0 && !isLoading,
-    hasError: !!error
-  }), [isFirstLoad, isLoading, allEvents, events.length, searchQuery, filteredEvents.length, error]);
+    hasSearchResults: debouncedSearchQuery && filteredEvents.length > 0,
+    noSearchResults: debouncedSearchQuery && filteredEvents.length === 0 && !isLoading,
+    hasError: !!error,
+    isSearching: searchQuery !== debouncedSearchQuery // Показывает что поиск еще обрабатывается
+  }), [isFirstLoad, isLoading, allEvents, events.length, debouncedSearchQuery, filteredEvents.length, error, searchQuery]);
 
   return {
     events,
@@ -90,6 +95,7 @@ export const useSubsOptimization = ({ searchQuery }: UseSubsOptimizationProps) =
     handleDelete,
     handleRetry,
     loadingState,
-    error
+    error,
+    isSearching: loadingState.isSearching
   };
 }; 

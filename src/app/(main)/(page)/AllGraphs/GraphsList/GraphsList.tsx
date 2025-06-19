@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import styles from './GraphList.module.scss';
 import GraphBlock from '../../../../../components/ui/GraphBlock/GraphBlock';
 import { IGraphList } from '@/types/graph.interface';
@@ -22,7 +22,7 @@ const GraphItem = React.memo<{
   <div 
     className={styles.graphItem}
     style={{ 
-      "--delay": `${index * 0.05}s`, // Уменьшенная задержка
+      "--delay": `${Math.min(index * 0.02, 0.5)}s`, // Ограничиваем задержку для лучшей производительности
     } as React.CSSProperties}
   >
     <GraphBlock 
@@ -39,7 +39,7 @@ const GraphItem = React.memo<{
 ));
 GraphItem.displayName = 'GraphItem';
 
-// Мемоизированная сетка графов
+// Простая сетка графов (возвращаем оригинальную логику)
 const GraphsGrid = React.memo<{
   graphs: IGraphList[];
   onScheduleClick: (id: string) => void;

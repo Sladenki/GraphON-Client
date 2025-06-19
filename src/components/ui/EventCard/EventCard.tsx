@@ -14,7 +14,7 @@ import {
   Divider,
   ButtonGroup,
   Spinner,
-  Image
+  Image as HeroImage
 } from "@heroui/react";
 import { 
   Edit3, 
@@ -58,6 +58,60 @@ interface EventProps {
   isAttended?: boolean;
   onDelete?: (eventId: string) => void;
 }
+
+// Lazy загружаемое изображение для графа
+const LazyGraphAvatar = React.memo<{ 
+  src: string; 
+  alt: string; 
+  fallback: string;
+}>(({ src, alt, fallback }) => {
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [hasError, setHasError] = React.useState(false);
+  const imgRef = React.useRef<HTMLImageElement>(null);
+
+  React.useEffect(() => {
+    if (!src || hasError) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && imgRef.current) {
+          const nativeImg = new window.Image();
+          nativeImg.onload = () => setIsLoaded(true);
+          nativeImg.onerror = () => setHasError(true);
+          nativeImg.src = src;
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (imgRef.current) {
+      observer.observe(imgRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [src, hasError]);
+
+  return (
+    <div className={styles.graphAvatar} ref={imgRef}>
+      {isLoaded && !hasError ? (
+        <HeroImage
+          src={src}
+          alt={alt}
+          className={styles.avatarImage}
+          width={48}
+          height={48}
+          loading="lazy"
+        />
+      ) : (
+        <div className={styles.avatarFallback}>
+          {fallback.charAt(0).toUpperCase()}
+        </div>
+      )}
+    </div>
+  );
+});
+LazyGraphAvatar.displayName = 'LazyGraphAvatar';
 
 // Мемоизированные компоненты для оптимизации
 const EditFormInputs = React.memo(({ 
@@ -280,11 +334,10 @@ const EventCard: React.FC<EventProps> = React.memo(({
         <div className={styles.headerContent}>
           {fullImageUrl && (
             <div className={styles.graphAvatar}>
-              <Image
+              <LazyGraphAvatar
                 src={fullImageUrl}
                 alt={event.graphId.name}
-                className={styles.avatarImage}
-                loading="lazy"
+                fallback={event.graphId.name}
               />
             </div>
           )}

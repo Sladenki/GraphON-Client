@@ -5,6 +5,7 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { EmptyState } from '@/components/global/EmptyState/EmptyState';
 import { EventItem } from '@/types/schedule.interface';
 import { useSubsOptimization } from './useSubsOptimization';
+import VirtualizedEventsList from '../EventsList/VirtualizedEventsList';
 
 interface SubsProps {
   searchQuery: string;
@@ -106,10 +107,13 @@ const Subs: React.FC<SubsProps> = React.memo(({ searchQuery }) => {
     return <EmptyEventsComponent />;
   }
 
+  // Используем виртуализацию для больших списков
   return (
-    <EventsList 
+    <VirtualizedEventsList 
       events={filteredEvents} 
-      onDelete={handleDelete} 
+      onDelete={handleDelete}
+      itemHeight={420} // Высота карточки события + отступы
+      containerHeight={typeof window !== 'undefined' ? window.innerHeight - 200 : 600}
     />
   );
 });

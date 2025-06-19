@@ -18,26 +18,53 @@ const VirtualizedEventsList: React.FC<VirtualizedEventsListProps> = React.memo((
 }) => {
   const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const isScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  // Простой обработчик скролла
+  // Дебаунсированный обработчик скролла для лучшей производительности
   const handleScroll = useCallback(() => {
-    if (containerRef.current) {
-      setScrollTop(containerRef.current.scrollTop);
+    if (!containerRef.current) return;
+    
+    const newScrollTop = containerRef.current.scrollTop;
+    
+    // Оптимизируем обновления только при значительном изменении
+    if (Math.abs(newScrollTop - scrollTop) > itemHeight / 4) {
+      setScrollTop(newScrollTop);
     }
-  }, []);
+    
+    // Debounce для окончания скролла
+    isScrollingRef.current = true;
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    
+    scrollTimeoutRef.current = setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 150);
+  }, [scrollTop, itemHeight]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
+    // Используем passive: true для лучшей производительности скролла
     container.addEventListener('scroll', handleScroll, { passive: true });
-    return () => container.removeEventListener('scroll', handleScroll);
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, [handleScroll]);
 
-  // Вычисляем видимые элементы
+  // Мемоизируем вычисления видимых элементов
   const visibleItems = useMemo(() => {
-    const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - 1);
-    const endIndex = Math.min(events.length, startIndex + Math.ceil(containerHeight / itemHeight) + 2);
+    const bufferSize = 2; // Количество элементов для предзагрузки
+    const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - bufferSize);
+    const endIndex = Math.min(
+      events.length, 
+      startIndex + Math.ceil(containerHeight / itemHeight) + bufferSize * 2
+    );
     
     return {
       startIndex,
@@ -46,8 +73,11 @@ const VirtualizedEventsList: React.FC<VirtualizedEventsListProps> = React.memo((
     };
   }, [events, scrollTop, itemHeight, containerHeight]);
 
+  // Мемоизируем общую высоту контейнера
+  const totalHeight = useMemo(() => events.length * itemHeight, [events.length, itemHeight]);
+
   // Если событий мало, используем обычный рендер
-  if (events.length <= 10) {
+  if (events.length <= 8) {
     return (
       <div className={styles.eventsListWrapper}>
         {events.map((event, index) => (
@@ -70,33 +100,37 @@ const VirtualizedEventsList: React.FC<VirtualizedEventsListProps> = React.memo((
   return (
     <div 
       ref={containerRef}
-      className={styles.eventsListWrapper}
+      className={styles.virtualizedEventsWrapper}
       style={{
         height: containerHeight,
         overflowY: 'auto',
         position: 'relative'
       }}
     >
-      <div style={{ height: events.length * itemHeight, position: 'relative' }}>
-        {visibleItems.items.map((event, index) => (
-          <div 
-            key={event._id}
-            className={styles.eventCardWrapper}
-            style={{
-              position: 'absolute',
-              top: (visibleItems.startIndex + index) * itemHeight,
-              width: '100%',
-              height: itemHeight,
-              '--index': visibleItems.startIndex + index
-            } as React.CSSProperties}
-          >
-            <EventCard 
-              event={event} 
-              isAttended={event.isAttended} 
-              onDelete={onDelete}
-            />
-          </div>
-        ))}
+      {/* Spacer для поддержания правильной высоты скролла */}
+      <div style={{ height: totalHeight, position: 'relative' }}>
+        {visibleItems.items.map((event, index) => {
+          const actualIndex = visibleItems.startIndex + index;
+          return (
+            <div 
+              key={event._id}
+              className={styles.virtualEventCard}
+              style={{
+                position: 'absolute',
+                top: actualIndex * itemHeight,
+                width: '100%',
+                height: itemHeight,
+                '--index': actualIndex
+              } as React.CSSProperties}
+            >
+              <EventCard 
+                event={event} 
+                isAttended={event.isAttended} 
+                onDelete={onDelete}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
