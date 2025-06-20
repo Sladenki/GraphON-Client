@@ -43,7 +43,6 @@ export const useEventCardOptimization = ({
   const router = useRouter();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [event, setEvent] = useState<Event>(initialEvent);
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Мемоизируем начальное состояние редактирования
   const initialEditState = useMemo(() => ({
@@ -166,15 +165,9 @@ export const useEventCardOptimization = ({
     setIsEditing(true);
   }, []);
 
-  // Дебаунсированное обновление состояния редактирования
+  // Мгновенное обновление состояния для отзывчивого интерфейса
   const updateEditedEvent = useCallback((key: string, value: string) => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    debounceTimeoutRef.current = setTimeout(() => {
-      setEditedEvent(prev => ({ ...prev, [key]: value }));
-    }, 150) as NodeJS.Timeout;
+    setEditedEvent(prev => ({ ...prev, [key]: value }));
   }, []);
 
   // Мемоизированные стили кнопки регистрации
@@ -196,14 +189,7 @@ export const useEventCardOptimization = ({
       : '1px solid rgba(100, 116, 139, 0.25)'
   }), [isLoggedIn, isRegistered]);
 
-  // Очистка таймера при размонтировании
-  useEffect(() => {
-    return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-    };
-  }, []);
+  // Удален код очистки таймера, так как дебаунсинг больше не используется
 
   return {
     event,

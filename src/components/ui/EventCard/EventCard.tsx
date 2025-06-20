@@ -113,57 +113,120 @@ const LazyGraphAvatar = React.memo<{
 });
 LazyGraphAvatar.displayName = 'LazyGraphAvatar';
 
-// Мемоизированные компоненты для оптимизации
-const EditFormInputs = React.memo(({ 
-  editedEvent, 
-  updateEditedEvent 
-}: { 
-  editedEvent: any, 
-  updateEditedEvent: (key: string, value: string) => void 
-}) => (
-  <div className={styles.editForm}>
-    <Input
-      type="date"
-      label="Дата мероприятия"
-      value={editedEvent.eventDate}
-      onChange={(e) => updateEditedEvent('eventDate', e.target.value)}
-      variant="bordered"
-      startContent={<Calendar size={16} />}
-      className={styles.dateInput}
-    />
-    <div className={styles.timeInputs}>
+// Оптимизированные компоненты для редактирования без лишних ререндеров
+const EditFormInputs = React.memo<{ 
+  editedEvent: any; 
+  updateEditedEvent: (key: string, value: string) => void;
+}>(({ editedEvent, updateEditedEvent }) => {
+  // Мемоизированные обработчики для предотвращения ререндеров
+  const handleDateChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('eventDate', e.target.value);
+  }, [updateEditedEvent]);
+
+  const handleTimeFromChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('timeFrom', e.target.value);
+  }, [updateEditedEvent]);
+
+  const handleTimeToChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('timeTo', e.target.value);
+  }, [updateEditedEvent]);
+
+  const handlePlaceChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('place', e.target.value);
+  }, [updateEditedEvent]);
+
+  return (
+    <div className={styles.editForm}>
       <Input
-        type="time"
-        label="Время начала"
-        value={editedEvent.timeFrom}
-        onChange={(e) => updateEditedEvent('timeFrom', e.target.value)}
+        type="date"
+        label="Дата мероприятия"
+        value={editedEvent.eventDate}
+        onChange={handleDateChange}
         variant="bordered"
-        startContent={<Clock size={16} />}
-        className={styles.timeInput}
+        startContent={<Calendar size={16} />}
+        className={styles.dateInput}
       />
+      <div className={styles.timeInputs}>
+        <Input
+          type="time"
+          label="Время начала"
+          value={editedEvent.timeFrom}
+          onChange={handleTimeFromChange}
+          variant="bordered"
+          startContent={<Clock size={16} />}
+          className={styles.timeInput}
+        />
+        <Input
+          type="time"
+          label="Время окончания"
+          value={editedEvent.timeTo}
+          onChange={handleTimeToChange}
+          variant="bordered"
+          startContent={<Clock size={16} />}
+          className={styles.timeInput}
+        />
+      </div>
       <Input
-        type="time"
-        label="Время окончания"
-        value={editedEvent.timeTo}
-        onChange={(e) => updateEditedEvent('timeTo', e.target.value)}
+        label="Место проведения"
+        value={editedEvent.place}
+        onChange={handlePlaceChange}
         variant="bordered"
-        startContent={<Clock size={16} />}
-        className={styles.timeInput}
+        startContent={<MapPinned size={16} />}
+        placeholder="Введите место проведения"
+        className={styles.placeInput}
       />
     </div>
-    <Input
-      label="Место проведения"
-      value={editedEvent.place}
-      onChange={(e) => updateEditedEvent('place', e.target.value)}
-      variant="bordered"
-      startContent={<MapPinned size={16} />}
-      placeholder="Введите место проведения"
-      className={styles.placeInput}
-    />
-  </div>
-));
+  );
+});
 
 EditFormInputs.displayName = 'EditFormInputs';
+
+// Оптимизированный компонент для редактирования названия
+const TitleInput = React.memo<{
+  value: string;
+  onChange: (value: string) => void;
+}>(({ value, onChange }) => {
+  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  }, [onChange]);
+
+  return (
+    <Input
+      value={value}
+      onChange={handleChange}
+      placeholder="Название мероприятия"
+      variant="bordered"
+      size="lg"
+      classNames={{
+        input: styles.titleInput
+      }}
+    />
+  );
+});
+TitleInput.displayName = 'TitleInput';
+
+// Оптимизированный компонент для редактирования описания
+const DescriptionTextarea = React.memo<{
+  value: string;
+  onChange: (value: string) => void;
+}>(({ value, onChange }) => {
+  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  }, [onChange]);
+
+  return (
+    <Textarea
+      value={value}
+      onChange={handleChange}
+      placeholder="Описание мероприятия"
+      variant="bordered"
+      minRows={3}
+      maxRows={6}
+      className={styles.descriptionInput}
+    />
+  );
+});
+DescriptionTextarea.displayName = 'DescriptionTextarea';
 
 const EventInfo = React.memo(({ 
   formattedTime, 
@@ -343,15 +406,9 @@ const EventCard: React.FC<EventProps> = React.memo(({
           )}
           <div className={styles.titleSection}>
             {isEditing ? (
-              <Input
+              <TitleInput
                 value={editedEvent.name}
-                onChange={(e) => updateEditedEvent('name', e.target.value)}
-                placeholder="Название мероприятия"
-                variant="bordered"
-                size="lg"
-                classNames={{
-                  input: styles.titleInput
-                }}
+                onChange={(value) => updateEditedEvent('name', value)}
               />
             ) : (
               <h3 className={styles.title}>
@@ -375,14 +432,9 @@ const EventCard: React.FC<EventProps> = React.memo(({
       {/* Body */}
       <CardBody className={styles.cardBody}>
         {isEditing ? (
-          <Textarea
+          <DescriptionTextarea
             value={editedEvent.description}
-            onChange={(e) => updateEditedEvent('description', e.target.value)}
-            placeholder="Описание мероприятия"
-            variant="bordered"
-            minRows={3}
-            maxRows={6}
-            className={styles.descriptionInput}
+            onChange={(value) => updateEditedEvent('description', value)}
           />
         ) : (
           <p className={styles.description}>

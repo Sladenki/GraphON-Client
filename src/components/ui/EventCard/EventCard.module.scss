@@ -58,11 +58,23 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   border-radius: 16px;
   transition: none; // Remove on mobile
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  will-change: transform; // For GPU acceleration
+  
+  // Mobile performance optimizations
+  @media (max-width: 768px) {
+    will-change: auto; // Disable will-change on mobile to save memory
+    transform: translateZ(0); // Enable hardware acceleration only when needed
+    
+    // Optimize for edit mode performance
+    &:has(.editForm) {
+      contain: layout style;
+      isolation: isolate;
+    }
+  }
 
   @media (min-width: 768px) {
     backdrop-filter: blur(8px);
     transition: all 0.2s ease;
+    will-change: transform; // For GPU acceleration on desktop only
     
     &:hover {
       transform: translateY(-1px);
@@ -280,9 +292,20 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.1);
   color: var(--main-text);
   
+  // Mobile performance optimizations  
+  @media (max-width: 768px) {
+    transition: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    resize: none; // Disable textarea resize on mobile
+  }
+  
   &:focus {
     border-color: var(--heroui-primary);
-    @include neon-glow(var(--heroui-primary), 0.2);
+    
+    @media (min-width: 768px) {
+      @include neon-glow(var(--heroui-primary), 0.2);
+    }
   }
 }
 
@@ -301,6 +324,15 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   flex-direction: column;
   gap: 1rem;
   width: 100%;
+  
+  // Mobile performance optimizations
+  @media (max-width: 768px) {
+    // Disable transitions on mobile for better performance
+    input, textarea {
+      transition: none !important;
+      will-change: auto;
+    }
+  }
 
   input, textarea {
     color: var(--main-text);
@@ -309,7 +341,10 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     
     &:focus {
       border-color: var(--heroui-primary);
-      @include neon-glow(var(--heroui-primary), 0.2);
+      
+      @media (min-width: 768px) {
+        @include neon-glow(var(--heroui-primary), 0.2);
+      }
     }
   }
 }
@@ -321,9 +356,19 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.1);
   color: var(--main-text);
   
+  // Disable heavy effects on mobile
+  @media (max-width: 768px) {
+    transition: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
   &:focus {
     border-color: var(--heroui-primary);
-    @include neon-glow(var(--heroui-primary), 0.2);
+    
+    @media (min-width: 768px) {
+      @include neon-glow(var(--heroui-primary), 0.2);
+    }
   }
 }
 
