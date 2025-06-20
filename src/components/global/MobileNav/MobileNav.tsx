@@ -62,7 +62,7 @@ const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTa
             className={styles.menuButton}
             aria-label="Открыть меню"
           >
-            <Menu size={20} />
+            <Menu size={18} />
           </Button>
 
           {/* Logo */}
