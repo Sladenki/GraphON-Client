@@ -7,13 +7,13 @@ import { useState, useCallback, Suspense, useEffect } from "react";
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import React from "react";
 import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
-import { AllGraphs } from "@/app/(main)/(page)/AllGraphs/AllGraphs";
+import { AllGraphsOptimized } from "@/app/(main)/(page)/AllGraphs/AllGraphsOptimized";
 import { Users, Calendar, Heart, Network } from "lucide-react";
-import Subs from "./Subs/Subs";
+const Subs = dynamic(() => import("./Subs/SubsOptimized"), { ssr: false });
 
 const Tabs = dynamic(() => import("./Tabs/Tabs"), { ssr: false });
 const GraphView = dynamic(() => import("./GraphView/GraphView"), { ssr: false });
-const EventsList = dynamic(() => import("./EventsList/EventsList"), { ssr: false });
+const EventsList = dynamic(() => import("./EventsList/EventsListOptimized"), { ssr: false });
 
 const Homepage = () => {
   const { user } = useAuth();
@@ -98,7 +98,7 @@ const Homepage = () => {
       <div className={styles.pageContent}>
         {activeTab === "groups" && (
           <Suspense fallback={<SpinnerLoader />}>
-            <AllGraphs 
+            <AllGraphsOptimized 
               searchQuery={searchQuery} 
               selectedGraphId={selectedGraphId || ''} 
             />

@@ -1,9 +1,10 @@
 import React from 'react';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { EmptyState } from '@/components/global/EmptyState/EmptyState';
-import { useAllGraphsOptimization } from './useAllGraphsOptimization';
+
 import GraphsList from './GraphsList/GraphsList';
 import styles from './AllGraphs.module.scss';
+import { useAllGraphsOptimization } from './useAllGraphsOptimized';
 
 interface AllGraphsProps {
   searchQuery: string;
@@ -46,7 +47,7 @@ const GraphsListWrapper = React.memo<{ graphs: any[] }>(({ graphs }) => (
 ));
 GraphsListWrapper.displayName = 'GraphsListWrapper';
 
-export const AllGraphs: React.FC<AllGraphsProps> = React.memo(({ 
+export const AllGraphsOptimized: React.FC<AllGraphsProps> = React.memo(({ 
   searchQuery, 
   selectedGraphId 
 }) => {
@@ -83,4 +84,4 @@ export const AllGraphs: React.FC<AllGraphsProps> = React.memo(({
   );
 });
 
-AllGraphs.displayName = 'AllGraphs'; 
+AllGraphsOptimized.displayName = 'AllGraphsOptimized'; 
