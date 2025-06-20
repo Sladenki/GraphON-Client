@@ -138,7 +138,6 @@ const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTa
             <div className={styles.settingsSection}>
               <div className={styles.settingsHeader}>
                 <div className={styles.settingsText}>
-                  <div className={styles.settingsTitle}>Настройки</div>
                   <div className={styles.settingsSubtitle}>Смена темы</div>
                 </div>
               </div>
