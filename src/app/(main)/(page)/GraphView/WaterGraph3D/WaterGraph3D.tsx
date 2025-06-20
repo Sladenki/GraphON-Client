@@ -176,11 +176,8 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               gl.setPixelRatio(Math.min(window.devicePixelRatio, deviceType.isIPhone ? 2 : 2));
               gl.shadowMap.enabled = false;
               
-              // iPhone-specific optimizations
-              if (deviceType.isIPhone && 'aspect' in camera) {
-                (camera as THREE.PerspectiveCamera).aspect = window.innerWidth / window.innerHeight;
-                (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
-              }
+              // Убираем принудительное изменение aspect ratio для iPhone
+              // Позволяем Three.js автоматически рассчитывать пропорции
             }
           }}
           dpr={deviceType.isIPhone ? [1, 2] : (isMobile ? [1, 2] : [1, 2])}

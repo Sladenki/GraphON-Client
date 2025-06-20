@@ -36,8 +36,8 @@ export function Planet({ scale = 1 }: PlanetProps) {
           metalness={0.7}
           emissive="#a04fff"
           emissiveIntensity={0.3}
-          distort={0.2}
-          speed={2}
+          distort={0.15}
+          speed={1.5}
         />
       </mesh>
 

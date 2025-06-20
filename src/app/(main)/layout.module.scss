@@ -68,7 +68,7 @@
   }
 
   .BottomMenu{
-    z-index: 2000; // Выше чем у ThemeCards (1000)
+    z-index: 10; // Выше чем у ThemeCards (1000)
     display: block;
     position: fixed;
     bottom: 0;
