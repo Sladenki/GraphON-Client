@@ -3,6 +3,19 @@
   align-items: center;
   gap: 0.75rem;
   
+  // Мобильные оптимизации
+  @media (max-width: 768px) {
+    // Улучшаем touch взаимодействие
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    
+    // Оптимизация рендеринга
+    contain: layout style;
+    will-change: auto;
+  }
+  
   &.sm {
     gap: 0.5rem;
     
@@ -72,10 +85,21 @@
   align-items: center;
   justify-content: center;
   color: var(--main-text);
-  transition: color 0.3s ease;
+  
+  // Отключаем transitions на мобильных для производительности
+  @media (min-width: 769px) {
+    transition: color 0.3s ease;
+  }
   
   svg {
-    transition: all 0.3s ease;
+    @media (min-width: 769px) {
+      transition: all 0.3s ease;
+    }
+    
+    // Оптимизация для мобильных
+    @media (max-width: 768px) {
+      transition: none;
+    }
   }
 }
 
@@ -84,6 +108,17 @@
   display: inline-block;
   width: 50px;
   height: 24px;
+  
+  // Мобильные оптимизации
+  @media (max-width: 768px) {
+    // Увеличиваем область касания для лучшего UX
+    padding: 4px;
+    margin: -4px;
+    
+    // Оптимизация touch событий
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
   
   input {
     opacity: 0;
@@ -97,12 +132,23 @@
       &::before {
         transform: translateX(26px);
         background: #ffffff;
-        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        
+        // Упрощаем shadow на мобильных
+        @media (min-width: 769px) {
+          box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+          box-shadow: 0 1px 3px rgba(245, 158, 11, 0.2);
+        }
       }
     }
     
     &:focus + .slider {
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+      // Отключаем focus shadow на мобильных
+      @media (min-width: 769px) {
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+      }
     }
   }
 }
@@ -116,24 +162,54 @@
   bottom: 0;
   background: linear-gradient(135deg, #374151, #4b5563);
   border: 1px solid #6b7280;
-  transition: all 0.3s ease;
   border-radius: 24px;
   
-  &::before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 2px;
-    bottom: 1px;
-    background: #ffffff;
+  // Оптимизированные transitions
+  @media (min-width: 769px) {
     transition: all 0.3s ease;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    will-change: background, border-color, box-shadow; // GPU acceleration
   }
   
+  @media (max-width: 768px) {
+    transition: background 0.15s ease, border-color 0.15s ease; // Упрощенные transitions
+    will-change: auto; // Экономим память на мобильных
+  }
+  
+      &::before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 2px;
+      bottom: 1px;
+      background: #ffffff;
+      border-radius: 50%;
+      
+      // Оптимизированные transitions для кнопки
+      @media (min-width: 769px) {
+        transition: all 0.3s ease;
+        will-change: transform, box-shadow;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      
+      @media (max-width: 768px) {
+        // Ускоренные transitions для мобильных
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        
+        // Принудительное GPU ускорение
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+      }
+    }
+  
   &:hover {
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+    // Отключаем hover эффекты на мобильных (touch устройствах)
+    @media (min-width: 769px) and (hover: hover) {
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+    }
   }
 }
 
@@ -145,11 +221,20 @@
     
     &::before {
       background: #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      
+      @media (min-width: 769px) {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      }
+      
+      @media (max-width: 768px) {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
     }
     
     &:hover {
-      background: linear-gradient(135deg, #d1d5db, #9ca3af);
+      @media (min-width: 769px) and (hover: hover) {
+        background: linear-gradient(135deg, #d1d5db, #9ca3af);
+      }
     }
   }
 }
@@ -162,11 +247,20 @@
     
     &::before {
       background: #f9fafb;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      
+      @media (min-width: 769px) {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      
+      @media (max-width: 768px) {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
     }
     
     &:hover {
-      background: linear-gradient(135deg, #4b5563, #6b7280);
+      @media (min-width: 769px) and (hover: hover) {
+        background: linear-gradient(135deg, #4b5563, #6b7280);
+      }
     }
   }
 } 

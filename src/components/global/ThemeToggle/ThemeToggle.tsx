@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Moon, Sun } from 'lucide-react';
 
 import styles from './ThemeToggle.module.scss';
@@ -10,28 +10,52 @@ interface ThemeToggleProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const ThemeToggle: React.FC<ThemeToggleProps> = ({ className, size = 'md' }) => {
+const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({ className, size = 'md' }) => {
   const { theme, setTheme } = useTheme();
 
-  const toggleTheme = () => {
+  // Мемоизируем функцию переключения темы
+  const toggleTheme = useCallback(() => {
     setTheme(theme === "dark" ? "light" : "dark");
-  };
+  }, [theme, setTheme]);
+
+  // Мемоизируем размер иконки в зависимости от размера компонента
+  const iconSize = useMemo(() => {
+    switch (size) {
+      case 'sm': return 16;
+      case 'lg': return 24;
+      default: return 20;
+    }
+  }, [size]);
+
+  // Мемоизируем класснейм
+  const wrapperClassName = useMemo(() => 
+    `${styles.themeSwitchWrapper} ${styles[size]} ${className || ''}`,
+    [size, className]
+  );
+
+  // Мемоизируем иконку
+  const themeIcon = useMemo(() => 
+    theme === 'dark' ? <Moon size={iconSize} /> : <Sun size={iconSize} />,
+    [theme, iconSize]
+  );
 
   return (
-    <div className={`${styles.themeSwitchWrapper} ${styles[size]} ${className || ''}`}>
+    <div className={wrapperClassName}>
       <span className={styles.themeLabel}>
-        {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
+        {themeIcon}
       </span>
       <label className={styles.themeSwitch}>
         <input 
           type="checkbox" 
           onChange={toggleTheme} 
-          checked={theme === "light"} 
+          checked={theme === "light"}
+          // Отключаем автофокус на мобильных для предотвращения виртуальной клавиатуры
+          autoFocus={false}
         />
         <span className={styles.slider}></span>
       </label>
     </div>
   );
-};
+});
 
 export default ThemeToggle; 
