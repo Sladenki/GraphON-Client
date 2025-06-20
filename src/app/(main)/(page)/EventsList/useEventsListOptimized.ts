@@ -54,7 +54,6 @@ export const useEventsListOptimized = ({ searchQuery }: UseEventsListOptimizedPr
     enabled: !!selectedGraphId,
     gcTime: 15 * 60 * 1000, // 15 минут
     staleTime: 10 * 60 * 1000, // 10 минут
-    refetchOnWindowFocus: false, // Предотвращаем автоматическое обновление при фокусе
   });
 
   // Обновление флага первой загрузки
