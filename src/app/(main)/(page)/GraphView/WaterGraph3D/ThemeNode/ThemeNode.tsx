@@ -87,31 +87,44 @@ export function ThemeNode({
     [theme, data]
   );
 
-  // Обновляем размеры с учетом новой орбитальной системы
-  const orbitRadius = useMemo(() => (isMobile ? 1.87 : 3.5) * scale, [isMobile, scale]);
+  // Определяем тип устройства для более точных настроек
+  const isSmallScreen = typeof window !== 'undefined' && window.innerWidth <= 375;
+  const isIPhone = typeof window !== 'undefined' && /iPhone|iPod/.test(navigator.userAgent);
+  
+  // Обновляем размеры с учетом новой орбитальной системы и iPhone
+  const orbitRadius = useMemo(() => {
+    if (isSmallScreen && isIPhone) return 1.6 * scale;
+    if (isIPhone) return 1.75 * scale;
+    return (isMobile ? 1.87 : 3.5) * scale;
+  }, [isMobile, scale, isSmallScreen, isIPhone]);
+  
   const nodeScale = useMemo(() => {
+    const baseScale = isSmallScreen && isIPhone ? 0.85 : (isIPhone ? 0.9 : 1);
+    
     // Если это глобальный граф
     if (theme.graphType === 'global') {
       if (anyActive) {
-        return (isMobile ? 0.09 : 0.18) * scale; // Уменьшаем в 2.5 раза при активации любого графа
+        return (isMobile ? 0.09 : 0.18) * scale * baseScale;
       }
-      return (isMobile ? 0.23 : 0.45) * scale; // Нормальный размер
+      return (isMobile ? 0.23 : 0.45) * scale * baseScale;
     }
     // Для остальных графов
-    if (active) return (isMobile ? 0.17 : 0.3) * scale;
-    if (anyActive) return (isMobile ? 0.13 : 0.25) * scale;
-    return (isMobile ? 0.23 : 0.45) * scale;
-  }, [isMobile, scale, active, anyActive, theme.graphType]);
+    if (active) return (isMobile ? 0.17 : 0.3) * scale * baseScale;
+    if (anyActive) return (isMobile ? 0.13 : 0.25) * scale * baseScale;
+    return (isMobile ? 0.23 : 0.45) * scale * baseScale;
+  }, [isMobile, scale, active, anyActive, theme.graphType, isSmallScreen, isIPhone]);
   
-  const childOrbitRadius = useMemo(() => 
-    calculateOrbitRadius(children.length, isMobile) * scale,
-    [children.length, isMobile, scale]
-  );
+  const childOrbitRadius = useMemo(() => {
+    const baseRadius = calculateOrbitRadius(children.length, isMobile);
+    if (isSmallScreen && isIPhone) return baseRadius * 0.8 * scale;
+    if (isIPhone) return baseRadius * 0.9 * scale;
+    return baseRadius * scale;
+  }, [children.length, isMobile, scale, isSmallScreen, isIPhone]);
   
-  const childNodeScale = useMemo(() => 
-    (isMobile ? 0.15 : 0.28) * scale,
-    [isMobile, scale]
-  );
+  const childNodeScale = useMemo(() => {
+    const baseChildScale = isSmallScreen && isIPhone ? 0.8 : (isIPhone ? 0.9 : 1);
+    return (isMobile ? 0.15 : 0.28) * scale * baseChildScale;
+  }, [isMobile, scale, isSmallScreen, isIPhone]);
 
   // Вычисляем позицию узла с учетом активного состояния
   const angle = (index / total) * Math.PI * 2;

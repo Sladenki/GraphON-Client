@@ -1,16 +1,41 @@
 .themeOverlay {
   position: fixed;
-  bottom: 70px;
+  bottom: 60px; // Высота BottomMenu + отступы
+  bottom: calc(60px + env(safe-area-inset-bottom, 0));
   width: 100%;
-  background: rgba(20, 20, 40, 0.7);
-  backdrop-filter: blur(12px);
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  z-index: 2147483647;
-  padding: 0.75rem 1rem;
+  background: rgba(20, 20, 40, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  z-index: 1000; // Меньше чем у BottomMenu (2000)
+  padding: 1rem;
+  padding-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  max-height: 80vh;
+  max-height: 35vh;
+  min-height: 120px;
+  
+  // iPhone-specific adjustments
+  @media screen and (max-width: 430px) and (-webkit-min-device-pixel-ratio: 2) {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 0.875rem;
+    padding-bottom: 0.875rem;
+    max-height: 32vh;
+    bottom: 70px;
+    bottom: calc(70px + env(safe-area-inset-bottom, 0));
+  }
+  
+  // iPhone SE and small screens
+  @media screen and (max-width: 375px) {
+    padding: 0.75rem;
+    padding-bottom: 0.75rem;
+    max-height: 30vh;
+    min-height: 100px;
+    bottom: 70px;
+    bottom: calc(70px + env(safe-area-inset-bottom, 0));
+  }
 }
 
 .themeScroll {
@@ -29,30 +54,55 @@
 }
 
 .themeCard {
-  flex: 0 0 160px;
-  height: 100%;
+  flex: 0 0 140px;
+  height: 80px;
   scroll-snap-align: start;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  padding: 0.75rem;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
+  &:hover, &:active {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(1.02);
   }
 
   &:first-child {
-    margin-left: 1rem; // задаём левый отступ только первой карточке
+    margin-left: 1rem;
   }
 
   &:last-child {
-    margin-right: 2rem; // задаём правый отступ только последней карточке
+    margin-right: 1rem;
+  }
+  
+  // iPhone-specific adjustments
+  @media screen and (max-width: 430px) {
+    flex: 0 0 130px;
+    height: 75px;
+    padding: 0.4rem;
+    border-radius: 10px;
+  }
+  
+  @media screen and (max-width: 375px) {
+    flex: 0 0 120px;
+    height: 70px;
+    padding: 0.35rem;
+    
+    &:first-child {
+      margin-left: 0.75rem;
+    }
+    
+    &:last-child {
+      margin-right: 0.75rem;
+    }
   }
 }
 

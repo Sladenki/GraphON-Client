@@ -8,7 +8,7 @@ import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
 import { Object3D } from 'three';
 import { WaterGraph3DProps, GraphNode } from './types';
-import { useMediaQuery, debounce } from './hooks';
+import { useMediaQuery, useDeviceType, debounce } from './hooks';
 import { Planet } from './Planet';
 
 import { ThemeCards } from './ThemeCards/ThemeCards';
@@ -38,6 +38,7 @@ interface SubgraphData {
 
 const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const deviceType = useDeviceType();
   const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
   const [hoveredThemeId, setHoveredThemeId] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<GraphNode | null>(null);
@@ -74,10 +75,12 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     return [...data, ...transformedSubgraphs] as GraphNode[];
   }, [data, subgraphsData, selectedTheme]);
 
-  const cameraPosition = useMemo<[number, number, number]>(() => 
-    isMobile ? [0, 0, 8] : [0, 0, 12],
-    [isMobile]
-  );
+  const cameraPosition = useMemo<[number, number, number]>(() => {
+    if (deviceType.isSmallIPhone) return [0, 0, 7];
+    if (deviceType.isIPhone) return [0, 0, 8];
+    if (isMobile) return [0, 0, 8];
+    return [0, 0, 12];
+  }, [isMobile, deviceType]);
 
   const root = useMemo(() => data.find(n => n.graphType === 'global'), [data]);
   const themes = useMemo(() => 
@@ -157,20 +160,31 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
         <Canvas
           camera={{ 
             position: new THREE.Vector3(...cameraPosition),
-            fov: isMobile ? 40 : 50 
+            fov: deviceType.isSmallIPhone ? 35 : (deviceType.isIPhone ? 38 : (isMobile ? 40 : 50))
           }}
           onPointerMissed={handlePointerMissed}
-          style={{ width: '100%', height: '100%', ...(isMobile && { marginTop: '-80px' })  }}
-          onCreated={({ scene, gl }) => {
+          style={{ 
+            width: '100%', 
+            height: '100%',
+            ...(isMobile && { 
+              marginTop: deviceType.isIPhone ? '-40px' : '-80px' 
+            })
+          }}
+          onCreated={({ scene, gl, camera }) => {
             sceneRef.current = scene;
             if (isMobile) {
-              gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-              // gl.setSize(width, width * 0.75);
+              gl.setPixelRatio(Math.min(window.devicePixelRatio, deviceType.isIPhone ? 2 : 2));
               gl.shadowMap.enabled = false;
+              
+              // iPhone-specific optimizations
+              if (deviceType.isIPhone && 'aspect' in camera) {
+                (camera as THREE.PerspectiveCamera).aspect = window.innerWidth / window.innerHeight;
+                (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
+              }
             }
           }}
-          dpr={isMobile ? [1, 2] : [1, 2]}
-          performance={{ min: 0.5 }}
+          dpr={deviceType.isIPhone ? [1, 2] : (isMobile ? [1, 2] : [1, 2])}
+          performance={{ min: deviceType.isIPhone ? 0.7 : 0.5 }}
         >
           {/* Scene setup */}
           <color attach="background" args={['#1a1b3d']} />
