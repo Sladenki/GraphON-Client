@@ -58,4 +58,6 @@ const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({ className, size = 
   );
 });
 
+ThemeToggle.displayName = 'ThemeToggle';
+
 export default ThemeToggle; 
