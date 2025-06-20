@@ -97,18 +97,11 @@ const Tabs: FC<TabsProps> = ({
 
   if (isMobile) {
     return (
-      <>
-        <MobileNav
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          tabs={tabs}
-        />
-        {showSearch && onSearchChange && (
-          <div className={styles.mobileSearch}>
-            {searchInput}
-          </div>
-        )}
-      </>
+      <MobileNav
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        tabs={tabs}
+      />
     );
   }
 

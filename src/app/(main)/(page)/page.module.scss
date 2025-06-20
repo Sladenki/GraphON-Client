@@ -63,6 +63,10 @@
     flex-direction: column;
     flex-grow: 1;
     min-height: 0;
+
+    @media (max-width: 680px) {
+        padding-top: 65px;
+    }
 }
 
 
