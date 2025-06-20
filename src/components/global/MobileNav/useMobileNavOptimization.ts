@@ -6,12 +6,27 @@ interface UseMobileNavOptimizationProps {
   setActiveTab: (tab: string) => void;
 }
 
+interface TouchPoint {
+  x: number;
+  y: number;
+  time: number;
+}
+
 export const useMobileNavOptimization = ({
   isOpen,
   setIsOpen,
   setActiveTab,
 }: UseMobileNavOptimizationProps) => {
   const bodyOverflowRef = useRef<string>('');
+  const touchStartRef = useRef<TouchPoint | null>(null);
+  const touchMoveRef = useRef<TouchPoint | null>(null);
+
+  // Конфигурация для свайпа
+  const SWIPE_CONFIG = {
+    minDistance: 50, // Минимальное расстояние для свайпа (в пикселях)
+    maxTime: 300, // Максимальное время для свайпа (в мс)
+    maxVerticalDistance: 100, // Максимальное вертикальное отклонение
+  };
 
   // Оптимизированная блокировка скролла
   useEffect(() => {
@@ -27,6 +42,96 @@ export const useMobileNavOptimization = ({
       };
     }
   }, [isOpen]);
+
+  // Обработчик начала касания
+  const handleTouchStart = useCallback((event: TouchEvent) => {
+    const touch = event.touches[0];
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now(),
+    };
+    touchMoveRef.current = null;
+  }, []);
+
+  // Обработчик движения касания
+  const handleTouchMove = useCallback((event: TouchEvent) => {
+    if (!touchStartRef.current) return;
+    
+    const touch = event.touches[0];
+    const currentPoint = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now(),
+    };
+    
+    // Вычисляем направление движения для предотвращения конфликтов со скроллом
+    const deltaX = Math.abs(currentPoint.x - touchStartRef.current.x);
+    const deltaY = Math.abs(currentPoint.y - touchStartRef.current.y);
+    
+    // Если горизонтальное движение превышает вертикальное, это может быть свайп
+    if (deltaX > deltaY && deltaX > 10) {
+      // Предотвращаем скролл только для потенциальных свайпов
+      event.preventDefault();
+    }
+    
+    touchMoveRef.current = currentPoint;
+  }, []);
+
+  // Обработчик окончания касания
+  const handleTouchEnd = useCallback(() => {
+    if (!touchStartRef.current || !touchMoveRef.current) {
+      touchStartRef.current = null;
+      touchMoveRef.current = null;
+      return;
+    }
+
+    const startPoint = touchStartRef.current;
+    const endPoint = touchMoveRef.current;
+
+    // Вычисляем расстояние и время
+    const deltaX = endPoint.x - startPoint.x;
+    const deltaY = Math.abs(endPoint.y - startPoint.y);
+    const deltaTime = endPoint.time - startPoint.time;
+
+    // Проверяем общие условия для свайпа
+    const isWithinTimeLimit = deltaTime < SWIPE_CONFIG.maxTime;
+    const isHorizontalSwipe = deltaY < SWIPE_CONFIG.maxVerticalDistance;
+
+    if (isWithinTimeLimit && isHorizontalSwipe) {
+      // Свайп слева направо для открытия (когда панель закрыта)
+      const isRightSwipe = deltaX > SWIPE_CONFIG.minDistance;
+      if (isRightSwipe && !isOpen) {
+        setIsOpen(true);
+      }
+      
+      // Свайп справа налево для закрытия (когда панель открыта)
+      const isLeftSwipe = deltaX < -SWIPE_CONFIG.minDistance;
+      if (isLeftSwipe && isOpen) {
+        setIsOpen(false);
+      }
+    }
+
+    // Очищаем ссылки
+    touchStartRef.current = null;
+    touchMoveRef.current = null;
+  }, [isOpen, setIsOpen]);
+
+  // Добавляем обработчики touch событий
+  useEffect(() => {
+    const passiveOptions = { passive: true };
+    const activeOptions = { passive: false }; // Для touchmove нужен preventDefault
+    
+    document.addEventListener('touchstart', handleTouchStart, passiveOptions);
+    document.addEventListener('touchmove', handleTouchMove, activeOptions);
+    document.addEventListener('touchend', handleTouchEnd, passiveOptions);
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   // Мемоизированные обработчики
   const handleOpenMenu = useCallback(() => {
