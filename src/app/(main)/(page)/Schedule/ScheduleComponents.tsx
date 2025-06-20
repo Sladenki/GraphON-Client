@@ -64,7 +64,8 @@ export const ScheduleCard = React.memo<ScheduleCardProps>(({ scheduleItem }) => 
           <Chip
             size="sm"
             variant="flat"
-            className={styles.typeChip}
+            className={`${styles.typeChip} ${scheduleItem.type === 'lecture' ? styles.lectureChip : styles.practiceChip}`}
+            data-type={scheduleItem.type}
           >
             {scheduleItem.type === 'lecture' ? 'Лекция' : 'Практика'}
           </Chip>
@@ -147,13 +148,15 @@ export const EventCard = React.memo<EventCardProps>(({ event, onToggleSubscripti
             <Button
               size="sm"
               variant={isRegistered ? "solid" : "bordered"}
-              color={isRegistered ? "success" : "primary"}
+              color={isRegistered ? "danger" : "success"}
               className={styles.subscriptionButton}
               onClick={handleRegistration}
               isLoading={isLoading}
-              startContent={isRegistered ? "✓" : "+"}
+              startContent={isLoading ? null : (isRegistered ? "✓" : "+")}
+              data-subscribed={isRegistered}
+              data-loading={isLoading}
             >
-              {isRegistered ? 'Участвую' : 'Участвовать'}
+              {isRegistered ? 'Отменить участие' : 'Участвовать'}
             </Button>
           )}
         </div>
@@ -202,7 +205,10 @@ export const DayButton = React.memo<DayButtonProps>(({ dayData, onDaySelect }) =
       <span className={styles.dayDate}>{dayData.dayDate}</span>
       <span className={styles.dayMonth}>{dayData.dayMonth}</span>
       {dayData.totalEvents > 0 && (
-        <span className={styles.eventsBadge}>
+        <span 
+          className={styles.eventsBadge}
+          data-count={dayData.totalEvents}
+        >
           {dayData.totalEvents}
         </span>
       )}

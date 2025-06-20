@@ -110,6 +110,17 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   }
 }
 
+@keyframes todayGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+    border-color: rgba(0, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(0, 255, 255, 0.4);
+    border-color: rgba(0, 255, 255, 0.7);
+  }
+}
+
 // Main page container
 .schedulePage {
   width: 100%;
@@ -361,7 +372,13 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   }
 
   &.today {
-    border-color: rgba(0, 255, 255, 0.4);
+    border-color: rgba(0, 255, 255, 0.6) !important;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(0, 255, 255, 0.05)) !important;
+    
+    &::before {
+      opacity: 0.2 !important;
+      background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), transparent) !important;
+    }
     
     .dayDate {
       background: linear-gradient(135deg, $accent-color, rgba(0, 255, 255, 0.8));
@@ -369,10 +386,26 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
       -webkit-text-fill-color: transparent;
       background-clip: text;
       font-weight: 700;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    
+    .dayName {
+      color: rgb(0, 255, 255);
+      opacity: 1;
+    }
+    
+    .dayMonth {
+      color: rgba(0, 255, 255, 0.8);
+      opacity: 1;
     }
     
     html[data-theme="light"] & {
-      border-color: rgba(59, 130, 246, 0.4);
+      border-color: rgba(59, 130, 246, 0.6) !important;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05)) !important;
+      
+      &::before {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), transparent) !important;
+      }
       
       .dayDate {
         background: linear-gradient(135deg, $accent-color-light, rgba(59, 130, 246, 0.8));
@@ -380,6 +413,76 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
         -webkit-text-fill-color: transparent;
         background-clip: text;
         font-weight: 700;
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+      }
+      
+      .dayName {
+        color: rgb(59, 130, 246);
+        opacity: 1;
+      }
+      
+      .dayMonth {
+        color: rgba(59, 130, 246, 0.8);
+        opacity: 1;
+      }
+    }
+    
+    // Специальная анимация для сегодняшнего дня
+    &:not(.selected) {
+      animation: todayGlow 3s ease-in-out infinite;
+    }
+  }
+  
+  // Комбинированное состояние: выбранный день + сегодня
+  &.today.selected {
+    border-color: rgba(34, 197, 94, 0.6) !important;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.1)) !important;
+    @include neon-glow(rgb(34, 197, 94), 0.4);
+    
+    &::before {
+      opacity: 0.25 !important;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), transparent) !important;
+    }
+    
+    .dayDate {
+      background: linear-gradient(135deg, rgb(34, 197, 94), rgb(16, 185, 129));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+    }
+    
+    .dayName {
+      color: rgb(34, 197, 94);
+    }
+    
+    .dayMonth {
+      color: rgba(34, 197, 94, 0.8);
+    }
+    
+    html[data-theme="light"] & {
+      border-color: rgba(16, 185, 129, 0.6) !important;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.1)) !important;
+      @include neon-glow(rgb(16, 185, 129), 0.4);
+      
+      &::before {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), transparent) !important;
+      }
+      
+      .dayDate {
+        background: linear-gradient(135deg, rgb(16, 185, 129), rgb(5, 150, 105));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+      }
+      
+      .dayName {
+        color: rgb(16, 185, 129);
+      }
+      
+      .dayMonth {
+        color: rgba(16, 185, 129, 0.8);
       }
     }
   }
@@ -434,7 +537,6 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background: linear-gradient(135deg, rgba(255, 99, 132, 0.9), rgba(255, 159, 64, 0.9));
   color: white;
   font-family: 'Inter', sans-serif;
   font-size: 0.6rem;
@@ -446,7 +548,34 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(255, 99, 132, 0.3);
+  transition: all 0.3s ease;
+  
+  // 1-2 события - зеленый
+  &[data-count="1"],
+  &[data-count="2"] {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.9), rgba(16, 185, 129, 0.9));
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    animation: pulseGreen 2s infinite;
+  }
+  
+  // 3-4 события - желтый
+  &[data-count="3"],
+  &[data-count="4"] {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.9), rgba(251, 191, 36, 0.9));
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    animation: pulseYellow 2s infinite;
+  }
+  
+  // 5+ событий - красный
+  &[data-count]:not([data-count="1"]):not([data-count="2"]):not([data-count="3"]):not([data-count="4"]) {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9));
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    animation: pulseRed 2s infinite;
+  }
+  
+  // Fallback для старых браузеров
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(139, 92, 246, 0.9));
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
   animation: pulse 2s infinite;
 
   @media (max-width: 768px) {
@@ -883,12 +1012,12 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   backdrop-filter: blur(8px);
   flex-shrink: 0;
 
-  // Темная тема
+  // Default style for graphChip
   background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(0, 255, 255, 0.08)) !important;
   border: 1px solid rgba(0, 255, 255, 0.2) !important;
   color: rgb(0, 255, 255) !important;
 
-  // Светлая тема
+  // Светлая тема для graphChip
   html[data-theme="light"] & {
     background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08)) !important;
     border: 1px solid rgba(34, 197, 94, 0.3) !important;
@@ -897,6 +1026,59 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
 
   @media (max-width: 768px) {
     font-size: 0.7rem !important;
+  }
+}
+
+// Специальные цвета для типов занятий
+.lectureChip {
+  // Темная тема - Синий для лекций
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1)) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  color: rgb(59, 130, 246) !important;
+
+  // Светлая тема - Темно-синий для лекций
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(37, 99, 235, 0.08)) !important;
+    border: 1px solid rgba(37, 99, 235, 0.3) !important;
+    color: rgb(37, 99, 235) !important;
+  }
+
+  // Hover эффект
+  &:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.15)) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(37, 99, 235, 0.12)) !important;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    }
+  }
+}
+
+.practiceChip {
+  // Темная тема - Оранжевый для практики
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.1)) !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+  color: rgb(249, 115, 22) !important;
+
+  // Светлая тема - Темно-оранжевый для практики
+  html[data-theme="light"] & {
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.15), rgba(234, 88, 12, 0.08)) !important;
+    border: 1px solid rgba(234, 88, 12, 0.3) !important;
+    color: rgb(234, 88, 12) !important;
+  }
+
+  // Hover эффект
+  &:hover {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(249, 115, 22, 0.15)) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+    
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, rgba(234, 88, 12, 0.25), rgba(234, 88, 12, 0.12)) !important;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
+    }
   }
 }
 
@@ -958,57 +1140,160 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   border-radius: 12px !important;
   backdrop-filter: blur(8px) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative;
+  overflow: hidden;
   
-  // Default state (Subscribe) - Dark theme
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1)) !important;
-  border: 1px solid rgba(34, 197, 94, 0.3) !important;
+  // Default state (Subscribe) - Dark theme - Зеленый цвет
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(16, 185, 129, 0.15)) !important;
+  border: 1px solid rgba(34, 197, 94, 0.4) !important;
   color: rgb(34, 197, 94) !important;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15) !important;
   
   // Default state (Subscribe) - Light theme
   html[data-theme="light"] & {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08)) !important;
-    border: 1px solid rgba(16, 185, 129, 0.3) !important;
-    color: rgb(16, 185, 129) !important;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.1)) !important;
+    border: 1px solid rgba(16, 185, 129, 0.4) !important;
+    color: rgb(5, 150, 105) !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15) !important;
   }
   
-  // Subscribed state - Dark theme
+  // Subscribed state - Dark theme - Красный цвет
   &[data-subscribed="true"] {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1)) !important;
-    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.15)) !important;
+    border: 1px solid rgba(239, 68, 68, 0.4) !important;
     color: rgb(239, 68, 68) !important;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15) !important;
     
     // Subscribed state - Light theme
     html[data-theme="light"] & {
-      background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(220, 38, 38, 0.08)) !important;
-      border: 1px solid rgba(220, 38, 38, 0.3) !important;
-      color: rgb(220, 38, 38) !important;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(185, 28, 28, 0.1)) !important;
+      border: 1px solid rgba(220, 38, 38, 0.4) !important;
+      color: rgb(185, 28, 28) !important;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15) !important;
     }
+  }
+
+  // Анимированный фон при наведении
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
   }
 
   &:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
     
-    // Hover for subscribe state
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.15)) !important;
-    
-    html[data-theme="light"] & {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.12)) !important;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+    &::before {
+      left: 100%;
     }
     
-    // Hover for subscribed state
+    // Hover for subscribe state - Усиленный зеленый
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.35), rgba(16, 185, 129, 0.25)) !important;
+    border-color: rgba(34, 197, 94, 0.6) !important;
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.25) !important;
+    
+    html[data-theme="light"] & {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.2)) !important;
+      border-color: rgba(16, 185, 129, 0.6) !important;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.2) !important;
+    }
+    
+    // Hover for subscribed state - Усиленный красный
     &[data-subscribed="true"] {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.15)) !important;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(220, 38, 38, 0.25)) !important;
+      border-color: rgba(239, 68, 68, 0.6) !important;
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.25) !important;
       
       html[data-theme="light"] & {
-        background: linear-gradient(135deg, rgba(220, 38, 38, 0.25), rgba(220, 38, 38, 0.12)) !important;
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.3), rgba(185, 28, 28, 0.2)) !important;
+        border-color: rgba(220, 38, 38, 0.6) !important;
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.2) !important;
       }
+    }
+  }
+
+  // Активное состояние
+  &:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  // Состояние загрузки
+  &[data-loading="true"] {
+    cursor: not-allowed;
+    opacity: 0.7;
+    
+    &::before {
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: shimmer 1.5s infinite;
     }
   }
 
   @media (max-width: 768px) {
     width: 100%;
+    // Отключаем сложные эффекты на мобильных
+    &::before {
+      display: none;
+    }
+    
+    &:hover {
+      transform: none !important;
+    }
+  }
+}
+
+// Анимация загрузки
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes pulseGreen {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.5);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulseYellow {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.5);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulseRed {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.5);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.5);
+    transform: scale(1.05);
   }
 }
 
