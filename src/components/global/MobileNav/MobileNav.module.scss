@@ -131,14 +131,20 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8;
+  gap: 4px;
   font-display: swap;
   line-height: 1;
   margin: 0;
   padding: 0;
   
+  // Ensure proper spacing on mobile after build
+  @media (max-width: 768px) {
+    gap: 3px !important;
+  }
+  
   @media (min-width: 768px) {
     text-shadow: 0 2px 4px rgba(150, 130, 238, 0.2);
+    gap: 4px;
   }
 }
 
@@ -153,11 +159,12 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(0, 255, 255, 0.1));
   border: 1px solid rgba(150, 130, 238, 0.2);
   border-radius: 6px;
-  padding: 0 4px;
+  padding: 1px 4px;
   box-shadow: 0 1px 3px rgba(150, 130, 238, 0.15);
   font-display: swap;
   line-height: 1.2;
   margin: 0;
+  margin-top: 2px;
   
   @media (min-width: 768px) {
     backdrop-filter: blur(4px);
@@ -209,7 +216,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 .backdrop {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  z-index: 9998;
   background: rgba(0, 0, 0, 0.5);
   animation: fadeIn 0.2s ease-out;
   
@@ -225,7 +232,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   top: 0;
   left: 0;
   bottom: 0;
-  z-index: 50;
+  z-index: 9999;
   width: 320px;
   max-width: 85vw;
   transform: translateX(-100%);

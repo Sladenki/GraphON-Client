@@ -167,7 +167,7 @@ export const useEventCardOptimization = ({
 
   // Мгновенное обновление состояния для отзывчивого интерфейса
   const updateEditedEvent = useCallback((key: string, value: string) => {
-    setEditedEvent(prev => ({ ...prev, [key]: value }));
+      setEditedEvent(prev => ({ ...prev, [key]: value }));
   }, []);
 
   // Мемоизированные стили кнопки регистрации

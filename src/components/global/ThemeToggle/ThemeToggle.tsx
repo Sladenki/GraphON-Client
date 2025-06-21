@@ -48,7 +48,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({ className, size = 
         <input 
           type="checkbox" 
           onChange={toggleTheme} 
-          checked={theme === "light"}
+          checked={theme === "light"} 
           // Отключаем автофокус на мобильных для предотвращения виртуальной клавиатуры
           autoFocus={false}
         />

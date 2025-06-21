@@ -97,11 +97,11 @@ const Tabs: FC<TabsProps> = ({
 
   if (isMobile) {
     return (
-      <MobileNav
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        tabs={tabs}
-      />
+        <MobileNav
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          tabs={tabs}
+        />
     );
   }
 

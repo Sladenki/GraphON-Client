@@ -1221,7 +1221,7 @@ $gradient-end-light: rgba(59, 130, 246, 0.05);
   &:active {
     transform: translateY(0) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  }
+      }
 
   // Состояние загрузки
   &[data-loading="true"] {

@@ -304,7 +304,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     border-color: var(--heroui-primary);
     
     @media (min-width: 768px) {
-      @include neon-glow(var(--heroui-primary), 0.2);
+    @include neon-glow(var(--heroui-primary), 0.2);
     }
   }
 }
@@ -343,7 +343,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
       border-color: var(--heroui-primary);
       
       @media (min-width: 768px) {
-        @include neon-glow(var(--heroui-primary), 0.2);
+      @include neon-glow(var(--heroui-primary), 0.2);
       }
     }
   }
@@ -367,7 +367,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     border-color: var(--heroui-primary);
     
     @media (min-width: 768px) {
-      @include neon-glow(var(--heroui-primary), 0.2);
+    @include neon-glow(var(--heroui-primary), 0.2);
     }
   }
 }

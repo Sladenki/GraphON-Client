@@ -167,7 +167,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
             width: '100%', 
             height: '100%',
             ...(isMobile && { 
-              marginTop: deviceType.isIPhone ? '-40px' : '-80px' 
+              marginTop: deviceType.isIPhone ? '-30px' : '-170px' 
             })
           }}
           onCreated={({ scene, gl, camera }) => {

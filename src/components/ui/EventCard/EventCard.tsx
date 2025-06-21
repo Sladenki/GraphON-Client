@@ -136,46 +136,46 @@ const EditFormInputs = React.memo<{
   }, [updateEditedEvent]);
 
   return (
-    <div className={styles.editForm}>
-      <Input
-        type="date"
-        label="Дата мероприятия"
-        value={editedEvent.eventDate}
+  <div className={styles.editForm}>
+    <Input
+      type="date"
+      label="Дата мероприятия"
+      value={editedEvent.eventDate}
         onChange={handleDateChange}
-        variant="bordered"
-        startContent={<Calendar size={16} />}
-        className={styles.dateInput}
-      />
-      <div className={styles.timeInputs}>
-        <Input
-          type="time"
-          label="Время начала"
-          value={editedEvent.timeFrom}
-          onChange={handleTimeFromChange}
-          variant="bordered"
-          startContent={<Clock size={16} />}
-          className={styles.timeInput}
-        />
-        <Input
-          type="time"
-          label="Время окончания"
-          value={editedEvent.timeTo}
-          onChange={handleTimeToChange}
-          variant="bordered"
-          startContent={<Clock size={16} />}
-          className={styles.timeInput}
-        />
-      </div>
+      variant="bordered"
+      startContent={<Calendar size={16} />}
+      className={styles.dateInput}
+    />
+    <div className={styles.timeInputs}>
       <Input
-        label="Место проведения"
-        value={editedEvent.place}
-        onChange={handlePlaceChange}
+        type="time"
+        label="Время начала"
+        value={editedEvent.timeFrom}
+          onChange={handleTimeFromChange}
         variant="bordered"
-        startContent={<MapPinned size={16} />}
-        placeholder="Введите место проведения"
-        className={styles.placeInput}
+        startContent={<Clock size={16} />}
+        className={styles.timeInput}
+      />
+      <Input
+        type="time"
+        label="Время окончания"
+        value={editedEvent.timeTo}
+          onChange={handleTimeToChange}
+        variant="bordered"
+        startContent={<Clock size={16} />}
+        className={styles.timeInput}
       />
     </div>
+    <Input
+      label="Место проведения"
+      value={editedEvent.place}
+        onChange={handlePlaceChange}
+      variant="bordered"
+      startContent={<MapPinned size={16} />}
+      placeholder="Введите место проведения"
+      className={styles.placeInput}
+    />
+  </div>
   );
 });
 
