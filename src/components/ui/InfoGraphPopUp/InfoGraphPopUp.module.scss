@@ -2,9 +2,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: 'Inter', sans-serif;
   max-height: 100%;
+  min-height: 0; /* Позволяет flex-элементу сжиматься */
+  
+  /* Стилизация скролла */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+  }
 }
 
 .image {
@@ -17,6 +38,8 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  flex: 1;
+  min-height: 0; /* Позволяет flex-элементу сжиматься */
 }
 
 .title {
@@ -34,6 +57,13 @@
   font-size: 16px;
   line-height: 1.5;
   color: var(--main-text);
+  text-align: left;
+  width: 100%;
+  word-wrap: break-word;
+  word-break: break-word;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .badges {
@@ -65,8 +95,13 @@
 
 /* Адаптивность */
 @media (max-width: 600px) {
+  .card {
+    max-height: 70vh; /* Ограничиваем высоту на мобильных */
+  }
+
   .image {
     height: 180px;
+    width: 180px;
   }
 
   .title {

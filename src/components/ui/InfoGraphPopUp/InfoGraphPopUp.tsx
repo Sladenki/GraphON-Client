@@ -47,7 +47,7 @@ const InfoGraphPopUp: FC<InfoGraphPopUpProps> = ({
 
 
   return (
-    <PopUpWrapper isOpen={isInfoGraphPopupOpen} onClose={closeInfoGraphPopup} width={900} height={900}>
+    <PopUpWrapper isOpen={isInfoGraphPopupOpen} onClose={closeInfoGraphPopup} width={900} height="auto">
         {data && (
             <div className={styles.card}>
                 <Image
