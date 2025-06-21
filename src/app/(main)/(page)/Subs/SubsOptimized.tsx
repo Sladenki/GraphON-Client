@@ -6,6 +6,7 @@ import {
   ErrorComponent 
 } from '@/components/ui/StateComponents';
 import { useSubsOptimized } from './useSubsOptimized';
+import { useAuth } from '@/providers/AuthProvider';
 import VirtualizedEventsList from '../EventsList/VirtualizedEventsList';
 import styles from './Subs.module.scss';
 
@@ -14,6 +15,7 @@ interface SubsOptimizedProps {
 }
 
 const SubsOptimized: React.FC<SubsOptimizedProps> = React.memo(({ searchQuery }) => {
+  const { user } = useAuth();
   const {
     filteredEvents,
     handleDelete,
@@ -40,18 +42,35 @@ const SubsOptimized: React.FC<SubsOptimizedProps> = React.memo(({ searchQuery })
     return <NoSearchResultsComponent entityName="мероприятия" />;
   }
 
-  if (loadingState.isEmpty) {
-    return <EmptyEventsComponent />;
-  }
-
-  // Используем виртуализацию для больших списков
+  // Основной контейнер с заголовком - показываем всегда если есть подписки
   return (
-    <VirtualizedEventsList 
-      events={filteredEvents} 
-      onDelete={handleDelete}
-      itemHeight={420} // Высота карточки события + отступы
-      containerHeight={typeof window !== 'undefined' ? window.innerHeight - 200 : 600}
-    />
+    <div className={styles.subsContainer}>
+      {/* {user?.graphSubsNum && user.graphSubsNum > 0 && (
+        <div className={styles.subsHeader}>
+          <div className={styles.subsCount}>
+            <span className={styles.subsCountIcon}>📊</span>
+            <span className={styles.subsCountText}>
+              Подписан на <strong>{user.graphSubsNum}</strong> {
+                user.graphSubsNum === 1 ? 'граф' :
+                user.graphSubsNum >= 2 && user.graphSubsNum <= 4 ? 'графа' :
+                'графов'
+              }
+            </span>
+          </div>
+        </div>
+      )} */}
+      
+      {loadingState.isEmpty ? (
+        <EmptyEventsComponent />
+      ) : (
+        <VirtualizedEventsList 
+          events={filteredEvents} 
+          onDelete={handleDelete}
+          itemHeight={420} // Высота карточки события + отступы
+          containerHeight={typeof window !== 'undefined' ? window.innerHeight - 250 : 600} // Увеличил отступ для заголовка
+        />
+      )}
+    </div>
   );
 });
 

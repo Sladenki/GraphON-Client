@@ -1,3 +1,79 @@
+.subsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  contain: layout style;
+}
+
+.subsHeader {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
+}
+
+.subsCount {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--heroui-content2);
+  border: 1px solid var(--heroui-divider);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  width: fit-content;
+  
+  @media (min-width: 768px) {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: var(--heroui-content3);
+      border-color: var(--heroui-primary-300);
+    }
+  }
+  
+  @media (max-width: 767px) {
+    padding: 0.4rem 0.6rem;
+    gap: 0.4rem;
+  }
+}
+
+.subsCountIcon {
+  font-size: 1rem;
+  opacity: 0.8;
+  
+  @media (max-width: 767px) {
+    font-size: 0.9rem;
+  }
+}
+
+.subsCountText {
+  font-size: 0.875rem;
+  color: var(--heroui-foreground-600);
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  
+  strong {
+    color: var(--heroui-foreground);
+    font-weight: 600;
+  }
+  
+  @media (max-width: 767px) {
+    font-size: 0.8rem;
+  }
+}
+
 .eventsListWrapper {
   display: flex;
   flex-direction: column;
@@ -153,7 +229,15 @@
   }
 }
 
+
+
 @media (max-width: 767px) {
+  .subsHeader {
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+    animation: none !important;
+  }
+
   .eventsListWrapper {
     padding: 0.5rem;
     gap: 0.75rem;
