@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 
+// Глобальный счетчик ссылок на модальный контейнер
+let modalRefCount = 0;
+
 export const useModalManager = () => {
   const [modalContainer, setModalContainer] = useState<HTMLElement | null>(null);
 
@@ -15,12 +18,23 @@ export const useModalManager = () => {
       document.body.appendChild(container);
     }
     
+    // Увеличиваем счетчик ссылок
+    modalRefCount++;
     setModalContainer(container);
 
     // Cleanup при размонтировании
     return () => {
-      if (container && container.children.length === 0) {
-        document.body.removeChild(container);
+      // Уменьшаем счетчик ссылок
+      modalRefCount--;
+      
+      // Удаляем контейнер только если он больше не используется
+      if (modalRefCount === 0 && container && container.parentNode) {
+        try {
+          document.body.removeChild(container);
+        } catch (error) {
+          // Игнорируем ошибку если контейнер уже удален
+          console.warn('Modal container already removed:', error);
+        }
       }
     };
   }, []);

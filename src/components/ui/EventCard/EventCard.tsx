@@ -35,6 +35,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { UserRole } from "@/types/user.interface";
 import { useEventCardOptimization } from './useEventCardOptimization';
+import DeleteConfirmPopUp from './DeleteConfirmPopUp';
 import styles from './EventCard.module.scss';
 
 interface EventProps {
@@ -277,8 +278,12 @@ const EventCard: React.FC<EventProps> = React.memo(({
     fullImageUrl,
     formattedTime,
     registerButtonStyles,
+    showDeleteConfirm,
+    isDeleting,
     handleRegistration,
     handleDelete,
+    handleConfirmDelete,
+    handleCancelDelete,
     handleEdit,
     handleCancel,
     handleStartEdit,
@@ -464,6 +469,15 @@ const EventCard: React.FC<EventProps> = React.memo(({
           </div>
         )}
       </CardFooter>
+      
+      {/* PopUp подтверждения удаления */}
+      <DeleteConfirmPopUp
+        isOpen={showDeleteConfirm}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        eventName={event.name}
+        isDeleting={isDeleting}
+      />
     </Card>
   );
 });

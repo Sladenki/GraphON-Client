@@ -43,6 +43,8 @@ export const useEventCardOptimization = ({
   const router = useRouter();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [event, setEvent] = useState<Event>(initialEvent);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   // Мемоизируем начальное состояние редактирования
   const initialEditState = useMemo(() => ({
@@ -129,16 +131,32 @@ export const useEventCardOptimization = ({
     }
   }, [isLoggedIn, isRegistered, router, toggleRegistration]);
 
-  const handleDelete = useCallback(async () => {
+  // Показать PopUp подтверждения удаления
+  const handleDelete = useCallback(() => {
+    setShowDeleteConfirm(true);
+  }, []);
+
+  // Подтвержденное удаление
+  const handleConfirmDelete = useCallback(async () => {
     if (!event._id) return;
     
+    setIsDeleting(true);
     try {
       await EventService.deleteEvent(event._id);
+      setShowDeleteConfirm(false);
+      notifySuccess("Мероприятие удалено", "Мероприятие успешно удалено из системы");
       onDelete?.(event._id);
     } catch {
       notifyError("Ошибка", "Не удалось удалить мероприятие");
+    } finally {
+      setIsDeleting(false);
     }
   }, [event._id, onDelete]);
+
+  // Отмена удаления
+  const handleCancelDelete = useCallback(() => {
+    setShowDeleteConfirm(false);
+  }, []);
 
   const handleEdit = useCallback(async () => {
     if (!event._id) return;
@@ -198,8 +216,12 @@ export const useEventCardOptimization = ({
     fullImageUrl,
     formattedTime,
     registerButtonStyles,
+    showDeleteConfirm,
+    isDeleting,
     handleRegistration,
     handleDelete,
+    handleConfirmDelete,
+    handleCancelDelete,
     handleEdit,
     handleCancel,
     handleStartEdit,
