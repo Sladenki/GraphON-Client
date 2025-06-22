@@ -43,6 +43,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   const [hoveredThemeId, setHoveredThemeId] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<GraphNode | null>(null);
   const [selectedSubgraph, setSelectedSubgraph] = useState<GraphNode | null>(null);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const activeNodeRef = useRef<Object3D | null>(null);
@@ -140,6 +141,28 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
     return () => window.removeEventListener('resize', debouncedResize);
   }, [handleResize]);
 
+  // Отслеживаем состояние MobileNav через MutationObserver
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const observer = new MutationObserver(() => {
+      // Проверяем наличие backdrop элемента MobileNav
+      const backdrop = document.querySelector('[class*="backdrop"]');
+      const sidebar = document.querySelector('[class*="sidebar"][class*="sidebarOpen"]');
+      setIsMobileNavOpen(!!(backdrop || sidebar));
+    });
+
+    // Наблюдаем за изменениями в DOM
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+  }, [isMobile]);
+
   const handleSubgraphSelect = (subgraph: GraphNode) => {
     setSelectedSubgraph(subgraph);
   };
@@ -156,7 +179,7 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           onSubgraphSelect={handleSubgraphSelect}
         />
       )}
-      <div className={styles.graphContainer}>
+      <div className={`${styles.graphContainer} ${isMobileNavOpen ? styles.navOpen : ''}`}>
         <Canvas
           camera={{ 
             position: new THREE.Vector3(...cameraPosition),

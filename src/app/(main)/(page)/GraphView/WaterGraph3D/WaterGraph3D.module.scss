@@ -22,6 +22,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.3s ease, filter 0.3s ease;
   
   @media (max-width: 768px) {
     height: 65vh;
@@ -29,6 +30,16 @@
     padding: 0;
     // Обеспечиваем правильные пропорции на мобильных
     aspect-ratio: auto;
+  }
+  
+  // Затемняем и блокируем взаимодействие при открытии MobileNav
+  &.navOpen {
+    @media (max-width: 768px) {
+      opacity: 0.3;
+      filter: blur(2px);
+      pointer-events: none;
+      z-index: 1;
+    }
   }
   
   // iPhone-specific adjustments - убираем жесткие ограничения по высоте
