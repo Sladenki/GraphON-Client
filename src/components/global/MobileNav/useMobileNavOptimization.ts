@@ -45,6 +45,20 @@ export const useMobileNavOptimization = ({
 
   // Обработчик начала касания
   const handleTouchStart = useCallback((event: TouchEvent) => {
+    // Проверяем, происходит ли событие внутри области карточек
+    const target = event.target as HTMLElement;
+    const isInScrollableArea = target.closest('.themeScroll, .subgraphContent, [data-scrollable="true"]') || 
+                              target.classList.contains('themeScroll') ||
+                              target.classList.contains('subgraphContent') ||
+                              target.dataset.scrollable === 'true';
+    
+    if (isInScrollableArea) {
+      // Не инициализируем свайп внутри скроллируемых областей
+      touchStartRef.current = null;
+      touchMoveRef.current = null;
+      return;
+    }
+    
     const touch = event.touches[0];
     touchStartRef.current = {
       x: touch.clientX,
@@ -57,6 +71,18 @@ export const useMobileNavOptimization = ({
   // Обработчик движения касания
   const handleTouchMove = useCallback((event: TouchEvent) => {
     if (!touchStartRef.current) return;
+    
+    // Проверяем, происходит ли событие внутри области карточек или других скроллируемых контейнеров
+    const target = event.target as HTMLElement;
+    const isInScrollableArea = target.closest('.themeScroll, .subgraphContent, [data-scrollable="true"]') || 
+                              target.classList.contains('themeScroll') ||
+                              target.classList.contains('subgraphContent') ||
+                              target.dataset.scrollable === 'true';
+    
+    if (isInScrollableArea) {
+      // Разрешаем нативный скролл в областях карточек
+      return;
+    }
     
     const touch = event.touches[0];
     const currentPoint = {
@@ -71,7 +97,7 @@ export const useMobileNavOptimization = ({
     
     // Если горизонтальное движение превышает вертикальное, это может быть свайп
     if (deltaX > deltaY && deltaX > 10) {
-      // Предотвращаем скролл только для потенциальных свайпов
+      // Предотвращаем скролл только для потенциальных свайпов вне скроллируемых областей
       event.preventDefault();
     }
     
