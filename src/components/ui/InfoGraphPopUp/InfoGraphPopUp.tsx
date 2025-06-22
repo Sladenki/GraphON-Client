@@ -34,9 +34,7 @@ const InfoGraphPopUp: FC<InfoGraphPopUpProps> = ({
     }, [graphId, mutate]); // зависимость от graph и mutate, чтобы вызвать мутацию каждый раз, когда graph изменится
 
 
-    if(isPending) {
-        <SpinnerLoader/>
-    }
+
 
     const fullImageUrl = useMemo(() => 
         data?.imgPath ? `${BASE_S3_URL}/${data.imgPath}` : "", 
@@ -48,39 +46,77 @@ const InfoGraphPopUp: FC<InfoGraphPopUpProps> = ({
 
   return (
     <PopUpWrapper isOpen={isInfoGraphPopupOpen} onClose={closeInfoGraphPopup} width={900} height="auto">
-        {data && (
+        {isPending ? (
+            <div className={styles.loaderContainer}>
+                <SpinnerLoader />
+            </div>
+        ) : data ? (
             <div className={styles.card}>
-                <Image
-                    className={styles.image}
-                    src={fullImageUrl}
-                    alt={data.name}
-                    width={300}                
-                    height={300}
-                />
-                <div className={styles.content}>
-                    <h2 className={styles.title}>{data.name}</h2>
-                    <div className={styles.director}>
-                        Руководитель:&nbsp;
-                        {data?.directorVkLink ? (
-                            <a href={data?.directorVkLink} target="_blank" rel="noopener noreferrer">
-                                {data?.directorName}
-                            </a>
-                        ) : (
-                            <span>{data?.directorName}</span>
+                <div className={styles.header}>
+                    <div className={styles.imageWrapper}>
+                        <Image
+                            className={styles.image}
+                            src={fullImageUrl || '/noImage.png'}
+                            alt={data.name}
+                            width={200}                
+                            height={200}
+                        />
+                        <div className={styles.imageOverlay}>
+                            <div className={styles.badge}>
+                                <span className={styles.badgeIcon}>👥</span>
+                                <span className={styles.badgeText}>{data.subsNum}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.headerContent}>
+                        <h2 className={styles.title}>{data.name}</h2>
+                        {data.parentGraphId?.name && (
+                            <div className={styles.category}>
+                                <span className={styles.categoryIcon}>📚</span>
+                                <span>{data.parentGraphId.name}</span>
+                            </div>
+                        )}
+                        {data.directorName && (
+                            <div className={styles.director}>
+                                <span className={styles.directorLabel}>Руководитель:</span>
+                                {data.directorVkLink ? (
+                                    <a 
+                                        href={data.directorVkLink} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className={styles.directorLink}
+                                    >
+                                        {data.directorName}
+                                    </a>
+                                ) : (
+                                    <span className={styles.directorName}>{data.directorName}</span>
+                                )}
+                            </div>
                         )}
                     </div>
-                    <p className={styles.about}>{data.about}</p>
-                    <div className={styles.badges}>
-                        <span className={styles.badge}>👥 {data.subsNum} подписчик(ов)</span>
-                        <span className={styles.badge}>📚 {data.parentGraphId?.name}</span>
-                    </div>
-                    <a className={styles.vkLink} href={data.vkLink} target="_blank" rel="noopener noreferrer">
-                        Перейти в VK сообщество →
-                    </a>
                 </div>
+                
+                {data.about && (
+                    <div className={styles.aboutSection}>
+                        <h3 className={styles.aboutTitle}>О сообществе</h3>
+                        <p className={styles.about}>{data.about}</p>
+                    </div>
+                )}
+                
+                {data.vkLink && (
+                    <div className={styles.actions}>
+                        <a 
+                            className={styles.vkButton} 
+                            href={data.vkLink} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                        >
+                            <span>Перейти в VK</span>
+                        </a>
+                    </div>
+                )}
             </div>
-        )}
-
+        ) : null}
     </PopUpWrapper>
   )
 }
