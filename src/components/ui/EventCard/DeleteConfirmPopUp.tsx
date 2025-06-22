@@ -34,7 +34,7 @@ const DeleteConfirmPopUp: React.FC<DeleteConfirmPopUpProps> = ({
             Вы уверены, что хотите удалить мероприятие?
           </p>
           <p className={styles.eventName}>
-            "{eventName}"
+            &quot;{eventName}&quot;
           </p>
           <p className={styles.warning}>
             Это действие нельзя отменить
