@@ -58,8 +58,8 @@ const InfoGraphPopUp: FC<InfoGraphPopUpProps> = ({
                             className={styles.image}
                             src={fullImageUrl || '/noImage.png'}
                             alt={data.name}
-                            width={200}                
-                            height={200}
+                            fill
+                            sizes="200px"
                         />
                         <div className={styles.imageOverlay}>
                             <div className={styles.badge}>
