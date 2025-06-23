@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import styles from "./PopUpWrapper.module.scss";
 import { X } from 'lucide-react';
 import { useModalManager, useModalState } from "./useModalManager";
+import { useSmoothScrollLock } from "./useSmoothScrollLock";
 
 interface PopUpWrapperProps {
   isOpen: boolean; // Управляет открытием/закрытием попапа
@@ -25,6 +26,9 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   const { registerModal } = useModalState();
   const unregisterRef = useRef<(() => void) | null>(null);
 
+  // Используем плавную блокировку скролла
+  useSmoothScrollLock(isOpen);
+
   // Регистрируем/отменяем регистрацию modal окна при изменении isOpen
   useEffect(() => {
     if (isOpen) {
@@ -43,19 +47,6 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
       }
     };
   }, [isOpen, modalId, registerModal]);
-
-  // Блокируем/разблокируем общий скролл при изменении isOpen
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    return () => {
-      document.body.style.overflow = ''; // Восстановление при размонтировании
-    };
-  }, [isOpen]);
 
   // Обработчик клика вне окна для его закрытия
   const handleOverlayClick = useCallback(

@@ -61,14 +61,22 @@
   animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   
   /* GPU оптимизации для мобильных */
-  @media (max-width: 768px) and (hover: none) {
+  @media (max-width: 768px) {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    animation-duration: 0.2s;
-    will-change: transform;
+    animation-duration: 0.15s;
+    animation-name: slideInMobile;
+    will-change: auto;
     transform: translateZ(0);
     backface-visibility: hidden;
     contain: layout style;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); // Упрощенная тень
+  }
+  
+  /* Дополнительные мобильные оптимизации */
+  @media (max-width: 480px) {
+    border-radius: 16px;
+    margin: 0.5rem;
   }
   
   /* Стилизация скролла */
@@ -103,6 +111,18 @@
   }
 }
 
+// Мобильная анимация - более плавная и быстрая
+@keyframes slideInMobile {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .header {
   display: flex;
   gap: 2rem;
@@ -125,9 +145,16 @@
   height: 200px;
   
   /* Мобильные оптимизации */
-  @media (max-width: 768px) and (hover: none) {
-    will-change: transform;
+  @media (max-width: 768px) {
+    width: 150px;
+    height: 150px;
+    will-change: auto;
     transform: translateZ(0);
+  }
+  
+  @media (max-width: 480px) {
+    width: 120px;
+    height: 120px;
   }
   
   &::before {
@@ -159,22 +186,34 @@
   object-position: center;
   
   /* Мобильные оптимизации */
-  @media (max-width: 768px) and (hover: none) {
+  @media (max-width: 768px) {
+    width: 150px;
+    height: 150px;
     transition-duration: 0.15s;
-    will-change: transform;
+    will-change: auto;
     transform: translateZ(0);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    
-    @media (max-width: 768px) and (hover: none) {
-      transform: translateZ(0);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+  @media (max-width: 480px) {
+    width: 120px;
+    height: 120px;
   }
+  
+      &:hover {
+      @media (hover: hover) {
+        transform: scale(1.05);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+    }
+    
+    // Touch активация для мобильных
+    &:active {
+      @media (hover: none) {
+        transform: scale(0.98);
+        transition-duration: 0.1s;
+      }
+    }
 }
 
 .imageOverlay {
