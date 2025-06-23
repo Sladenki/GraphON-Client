@@ -228,10 +228,9 @@ const SchedulePage: React.FC<SchedulePageProps> = React.memo(({
     onToggleSubscription
   });
 
-  // Показываем лоадер только при первой загрузке
-  if (isFirstLoad) {
-    return <ScheduleLoader />;
-  }
+  console.log('schedule', schedule);
+  console.log('events', events);
+  console.log('selectedDayData', selectedDayData);
 
   return (
     <div className={styles.schedulePage}>

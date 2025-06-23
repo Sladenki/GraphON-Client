@@ -5,6 +5,7 @@ import React, { FC, useEffect } from 'react'
 import { SpinnerLoader } from '../../global/SpinnerLoader/SpinnerLoader';
 import PopUpWrapper from '../PopUpWrapper/PopUpWrapper';
 import { ScheduleList } from '../ScheduleList/ScheduleList';
+import SchedulePage from '../Schedule/Schedule';
 
 
 interface SchedulePopUpProps {
@@ -40,10 +41,14 @@ const SchedulePopUp: FC<SchedulePopUpProps> = ({
     return (
         <PopUpWrapper isOpen={isSchedulePopupOpen} onClose={closeSchedulePopup} width={1000} height={900}>
             {data && (
-                <ScheduleList
+                // <ScheduleList
+                //     schedule={data?.data?.schedule}
+                //     events={data?.data?.events}
+                //     // title={`Расписание графа - ${graphName}`}
+                // />
+                <SchedulePage
                     schedule={data?.data?.schedule}
                     events={data?.data?.events}
-                    // title={`Расписание графа - ${graphName}`}
                 />
             )}
         </PopUpWrapper>
