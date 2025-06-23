@@ -14,6 +14,10 @@
     // Оптимизация рендеринга
     contain: layout style;
     will-change: auto;
+    
+    // Дополнительные GPU оптимизации
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   
   &.sm {
@@ -86,19 +90,21 @@
   justify-content: center;
   color: var(--main-text);
   
-  // Отключаем transitions на мобильных для производительности
-  @media (min-width: 769px) {
-  transition: color 0.3s ease;
+  // Оптимизированные transitions для десктопа
+  @media (min-width: 769px) and (hover: hover) {
+    transition: color 0.3s ease;
   }
   
   svg {
-    @media (min-width: 769px) {
-    transition: all 0.3s ease;
+    @media (min-width: 769px) and (hover: hover) {
+      transition: all 0.3s ease;
     }
     
-    // Оптимизация для мобильных
-    @media (max-width: 768px) {
+    // Полное отключение анимаций на мобильных
+    @media (max-width: 768px), (hover: none) {
       transition: none;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
   }
 }
@@ -110,14 +116,19 @@
   height: 24px;
   
   // Мобильные оптимизации
-  @media (max-width: 768px) {
+  @media (max-width: 768px), (hover: none) {
     // Увеличиваем область касания для лучшего UX
-    padding: 4px;
-    margin: -4px;
+    padding: 6px;
+    margin: -6px;
     
     // Оптимизация touch событий
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    
+    // GPU оптимизации
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout style;
   }
   
   input {
@@ -134,20 +145,28 @@
         background: #ffffff;
         
         // Упрощаем shadow на мобильных
-        @media (min-width: 769px) {
-        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        @media (min-width: 769px) and (hover: hover) {
+          box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
         
-        @media (max-width: 768px) {
-          box-shadow: 0 1px 3px rgba(245, 158, 11, 0.2);
+        @media (max-width: 768px), (hover: none) {
+          box-shadow: 0 1px 2px rgba(245, 158, 11, 0.15);
         }
       }
     }
     
     &:focus + .slider {
-      // Отключаем focus shadow на мобильных
-      @media (min-width: 769px) {
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+      // Убираем focus shadow на мобильных и touch устройствах
+      @media (min-width: 769px) and (hover: hover) {
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+      }
+    }
+    
+    // Специально для активного состояния на touch устройствах
+    &:active + .slider {
+      @media (max-width: 768px), (hover: none) {
+        transform: scale(0.98);
+        transition: transform 0.1s ease-out;
       }
     }
   }
@@ -164,15 +183,22 @@
   border: 1px solid #6b7280;
   border-radius: 24px;
   
-  // Оптимизированные transitions
-  @media (min-width: 769px) {
+  // Оптимизированные transitions для десктопа
+  @media (min-width: 769px) and (hover: hover) {
     transition: all 0.3s ease;
-    will-change: background, border-color, box-shadow; // GPU acceleration
+    will-change: background, border-color, box-shadow;
   }
   
-  @media (max-width: 768px) {
-    transition: background 0.15s ease, border-color 0.15s ease; // Упрощенные transitions
-    will-change: auto; // Экономим память на мобильных
+  // Максимально упрощенные transitions для мобильных
+  @media (max-width: 768px), (hover: none) {
+    transition: background 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+                border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: auto;
+    
+    // Принудительное GPU ускорение
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout style;
   }
   
   &::before {
@@ -183,32 +209,41 @@
     left: 2px;
     bottom: 1px;
     background: #ffffff;
-      border-radius: 50%;
+    border-radius: 50%;
+    
+    // Оптимизированные transitions для десктопа
+    @media (min-width: 769px) and (hover: hover) {
+      transition: all 0.3s ease;
+      will-change: transform, box-shadow;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    // Максимально ускоренные transitions для мобильных
+    @media (max-width: 768px), (hover: none) {
+      transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
       
-      // Оптимизированные transitions для кнопки
-      @media (min-width: 769px) {
-    transition: all 0.3s ease;
-        will-change: transform, box-shadow;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      }
-      
-      @media (max-width: 768px) {
-        // Ускоренные transitions для мобильных
-        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        will-change: transform;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-        
-        // Принудительное GPU ускорение
-        transform: translateZ(0);
-        backface-visibility: hidden;
-        perspective: 1000px;
-      }
+      // Принудительное GPU ускорение
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      perspective: 1000px;
+      contain: layout;
+    }
   }
   
+  // Hover эффекты только для desktop с hover поддержкой
   &:hover {
-    // Отключаем hover эффекты на мобильных (touch устройствах)
     @media (min-width: 769px) and (hover: hover) {
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+    }
+  }
+  
+  // Active состояние для touch устройств
+  &:active {
+    @media (max-width: 768px), (hover: none) {
+      transform: scale(0.98);
+      transition: transform 0.1s ease-out;
     }
   }
 }
@@ -222,18 +257,25 @@
     &::before {
       background: #ffffff;
       
-      @media (min-width: 769px) {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      @media (min-width: 769px) and (hover: hover) {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
       }
       
-      @media (max-width: 768px) {
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      @media (max-width: 768px), (hover: none) {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
       }
     }
     
     &:hover {
       @media (min-width: 769px) and (hover: hover) {
-      background: linear-gradient(135deg, #d1d5db, #9ca3af);
+        background: linear-gradient(135deg, #d1d5db, #9ca3af);
+      }
+    }
+    
+    &:active {
+      @media (max-width: 768px), (hover: none) {
+        background: linear-gradient(135deg, #d1d5db, #9ca3af);
+        transition: background 0.1s ease-out;
       }
     }
   }
@@ -248,18 +290,25 @@
     &::before {
       background: #f9fafb;
       
-      @media (min-width: 769px) {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      @media (min-width: 769px) and (hover: hover) {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       }
       
-      @media (max-width: 768px) {
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      @media (max-width: 768px), (hover: none) {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
       }
     }
     
     &:hover {
       @media (min-width: 769px) and (hover: hover) {
-      background: linear-gradient(135deg, #4b5563, #6b7280);
+        background: linear-gradient(135deg, #4b5563, #6b7280);
+      }
+    }
+    
+    &:active {
+      @media (max-width: 768px), (hover: none) {
+        background: linear-gradient(135deg, #4b5563, #6b7280);
+        transition: background 0.1s ease-out;
       }
     }
   }
