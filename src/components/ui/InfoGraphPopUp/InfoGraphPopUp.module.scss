@@ -6,6 +6,41 @@
   min-height: 200px;
 }
 
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 200px;
+  
+  p {
+    margin-bottom: 1rem;
+    color: #e53e3e;
+    font-weight: 500;
+  }
+}
+
+.retryButton {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
 .card {
   display: flex;
   flex-direction: column;
@@ -24,6 +59,17 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  /* GPU оптимизации для мобильных */
+  @media (max-width: 768px) and (hover: none) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    animation-duration: 0.2s;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout style;
+  }
   
   /* Стилизация скролла */
   &::-webkit-scrollbar {
@@ -78,6 +124,12 @@
   width: 200px;
   height: 200px;
   
+  /* Мобильные оптимизации */
+  @media (max-width: 768px) and (hover: none) {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+  
   &::before {
     content: '';
     position: absolute;
@@ -87,6 +139,12 @@
     z-index: -1;
     opacity: 0.2;
     filter: blur(8px);
+    
+    /* Отключаем размытие на мобильных для производительности */
+    @media (max-width: 768px) and (hover: none) {
+      filter: none;
+      opacity: 0.1;
+    }
   }
 }
 
@@ -100,9 +158,22 @@
   object-fit: cover;
   object-position: center;
   
+  /* Мобильные оптимизации */
+  @media (max-width: 768px) and (hover: none) {
+    transition-duration: 0.15s;
+    will-change: transform;
+    transform: translateZ(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
   &:hover {
     transform: scale(1.05);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    
+    @media (max-width: 768px) and (hover: none) {
+      transform: translateZ(0);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
   }
 }
 
@@ -246,6 +317,14 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   
+  /* Мобильные оптимизации */
+  @media (max-width: 768px) and (hover: none) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    contain: layout style;
+  }
+  
   @media (max-width: 640px) {
     font-size: 0.9rem;
     padding: 1.25rem;
@@ -280,6 +359,15 @@
   position: relative;
   overflow: hidden;
   
+  /* Мобильные оптимизации */
+  @media (max-width: 768px) and (hover: none) {
+    transition-duration: 0.15s;
+    will-change: transform;
+    transform: translateZ(0);
+    box-shadow: 0 2px 8px rgba(76, 143, 231, 0.2);
+    touch-action: manipulation;
+  }
+  
   &::before {
     content: '';
     position: absolute;
@@ -292,6 +380,11 @@
       rgba(255, 255, 255, 0.2), 
       transparent);
     transition: left 0.5s ease;
+    
+    /* Отключаем эффект на мобильных */
+    @media (max-width: 768px) and (hover: none) {
+      display: none;
+    }
   }
   
   &:hover {
@@ -299,6 +392,11 @@
     box-shadow: 
       0 8px 25px rgba(76, 143, 231, 0.4),
       0 0 0 1px rgba(255, 255, 255, 0.2);
+    
+    @media (max-width: 768px) and (hover: none) {
+      transform: translateZ(0);
+      box-shadow: 0 2px 8px rgba(76, 143, 231, 0.2);
+    }
     
     &::before {
       left: 100%;
@@ -308,6 +406,10 @@
   &:active {
     transform: translateY(-1px);
     transition-duration: 0.1s;
+    
+    @media (max-width: 768px) and (hover: none) {
+      transform: scale(0.98);
+    }
   }
   
   @media (max-width: 640px) {
@@ -323,6 +425,11 @@
       rgba(30, 41, 59, 0.95) 0%, 
       rgba(51, 65, 85, 0.95) 100%);
     color: #f8fafc;
+    
+    /* Упрощенный фон для мобильных */
+    @media (max-width: 768px) and (hover: none) {
+      background: rgba(30, 41, 59, 0.98);
+    }
   }
   
   .title {
