@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@heroui/react';
 import { Trash2, X } from 'lucide-react';
-import PopUpWrapper from '../PopUpWrapper/PopUpWrapper';
+import PopUpWrapper from '../../global/PopUpWrapper/PopUpWrapper';
 import styles from './DeleteConfirmPopUp.module.scss';
 
 interface DeleteConfirmPopUpProps {
@@ -20,7 +20,13 @@ const DeleteConfirmPopUp: React.FC<DeleteConfirmPopUpProps> = ({
   isDeleting = false
 }) => {
   return (
-    <PopUpWrapper isOpen={isOpen} onClose={onClose} width={400} height="auto">
+    <PopUpWrapper 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      width={400} 
+      height="auto"
+      modalId="delete-confirm-popup"
+    >
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.iconWrapper}>

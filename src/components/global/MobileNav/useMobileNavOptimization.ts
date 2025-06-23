@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react';
+import { getModalState } from '../PopUpWrapper/useModalManager';
 
 interface UseMobileNavOptimizationProps {
   isOpen: boolean;
@@ -28,6 +29,12 @@ export const useMobileNavOptimization = ({
     maxVerticalDistance: 100, // Максимальное вертикальное отклонение
   };
 
+  // Функция для проверки, можно ли использовать свайп
+  const canUseSwipe = useCallback(() => {
+    const modalState = getModalState();
+    return !modalState.isAnyModalOpen;
+  }, []);
+
   // Оптимизированная блокировка скролла
   useEffect(() => {
     if (isOpen) {
@@ -45,6 +52,13 @@ export const useMobileNavOptimization = ({
 
   // Обработчик начала касания
   const handleTouchStart = useCallback((event: TouchEvent) => {
+    // Блокируем свайп если открыт любой popup
+    if (!canUseSwipe()) {
+      touchStartRef.current = null;
+      touchMoveRef.current = null;
+      return;
+    }
+
     // Проверяем, происходит ли событие внутри области карточек
     const target = event.target as HTMLElement;
     const isInScrollableArea = target.closest('.themeScroll, .subgraphContent, [data-scrollable="true"]') || 
@@ -66,11 +80,14 @@ export const useMobileNavOptimization = ({
       time: Date.now(),
     };
     touchMoveRef.current = null;
-  }, []);
+  }, [canUseSwipe]);
 
   // Обработчик движения касания
   const handleTouchMove = useCallback((event: TouchEvent) => {
-    if (!touchStartRef.current) return;
+    // Блокируем свайп если открыт любой popup
+    if (!canUseSwipe() || !touchStartRef.current) {
+      return;
+    }
     
     // Проверяем, происходит ли событие внутри области карточек или других скроллируемых контейнеров
     const target = event.target as HTMLElement;
@@ -102,11 +119,12 @@ export const useMobileNavOptimization = ({
     }
     
     touchMoveRef.current = currentPoint;
-  }, []);
+  }, [canUseSwipe]);
 
   // Обработчик окончания касания
   const handleTouchEnd = useCallback(() => {
-    if (!touchStartRef.current || !touchMoveRef.current) {
+    // Блокируем свайп если открыт любой popup
+    if (!canUseSwipe() || !touchStartRef.current || !touchMoveRef.current) {
       touchStartRef.current = null;
       touchMoveRef.current = null;
       return;
@@ -141,7 +159,7 @@ export const useMobileNavOptimization = ({
     // Очищаем ссылки
     touchStartRef.current = null;
     touchMoveRef.current = null;
-  }, [isOpen, setIsOpen]);
+  }, [isOpen, setIsOpen, canUseSwipe]);
 
   // Добавляем обработчики touch событий
   useEffect(() => {

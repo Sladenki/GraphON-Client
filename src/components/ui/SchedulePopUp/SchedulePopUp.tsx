@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import React, { FC, useEffect } from 'react'
 
 import { SpinnerLoader } from '../../global/SpinnerLoader/SpinnerLoader';
-import PopUpWrapper from '../PopUpWrapper/PopUpWrapper';
+import PopUpWrapper from '../../global/PopUpWrapper/PopUpWrapper';
 import { ScheduleList } from '../ScheduleList/ScheduleList';
 import SchedulePage from '../Schedule/Schedule';
 
@@ -39,7 +39,13 @@ const SchedulePopUp: FC<SchedulePopUpProps> = ({
     }
 
     return (
-        <PopUpWrapper isOpen={isSchedulePopupOpen} onClose={closeSchedulePopup} width={1000} height={900}>
+        <PopUpWrapper 
+      isOpen={isSchedulePopupOpen} 
+      onClose={closeSchedulePopup} 
+      width={1000} 
+      height={900}
+      modalId="schedule-popup"
+    >
             {data && (
                 // <ScheduleList
                 //     schedule={data?.data?.schedule}

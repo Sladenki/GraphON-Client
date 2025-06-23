@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useCallback } from 'react'
-import PopUpWrapper from '../PopUpWrapper/PopUpWrapper';
+import PopUpWrapper from '../../global/PopUpWrapper/PopUpWrapper';
 import { useMutation } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
@@ -59,7 +59,13 @@ const InfoGraphPopUp: FC<InfoGraphPopUpProps> = React.memo(({
     console.log('data', data)
 
     return (
-        <PopUpWrapper isOpen={isInfoGraphPopupOpen} onClose={closeInfoGraphPopup} width={900} height="auto">
+        <PopUpWrapper 
+      isOpen={isInfoGraphPopupOpen} 
+      onClose={closeInfoGraphPopup} 
+      width={900} 
+      height="auto"
+      modalId="info-graph-popup"
+    >
             {isPending ? (
                 <div className={styles.loaderContainer}>
                     <SpinnerLoader />
