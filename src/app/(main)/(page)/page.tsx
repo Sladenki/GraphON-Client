@@ -48,6 +48,14 @@ const Homepage = () => {
     setActiveTab(newTab);
   }, [setActiveTab]);
 
+  // Мемоизированный массив табов с условным включением подписок (ДОЛЖЕН быть до раннего возврата)
+  const tabs = useMemo(() => [
+    { name: "groups", label: "Группы", icon: <Users size={18} /> },
+    { name: "events", label: "События", icon: <Calendar size={18} /> },
+    ...(user?.graphSubsNum && user.graphSubsNum > 0 ? [{ name: "subs", label: "Подписки", icon: <Heart size={18} /> }] : []),
+    { name: "graphSystem", label: "Графы", icon: <Network size={18} /> },
+  ], [user?.graphSubsNum]);
+
   // Проверяем наличие выбранного университета
   if (!user?.selectedGraphId && !selectedGraphId) {
     return (
@@ -62,14 +70,6 @@ const Homepage = () => {
       </div>
     );
   }
-
-  // Мемоизированный массив табов с условным включением подписок
-  const tabs = useMemo(() => [
-    { name: "groups", label: "Группы", icon: <Users size={18} /> },
-    { name: "events", label: "События", icon: <Calendar size={18} /> },
-    ...(user?.graphSubsNum && user.graphSubsNum > 0 ? [{ name: "subs", label: "Подписки", icon: <Heart size={18} /> }] : []),
-    { name: "graphSystem", label: "Графы", icon: <Network size={18} /> },
-  ], [user?.graphSubsNum]);
 
   return (
     <div className={styles.mainPage}>

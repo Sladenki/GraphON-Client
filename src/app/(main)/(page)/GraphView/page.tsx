@@ -4,7 +4,7 @@ import GraphView from './GraphView';
 export default function GraphViewPage() {
   return (
    
-      <GraphView searchQuery="" />
+      <GraphView />
 
   );
 } 
