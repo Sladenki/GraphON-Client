@@ -71,7 +71,10 @@ const LazyGraphAvatar = React.memo<{
   const imgRef = React.useRef<HTMLImageElement>(null);
 
   React.useEffect(() => {
-    if (!src || hasError) return;
+    if (!src || hasError) {
+      setHasError(true);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -400,15 +403,13 @@ const EventCard: React.FC<EventProps> = React.memo(({
       {/* Header */}
       <CardHeader className={styles.cardHeader}>
         <div className={styles.headerContent}>
-          {fullImageUrl && (
-            <div className={styles.graphAvatar}>
-              <LazyGraphAvatar
-                src={fullImageUrl}
-                alt={event.graphId.name}
-                fallback={event.graphId.name}
-              />
-            </div>
-          )}
+          <div className={styles.graphAvatar}>
+            <LazyGraphAvatar
+              src={fullImageUrl}
+              alt={event.graphId.name}
+              fallback={event.graphId.name}
+            />
+          </div>
           <div className={styles.titleSection}>
             {isEditing ? (
               <TitleInput
