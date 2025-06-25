@@ -1,11 +1,12 @@
 'use client'
 
 import WaterGraph3D from './WaterGraph3D/WaterGraph3D';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { GraphService } from '@/services/graph.service';
 import { useQuery } from '@tanstack/react-query';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import { useSearchQuery, useSelectedGraphId, useSetSelectedGraphId } from '@/stores/useUIStore';
 
 interface GraphResponse {
   globalGraph: {
@@ -43,9 +44,14 @@ interface GraphNode {
 }
 
 
-export default function GraphView({ searchQuery }: { searchQuery: string }) {
+export default function GraphView() {
   const { user } = useAuth();
-  const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
+  const isInitialized = useRef(false);
+  
+  // Используем Zustand store
+  const searchQuery = useSearchQuery();
+  const selectedGraphId = useSelectedGraphId();
+  const setSelectedGraphId = useSetSelectedGraphId();
 
   // Блокируем скролл
   useEffect(() => {
@@ -56,21 +62,12 @@ export default function GraphView({ searchQuery }: { searchQuery: string }) {
   }, []);
 
   useEffect(() => {
-    // Инициализация selectedGraphId
-    const savedGraphId = localStorage.getItem('selectedGraphId');
-    setSelectedGraphId(user?.selectedGraphId || savedGraphId || null);
-
-    // Слушаем событие изменения графа
-    const handleGraphSelected = (event: CustomEvent<string>) => {
-      setSelectedGraphId(event.detail);
-    };
-
-    window.addEventListener('graphSelected', handleGraphSelected as EventListener);
-
-    return () => {
-      window.removeEventListener('graphSelected', handleGraphSelected as EventListener);
-    };
-  }, [user]);
+    // Инициализация selectedGraphId из пользователя только один раз и только если разные
+    if (user?.selectedGraphId && user.selectedGraphId !== selectedGraphId && !isInitialized.current) {
+      setSelectedGraphId(user.selectedGraphId);
+      isInitialized.current = true;
+    }
+  }, [user?.selectedGraphId, selectedGraphId, setSelectedGraphId]);
 
   const { data, isLoading, error } = useQuery<GraphResponse>({
     queryKey: ['graphWithTopics', selectedGraphId],

@@ -8,14 +8,19 @@ import {
 import { useSubsOptimized } from './useSubsOptimized';
 import { useAuth } from '@/providers/AuthProvider';
 import VirtualizedEventsList from '../EventsList/VirtualizedEventsList';
+import { useSearchQuery } from '@/stores/useUIStore';
 import styles from './Subs.module.scss';
 
 interface SubsOptimizedProps {
-  searchQuery: string;
+  // Больше не нужны props, так как используем Zustand
 }
 
-const SubsOptimized: React.FC<SubsOptimizedProps> = React.memo(({ searchQuery }) => {
+const SubsOptimized: React.FC<SubsOptimizedProps> = React.memo(() => {
   const { user } = useAuth();
+  
+  // Используем Zustand store
+  const searchQuery = useSearchQuery();
+  
   const {
     filteredEvents,
     handleDelete,

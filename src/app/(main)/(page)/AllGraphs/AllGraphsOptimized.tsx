@@ -5,10 +5,10 @@ import { EmptyState } from '@/components/global/EmptyState/EmptyState';
 import GraphsList from './GraphsList/GraphsList';
 import styles from './AllGraphs.module.scss';
 import { useAllGraphsOptimization } from './useAllGraphsOptimized';
+import { useSearchQuery, useSelectedGraphId } from '@/stores/useUIStore';
 
 interface AllGraphsProps {
-  searchQuery: string;
-  selectedGraphId: string;
+  // Больше не нужны props, так как используем Zustand
 }
 
 // Мемоизированные компоненты состояний
@@ -47,10 +47,11 @@ const GraphsListWrapper = React.memo<{ graphs: any[] }>(({ graphs }) => (
 ));
 GraphsListWrapper.displayName = 'GraphsListWrapper';
 
-export const AllGraphsOptimized: React.FC<AllGraphsProps> = React.memo(({ 
-  searchQuery, 
-  selectedGraphId 
-}) => {
+export const AllGraphsOptimized: React.FC<AllGraphsProps> = React.memo(() => {
+  // Используем Zustand store
+  const searchQuery = useSearchQuery();
+  const selectedGraphId = useSelectedGraphId();
+  
   const { 
     filteredGraphs, 
     allGraphs, 
@@ -59,7 +60,7 @@ export const AllGraphsOptimized: React.FC<AllGraphsProps> = React.memo(({
     loaderRef 
   } = useAllGraphsOptimization({ 
     searchQuery, 
-    selectedGraphId 
+    selectedGraphId: selectedGraphId || '' 
   });
 
   // Early returns для различных состояний

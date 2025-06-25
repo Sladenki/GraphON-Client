@@ -6,12 +6,16 @@ import {
 } from '@/components/ui/StateComponents';
 import { useEventsListOptimized } from './useEventsListOptimized';
 import VirtualizedEventsList from './VirtualizedEventsList';
+import { useSearchQuery } from '@/stores/useUIStore';
 
 interface EventsListOptimizedProps {
-  searchQuery: string;
+  // Больше не нужны props, так как используем Zustand
 }
 
-const EventsListOptimized: React.FC<EventsListOptimizedProps> = React.memo(({ searchQuery }) => {
+const EventsListOptimized: React.FC<EventsListOptimizedProps> = React.memo(() => {
+  // Используем Zustand store
+  const searchQuery = useSearchQuery();
+  
   const { filteredEvents, handleDelete, loadingState } = useEventsListOptimized({ 
     searchQuery 
   });

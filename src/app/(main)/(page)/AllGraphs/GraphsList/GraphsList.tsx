@@ -17,8 +17,7 @@ const GraphItem = React.memo<{
   index: number;
   onScheduleClick: (id: string) => void;
   onInfoClick: (id: string) => void;
-  onGraphSelect: (id: string) => void;
-}>(({ graph, index, onScheduleClick, onInfoClick, onGraphSelect }) => (
+}>(({ graph, index, onScheduleClick, onInfoClick }) => (
   <div 
     className={styles.graphItem}
     style={{ 
@@ -33,7 +32,6 @@ const GraphItem = React.memo<{
       about={graph.about}
       handleScheduleButtonClick={() => onScheduleClick(graph._id)}
       handleInfoGraphButtonClick={() => onInfoClick(graph._id)}
-      setSelectedGraphId={onGraphSelect}
     />
   </div>
 ));
@@ -44,8 +42,7 @@ const GraphsGrid = React.memo<{
   graphs: IGraphList[];
   onScheduleClick: (id: string) => void;
   onInfoClick: (id: string) => void;
-  onGraphSelect: (id: string) => void;
-}>(({ graphs, onScheduleClick, onInfoClick, onGraphSelect }) => (
+}>(({ graphs, onScheduleClick, onInfoClick }) => (
   <div className={styles.graphsGrid}>
     {graphs.map((graph, index) => (
       <GraphItem
@@ -54,7 +51,6 @@ const GraphsGrid = React.memo<{
         index={index}
         onScheduleClick={onScheduleClick}
         onInfoClick={onInfoClick}
-        onGraphSelect={onGraphSelect}
       />
     ))}
   </div>
@@ -68,10 +64,6 @@ const GraphsList: React.FC<GraphsListProps> = React.memo(({ allGraphs }) => {
   const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
 
   // Мемоизированные обработчики
-  const handleGraphSelect = useCallback((id: string) => {
-    setSelectedGraphId(id);
-  }, []);
-
   const handleScheduleClick = useCallback((id: string) => {
     setSelectedGraphId(id);
     handleScheduleButtonClick();
@@ -88,7 +80,6 @@ const GraphsList: React.FC<GraphsListProps> = React.memo(({ allGraphs }) => {
         graphs={allGraphs}
         onScheduleClick={handleScheduleClick}
         onInfoClick={handleInfoClick}
-        onGraphSelect={handleGraphSelect}
       />
 
       {/* Модальные окна */}

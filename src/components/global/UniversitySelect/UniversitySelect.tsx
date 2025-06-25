@@ -4,6 +4,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { UserService } from '@/services/user.service';
 import { Settings } from 'lucide-react';
 import Link from 'next/link';
+import { useSetSelectedGraphId } from '@/stores/useUIStore';
 import styles from './UniversitySelect.module.scss';
 
 interface University {
@@ -25,26 +26,24 @@ const universities: University[] = [
 export const UniversitySelect = () => {
   const { user, setUser } = useAuth();
   const router = useRouter();
+  const setSelectedGraphId = useSetSelectedGraphId();
   const [selectedUniversity, setSelectedUniversity] = useState<string>('');
 
   useEffect(() => {
-    // Проверяем наличие сохраненного graphId при монтировании
-    const savedGraphId = localStorage.getItem('selectedGraphId');
-    if (savedGraphId) {
-      setSelectedUniversity(savedGraphId);
-      // Если пользователь не авторизован, но есть сохраненный graphId
-      if (!user) {
-        // Добавляем небольшую задержку для обновления состояния
-        setTimeout(() => {
-          router.refresh();
-        }, 100);
-      }
+    // Инициализируем selectedUniversity из пользователя
+    if (user?.selectedGraphId) {
+      setSelectedUniversity(user.selectedGraphId);
     }
-  }, []);
+    // Zustand store уже автоматически инициализируется из localStorage
+    // через persist middleware, поэтому нам не нужно читать localStorage вручную
+  }, [user?.selectedGraphId]);
 
   const handleUniversityChange = async (e: ChangeEvent<HTMLSelectElement>) => {
     const graphId = e.target.value;
     setSelectedUniversity(graphId);
+    
+    // Обновляем состояние в Zustand store (это автоматически сохранится в localStorage)
+    setSelectedGraphId(graphId);
 
     if (user) {
       try {
@@ -53,17 +52,12 @@ export const UniversitySelect = () => {
       } catch (error) {
         console.error('Error updating selected graph:', error);
       }
-    } else {
-      // Для неавторизованного пользователя
-      localStorage.setItem('selectedGraphId', graphId);
-      // Добавляем событие для оповещения других компонентов
-      const event = new CustomEvent('graphSelected', { detail: graphId });
-      window.dispatchEvent(event);
-      // Обновляем страницу для отображения контента
-      setTimeout(() => {
-        router.refresh();
-      }, 100);
     }
+
+    // Обновляем страницу для отображения контента
+    setTimeout(() => {
+      router.refresh();
+    }, 100);
   };
 
   return (

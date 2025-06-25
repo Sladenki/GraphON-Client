@@ -5,6 +5,7 @@ import { EventItem } from '@/types/schedule.interface';
 import { useOptimizedSearch } from '@/hooks/useOptimizedSearch';
 import { useListState } from '@/hooks/useListState';
 import { useQueryWithRetry } from '@/hooks/useQueryWithRetry';
+import { useSelectedGraphId } from '@/stores/useUIStore';
 
 interface UseEventsListOptimizedProps {
   searchQuery: string;
@@ -12,28 +13,8 @@ interface UseEventsListOptimizedProps {
 
 export const useEventsListOptimized = ({ searchQuery }: UseEventsListOptimizedProps) => {
   const { user } = useAuth();
-  const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null);
+  const selectedGraphId = useSelectedGraphId(); // Используем Zustand store
   const [isFirstLoad, setIsFirstLoad] = useState(true);
-
-  // Мемоизированный обработчик изменения графа
-  const handleGraphSelected = useCallback((event: CustomEvent<string>) => {
-    const newGraphId = event.detail;
-    setSelectedGraphId(newGraphId);
-    localStorage.setItem('selectedGraphId', newGraphId);
-  }, []);
-
-  // Инициализация selectedGraphId
-  useEffect(() => {
-    const savedGraphId = localStorage.getItem('selectedGraphId');
-    const initialGraphId = user?.selectedGraphId || savedGraphId || null;
-    setSelectedGraphId(initialGraphId);
-
-    window.addEventListener('graphSelected', handleGraphSelected as EventListener);
-
-    return () => {
-      window.removeEventListener('graphSelected', handleGraphSelected as EventListener);
-    };
-  }, [user?.selectedGraphId, handleGraphSelected]);
 
   // Оптимизированный запрос данных с общим хуком
   const { 

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Calendar, Info } from "lucide-react";
 import { notifyInfo, notifySuccess } from "@/lib/notifications";
 import { Card, Button } from "@heroui/react";
+import { useSetSelectedGraphId } from "@/stores/useUIStore";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -17,7 +18,6 @@ interface GraphBlockProps {
   about?: string;
   handleScheduleButtonClick: () => void;
   handleInfoGraphButtonClick: () => void;
-  setSelectedGraphId: (id: string) => void;
 }
 
 const GraphBlock: React.FC<GraphBlockProps> = ({ 
@@ -28,7 +28,6 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   about,
   handleScheduleButtonClick, 
   handleInfoGraphButtonClick,
-  setSelectedGraphId,
 }) => {
   const fullImageUrl = useMemo(() => 
     imgPath ? `${BASE_S3_URL}/${imgPath}` : "", 
@@ -37,6 +36,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
 
   const { isLoggedIn } = useAuth();
   const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, id);
+  const setSelectedGraphId = useSetSelectedGraphId(); // Используем Zustand store
 
   const handleSubscription = useCallback(() => {
     toggleSubscription();
