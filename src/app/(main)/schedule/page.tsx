@@ -18,7 +18,7 @@ const Schedule = () => {
 
   // Получаем расписание и мероприятия по подписанным графам 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['graphSubs/getSubsSchedule'],
+    queryKey: ['subsSchedule'],
     queryFn: () => GraphSubsService.getSubsSchedule(),
   });
 

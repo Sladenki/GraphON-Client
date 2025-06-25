@@ -28,8 +28,34 @@ export const useSubscription = (initialIsSubscribed: boolean, graphId: string) =
       setIsSubscribed((prev) => !prev);
     },
     onSuccess: () => {
+        // Инвалидируем кеш подписки для конкретного графа
         queryClient.invalidateQueries({
             queryKey: ['subscriptions', graphId],
+        });
+        
+        // Инвалидируем кеш событий подписок для обновления раздела "Подписки"
+        queryClient.invalidateQueries({
+            queryKey: ['subsEvents'],
+        });
+        
+        // Инвалидируем кеш расписания подписок
+        queryClient.invalidateQueries({
+            queryKey: ['subsSchedule'],
+        });
+        
+        // Инвалидируем кеш всех графов для обновления состояния подписки
+        queryClient.invalidateQueries({
+            queryKey: ['graph'],
+        });
+        
+        // Инвалидируем кеш пользователя для обновления счетчика подписок
+        queryClient.invalidateQueries({
+            queryKey: ['user'],
+        });
+        
+        // Инвалидируем кеш событий пользователя
+        queryClient.invalidateQueries({
+            queryKey: ['eventsList'],
         });
     },
   });
