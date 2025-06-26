@@ -11,6 +11,8 @@ interface CreateEventFormProps {
 }
 
 export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
+    const DESCRIPTION_MAX_LENGTH = 300;
+    
     const [eventData, setEventData] = useState({
         name: '',
         place: '',
@@ -49,9 +51,18 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             });
             notifySuccess('Мероприятие успешно создано!');
         },
-        onError: (error) => {
+        onError: (error: any) => {
             console.error('Failed to create event:', error);
-            notifyError('Ошибка при создании мероприятия');
+            
+            // Обработка ошибок валидации от сервера
+            if (error?.response?.data?.message) {
+                const messages = Array.isArray(error.response.data.message) 
+                    ? error.response.data.message 
+                    : [error.response.data.message];
+                notifyError(messages.join('; '));
+            } else {
+                notifyError('Ошибка при создании мероприятия');
+            }
         }
     });
 
@@ -84,6 +95,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
 
     const isFormValid = eventData.name && 
         eventData.description && 
+        eventData.description.length <= DESCRIPTION_MAX_LENGTH &&
         eventData.place &&
         eventData.eventDate && 
         eventData.timeFrom && 
@@ -128,15 +140,24 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
 
             <FormInputGroup 
                 label="Описание"
-                description="Подробно опишите мероприятие. Укажите цель, программу, требования к участникам и другую важную информацию"
+                description={`Подробно опишите мероприятие. Укажите цель, программу, требования к участникам и другую важную информацию (максимум ${DESCRIPTION_MAX_LENGTH} символов)`}
             >
                 <FormTextarea
                     name="description"
                     value={eventData.description}
                     onChange={handleChange}
                     placeholder="Введите описание мероприятия"
+                    maxLength={DESCRIPTION_MAX_LENGTH}
                     required
                 />
+                <div style={{ 
+                    fontSize: '12px', 
+                    color: eventData.description.length > DESCRIPTION_MAX_LENGTH ? '#ef4444' : '#6b7280',
+                    marginTop: '4px',
+                    textAlign: 'right'
+                }}>
+                    {eventData.description.length}/{DESCRIPTION_MAX_LENGTH} символов
+                </div>
             </FormInputGroup>
 
             <FormInputGroup 
