@@ -5,7 +5,6 @@ import { GraphSubsService } from "@/services/graphSubs.service";
 import { useQuery } from "@tanstack/react-query";
 
 import styles from './Schedule.module.scss'
-import { ScheduleList } from "@/components/ui/ScheduleList/ScheduleList";
 import { useRouter } from "next/navigation";
 import { notifyError } from "@/lib/notifications";
 import { AxiosError } from "axios";
@@ -46,7 +45,6 @@ const Schedule = () => {
           subMessage="На этой неделе нет занятий или мероприятий"
         />
       ) : (
-        // <ScheduleList schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
         <SchedulePage schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
       )}
     </div>

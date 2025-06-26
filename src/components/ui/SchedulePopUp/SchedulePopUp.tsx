@@ -4,7 +4,6 @@ import React, { FC, useEffect } from 'react'
 
 import { SpinnerLoader } from '../../global/SpinnerLoader/SpinnerLoader';
 import PopUpWrapper from '../../global/PopUpWrapper/PopUpWrapper';
-import { ScheduleList } from '../ScheduleList/ScheduleList';
 import SchedulePage from '../Schedule/Schedule';
 
 
@@ -47,11 +46,6 @@ const SchedulePopUp: FC<SchedulePopUpProps> = ({
       modalId="schedule-popup"
     >
             {data && (
-                // <ScheduleList
-                //     schedule={data?.data?.schedule}
-                //     events={data?.data?.events}
-                //     // title={`Расписание графа - ${graphName}`}
-                // />
                 <SchedulePage
                     schedule={data?.data?.schedule}
                     events={data?.data?.events}
