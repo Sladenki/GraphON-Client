@@ -10,9 +10,10 @@ import { UniversitySelect } from '@/components/global/UniversitySelect/Universit
 import { AllGraphsOptimized } from "@/app/(main)/(page)/AllGraphs/AllGraphsOptimized";
 import { Users, Calendar, Heart, Network } from "lucide-react";
 import { useActiveTab, useSearchQuery, useSelectedGraphId, useSetActiveTab, useSetSearchQuery, useSetSelectedGraphId, TabType } from "@/stores/useUIStore";
+import Tabs from "./Tabs/Tabs";
 
+// Lazy loading только для контента табов
 const Subs = dynamic(() => import("./Subs/SubsOptimized"), { ssr: false });
-const Tabs = dynamic(() => import("./Tabs/Tabs"), { ssr: false });
 const GraphView = dynamic(() => import("./GraphView/GraphView"), { ssr: false });
 const EventsList = dynamic(() => import("./EventsList/EventsListOptimized"), { ssr: false });
 

@@ -38,7 +38,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <title>GraphON</title>
 
          {/* Подключаем Google Analytics только если есть ID */}
-         {process.env.NEXT_PUBLIC_GA_ID && (
+         {/* {process.env.NEXT_PUBLIC_GA_ID && (
           <>
                           
             <Script
@@ -57,7 +57,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               `}
             </Script>
           </>
-        )}
+        )} */}
       </head>
       <body className={inter.className}>
         <Providers>
@@ -77,7 +77,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <div className={styles.main}>
                   <div className={styles.content}>
                     {/* Добавляем компонент для отслеживания переходов */}
-                    <GoogleAnalytics /> 
+                    {/* <GoogleAnalytics />  */}
                     {children}
                   </div>
                 </div>

@@ -1,11 +1,13 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo, Suspense, lazy } from 'react';
 import styles from './GraphList.module.scss';
 import GraphBlock from '../../../../../components/ui/GraphBlock/GraphBlock';
 import { IGraphList } from '@/types/graph.interface';
 import { useSchedulePopup } from './useSchedulePopUp';
-import SchedulePopUp from '../../../../../components/ui/SchedulePopUp/SchedulePopUp';
 import { useInfoGraphPopup } from './useInfoGraphPopUp copy';
-import InfoGraphPopUp from '@/components/ui/InfoGraphPopUp/InfoGraphPopUp';
+
+// Lazy loading для PopUp компонентов
+const SchedulePopUp = lazy(() => import('../../../../../components/ui/SchedulePopUp/SchedulePopUp'));
+const InfoGraphPopUp = lazy(() => import('@/components/ui/InfoGraphPopUp/InfoGraphPopUp'));
 
 interface GraphsListProps {
   allGraphs: IGraphList[];
