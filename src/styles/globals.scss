@@ -110,4 +110,51 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(var(--main-Color), 0.2);
 }
+
+// ==============================================
+// Mobile optimization for screens < 419px
+// ============================================== 
+@media (max-width: 419px) {
+  /* Only disable the most expensive effects */
+  * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Optimize scrollbars for mobile */
+  *::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--main-Color), 0.3);
+    border: 1px solid var(--background-color);
+    border-radius: 8px;
+  }
+  
+  /* Disable expensive effects for specific elements */
+  .glow-effect, 
+  .neon-text,
+  .theme-glow,
+  .shadow-effect {
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Optimize image rendering for mobile */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    /* Enable hardware acceleration for images */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  /* Simplify popup overlays for mobile */
+  .popup-overlay,
+  .modal-overlay {
+    backdrop-filter: none !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+  }
+}
   
