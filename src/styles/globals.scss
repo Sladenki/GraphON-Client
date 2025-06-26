@@ -113,8 +113,8 @@ body {
 
 // Критические оптимизации для экранов <360px
 @media (max-width: 360px) {
-  // Полное отключение всех дорогих эффектов
-  * {
+  // Полное отключение всех дорогих эффектов, кроме критических для навигации
+  *:not([class*="sidebar"]):not([class*="backdrop"]):not([class*="mobile"]):not([class*="nav"]) {
     animation: none !important;
     transition: none !important;
     transform: none !important;
@@ -122,6 +122,17 @@ body {
     filter: none !important;
     box-shadow: none !important;
     border-radius: 8px !important; // Упрощаем скругления
+  }
+  
+  // Исключения для критических навигационных элементов
+  [class*="sidebar"],
+  [class*="backdrop"],
+  [class*="mobileNav"],
+  [class*="mobile"],
+  [class*="nav"] {
+    // Разрешаем только критические transform и transitions для навигации
+    transform: unset !important;
+    transition: transform 0.15s ease, opacity 0.15s ease !important;
   }
   
   // Восстанавливаем только критичные анимации с упрощением
@@ -140,20 +151,36 @@ body {
     width: 8px !important;
   }
   
-  // Отключаем выделение для экономии ресурсов
-  * {
+  // Отключаем выделение для экономии ресурсов, кроме интерактивных элементов
+  *:not(button):not([role="button"]):not(a):not([class*="nav"]):not([class*="button"]) {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
   }
   
-  // Разрешаем выделение только для текстовых полей
-  input, textarea, [contenteditable] {
+  // Разрешаем выделение для интерактивных элементов
+  input, textarea, [contenteditable], button, [role="button"], a, [class*="nav"], [class*="button"] {
     -webkit-user-select: auto;
     -moz-user-select: auto;
     -ms-user-select: auto;
     user-select: auto;
+  }
+  
+  // Специальные правила для обеспечения работы MobileNav
+  [class*="sidebar"] {
+    transform: unset !important; // Позволяем sidebar использовать свои transform
+    transition: transform 0.15s ease !important; // Быстрые, но видимые анимации
+  }
+  
+  [class*="backdrop"] {
+    transition: opacity 0.15s ease !important;
+  }
+  
+  // Сохраняем кликабельность кнопок
+  button, [role="button"], a {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
   }
 }
 
