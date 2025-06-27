@@ -6,8 +6,12 @@ import { useSchedulePopup } from './useSchedulePopUp';
 import { useInfoGraphPopup } from './useInfoGraphPopUp copy';
 
 // Lazy loading для PopUp компонентов
-const SchedulePopUp = lazy(() => import('../../../../../components/ui/SchedulePopUp/SchedulePopUp'));
-const InfoGraphPopUp = lazy(() => import('@/components/ui/InfoGraphPopUp/InfoGraphPopUp'));
+// const SchedulePopUp = lazy(() => import('../../../../../components/ui/SchedulePopUp/SchedulePopUp'));
+// const InfoGraphPopUp = lazy(() => import('@/components/ui/InfoGraphPopUp/InfoGraphPopUp'));
+
+import SchedulePopUp from '../../../../../components/ui/SchedulePopUp/SchedulePopUp';
+import InfoGraphPopUp from '@/components/ui/InfoGraphPopUp/InfoGraphPopUp';
+
 
 interface GraphsListProps {
   allGraphs: IGraphList[];

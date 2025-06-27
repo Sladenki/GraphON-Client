@@ -38,25 +38,25 @@ export const useSubscription = (initialIsSubscribed: boolean, graphId: string) =
             queryKey: ['subsEvents'],
         });
         
-        // Инвалидируем кеш расписания подписок
-        queryClient.invalidateQueries({
-            queryKey: ['subsSchedule'],
-        });
+        // // Инвалидируем кеш расписания подписок
+        // queryClient.invalidateQueries({
+        //     queryKey: ['subsSchedule'],
+        // });
         
-        // Инвалидируем кеш всех графов для обновления состояния подписки
-        queryClient.invalidateQueries({
-            queryKey: ['graph'],
-        });
+        // // Инвалидируем кеш всех графов для обновления состояния подписки
+        // queryClient.invalidateQueries({
+        //     queryKey: ['graph'],
+        // });
         
-        // Инвалидируем кеш пользователя для обновления счетчика подписок
-        queryClient.invalidateQueries({
-            queryKey: ['user'],
-        });
+        // // Инвалидируем кеш пользователя для обновления счетчика подписок
+        // queryClient.invalidateQueries({
+        //     queryKey: ['user'],
+        // });
         
-        // Инвалидируем кеш событий пользователя
-        queryClient.invalidateQueries({
-            queryKey: ['eventsList'],
-        });
+        // // Инвалидируем кеш событий пользователя
+        // queryClient.invalidateQueries({
+        //     queryKey: ['eventsList'],
+        // });
     },
   });
 
