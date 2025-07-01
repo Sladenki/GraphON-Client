@@ -9,6 +9,7 @@ interface ScrollLockState {
 export const useSmoothScrollLock = (isLocked: boolean) => {
   const scrollLockStateRef = useRef<ScrollLockState | null>(null);
   const lockCountRef = useRef(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Функция для получения ширины скроллбара
   const getScrollBarWidth = useCallback(() => {
@@ -74,16 +75,32 @@ export const useSmoothScrollLock = (isLocked: boolean) => {
     }
   }, []);
 
-  // Основной эффект
+  // Основной эффект с задержкой для мобильных устройств
   useEffect(() => {
+    // Очищаем предыдущий timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     if (isLocked) {
-      lockScroll();
+      // Определяем задержку для мобильных устройств
+      const isMobile = window.innerWidth <= 768;
+      const delay = isMobile ? 50 : 0; // 50ms задержка на мобильных для стабилизации
+      
+      timeoutRef.current = setTimeout(() => {
+        lockScroll();
+      }, delay);
     } else {
       unlockScroll();
     }
 
     // Cleanup при размонтировании
     return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
       if (isLocked) {
         unlockScroll();
       }

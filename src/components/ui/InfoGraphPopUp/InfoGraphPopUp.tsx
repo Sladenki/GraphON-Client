@@ -58,12 +58,21 @@ const InfoGraphPopUp: FC<InfoGraphPopUpProps> = React.memo(({
 
     console.log('data', data)
 
+    // Определяем размеры для разных устройств для предотвращения дергания
+    const popupDimensions = useMemo(() => {
+        const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+        return {
+            width: isMobile ? '95vw' : 900,
+            height: isMobile ? '80vh' : 'auto' // Фиксированная высота на мобильных
+        };
+    }, []);
+
     return (
         <PopUpWrapper 
       isOpen={isInfoGraphPopupOpen} 
       onClose={closeInfoGraphPopup} 
-      width={900} 
-      height="auto"
+      width={popupDimensions.width} 
+      height={popupDimensions.height}
       modalId="info-graph-popup"
     >
             {isPending ? (

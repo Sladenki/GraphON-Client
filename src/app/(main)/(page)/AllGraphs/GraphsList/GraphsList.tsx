@@ -3,7 +3,7 @@ import styles from './GraphList.module.scss';
 import GraphBlock from '../../../../../components/ui/GraphBlock/GraphBlock';
 import { IGraphList } from '@/types/graph.interface';
 import { useSchedulePopup } from './useSchedulePopUp';
-import { useInfoGraphPopup } from './useInfoGraphPopUp copy';
+import { useInfoGraphPopup } from './useInfoGraphPopUp';
 
 // Lazy loading для PopUp компонентов
 // const SchedulePopUp = lazy(() => import('../../../../../components/ui/SchedulePopUp/SchedulePopUp'));
