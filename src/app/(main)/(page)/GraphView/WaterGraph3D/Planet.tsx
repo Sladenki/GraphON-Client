@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { MeshDistortMaterial, MeshWobbleMaterial, MeshReflectorMaterial } from '@react-three/drei';
 import * as THREE from 'three';
@@ -13,6 +13,20 @@ export function Planet({ scale = 1 }: PlanetProps) {
   const mesh = useRef<THREE.Mesh>(null);
   const atmosphere = useRef<THREE.Mesh>(null);
   const { viewport } = useThree();
+  
+  // Определяем размер планеты в зависимости от устройства
+  const planetRadius = useMemo(() => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const isIPhone = typeof window !== 'undefined' && /iPhone|iPod/.test(navigator.userAgent);
+    
+    if (isIPhone) {
+      return 2.4; // Увеличено с 1.8 для iPhone
+    }
+    if (isMobile) {
+      return 1.8; // Увеличено для других мобильных
+    }
+    return 1.8; // Оригинальный размер для десктопа
+  }, []);
   
   useFrame((_, delta) => {
     if (mesh.current) {
@@ -29,7 +43,7 @@ export function Planet({ scale = 1 }: PlanetProps) {
     <group scale={[scale, scale, scale]}>
       {/* Main planet sphere with distortion effect */}
       <mesh ref={mesh} castShadow receiveShadow>
-        <sphereGeometry args={[1.8, 64, 64]} />
+        <sphereGeometry args={[planetRadius, 64, 64]} />
         <MeshDistortMaterial
           color="#3a1c6b"
           roughness={0.4}
@@ -43,7 +57,7 @@ export function Planet({ scale = 1 }: PlanetProps) {
 
       {/* Atmosphere layer */}
       <mesh ref={atmosphere} scale={[1.22, 1.22, 1.22]}>
-        <sphereGeometry args={[1.8, 32, 32]} />
+        <sphereGeometry args={[planetRadius, 32, 32]} />
         <MeshWobbleMaterial
           color="#a04fff"
           transparent
@@ -56,7 +70,7 @@ export function Planet({ scale = 1 }: PlanetProps) {
 
       {/* Glow effect */}
       <mesh scale={[1.3, 1.3, 1.3]}>
-        <sphereGeometry args={[1.8, 32, 32]} />
+        <sphereGeometry args={[planetRadius, 32, 32]} />
         <meshBasicMaterial
           color="#a04fff"
           transparent
@@ -67,7 +81,7 @@ export function Planet({ scale = 1 }: PlanetProps) {
 
       {/* Surface details */}
       <mesh scale={[1.01, 1.01, 1.01]}>
-        <sphereGeometry args={[1.8, 64, 64]} />
+        <sphereGeometry args={[planetRadius, 64, 64]} />
         <MeshReflectorMaterial
           color="#4a2c8b"
           roughness={0.8}

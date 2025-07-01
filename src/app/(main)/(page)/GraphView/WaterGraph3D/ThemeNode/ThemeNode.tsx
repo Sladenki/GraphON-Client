@@ -148,19 +148,41 @@ export function ThemeNode({
   }, [isMobile, scale, isSmallScreen, isIPhone]);
   
   const nodeScale = useMemo(() => {
-    const baseScale = isSmallScreen && isIPhone ? 0.85 : (isIPhone ? 0.9 : 1);
+    // Увеличенные базовые размеры только для iPhone
+    const baseScale = isSmallScreen && isIPhone ? 1.4 : (isIPhone ? 1.5 : 1);
+    
+    // Определяем базовые размеры в зависимости от устройства
+    let baseMobileSize, baseDesktopSize;
+    
+    if (isIPhone) {
+      // Увеличенные размеры только для iPhone
+      baseMobileSize = 0.35; // Увеличено с 0.23
+      baseDesktopSize = 0.45; // Остается как было
+    } else {
+      // Оригинальные размеры для всех остальных устройств
+      baseMobileSize = 0.23; // Оригинальный размер
+      baseDesktopSize = 0.45; // Остается как было
+    }
     
     // Если это глобальный граф
     if (theme.graphType === 'global') {
       if (anyActive) {
-        return (isMobile ? 0.09 : 0.18) * scale * baseScale;
+        const activeSize = isIPhone ? 0.12 : 0.09; // Увеличено только для iPhone
+        return (isMobile ? activeSize : 0.18) * scale * baseScale;
       }
-      return (isMobile ? 0.23 : 0.45) * scale * baseScale;
+      return (isMobile ? baseMobileSize : baseDesktopSize) * scale * baseScale;
     }
+    
     // Для остальных графов
-    if (active) return (isMobile ? 0.17 : 0.3) * scale * baseScale;
-    if (anyActive) return (isMobile ? 0.13 : 0.25) * scale * baseScale;
-    return (isMobile ? 0.23 : 0.45) * scale * baseScale;
+    if (active) {
+      const activeSize = isIPhone ? 0.25 : 0.17; // Увеличено только для iPhone
+      return (isMobile ? activeSize : 0.3) * scale * baseScale;
+    }
+    if (anyActive) {
+      const anyActiveSize = isIPhone ? 0.18 : 0.13; // Увеличено только для iPhone
+      return (isMobile ? anyActiveSize : 0.25) * scale * baseScale;
+    }
+    return (isMobile ? baseMobileSize : baseDesktopSize) * scale * baseScale;
   }, [isMobile, scale, active, anyActive, theme.graphType, isSmallScreen, isIPhone]);
   
   const childOrbitRadius = useMemo(() => {
@@ -174,15 +196,19 @@ export function ThemeNode({
   const childNodeScale = useMemo(() => {
     let baseChildScale;
     if (isLargeIPhone) {
-      baseChildScale = 0.8;
+      baseChildScale = 1.2; // Увеличено только для больших iPhone
     } else if (isSmallScreen && isIPhone) {
-      baseChildScale = 0.65;
+      baseChildScale = 1.0; // Увеличено только для маленьких iPhone
     } else if (isIPhone) {
-      baseChildScale = 0.75;
+      baseChildScale = 1.1; // Увеличено только для обычных iPhone
     } else {
-      baseChildScale = 1;
+      baseChildScale = 1; // Оригинальный размер для всех остальных
     }
-    return (isMobile ? 0.15 : 0.28) * scale * baseChildScale;
+    
+    // Определяем базовый размер в зависимости от устройства
+    const baseMobileSize = isIPhone ? 0.22 : 0.15; // Увеличено только для iPhone
+    
+    return (isMobile ? baseMobileSize : 0.28) * scale * baseChildScale;
   }, [isMobile, scale, isSmallScreen, isIPhone, isLargeIPhone]);
 
   // Вычисляем позицию узла с учетом активного состояния
