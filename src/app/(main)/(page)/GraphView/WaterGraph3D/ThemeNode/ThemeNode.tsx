@@ -79,17 +79,17 @@ const calculateOrbitRadius = (childrenCount: number, isMobile: boolean): number 
   let baseRadius, minRadius, maxRadius;
   
   if (isLargeIPhone) {
+    baseRadius = 3.2;
+    minRadius = 2.8;
+    maxRadius = 4.5;
+  } else if (isSmallScreen && isIPhone) {
+    baseRadius = 2.6;
+    minRadius = 2.3;
+    maxRadius = 3.8;
+  } else if (isIPhone) {
     baseRadius = 2.8;
     minRadius = 2.5;
     maxRadius = 4.0;
-  } else if (isSmallScreen && isIPhone) {
-    baseRadius = 2.2;
-    minRadius = 2.0;
-    maxRadius = 3.2;
-  } else if (isIPhone) {
-    baseRadius = 2.4;
-    minRadius = 2.2;
-    maxRadius = 3.5;
   } else if (isMobile) {
     baseRadius = 1.8;
     minRadius = 1.5;
@@ -142,8 +142,8 @@ export function ThemeNode({
   
   // Обновляем размеры с учетом новой орбитальной системы и iPhone
   const orbitRadius = useMemo(() => {
-    if (isSmallScreen && isIPhone) return 1.6 * scale;
-    if (isIPhone) return 1.75 * scale;
+    if (isSmallScreen && isIPhone) return 1.9 * scale;
+    if (isIPhone) return 2.1 * scale;
     return (isMobile ? 1.87 : 3.5) * scale;
   }, [isMobile, scale, isSmallScreen, isIPhone]);
   

@@ -73,8 +73,24 @@ export const calculateOptimalCameraPosition = (
 };
 
 export const getDefaultCameraPosition = (isMobile: boolean): OptimalCameraPosition => {
+  // Проверяем, является ли устройство iPhone для более точных настроек
+  const isIPhone = typeof window !== 'undefined' && /iPhone|iPod/.test(navigator.userAgent);
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+  const isSmallIPhone = isIPhone && screenWidth <= 375;
+  
+  let cameraDistance;
+  if (isSmallIPhone) {
+    cameraDistance = 9; // Увеличено для маленьких iPhone
+  } else if (isIPhone) {
+    cameraDistance = 10; // Увеличено для обычных iPhone
+  } else if (isMobile) {
+    cameraDistance = 8;
+  } else {
+    cameraDistance = 12;
+  }
+  
   return {
-    cameraPosition: new THREE.Vector3(0, 0, isMobile ? 8 : 12),
+    cameraPosition: new THREE.Vector3(0, 0, cameraDistance),
     lookAt: new THREE.Vector3(0, 0, 0)
   };
 }; 

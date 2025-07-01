@@ -85,8 +85,8 @@ export function CameraController({ activeNodeRef, isMobile }: CameraControllerPr
     <>
       <OrbitControls
         enablePan={false}
-        minDistance={isMobile ? 6 : 8}
-        maxDistance={isMobile ? 15 : 20}
+        minDistance={isMobile ? 8 : 8}
+        maxDistance={isMobile ? 18 : 20}
         enableDamping
         dampingFactor={0.05}
         target={[0, 0, 0]}

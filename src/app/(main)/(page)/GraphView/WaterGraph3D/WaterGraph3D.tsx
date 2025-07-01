@@ -77,8 +77,8 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
   }, [data, subgraphsData, selectedTheme]);
 
   const cameraPosition = useMemo<[number, number, number]>(() => {
-    if (deviceType.isSmallIPhone) return [0, 0, 7];
-    if (deviceType.isIPhone) return [0, 0, 8];
+    if (deviceType.isSmallIPhone) return [0, 0, 9];
+    if (deviceType.isIPhone) return [0, 0, 10];
     if (isMobile) return [0, 0, 8];
     return [0, 0, 12];
   }, [isMobile, deviceType]);
@@ -183,14 +183,16 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
         <Canvas
           camera={{ 
             position: new THREE.Vector3(...cameraPosition),
-            fov: deviceType.isSmallIPhone ? 35 : (deviceType.isIPhone ? 38 : (isMobile ? 40 : 50))
+            fov: deviceType.isSmallIPhone ? 42 : (deviceType.isIPhone ? 45 : (isMobile ? 40 : 50))
           }}
           onPointerMissed={handlePointerMissed}
           style={{ 
             width: '100%', 
             height: '100%',
             ...(isMobile && { 
-              marginTop: deviceType.isIPhone ? '-30px' : '-170px' 
+              marginTop: deviceType.isIPhone 
+                ? (deviceType.isSmallIPhone ? '-10px' : '-15px') // Менее агрессивное смещение для iPhone
+                : '-170px' // Сохраняем исходное значение для других мобильных
             })
           }}
           onCreated={({ scene, gl, camera }) => {

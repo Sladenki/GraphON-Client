@@ -25,8 +25,8 @@
   transition: opacity 0.3s ease, filter 0.3s ease;
   
   @media (max-width: 768px) {
-    height: 65vh;
-    min-height: 320px;
+    height: 70vh;
+    min-height: 350px;
     padding: 0;
     // Обеспечиваем правильные пропорции на мобильных
     aspect-ratio: auto;
@@ -44,21 +44,21 @@
   
   // iPhone-specific adjustments - убираем жесткие ограничения по высоте
   @media screen and (max-width: 430px) and (-webkit-min-device-pixel-ratio: 2) {
-    height: 65vh;
-    min-height: 320px;
+    height: 70vh;
+    min-height: 350px;
     padding-top: env(safe-area-inset-top, 0);
   }
   
   // iPhone SE and small screens
   @media screen and (max-width: 375px) and (max-height: 667px) {
-    height: 65vh;
-    min-height: 300px;
+    height: 70vh;
+    min-height: 330px;
   }
   
   // iPhone 12 mini and similar
   @media screen and (max-width: 375px) and (min-height: 800px) {
-    height: 65vh;
-    min-height: 320px;
+    height: 70vh;
+    min-height: 350px;
   }
 }
 
@@ -72,26 +72,26 @@
   
   .graphContainer {
     // Убираем жесткие calc ограничения, сохраняем естественные пропорции
-    height: 65vh;
-    height: calc(-webkit-fill-available * 0.65);
-    min-height: 320px;
+    height: 70vh;
+    height: calc(-webkit-fill-available * 0.7);
+    min-height: 350px;
     
     @media (max-width: 430px) {
-      height: 65vh;
-      height: calc(-webkit-fill-available * 0.65);
-      min-height: 320px;
+      height: 70vh;
+      height: calc(-webkit-fill-available * 0.7);
+      min-height: 350px;
     }
     
     @media (max-width: 375px) {
-      height: 65vh;
-      height: calc(-webkit-fill-available * 0.65);
-      min-height: 300px;
+      height: 70vh;
+      height: calc(-webkit-fill-available * 0.7);
+      min-height: 330px;
     }
     
     @media (max-width: 320px) {
-      height: 65vh;
-      height: calc(-webkit-fill-available * 0.65);
-      min-height: 300px;
+      height: 70vh;
+      height: calc(-webkit-fill-available * 0.7);
+      min-height: 330px;
     }
   }
 } 
