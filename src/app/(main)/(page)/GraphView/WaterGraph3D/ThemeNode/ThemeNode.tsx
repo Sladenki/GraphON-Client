@@ -142,8 +142,8 @@ export function ThemeNode({
   
   // Обновляем размеры с учетом новой орбитальной системы и iPhone
   const orbitRadius = useMemo(() => {
-    if (isSmallScreen && isIPhone) return 1.9 * scale;
-    if (isIPhone) return 2.1 * scale;
+    if (isSmallScreen && isIPhone) return 1.9 * 3 * scale; // Увеличиваем в 3 раза для маленьких iPhone
+    if (isIPhone) return 2.1 * 3 * scale; // Увеличиваем в 3 раза для обычных iPhone
     return (isMobile ? 1.87 : 3.5) * scale;
   }, [isMobile, scale, isSmallScreen, isIPhone]);
   
