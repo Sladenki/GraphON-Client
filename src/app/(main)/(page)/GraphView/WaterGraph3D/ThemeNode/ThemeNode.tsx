@@ -142,8 +142,8 @@ export function ThemeNode({
   
   // Обновляем размеры с учетом новой орбитальной системы и iPhone
   const orbitRadius = useMemo(() => {
-    if (isSmallScreen && isIPhone) return 1.9 * 3 * scale; // Увеличиваем в 3 раза для маленьких iPhone
-    if (isIPhone) return 2.1 * 3 * scale; // Увеличиваем в 3 раза для обычных iPhone
+    if (isSmallScreen && isIPhone) return 1.9 * 2 * scale; // Увеличиваем в 2 раза для маленьких iPhone
+    if (isIPhone) return 2.1 * 2 * scale; // Увеличиваем в 2 раза для обычных iPhone
     return (isMobile ? 1.87 : 3.5) * scale;
   }, [isMobile, scale, isSmallScreen, isIPhone]);
   
@@ -406,7 +406,7 @@ export function ThemeNode({
 
       {/* Подпись основного узла */}
       {labelVisible && (
-        <Billboard position={[0, (isMobile ? 0.3 : 0.8), 0]}>
+        <Billboard position={[0, (isMobile ? (isIPhone ? 0.45 : 0.3) : 0.8), 0]}>
           <Html center>
             <div 
               className={`${styles.themeLabel} ${active ? styles.active : ''} ${anyActive && !active ? styles.inactive : ''}`}
