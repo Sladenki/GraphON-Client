@@ -35,6 +35,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { UserRole } from "@/types/user.interface";
 import { useEventCardOptimization } from './useEventCardOptimization';
+import { useDeclensionWord } from "@/hooks/useDeclension";
 import DeleteConfirmPopUp from './DeleteConfirmPopUp';
 import styles from './EventCard.module.scss';
 
@@ -240,24 +241,28 @@ const EventInfo = React.memo(({
   formattedTime: string, 
   place: string, 
   regedUsers: number 
-}) => (
-  <div className={styles.infoSection}>
-    <div className={styles.infoItem}>
-      <CalendarClock size={18} />
-      <span className={styles.infoText}>{formattedTime}</span>
+}) => {
+  const correctRegedUsers = useDeclensionWord(regedUsers, 'PARTICIPANT');
+  
+  return (
+    <div className={styles.infoSection}>
+      <div className={styles.infoItem}>
+        <CalendarClock size={18} />
+        <span className={styles.infoText}>{formattedTime}</span>
+      </div>
+      
+      <div className={styles.infoItem}>
+        <MapPinned size={18} />
+        <span className={styles.infoText}>{place}</span>
+      </div>
+      
+      <div className={styles.infoItem}>
+        <UsersRound size={18} />
+        <span className={styles.infoText}>{regedUsers} {correctRegedUsers}</span>
+      </div>
     </div>
-    
-    <div className={styles.infoItem}>
-      <MapPinned size={18} />
-      <span className={styles.infoText}>{place}</span>
-    </div>
-    
-    <div className={styles.infoItem}>
-      <UsersRound size={18} />
-      <span className={styles.infoText}>{regedUsers} участников</span>
-    </div>
-  </div>
-));
+  );
+});
 
 EventInfo.displayName = 'EventInfo';
 

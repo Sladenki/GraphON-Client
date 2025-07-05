@@ -228,9 +228,9 @@ const SchedulePage: React.FC<SchedulePageProps> = React.memo(({
     onToggleSubscription
   });
 
-  console.log('schedule', schedule);
-  console.log('events', events);
-  console.log('selectedDayData', selectedDayData);
+  // console.log('schedule', schedule);
+  // console.log('events', events);
+  // console.log('selectedDayData', selectedDayData);
 
   return (
     <div className={styles.schedulePage}>

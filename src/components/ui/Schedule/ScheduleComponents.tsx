@@ -6,6 +6,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { ScheduleItem, EventItem } from '@/types/schedule';
 import styles from './Schedule.module.scss';
+import { useDeclensionWord } from '@/hooks/useDeclension';
 
 // Оптимизированный хук для EventCard в Schedule
 const useScheduleEventCardOptimization = (event: EventItem) => {
@@ -102,6 +103,8 @@ export const EventCard = React.memo<EventCardProps>(({ event, onToggleSubscripti
 
   const { elementRef, isVisible, graphImageUrl, formattedTime } = useScheduleEventCardOptimization(event);
 
+  const correctRegedUsers = useDeclensionWord(event.regedUsers, 'PARTICIPANT');
+
   return (
     <Card className={styles.eventCard}>
       <CardBody className={styles.eventCardBody}>
@@ -141,7 +144,7 @@ export const EventCard = React.memo<EventCardProps>(({ event, onToggleSubscripti
         <div className={styles.cardFooter}>
           <div className={styles.participantsInfo}>
             <Users size={16} />
-            <span>{event.regedUsers} участников</span>
+            <span>{event.regedUsers} {correctRegedUsers}</span>
           </div>
           
           {isLoggedIn && (
