@@ -7,6 +7,7 @@ import { ScheduleItem, EventItem } from '@/types/schedule';
 import { useScheduleOptimization } from './useScheduleOptimization';
 import { ScheduleCard, EventCard, DayButton, EventsGroup } from './ScheduleComponents';
 import styles from './Schedule.module.scss';
+import { DECLENSION_RULES, useDeclension } from '@/hooks/useDeclension';
 
 interface SchedulePageProps {
   schedule: ScheduleItem[];
@@ -106,7 +107,7 @@ const ScheduleHeader = React.memo<{
         variant="flat"
         className={styles.eventsCount}
       >
-        {totalEvents} событий
+        {totalEvents} {useDeclension(totalEvents, DECLENSION_RULES.EVENT_ITEM)}
       </Chip>
     </div>
   </div>

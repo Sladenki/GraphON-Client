@@ -80,6 +80,12 @@ export const DECLENSION_RULES = {
     few: 'минуты',
     many: 'минут',
     other: 'минут'
+  },
+  EVENT_ITEM: {
+    one: 'событие',
+    few: 'события',
+    many: 'событий',
+    other: 'событий'
   }
 } as const;
 
