@@ -13,6 +13,7 @@ import LogOut from './LogOut/LogOut';
 import NoImage from '../../../../public/noImage.png'
 import ThemeToggle from '@/components/global/ThemeToggle/ThemeToggle';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+import MissingDataMessage from './MissingDataMessage/MissingDataMessage';
 
 
 export default function Profile() {
@@ -47,6 +48,43 @@ export default function Profile() {
     const typedUser = user as IUser | null;
     const subsEvents = allEvents?.data;
 
+    // Определяем недостающие данные
+    const getMissingFields = (user: IUser) => {
+        const missingFields: string[] = [];
+        
+        if (!user.firstName || user.firstName.trim() === '') {
+            missingFields.push('firstName');
+        }
+        if (!user.lastName || user.lastName.trim() === '') {
+            missingFields.push('lastName');
+        }
+        if (!user.username || user.username.trim() === '') {
+            missingFields.push('username');
+        }
+        
+        return missingFields;
+    };
+
+    const missingFields = typedUser ? getMissingFields(typedUser) : [];
+
+    // Формируем отображаемое имя
+    const getDisplayName = (user: IUser) => {
+        const hasFirstName = user.firstName && user.firstName.trim() !== '';
+        const hasLastName = user.lastName && user.lastName.trim() !== '';
+        
+        if (hasFirstName && hasLastName) {
+            return `${user.firstName} ${user.lastName}`;
+        } else if (hasFirstName) {
+            return user.firstName;
+        } else if (hasLastName) {
+            return user.lastName;
+        } else if (user.username && user.username.trim() !== '') {
+            return `@${user.username}`;
+        } else {
+            return 'Пользователь';
+        }
+    };
+
     return (
         <div className={styles.profileWrapper}>
             {typedUser ? (
@@ -61,8 +99,7 @@ export default function Profile() {
                             />    
                        
                         <span className={styles.name}>
-                            {typedUser.firstName}
-                            {typedUser.lastName ? ` ${typedUser.lastName}` : ""}
+                            {getDisplayName(typedUser)}
                         </span>
 
                         {typedUser.role !== 'user' && (
@@ -71,6 +108,10 @@ export default function Profile() {
                             </span>
                         )}
                     </div>
+
+                    {missingFields.length > 0 && (
+                        <MissingDataMessage missingFields={missingFields} />
+                    )}
 
                     {!small && <ThemeToggle size="md" />}   
                   
