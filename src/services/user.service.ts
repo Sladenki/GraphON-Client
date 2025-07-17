@@ -8,12 +8,17 @@ export const UserService = {
         return axiosClassic.post(`/user/auth`, dto)
     },
 
-    async getAllUsers(lastId?: string, limit: number = 2): Promise<{ users: IUser[], hasMore: boolean }> {
-        const params = new URLSearchParams();
-        if (lastId) params.append('lastId', lastId);
-        params.append('limit', limit.toString());
+    // async getAllUsers(lastId?: string, limit: number = 2): Promise<{ users: IUser[], hasMore: boolean }> {
+    //     const params = new URLSearchParams();
+    //     if (lastId) params.append('lastId', lastId);
+    //     params.append('limit', limit.toString());
         
-        const { data } = await axiosClassic.get<{ users: IUser[], hasMore: boolean }>(`/user/allUsers?${params.toString()}`);
+    //     const { data } = await axiosClassic.get<{ users: IUser[], hasMore: boolean }>(`/user/allUsers?${params.toString()}`);
+    //     return data;
+    // },
+
+    async getAllUsers() {        
+        const { data } = await axiosClassic.get(`/user/allUsers`);
         return data;
     },
 
