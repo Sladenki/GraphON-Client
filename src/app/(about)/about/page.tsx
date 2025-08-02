@@ -10,10 +10,12 @@ import { CalendarDemo } from './components/CalendarDemo';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { CTASection } from './components/CTASection';
 import { Footer } from './components/Footer';
+import { AnimatedBackground } from './components/AnimatedBackground';
 
 const AboutPage = () => {
     return (
         <div className={styles.container}>
+            <AnimatedBackground />
             <HeroSection />
             <FeaturesSection />
             <HowItWorksSection />

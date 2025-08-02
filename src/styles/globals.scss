@@ -9,6 +9,9 @@
   /* Font variables for Next.js Font optimization */
   --font-inter: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-orbitron: 'Orbitron', 'Space Grotesk', 'Trebuchet MS', monospace, sans-serif;
+  --font-poppins: 'Poppins', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-montserrat: 'Montserrat', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-playfair: 'Playfair Display', 'Georgia', serif;
 
   --popup-bg: rgba(0, 0, 0, 0.5);
   --popup-content-bg: var(--background-color);
@@ -47,15 +50,25 @@
   --gradient-start: #3a1c6b;
   --gradient-end: #2a2b5d;
 
-  /* Landing page variables */
-  --landing-primary-color: rgb(150, 130, 238);
-  --landing-primary-color-rgb: 150, 130, 238;
-  --landing-dark-bg: #383b40;
-  --landing-dark-bg-rgb: 56, 59, 64;
-  --landing-text-light: #ffffff;
-  --landing-text-dark: #1a1a1a;
-  --landing-gradient-primary: linear-gradient(135deg, var(--landing-primary-color), rgba(var(--landing-primary-color-rgb), 0.8));
-  --landing-gradient-dark: linear-gradient(135deg, var(--landing-dark-bg), rgba(var(--landing-dark-bg-rgb), 0.9));
+  /* Landing page variables - Modern Design */
+  --landing-primary-color: #6366f1;
+  --landing-primary-color-rgb: 99, 102, 241;
+  --landing-secondary-color: #8b5cf6;
+  --landing-secondary-color-rgb: 139, 92, 246;
+  --landing-accent-color: #06b6d4;
+  --landing-accent-color-rgb: 6, 182, 212;
+  --landing-dark-bg: #0f172a;
+  --landing-dark-bg-rgb: 15, 23, 42;
+  --landing-card-bg: rgba(30, 41, 59, 0.8);
+  --landing-text-light: #f8fafc;
+  --landing-text-dark: #1e293b;
+  --landing-text-muted: #94a3b8;
+  --landing-gradient-primary: linear-gradient(135deg, var(--landing-primary-color), var(--landing-secondary-color));
+  --landing-gradient-secondary: linear-gradient(135deg, var(--landing-secondary-color), var(--landing-accent-color));
+  --landing-gradient-dark: linear-gradient(135deg, var(--landing-dark-bg), #1e293b);
+  --landing-gradient-card: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  --landing-glow-primary: 0 0 20px rgba(var(--landing-primary-color-rgb), 0.3);
+  --landing-glow-secondary: 0 0 30px rgba(var(--landing-secondary-color-rgb), 0.4);
 }
 
 html[data-theme="light"] {
