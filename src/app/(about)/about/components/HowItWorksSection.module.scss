@@ -1,0 +1,184 @@
+.howItWorksSection {
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, rgba(var(--dark-bg-rgb), 0.98) 0%, rgba(var(--dark-bg-rgb), 0.95) 100%);
+  
+  @media (max-width: 768px) {
+    padding: 4rem 1rem;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--primary-color), rgba(var(--primary-color-rgb), 0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.sectionSubtitle {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 4rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--text-light);
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 3rem;
+  }
+}
+
+.stepsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  position: relative;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.stepCard {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), rgba(var(--primary-color-rgb), 0.6));
+  }
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    border-color: rgba(var(--primary-color-rgb), 0.3);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 2rem;
+  }
+}
+
+.stepNumber {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  opacity: 0.8;
+  
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+}
+
+.stepIcon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+}
+
+.stepTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-light);
+  
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+}
+
+.stepDescription {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-light);
+  opacity: 0.9;
+  
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+}
+
+.stepConnector {
+  position: absolute;
+  top: 50%;
+  right: -1rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.connectorLine {
+  width: 2rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), transparent);
+}
+
+.connectorArrow {
+  width: 0;
+  height: 0;
+  border-left: 8px solid var(--primary-color);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  margin-left: 0.5rem;
+}
+
+// Анимации
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.stepCard:hover .stepNumber {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+// Темная тема
+@media (prefers-color-scheme: dark) {
+  .howItWorksSection {
+    background: linear-gradient(135deg, #1a1a1a 0%, var(--dark-bg) 100%);
+  }
+}
+
+// Уменьшенное движение
+@media (prefers-reduced-motion: reduce) {
+  .stepCard:hover .stepNumber {
+    animation: none;
+  }
+} 

@@ -46,6 +46,16 @@
   --glass-hover: rgba(255, 255, 255, 0.05);
   --gradient-start: #3a1c6b;
   --gradient-end: #2a2b5d;
+
+  /* Landing page variables */
+  --landing-primary-color: rgb(150, 130, 238);
+  --landing-primary-color-rgb: 150, 130, 238;
+  --landing-dark-bg: #383b40;
+  --landing-dark-bg-rgb: 56, 59, 64;
+  --landing-text-light: #ffffff;
+  --landing-text-dark: #1a1a1a;
+  --landing-gradient-primary: linear-gradient(135deg, var(--landing-primary-color), rgba(var(--landing-primary-color-rgb), 0.8));
+  --landing-gradient-dark: linear-gradient(135deg, var(--landing-dark-bg), rgba(var(--landing-dark-bg-rgb), 0.9));
 }
 
 html[data-theme="light"] {
