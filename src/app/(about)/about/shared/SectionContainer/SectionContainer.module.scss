@@ -1,0 +1,13 @@
+.sectionContainer {
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, rgba(var(--dark-bg-rgb), 0.95) 0%, rgba(var(--dark-bg-rgb), 0.98) 100%);
+  
+  @media (max-width: 768px) {
+    padding: 4rem 1rem;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+} 
