@@ -91,11 +91,16 @@ export default function Profile() {
                 <>
                     <div className={styles.header}>
                             <Image 
-                                src={typedUser.avaPath ? typedUser.avaPath : NoImage} 
+                                src={typedUser.avaPath && typedUser.avaPath.startsWith('http') ? typedUser.avaPath : NoImage} 
                                 className={styles.avatar} 
                                 alt="Аватар" 
-                                width={120}
-                                height={120}
+                                width={160}
+                                height={160}
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = NoImage.src;
+                                }}
+                                onLoad={() => console.log('Avatar loaded successfully')}
                             />    
                        
                         <span className={styles.name}>
@@ -114,8 +119,7 @@ export default function Profile() {
                     )}
 
                     {!small && <ThemeToggle size="md" />}   
-                  
-                    {/* <span className={styles.text}>Количество постов: {typedUser.postsNum}</span> */}
+                
                         
                     {
                         subsEvents && subsEvents.length > 0 && (
