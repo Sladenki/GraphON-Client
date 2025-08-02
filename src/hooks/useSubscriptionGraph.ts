@@ -1,10 +1,12 @@
 import { useState, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { GraphSubsService } from '@/services/graphSubs.service';
+import { useAuth } from '@/providers/AuthProvider';
 
 export const useSubscription = (initialIsSubscribed: boolean, graphId: string) => {
   const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
   const queryClient = useQueryClient();
+  const { refreshUser } = useAuth();
 
   const mutation = useMutation({
     mutationFn: () => GraphSubsService.toggleGraphSub(graphId),
@@ -38,25 +40,23 @@ export const useSubscription = (initialIsSubscribed: boolean, graphId: string) =
             queryKey: ['subsEvents'],
         });
         
-        // // Инвалидируем кеш расписания подписок
-        // queryClient.invalidateQueries({
-        //     queryKey: ['subsSchedule'],
-        // });
+        // Инвалидируем кеш пользователя для обновления счетчика подписок
+        queryClient.invalidateQueries({
+            queryKey: ['user'],
+        });
         
-        // // Инвалидируем кеш всех графов для обновления состояния подписки
-        // queryClient.invalidateQueries({
-        //     queryKey: ['graph'],
-        // });
+        // Инвалидируем кеш всех графов для обновления состояния подписки
+        queryClient.invalidateQueries({
+            queryKey: ['graph'],
+        });
         
-        // // Инвалидируем кеш пользователя для обновления счетчика подписок
-        // queryClient.invalidateQueries({
-        //     queryKey: ['user'],
-        // });
+        // Инвалидируем кеш событий пользователя
+        queryClient.invalidateQueries({
+            queryKey: ['eventsList'],
+        });
         
-        // // Инвалидируем кеш событий пользователя
-        // queryClient.invalidateQueries({
-        //     queryKey: ['eventsList'],
-        // });
+        // Обновляем данные пользователя для обновления счетчика подписок
+        refreshUser();
     },
   });
 

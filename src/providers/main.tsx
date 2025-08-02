@@ -8,12 +8,12 @@ import { ReactQueryProvider } from './ReactQueryProvider';
 
 export const AllProvers = ({ children }: { children: React.ReactNode }) => {
   return (
-    <AuthProvider>
-        <ReactQueryProvider>
-            <ThemeProviders>
-              {children}
-            </ThemeProviders>
-        </ReactQueryProvider>
-    </AuthProvider>
+    <ReactQueryProvider>
+      <AuthProvider>
+        <ThemeProviders>
+          {children}
+        </ThemeProviders>
+      </AuthProvider>
+    </ReactQueryProvider>
   )
 }
