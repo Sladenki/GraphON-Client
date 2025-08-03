@@ -10,7 +10,7 @@ export const HologramEarth = () => {
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const earthRef = useRef<THREE.Group | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
+
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -99,13 +99,14 @@ export const HologramEarth = () => {
            float pulse = sin(time * 3.0) * 0.3 + 0.7;
            
            // Улучшенное смешивание цветов
-           vec3 earthHologram = mix(earthColor.rgb, hologramColor, hologram * 0.5);
-           vec3 finalColor = mix(earthHologram, secondaryColor, hologram * pulse * 0.2);
+           vec3 earthHologram = mix(earthColor.rgb, hologramColor, hologram * 0.4);
+           vec3 finalColor = mix(earthHologram, secondaryColor, hologram * pulse * 0.15);
            
-           // Улучшаем контрастность
-           finalColor = pow(finalColor, vec3(0.9));
+           // Улучшаем контрастность и яркость
+           finalColor = pow(finalColor, vec3(0.85));
+           finalColor = finalColor * 1.1; // Увеличиваем яркость
            
-           float alpha = hologram * 0.5 + 0.5;
+           float alpha = hologram * 0.4 + 0.6;
            
            gl_FragColor = vec4(finalColor, alpha);
          }
@@ -300,17 +301,22 @@ export const HologramEarth = () => {
     scene.add(earthGroup);
 
     // Добавляем освещение
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    const ambientLight = new THREE.AmbientLight(0x606060, 0.7);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0x8a2be2, 1); // Фиолетовый свет
+    const directionalLight = new THREE.DirectionalLight(0x8a2be2, 1.2); // Фиолетовый свет
     directionalLight.position.set(5, 3, 5);
     scene.add(directionalLight);
 
     // Добавляем точечный свет для голографического эффекта
-    const pointLight = new THREE.PointLight(0x9370db, 2, 10); // Светло-фиолетовый свет
+    const pointLight = new THREE.PointLight(0x9370db, 2.5, 10); // Светло-фиолетовый свет
     pointLight.position.set(2, 2, 2);
     scene.add(pointLight);
+
+    // Добавляем дополнительный белый свет для лучшей видимости
+    const whiteLight = new THREE.PointLight(0xffffff, 1, 8);
+    whiteLight.position.set(-2, 1, 3);
+    scene.add(whiteLight);
 
     // Анимация
     let time = 0;
@@ -318,11 +324,9 @@ export const HologramEarth = () => {
       time += 0.016;
 
       if (earthGroup) {
-        // Автоматическое вращение только когда не наведена мышь
-        if (!isHovered) {
-          earthGroup.rotation.y += 0.005;
-          earthGroup.rotation.x = Math.sin(time * 0.5) * 0.1;
-        }
+        // Автоматическое вращение
+        earthGroup.rotation.y += 0.005;
+        earthGroup.rotation.x = Math.sin(time * 0.5) * 0.1;
       }
 
       if (earthMaterial.uniforms) {
@@ -338,6 +342,8 @@ export const HologramEarth = () => {
       // Анимация света
       pointLight.position.x = Math.sin(time) * 3;
       pointLight.position.z = Math.cos(time) * 3;
+      whiteLight.position.x = Math.cos(time * 0.7) * 2;
+      whiteLight.position.z = Math.sin(time * 0.7) * 2;
 
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
@@ -369,7 +375,7 @@ export const HologramEarth = () => {
       }
       renderer.dispose();
     };
-  }, [isHovered]);
+  }, []);
 
   return (
     <motion.div
@@ -377,8 +383,6 @@ export const HologramEarth = () => {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1, ease: 'easeOut' }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <div ref={containerRef} className={styles.threeContainer} />
       <div className={styles.hologramOverlay}>
