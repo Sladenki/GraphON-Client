@@ -13,15 +13,15 @@ import { Footer } from './components/Footer/Footer';
 
 const AboutPage = () => {
     return (
-            <div className={styles.container}>
-      <SpaceBackground />
-      <AnimatedHero />
-      <AnimatedFeatures />
-      <InteractiveDemo />
-      <AnimatedStats />
-      <AnimatedCTA />
-      <Footer />
-    </div>
+      <div className={styles.container}>
+        <SpaceBackground />
+        <AnimatedHero />
+        <AnimatedFeatures />
+        <InteractiveDemo />
+        <AnimatedStats />
+        <AnimatedCTA />
+        <Footer />
+      </div>
     );
 };
 
