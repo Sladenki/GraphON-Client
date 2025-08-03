@@ -11,20 +11,22 @@ export const AnimatedHero = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.2
+        staggerChildren: 0.4,
+        delayChildren: 0.3,
+        duration: 0.6
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
+    hidden: { opacity: 0, y: 60, scale: 0.95 },
     visible: {
       opacity: 1,
       y: 0,
+      scale: 1,
       transition: {
-        duration: 0.8,
-        ease: 'easeOut'
+        duration: 1,
+        ease: [0.4, 0, 0.2, 1]
       }
     }
   };
@@ -54,8 +56,7 @@ export const AnimatedHero = () => {
               <span className={styles.gradientText}>GraphON</span>
               <br />
               <span className={styles.subtitle}>Современная платформа</span>
-              <br />
-              <span className={styles.highlight}>для управления графами</span>
+              <span className={styles.highlight}> для управления графами</span>
             </motion.h1>
 
             <motion.p className={styles.heroDescription} variants={itemVariants}>
@@ -66,24 +67,45 @@ export const AnimatedHero = () => {
             <motion.div className={styles.heroButtons} variants={itemVariants}>
               <motion.button
                 className={styles.primaryButton}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ 
+                  scale: 1.02,
+                  transition: { duration: 0.2 }
+                }}
+                whileTap={{ 
+                  scale: 0.98,
+                  transition: { duration: 0.1 }
+                }}
               >
                 Начать бесплатно
               </motion.button>
               <motion.button
                 className={styles.secondaryButton}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ 
+                  scale: 1.02,
+                  transition: { duration: 0.2 }
+                }}
+                whileTap={{ 
+                  scale: 0.98,
+                  transition: { duration: 0.1 }
+                }}
               >
                 Узнать больше
               </motion.button>
             </motion.div>
           </motion.div>
 
-          <div className={styles.heroVisuals}>
+          <motion.div 
+            className={styles.heroVisuals}
+            initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+            transition={{ 
+              duration: 1.2, 
+              delay: 0.5,
+              ease: [0.4, 0, 0.2, 1]
+            }}
+          >
             <HologramEarth />
-          </div>
+          </motion.div>
         </div>
       </ParallaxSection>
     </section>
