@@ -13,10 +13,10 @@ interface Stat {
 }
 
 const stats: Stat[] = [
-  { value: 10000, label: 'Активных пользователей', suffix: '+', color: '#667eea' },
-  { value: 99.9, label: 'Время работы', suffix: '%', color: '#f093fb' },
-  { value: 50000000, label: 'Обработанных узлов', suffix: '+', color: '#4facfe' },
-  { value: 24, label: 'Поддерживаемых форматов', suffix: '', color: '#43e97b' }
+  { value: 5000, label: 'Студентов в Калининграде', suffix: '+', color: '#667eea' },
+  { value: 200, label: 'Мероприятий в месяц', suffix: '+', color: '#f093fb' },
+  { value: 150, label: 'Бизнес-партнеров', suffix: '+', color: '#4facfe' },
+  { value: 95, label: 'Удовлетворенность', suffix: '%', color: '#43e97b' }
 ];
 
 const AnimatedCounter = ({ value, suffix, color }: { value: number; suffix: string; color: string }) => {

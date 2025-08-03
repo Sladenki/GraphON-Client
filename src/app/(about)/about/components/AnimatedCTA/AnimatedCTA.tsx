@@ -95,12 +95,12 @@ export const AnimatedCTA = () => {
             </motion.div>
 
             <motion.h2 className={styles.title} variants={itemVariants}>
-              <span className={styles.gradientText}>Готовы начать?</span>
+              <span className={styles.gradientText}>Присоединяйся к GraphON!</span>
             </motion.h2>
 
             <motion.p className={styles.description} variants={itemVariants}>
-              Присоединяйтесь к тысячам пользователей, которые уже используют GraphON
-              для создания потрясающих визуализаций и анализа данных
+              Найди мероприятия, друзей и возможности в Калининграде. 
+              Стань частью растущего сообщества студентов и бизнеса
             </motion.p>
 
             <motion.div className={styles.buttonGroup} variants={itemVariants}>
@@ -110,7 +110,7 @@ export const AnimatedCTA = () => {
                 whileHover="hover"
                 whileTap="tap"
               >
-                <span className={styles.buttonText}>Начать бесплатно</span>
+                <span className={styles.buttonText}>Зарегистрироваться</span>
                 <motion.div
                   className={styles.buttonIcon}
                   animate={{ x: [0, 5, 0] }}
@@ -126,13 +126,13 @@ export const AnimatedCTA = () => {
                 whileHover="hover"
                 whileTap="tap"
               >
-                <span className={styles.buttonText}>Демо версия</span>
+                <span className={styles.buttonText}>Найти мероприятия</span>
                 <motion.div
                   className={styles.buttonIcon}
                   animate={{ rotate: [0, 360] }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                 >
-                  ⚡
+                  🎯
                 </motion.div>
               </motion.button>
             </motion.div>
@@ -140,15 +140,15 @@ export const AnimatedCTA = () => {
             <motion.div className={styles.features} variants={itemVariants}>
               <div className={styles.feature}>
                 <div className={styles.featureIcon}>✓</div>
-                <span>Бесплатный план</span>
+                <span>Бесплатно для студентов</span>
               </div>
               <div className={styles.feature}>
                 <div className={styles.featureIcon}>✓</div>
-                <span>Без регистрации</span>
+                <span>Мероприятия в Калининграде</span>
               </div>
               <div className={styles.feature}>
                 <div className={styles.featureIcon}>✓</div>
-                <span>Мгновенный доступ</span>
+                <span>AI-рекомендации</span>
               </div>
             </motion.div>
           </motion.div>

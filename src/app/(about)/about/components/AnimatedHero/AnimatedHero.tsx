@@ -55,13 +55,12 @@ export const AnimatedHero = () => {
             <motion.h1 className={styles.heroTitle} variants={itemVariants}>
               <span className={styles.gradientText}>GraphON</span>
               <br />
-              <span className={styles.subtitle}>Современная платформа</span>
-              <span className={styles.highlight}> для управления графами</span>
+              <span className={styles.subtitle}>Для студентов и бизнеса Калининграда</span>
             </motion.h1>
 
             <motion.p className={styles.heroDescription} variants={itemVariants}>
-              Откройте для себя новый уровень визуализации и управления данными
-              с помощью интуитивного интерфейса и мощных инструментов
+              Найди мероприятия, друзей и возможности с умом. 
+              Визуальные графы, календарь возможностей и AI-рекомендации для персонализации
             </motion.p>
 
             <motion.div className={styles.heroButtons} variants={itemVariants}>
@@ -76,7 +75,7 @@ export const AnimatedHero = () => {
                   transition: { duration: 0.1 }
                 }}
               >
-                Начать бесплатно
+                Зарегистрироваться
               </motion.button>
               <motion.button
                 className={styles.secondaryButton}
@@ -89,7 +88,7 @@ export const AnimatedHero = () => {
                   transition: { duration: 0.1 }
                 }}
               >
-                Узнать больше
+                Найти мероприятия
               </motion.button>
             </motion.div>
           </motion.div>
