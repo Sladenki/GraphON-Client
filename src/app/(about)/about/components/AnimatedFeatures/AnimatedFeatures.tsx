@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { ParallaxSection } from '../ParallaxSection/ParallaxSection';
+import { HologramEarth } from '../HologramEarth/HologramEarth';
 import styles from './AnimatedFeatures.module.scss';
 
 const features = [
@@ -145,6 +146,19 @@ export const AnimatedFeatures = () => {
             <div className={styles.stat}>
               <div className={styles.statNumber}>50M+</div>
               <div className={styles.statLabel}>Обработанных узлов</div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className={styles.hologramSection}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+            transition={{ duration: 1, delay: 0.8 }}
+          >
+            <HologramEarth />
+            <div className={styles.hologramText}>
+              <h3>Глобальная сеть данных</h3>
+              <p>Подключитесь к мировой сети информации</p>
             </div>
           </motion.div>
         </div>

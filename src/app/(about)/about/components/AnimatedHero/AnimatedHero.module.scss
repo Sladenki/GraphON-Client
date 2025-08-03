@@ -99,58 +99,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  // Центрируем голограмму справа и поднимаем очень высоко
+  > div:first-child {
+    position: absolute;
+    top: 15%;
+    right: 10%;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
 }
 
-.floatingCard {
-  position: absolute;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.floatingCard:nth-child(1) {
-  top: 20%;
-  left: 10%;
-  transform: rotate(-5deg);
-}
-
-.floatingCard:nth-child(2) {
-  top: 50%;
-  right: 20%;
-  transform: rotate(3deg);
-}
-
-.floatingCard:nth-child(3) {
-  bottom: 20%;
-  left: 30%;
-  transform: rotate(-2deg);
-}
-
-.cardContent {
-  text-align: center;
-}
-
-.cardIcon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.cardContent h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-}
-
-.cardContent p {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin: 0;
-}
+// Стили для карточек удалены, так как они больше не используются
 
 // Адаптивность
 @media (max-width: 768px) {
@@ -165,10 +125,12 @@
     order: -1;
   }
 
-  .floatingCard {
+  // Голограмма Земли на мобильных
+  .heroVisuals > div:first-child {
     position: relative;
-    transform: none !important;
-    margin: 1rem;
+    right: auto;
+    transform: none;
+    margin: 0 auto;
   }
 
   .heroButtons {

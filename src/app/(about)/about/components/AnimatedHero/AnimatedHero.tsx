@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ParallaxSection, FloatingElement } from '../ParallaxSection/ParallaxSection';
+import { HologramEarth } from '../HologramEarth/HologramEarth';
 import styles from './AnimatedHero.module.scss';
 
 export const AnimatedHero = () => {
@@ -81,49 +82,7 @@ export const AnimatedHero = () => {
           </motion.div>
 
           <div className={styles.heroVisuals}>
-            <FloatingElement delay={0.5}>
-              <motion.div
-                className={styles.floatingCard}
-                variants={floatingVariants}
-                animate="animate"
-              >
-                <div className={styles.cardContent}>
-                  <div className={styles.cardIcon}>📊</div>
-                  <h3>Аналитика</h3>
-                  <p>Глубокий анализ данных</p>
-                </div>
-              </motion.div>
-            </FloatingElement>
-
-            <FloatingElement delay={0.8}>
-              <motion.div
-                className={styles.floatingCard}
-                variants={floatingVariants}
-                animate="animate"
-                style={{ animationDelay: '1s' }}
-              >
-                <div className={styles.cardContent}>
-                  <div className={styles.cardIcon}>🎯</div>
-                  <h3>Точность</h3>
-                  <p>Высокая точность результатов</p>
-                </div>
-              </motion.div>
-            </FloatingElement>
-
-            <FloatingElement delay={1.1}>
-              <motion.div
-                className={styles.floatingCard}
-                variants={floatingVariants}
-                animate="animate"
-                style={{ animationDelay: '2s' }}
-              >
-                <div className={styles.cardContent}>
-                  <div className={styles.cardIcon}>⚡</div>
-                  <h3>Скорость</h3>
-                  <p>Мгновенная обработка</p>
-                </div>
-              </motion.div>
-            </FloatingElement>
+            <HologramEarth />
           </div>
         </div>
       </ParallaxSection>
