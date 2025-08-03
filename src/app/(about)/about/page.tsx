@@ -3,8 +3,7 @@
 import { motion } from 'framer-motion';
 import styles from './page.module.scss';
 import Link from 'next/link';
-import { WaveBackground } from './components/WaveBackground/WaveBackground';
-import { ParticleBackground } from './components/ParticleBackground/ParticleBackground';
+import { SpaceBackground } from './components/SpaceBackground/SpaceBackground';
 import { AnimatedHero } from './components/AnimatedHero/AnimatedHero';
 import { AnimatedFeatures } from './components/AnimatedFeatures/AnimatedFeatures';
 import { InteractiveDemo } from './components/InteractiveDemo/InteractiveDemo';
@@ -14,16 +13,15 @@ import { Footer } from './components/Footer/Footer';
 
 const AboutPage = () => {
     return (
-        <div className={styles.container}>
-            <ParticleBackground />
-            <WaveBackground />
-            <AnimatedHero />
-            <AnimatedFeatures />
-            <InteractiveDemo />
-            <AnimatedStats />
-            <AnimatedCTA />
-            <Footer />
-        </div>
+            <div className={styles.container}>
+      <SpaceBackground />
+      <AnimatedHero />
+      <AnimatedFeatures />
+      <InteractiveDemo />
+      <AnimatedStats />
+      <AnimatedCTA />
+      <Footer />
+    </div>
     );
 };
 
