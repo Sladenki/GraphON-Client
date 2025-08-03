@@ -17,15 +17,23 @@ export const WaveBackground = () => {
     let time = 0;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      
+      ctx.scale(dpr, dpr);
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
     };
 
     const drawWave = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
 
       // Создаем градиент
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      const gradient = ctx.createLinearGradient(0, 0, rect.width, rect.height);
       gradient.addColorStop(0, 'rgba(99, 102, 241, 0.1)');
       gradient.addColorStop(0.5, 'rgba(168, 85, 247, 0.1)');
       gradient.addColorStop(1, 'rgba(236, 72, 153, 0.1)');
@@ -34,18 +42,18 @@ export const WaveBackground = () => {
 
       // Рисуем волны
       ctx.beginPath();
-      ctx.moveTo(0, canvas.height);
+      ctx.moveTo(0, rect.height);
 
-      for (let x = 0; x <= canvas.width; x += 2) {
-        const y1 = canvas.height * 0.7 + Math.sin(x * 0.01 + time) * 50;
-        const y2 = canvas.height * 0.8 + Math.sin(x * 0.015 + time * 1.5) * 30;
-        const y3 = canvas.height * 0.9 + Math.sin(x * 0.02 + time * 2) * 20;
+      for (let x = 0; x <= rect.width; x += 2) {
+        const y1 = rect.height * 0.7 + Math.sin(x * 0.01 + time) * 50;
+        const y2 = rect.height * 0.8 + Math.sin(x * 0.015 + time * 1.5) * 30;
+        const y3 = rect.height * 0.9 + Math.sin(x * 0.02 + time * 2) * 20;
 
         const avgY = (y1 + y2 + y3) / 3;
         ctx.lineTo(x, avgY);
       }
 
-      ctx.lineTo(canvas.width, canvas.height);
+      ctx.lineTo(rect.width, rect.height);
       ctx.closePath();
       ctx.fill();
 
