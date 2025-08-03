@@ -3,25 +3,25 @@
 import { motion } from 'framer-motion';
 import styles from './page.module.scss';
 import Link from 'next/link';
-import { HeroSection } from './components/HeroSection/HeroSection';
-import { FeaturesSection } from './components/FeaturesSection/FeaturesSection';
-import { HowItWorksSection } from './components/HowItWorksSection/HowItWorksSection';
-import { CalendarDemo } from './components/CalendarDemo/CalendarDemo';
-import { TestimonialsSection } from './components/TestimonialsSection/TestimonialsSection';
-import { CTASection } from './components/CTASection/CTASection';
+import { WaveBackground } from './components/WaveBackground/WaveBackground';
+import { ParticleBackground } from './components/ParticleBackground/ParticleBackground';
+import { AnimatedHero } from './components/AnimatedHero/AnimatedHero';
+import { AnimatedFeatures } from './components/AnimatedFeatures/AnimatedFeatures';
+import { InteractiveDemo } from './components/InteractiveDemo/InteractiveDemo';
+import { AnimatedStats } from './components/AnimatedStats/AnimatedStats';
+import { AnimatedCTA } from './components/AnimatedCTA/AnimatedCTA';
 import { Footer } from './components/Footer/Footer';
-import { AnimatedBackground } from './components/AnimatedBackground/AnimatedBackground';
 
 const AboutPage = () => {
     return (
         <div className={styles.container}>
-            <AnimatedBackground />
-            <HeroSection />
-            <FeaturesSection />
-            <HowItWorksSection />
-            <CalendarDemo />
-            <TestimonialsSection />
-            <CTASection />
+            <ParticleBackground />
+            <WaveBackground />
+            <AnimatedHero />
+            <AnimatedFeatures />
+            <InteractiveDemo />
+            <AnimatedStats />
+            <AnimatedCTA />
             <Footer />
         </div>
     );

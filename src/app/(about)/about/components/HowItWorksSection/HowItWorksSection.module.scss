@@ -1,47 +1,4 @@
-.howItWorksSection {
-  padding: 6rem 2rem;
-  background: linear-gradient(135deg, rgba(var(--dark-bg-rgb), 0.98) 0%, rgba(var(--dark-bg-rgb), 0.95) 100%);
-  
-  @media (max-width: 768px) {
-    padding: 4rem 1rem;
-  }
-}
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.sectionTitle {
-  font-size: 3rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, var(--primary-color), rgba(var(--primary-color-rgb), 0.8));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
-}
-
-.sectionSubtitle {
-  font-size: 1.2rem;
-  text-align: center;
-  margin-bottom: 4rem;
-  opacity: 0.9;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--text-light);
-  
-  @media (max-width: 768px) {
-    font-size: 1rem;
-    margin-bottom: 3rem;
-  }
-}
 
 .stepsContainer {
   display: grid;
@@ -55,37 +12,7 @@
   }
 }
 
-.stepCard {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), rgba(var(--primary-color-rgb), 0.6));
-  }
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    border-color: rgba(var(--primary-color-rgb), 0.3);
-  }
-  
-  @media (max-width: 768px) {
-    padding: 2rem;
-  }
-}
+
 
 .stepNumber {
   font-size: 3rem;
@@ -165,8 +92,44 @@
   50% { opacity: 0.7; }
 }
 
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(var(--primary-color-rgb), 0.3); }
+  50% { box-shadow: 0 0 40px rgba(var(--primary-color-rgb), 0.6); }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+}
+
 .stepCard:hover .stepNumber {
   animation: pulse 2s ease-in-out infinite;
+}
+
+.stepCard:nth-child(odd) {
+  animation: glow 4s ease-in-out infinite;
 }
 
 // Темная тема
