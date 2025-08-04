@@ -1,47 +1,102 @@
-.spaceBackground {
+.spaceCanvas {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -3;
-  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+  
+  @media (max-width: 768px) {
+    // Отключаем на мобильных для производительности
+    display: none;
+  }
 }
 
-.canvas {
+.mobileBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  display: block;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  image-rendering: pixelated;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f0f23 100%);
+  
+  @media (min-width: 769px) {
+    display: none;
+  }
 }
 
-.overlay {
+.mobileStars {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(15, 15, 35, 0.3) 0%,
-    rgba(25, 25, 45, 0.2) 50%,
-    rgba(10, 10, 25, 0.4) 100%
-  );
-  backdrop-filter: blur(0.5px);
-  pointer-events: none;
+  overflow: hidden;
 }
 
-// Адаптивность для мобильных устройств
-@media (max-width: 768px) {
-  .overlay {
-    backdrop-filter: none;
+.mobileStar {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: twinkle 3s ease-in-out infinite;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+  }
+  
+  @media (max-width: 480px) {
+    width: 1px;
+    height: 1px;
+    
+    &::before {
+      width: 2px;
+      height: 2px;
+      top: -0.5px;
+      left: -0.5px;
+    }
   }
 }
 
-@media (max-width: 480px) {
-  .spaceBackground {
-    opacity: 0.8;
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+// Упрощенные эффекты для мобильных
+@media (max-width: 768px) {
+  .mobileBackground {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+  }
+  
+  .mobileStar {
+    animation-duration: 4s;
+    animation-timing-function: ease-in-out;
+  }
+}
+
+// Отключение анимаций для пользователей с prefers-reduced-motion
+@media (prefers-reduced-motion: reduce) {
+  .mobileStar {
+    animation: none;
+    opacity: 0.6;
   }
 } 

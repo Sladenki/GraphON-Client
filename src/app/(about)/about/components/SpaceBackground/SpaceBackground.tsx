@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './SpaceBackground.module.scss';
 
 interface Star {
@@ -31,8 +31,26 @@ interface Planet {
   orbitAngle: number;
 }
 
-export const SpaceBackground = () => {
+interface SpaceBackgroundProps {
+  isMobile?: boolean;
+  isLowEndDevice?: boolean;
+  shouldReduceMotion?: boolean;
+  starCount?: number;
+  animationSpeed?: number;
+  quality?: 'low' | 'high';
+}
+
+export const SpaceBackground = ({ 
+  isMobile = false, 
+  isLowEndDevice = false, 
+  shouldReduceMotion = false,
+  starCount = 200,
+  animationSpeed = 1,
+  quality = 'high'
+}: SpaceBackgroundProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -47,9 +65,14 @@ export const SpaceBackground = () => {
     const nebulae: Nebula[] = [];
     const planets: Planet[] = [];
 
+    // Оптимизированные настройки для мобильных
+    const optimizedStarCount = isMobile ? Math.min(starCount, 100) : starCount;
+    const optimizedAnimationSpeed = shouldReduceMotion ? 0.5 : animationSpeed;
+    const useLowQuality = quality === 'low' || isLowEndDevice;
+
     const resizeCanvas = () => {
       const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = useLowQuality ? 1 : Math.min(window.devicePixelRatio || 1, 2);
       
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
@@ -63,11 +86,11 @@ export const SpaceBackground = () => {
       const rect = canvas.getBoundingClientRect();
       stars.length = 0;
       
-      for (let i = 0; i < 200; i++) {
+      for (let i = 0; i < optimizedStarCount; i++) {
         stars.push({
           x: Math.random() * rect.width,
           y: Math.random() * rect.height,
-          size: Math.random() * 2 + 0.5,
+          size: Math.random() * (isMobile ? 1.5 : 2) + 0.5,
           brightness: Math.random() * 0.8 + 0.2,
           speed: Math.random() * 0.5 + 0.1,
           twinkle: Math.random() * Math.PI * 2
@@ -76,6 +99,8 @@ export const SpaceBackground = () => {
     };
 
     const createNebulae = () => {
+      if (isMobile || useLowQuality) return; // Пропускаем туманности на мобильных
+      
       const rect = canvas.getBoundingClientRect();
       nebulae.length = 0;
       
@@ -97,219 +122,262 @@ export const SpaceBackground = () => {
         color: '#9370db',
         pulse: Math.PI
       });
-      
-      nebulae.push({
-        x: rect.width * 0.5,
-        y: rect.height * 0.8,
-        radius: 100,
-        opacity: 0.06,
-        color: '#4b0082',
-        pulse: Math.PI * 0.5
-      });
     };
 
     const createPlanets = () => {
+      if (isMobile || useLowQuality) return; // Пропускаем планеты на мобильных
+      
       const rect = canvas.getBoundingClientRect();
       planets.length = 0;
       
       // Создаем несколько планет
       planets.push({
-        x: rect.width * 0.1,
+        x: rect.width * 0.3,
         y: rect.height * 0.2,
-        radius: 8,
+        radius: 20,
         color: '#ff6b6b',
-        orbitRadius: 60,
-        orbitSpeed: 0.005,
+        orbitRadius: 80,
+        orbitSpeed: 0.002,
         orbitAngle: 0
       });
       
       planets.push({
-        x: rect.width * 0.9,
-        y: rect.height * 0.1,
-        radius: 12,
+        x: rect.width * 0.7,
+        y: rect.height * 0.8,
+        radius: 15,
         color: '#4ecdc4',
-        orbitRadius: 80,
+        orbitRadius: 60,
         orbitSpeed: 0.003,
         orbitAngle: Math.PI
-      });
-      
-      planets.push({
-        x: rect.width * 0.7,
-        y: rect.height * 0.9,
-        radius: 6,
-        color: '#45b7d1',
-        orbitRadius: 40,
-        orbitSpeed: 0.008,
-        orbitAngle: Math.PI * 1.5
       });
     };
 
     const drawStars = () => {
-      const rect = canvas.getBoundingClientRect();
+      ctx.save();
       
-             stars.forEach(star => {
-         const twinkle = Math.sin(time * star.speed + star.twinkle) * 0.3 + 0.7;
-         const brightness = Math.max(0, Math.min(1, star.brightness * twinkle)); // Ограничиваем brightness от 0 до 1
-         
-         ctx.beginPath();
-         ctx.arc(star.x, star.y, Math.max(0.1, star.size), 0, Math.PI * 2); // Минимальный радиус 0.1
-         ctx.fillStyle = `rgba(255, 255, 255, ${brightness})`;
-         ctx.fill();
-         
-         // Добавляем свечение для ярких звезд
-         if (brightness > 0.5) {
-           ctx.beginPath();
-           ctx.arc(star.x, star.y, Math.max(0.3, star.size * 3), 0, Math.PI * 2); // Минимальный радиус 0.3
-           ctx.fillStyle = `rgba(255, 255, 255, ${brightness * 0.1})`;
-           ctx.fill();
-         }
-       });
+      stars.forEach(star => {
+        const twinkle = shouldReduceMotion ? 1 : Math.sin(time * star.speed + star.twinkle) * 0.3 + 0.7;
+        const alpha = star.brightness * twinkle;
+        
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = '#ffffff';
+        
+        if (useLowQuality) {
+          // Упрощенная отрисовка для мобильных
+          ctx.fillRect(star.x, star.y, star.size, star.size);
+        } else {
+          // Полная отрисовка для десктопа
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+      
+      ctx.restore();
     };
 
     const drawNebulae = () => {
-      const rect = canvas.getBoundingClientRect();
+      if (isMobile || useLowQuality) return;
       
-             nebulae.forEach(nebula => {
-         const pulse = Math.sin(time * 0.5 + nebula.pulse) * 0.2 + 0.8;
-         const opacity = Math.max(0, Math.min(1, nebula.opacity * pulse)); // Ограничиваем opacity от 0 до 1
-         
-         // Создаем радиальный градиент для туманности
-         const gradient = ctx.createRadialGradient(
-           nebula.x, nebula.y, 0,
-           nebula.x, nebula.y, Math.max(1, nebula.radius) // Минимальный радиус 1
-         );
-         gradient.addColorStop(0, `${nebula.color}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`);
-         gradient.addColorStop(0.5, `${nebula.color}${Math.floor(opacity * 0.5 * 255).toString(16).padStart(2, '0')}`);
-         gradient.addColorStop(1, 'transparent');
-         
-         ctx.beginPath();
-         ctx.arc(nebula.x, nebula.y, Math.max(1, nebula.radius), 0, Math.PI * 2); // Минимальный радиус 1
-         ctx.fillStyle = gradient;
-         ctx.fill();
-       });
+      ctx.save();
+      
+      nebulae.forEach(nebula => {
+        const pulse = shouldReduceMotion ? 1 : Math.sin(time * 0.5 + nebula.pulse) * 0.2 + 0.8;
+        const opacity = nebula.opacity * pulse;
+        
+        const gradient = ctx.createRadialGradient(
+          nebula.x, nebula.y, 0,
+          nebula.x, nebula.y, nebula.radius
+        );
+        
+        gradient.addColorStop(0, `${nebula.color}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`);
+        gradient.addColorStop(1, 'transparent');
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(nebula.x, nebula.y, nebula.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      
+      ctx.restore();
     };
 
     const drawPlanets = () => {
-      const rect = canvas.getBoundingClientRect();
+      if (isMobile || useLowQuality) return;
+      
+      ctx.save();
       
       planets.forEach(planet => {
         // Обновляем орбиту
-        planet.orbitAngle += planet.orbitSpeed;
-        const orbitX = rect.width * 0.5 + Math.cos(planet.orbitAngle) * planet.orbitRadius;
-        const orbitY = rect.height * 0.5 + Math.sin(planet.orbitAngle) * planet.orbitRadius;
+        planet.orbitAngle += planet.orbitSpeed * optimizedAnimationSpeed;
+        planet.x = planet.x + Math.cos(planet.orbitAngle) * planet.orbitRadius * 0.01;
+        planet.y = planet.y + Math.sin(planet.orbitAngle) * planet.orbitRadius * 0.01;
         
-                 // Рисуем орбиту
-         ctx.beginPath();
-         ctx.arc(rect.width * 0.5, rect.height * 0.5, Math.max(1, planet.orbitRadius), 0, Math.PI * 2);
-         ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-         ctx.lineWidth = 1;
-         ctx.stroke();
-         
-         // Рисуем планету
-         ctx.beginPath();
-         ctx.arc(orbitX, orbitY, Math.max(0.5, planet.radius), 0, Math.PI * 2);
-         ctx.fillStyle = planet.color;
-         ctx.fill();
-         
-         // Добавляем свечение
-         ctx.beginPath();
-         ctx.arc(orbitX, orbitY, Math.max(1, planet.radius * 2), 0, Math.PI * 2);
-         ctx.fillStyle = `${planet.color}20`;
-         ctx.fill();
+        // Отрисовка планеты
+        ctx.fillStyle = planet.color;
+        ctx.beginPath();
+        ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Добавляем свечение
+        const glow = ctx.createRadialGradient(
+          planet.x, planet.y, 0,
+          planet.x, planet.y, planet.radius * 2
+        );
+        glow.addColorStop(0, `${planet.color}40`);
+        glow.addColorStop(1, 'transparent');
+        
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(planet.x, planet.y, planet.radius * 2, 0, Math.PI * 2);
+        ctx.fill();
       });
+      
+      ctx.restore();
     };
 
     const drawCosmicParticles = () => {
-      const rect = canvas.getBoundingClientRect();
+      if (isMobile || useLowQuality) return;
       
-      // Рисуем космические частицы
-      for (let i = 0; i < 50; i++) {
-        const x = (Math.sin(time * 0.1 + i) * rect.width * 0.5) + rect.width * 0.5;
-        const y = (Math.cos(time * 0.15 + i * 0.5) * rect.height * 0.5) + rect.height * 0.5;
-        const size = Math.abs(Math.sin(time + i) * 2 + 1); // Используем Math.abs для предотвращения отрицательного радиуса
-        const opacity = Math.abs(Math.sin(time * 0.5 + i) * 0.3 + 0.2); // Также используем Math.abs для opacity
+      ctx.save();
+      ctx.strokeStyle = '#667eea';
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.3;
+      
+      for (let i = 0; i < 20; i++) {
+        const x = Math.sin(time * 0.1 + i) * canvas.width * 0.5 + canvas.width * 0.5;
+        const y = Math.cos(time * 0.15 + i) * canvas.height * 0.5 + canvas.height * 0.5;
         
         ctx.beginPath();
-        ctx.arc(x, y, size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(138, 43, 226, ${opacity})`;
-        ctx.fill();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + Math.sin(time + i) * 20, y + Math.cos(time + i) * 20);
+        ctx.stroke();
       }
+      
+      ctx.restore();
     };
 
     const drawSpaceGrid = () => {
-      const rect = canvas.getBoundingClientRect();
-      const gridSize = 100;
-      const opacity = 0.03;
+      if (isMobile || useLowQuality) return;
       
-      ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-      ctx.lineWidth = 1;
+      ctx.save();
+      ctx.strokeStyle = '#667eea';
+      ctx.lineWidth = 0.5;
+      ctx.globalAlpha = 0.1;
+      
+      const gridSize = 100;
+      const offset = time * 10;
       
       // Вертикальные линии
-      for (let x = 0; x <= rect.width; x += gridSize) {
+      for (let x = -offset; x < canvas.width + gridSize; x += gridSize) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
-        ctx.lineTo(x, rect.height);
+        ctx.lineTo(x, canvas.height);
         ctx.stroke();
       }
       
       // Горизонтальные линии
-      for (let y = 0; y <= rect.height; y += gridSize) {
+      for (let y = -offset; y < canvas.height + gridSize; y += gridSize) {
         ctx.beginPath();
         ctx.moveTo(0, y);
-        ctx.lineTo(rect.width, y);
+        ctx.lineTo(canvas.width, y);
         ctx.stroke();
       }
+      
+      ctx.restore();
     };
 
     const animate = () => {
-      const rect = canvas.getBoundingClientRect();
-      ctx.clearRect(0, 0, rect.width, rect.height);
+      if (!isVisible) {
+        animationId = requestAnimationFrame(animate);
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Создаем космический градиент
-      const gradient = ctx.createRadialGradient(
-        rect.width * 0.5, rect.height * 0.5, 0,
-        rect.width * 0.5, rect.height * 0.5, Math.max(rect.width, rect.height) * 0.8
-      );
-      gradient.addColorStop(0, 'rgba(15, 15, 35, 1)');
-      gradient.addColorStop(0.5, 'rgba(25, 25, 45, 1)');
-      gradient.addColorStop(1, 'rgba(10, 10, 25, 1)');
-      
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, rect.width, rect.height);
-      
-      drawSpaceGrid();
+      // Рисуем элементы только если они видны
+      drawStars();
       drawNebulae();
       drawPlanets();
       drawCosmicParticles();
-      drawStars();
+      drawSpaceGrid();
       
-      time += 0.016;
+      time += optimizedAnimationSpeed;
       animationId = requestAnimationFrame(animate);
     };
 
-    resizeCanvas();
-    createStars();
-    createNebulae();
-    createPlanets();
-    animate();
+    // Intersection Observer для оптимизации
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
 
-    window.addEventListener('resize', () => {
+    if (canvas) {
+      observer.observe(canvas);
+    }
+
+    // Инициализация
+    const init = () => {
       resizeCanvas();
       createStars();
       createNebulae();
       createPlanets();
-    });
+      setIsInitialized(true);
+    };
+
+    init();
+    animate();
+
+    // Обработчики событий
+    const handleResize = () => {
+      resizeCanvas();
+      createStars();
+      createNebulae();
+      createPlanets();
+    };
+
+    window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener('resize', resizeCanvas);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+      observer.disconnect();
+      window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [isMobile, isLowEndDevice, shouldReduceMotion, starCount, animationSpeed, quality]);
+
+  // Показываем упрощенный фон для мобильных
+  if (isMobile && !isInitialized) {
+    return (
+      <div className={styles.mobileBackground}>
+        <div className={styles.mobileStars}>
+          {Array.from({ length: 50 }).map((_, i) => (
+            <div
+              key={i}
+              className={styles.mobileStar}
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className={styles.spaceBackground}>
-      <canvas ref={canvasRef} className={styles.canvas} />
-      <div className={styles.overlay} />
-    </div>
+    <canvas
+      ref={canvasRef}
+      className={styles.spaceCanvas}
+      style={{
+        opacity: isInitialized ? 1 : 0,
+        transition: 'opacity 0.5s ease'
+      }}
+    />
   );
 }; 

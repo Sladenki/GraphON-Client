@@ -1,114 +1,202 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 
-interface PerformanceSettings {
-  reducedMotion: boolean;
-  lowPowerMode: boolean;
+interface PerformanceConfig {
   isMobile: boolean;
-  pixelRatio: number;
-  animationFrameRate: number;
+  isLowEndDevice: boolean;
+  shouldReduceMotion: boolean;
+  shouldOptimizeGraphics: boolean;
 }
 
 export const useAboutPageOptimization = () => {
-  const [settings, setSettings] = useState<PerformanceSettings>({
-    reducedMotion: false,
-    lowPowerMode: false,
+  const [config, setConfig] = useState<PerformanceConfig>({
     isMobile: false,
-    pixelRatio: 1,
-    animationFrameRate: 60
+    isLowEndDevice: false,
+    shouldReduceMotion: false,
+    shouldOptimizeGraphics: false,
   });
 
-  // Определяем мобильное устройство
+  const [isClient, setIsClient] = useState(false);
+
+  // Определение характеристик устройства
   useEffect(() => {
-    const checkDevice = () => {
+    setIsClient(true);
+    
+    const detectDeviceCapabilities = () => {
       const isMobile = window.innerWidth <= 768;
-      const pixelRatio = Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2);
-      
-      setSettings(prev => ({
-        ...prev,
+      const isLowEndDevice = navigator.hardwareConcurrency <= 4 || 
+                            (navigator as any).deviceMemory <= 4 ||
+                            window.innerWidth <= 480;
+      const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const shouldOptimizeGraphics = isMobile || isLowEndDevice || 
+                                   window.innerWidth <= 480 ||
+                                   window.devicePixelRatio > 2;
+
+      setConfig({
         isMobile,
-        pixelRatio
-      }));
+        isLowEndDevice,
+        shouldReduceMotion,
+        shouldOptimizeGraphics,
+      });
     };
 
-    checkDevice();
-    window.addEventListener('resize', checkDevice);
+    detectDeviceCapabilities();
     
-    return () => window.removeEventListener('resize', checkDevice);
+    const handleResize = useCallback(() => {
+      detectDeviceCapabilities();
+    }, []);
+
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Проверяем настройки доступности
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const lowPowerQuery = window.matchMedia('(prefers-reduced-data: reduce)');
+  // Оптимизированные настройки для компонентов
+  const componentConfig = useMemo(() => ({
+    // Настройки для SpaceBackground
+    spaceBackground: {
+      enabled: !config.isMobile && !config.shouldOptimizeGraphics,
+      starCount: config.isLowEndDevice ? 50 : 200,
+      animationSpeed: config.shouldReduceMotion ? 0.5 : 1,
+      quality: config.shouldOptimizeGraphics ? 'low' : 'high',
+    },
     
-    const handleMotionChange = (e: MediaQueryListEvent) => {
-      setSettings(prev => ({
-        ...prev,
-        reducedMotion: e.matches
-      }));
-    };
+    // Настройки для анимаций
+    animations: {
+      duration: config.shouldReduceMotion ? 0.2 : 0.4,
+      easing: config.shouldReduceMotion ? 'ease' : 'cubic-bezier(0.4, 0, 0.2, 1)',
+      staggerDelay: config.shouldReduceMotion ? 0.1 : 0.2,
+    },
+    
+    // Настройки для изображений
+    images: {
+      quality: config.shouldOptimizeGraphics ? 0.7 : 1,
+      format: config.shouldOptimizeGraphics ? 'webp' : 'auto',
+      lazyLoading: true,
+    },
+    
+    // Настройки для 3D эффектов
+    threeD: {
+      enabled: !config.isMobile && !config.shouldOptimizeGraphics,
+      quality: config.shouldOptimizeGraphics ? 'low' : 'high',
+      antialiasing: !config.shouldOptimizeGraphics,
+    },
+  }), [config]);
 
-    const handlePowerChange = (e: MediaQueryListEvent) => {
-      setSettings(prev => ({
-        ...prev,
-        lowPowerMode: e.matches
-      }));
-    };
+  // Хук для условной загрузки тяжелых компонентов
+  const useConditionalLoading = (threshold = 500) => {
+    const [shouldLoad, setShouldLoad] = useState(!config.isMobile);
+    const [hasIntersected, setHasIntersected] = useState(false);
 
-    setSettings(prev => ({
-      ...prev,
-      reducedMotion: mediaQuery.matches,
-      lowPowerMode: lowPowerQuery.matches
-    }));
+    useEffect(() => {
+      if (config.isMobile) {
+        const handleScroll = () => {
+          if (window.scrollY > threshold && !hasIntersected) {
+            setShouldLoad(true);
+            setHasIntersected(true);
+          }
+        };
 
-    mediaQuery.addEventListener('change', handleMotionChange);
-    lowPowerQuery.addEventListener('change', handlePowerChange);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+      }
+    }, [config.isMobile, threshold, hasIntersected]);
 
-    return () => {
-      mediaQuery.removeEventListener('change', handleMotionChange);
-      lowPowerQuery.removeEventListener('change', handlePowerChange);
-    };
-  }, []);
+    return shouldLoad;
+  };
 
-  // Оптимизированные настройки анимаций
-  const animationSettings = useMemo(() => ({
-    duration: settings.reducedMotion ? 0.1 : 0.3,
-    ease: settings.reducedMotion ? 'linear' : [0.4, 0, 0.2, 1],
-    frameRate: settings.lowPowerMode ? 30 : settings.animationFrameRate,
-    staggerDelay: settings.reducedMotion ? 0 : 0.1
-  }), [settings.reducedMotion, settings.lowPowerMode, settings.animationFrameRate]);
+  // Хук для оптимизированных анимаций
+  const useOptimizedAnimation = (defaultVariants: any) => {
+    return useMemo(() => {
+      if (config.shouldReduceMotion) {
+        return {
+          hidden: { opacity: 0 },
+          visible: { 
+            opacity: 1,
+            transition: { duration: 0.2 }
+          }
+        };
+      }
+      return defaultVariants;
+    }, [defaultVariants, config.shouldReduceMotion]);
+  };
 
-  // Дебаунсинг для скролла
-  const debouncedScroll = useCallback((callback: () => void, delay: number = 16) => {
-    let timeoutId: NodeJS.Timeout;
-    return () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(callback, delay);
-    };
-  }, []);
+  // Хук для определения видимости элемента
+  const useIntersectionObserver = (options = {}) => {
+    const [isVisible, setIsVisible] = useState(false);
+    const [ref, setRef] = useState<HTMLElement | null>(null);
 
-  // Оптимизация для Intersection Observer
-  const observerOptions = useMemo(() => ({
-    root: null,
-    rootMargin: settings.isMobile ? '50px' : '100px',
-    threshold: settings.reducedMotion ? 0.1 : 0.3
-  }), [settings.isMobile, settings.reducedMotion]);
+    useEffect(() => {
+      if (!ref || !isClient) return;
 
-  // Настройки для Three.js
-  const threeJSSettings = useMemo(() => ({
-    pixelRatio: settings.pixelRatio,
-    antialias: !settings.lowPowerMode,
-    powerPreference: settings.lowPowerMode ? 'default' : 'high-performance',
-    alpha: true,
-    stencil: false,
-    depth: true
-  }), [settings.pixelRatio, settings.lowPowerMode]);
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsVisible(entry.isIntersecting);
+        },
+        {
+          threshold: 0.1,
+          rootMargin: '50px',
+          ...options,
+        }
+      );
+
+      observer.observe(ref);
+      return () => observer.disconnect();
+    }, [ref, isClient, options]);
+
+    return { ref: setRef, isVisible };
+  };
+
+  // Хук для дебаунсинга
+  const useDebounce = <T>(value: T, delay: number): T => {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+      const handler = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
+
+      return () => {
+        clearTimeout(handler);
+      };
+    }, [value, delay]);
+
+    return debouncedValue;
+  };
+
+  // Хук для оптимизации скролла
+  const useOptimizedScroll = (callback: () => void, delay = 16) => {
+    const [isScrolling, setIsScrolling] = useState(false);
+
+    useEffect(() => {
+      let timeoutId: NodeJS.Timeout;
+
+      const handleScroll = () => {
+        if (!isScrolling) {
+          setIsScrolling(true);
+          callback();
+        }
+
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          setIsScrolling(false);
+        }, delay);
+      };
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        clearTimeout(timeoutId);
+      };
+    }, [callback, delay, isScrolling]);
+  };
 
   return {
-    settings,
-    animationSettings,
-    debouncedScroll,
-    observerOptions,
-    threeJSSettings
+    config,
+    isClient,
+    componentConfig,
+    useConditionalLoading,
+    useOptimizedAnimation,
+    useIntersectionObserver,
+    useDebounce,
+    useOptimizedScroll,
   };
 }; 
