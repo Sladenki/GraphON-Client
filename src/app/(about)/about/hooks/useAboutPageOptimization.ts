@@ -17,37 +17,33 @@ export const useAboutPageOptimization = () => {
 
   const [isClient, setIsClient] = useState(false);
 
+  // Функция для определения характеристик устройства
+  const detectDeviceCapabilities = useCallback(() => {
+    const isMobile = window.innerWidth <= 768;
+    const isLowEndDevice = navigator.hardwareConcurrency <= 4 || 
+                          (navigator as any).deviceMemory <= 4 ||
+                          window.innerWidth <= 480;
+    const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const shouldOptimizeGraphics = isMobile || isLowEndDevice || 
+                                 window.innerWidth <= 480 ||
+                                 window.devicePixelRatio > 2;
+
+    setConfig({
+      isMobile,
+      isLowEndDevice,
+      shouldReduceMotion,
+      shouldOptimizeGraphics,
+    });
+  }, []);
+
   // Определение характеристик устройства
   useEffect(() => {
     setIsClient(true);
-    
-    const detectDeviceCapabilities = () => {
-      const isMobile = window.innerWidth <= 768;
-      const isLowEndDevice = navigator.hardwareConcurrency <= 4 || 
-                            (navigator as any).deviceMemory <= 4 ||
-                            window.innerWidth <= 480;
-      const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const shouldOptimizeGraphics = isMobile || isLowEndDevice || 
-                                   window.innerWidth <= 480 ||
-                                   window.devicePixelRatio > 2;
-
-      setConfig({
-        isMobile,
-        isLowEndDevice,
-        shouldReduceMotion,
-        shouldOptimizeGraphics,
-      });
-    };
-
     detectDeviceCapabilities();
     
-    const handleResize = useCallback(() => {
-      detectDeviceCapabilities();
-    }, []);
-
-    window.addEventListener('resize', handleResize, { passive: true });
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    window.addEventListener('resize', detectDeviceCapabilities, { passive: true });
+    return () => window.removeEventListener('resize', detectDeviceCapabilities);
+  }, [detectDeviceCapabilities]);
 
   // Оптимизированные настройки для компонентов
   const componentConfig = useMemo(() => ({

@@ -18,18 +18,18 @@ export const OptimizedMotion = ({
   mobileOptimized = false,
   ...motionProps
 }: OptimizedMotionProps) => {
-  const { settings, animationSettings } = useAboutPageOptimization();
+  const { config, componentConfig } = useAboutPageOptimization();
 
   // Определяем, нужно ли отключить анимации
-  const shouldDisableAnimations = reducedMotion || settings.reducedMotion;
-  const isMobile = settings.isMobile;
+  const shouldDisableAnimations = reducedMotion || config.shouldReduceMotion;
+  const isMobile = config.isMobile;
 
   // Оптимизированные настройки анимации
   const optimizedProps = {
     ...motionProps,
     transition: {
-      duration: shouldDisableAnimations ? 0 : animationSettings.duration,
-      ease: shouldDisableAnimations ? 'linear' : animationSettings.ease,
+      duration: shouldDisableAnimations ? 0 : componentConfig.animations.duration,
+      ease: shouldDisableAnimations ? 'linear' : componentConfig.animations.easing,
       ...motionProps.transition
     },
     // Отключаем сложные анимации на мобильных
@@ -63,9 +63,9 @@ export const FadeInMotion = ({ children, className = '', delay = 0 }: {
   className?: string;
   delay?: number;
 }) => {
-  const { settings, animationSettings } = useAboutPageOptimization();
+  const { config, componentConfig } = useAboutPageOptimization();
 
-  if (settings.reducedMotion) {
+  if (config.shouldReduceMotion) {
     return <div className={className}>{children}</div>;
   }
 
@@ -75,8 +75,8 @@ export const FadeInMotion = ({ children, className = '', delay = 0 }: {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
-        duration: animationSettings.duration,
-        ease: animationSettings.ease,
+        duration: componentConfig.animations.duration,
+        ease: componentConfig.animations.easing,
         delay
       }}
     >
@@ -91,9 +91,9 @@ export const SlideInMotion = ({ children, className = '', direction = 'up', dela
   direction?: 'up' | 'down' | 'left' | 'right';
   delay?: number;
 }) => {
-  const { settings, animationSettings } = useAboutPageOptimization();
+  const { config, componentConfig } = useAboutPageOptimization();
 
-  if (settings.reducedMotion) {
+  if (config.shouldReduceMotion) {
     return <div className={className}>{children}</div>;
   }
 
@@ -117,8 +117,8 @@ export const SlideInMotion = ({ children, className = '', direction = 'up', dela
       initial="hidden"
       animate="visible"
       transition={{
-        duration: animationSettings.duration,
-        ease: animationSettings.ease,
+        duration: componentConfig.animations.duration,
+        ease: componentConfig.animations.easing,
         delay
       }}
     >
@@ -132,9 +132,9 @@ export const ScaleMotion = ({ children, className = '', delay = 0 }: {
   className?: string;
   delay?: number;
 }) => {
-  const { settings, animationSettings } = useAboutPageOptimization();
+  const { config, componentConfig } = useAboutPageOptimization();
 
-  if (settings.reducedMotion) {
+  if (config.shouldReduceMotion) {
     return <div className={className}>{children}</div>;
   }
 
@@ -144,8 +144,8 @@ export const ScaleMotion = ({ children, className = '', delay = 0 }: {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{
-        duration: animationSettings.duration,
-        ease: animationSettings.ease,
+        duration: componentConfig.animations.duration,
+        ease: componentConfig.animations.easing,
         delay
       }}
     >

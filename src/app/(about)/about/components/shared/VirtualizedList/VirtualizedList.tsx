@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useRef, useMemo, useCallback } from 'react';
 import { useAboutPageOptimization } from '../../../hooks/useAboutPageOptimization';
 
 interface VirtualizedListProps<T> {
@@ -22,16 +22,16 @@ export function VirtualizedList<T>({
 }: VirtualizedListProps<T>) {
   const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { settings } = useAboutPageOptimization();
+  const { config } = useAboutPageOptimization();
 
   // Оптимизируем для мобильных устройств
   const optimizedItemHeight = useMemo(() => {
-    return settings.isMobile ? Math.max(itemHeight, 60) : itemHeight;
-  }, [itemHeight, settings.isMobile]);
+    return config.isMobile ? Math.max(itemHeight, 60) : itemHeight;
+  }, [itemHeight, config.isMobile]);
 
   const optimizedOverscan = useMemo(() => {
-    return settings.isMobile ? Math.min(overscan, 3) : overscan;
-  }, [overscan, settings.isMobile]);
+    return config.isMobile ? Math.min(overscan, 3) : overscan;
+  }, [overscan, config.isMobile]);
 
   // Вычисляем видимые элементы
   const visibleRange = useMemo(() => {
@@ -67,10 +67,10 @@ export function VirtualizedList<T>({
     overflow: 'auto',
     willChange: 'scroll-position',
     WebkitOverflowScrolling: 'touch' as const,
-    ...(settings.isMobile && {
+    ...(config.isMobile && {
       overscrollBehavior: 'contain' as const
     })
-  }), [containerHeight, settings.isMobile]);
+  }), [containerHeight, config.isMobile]);
 
   const contentStyle = useMemo(() => ({
     height: totalHeight,
