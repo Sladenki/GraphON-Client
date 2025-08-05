@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useMemo, useCallback } from 'react';
+import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { useAboutPageOptimization } from '../../../hooks/useAboutPageOptimization';
 
 interface VirtualizedListProps<T> {
@@ -21,8 +21,9 @@ export function VirtualizedList<T>({
   className = ''
 }: VirtualizedListProps<T>) {
   const [scrollTop, setScrollTop] = useState(0);
+  const [isScrolling, setIsScrolling] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { config } = useAboutPageOptimization();
+  const { config, componentConfig } = useAboutPageOptimization();
 
   // Оптимизируем для мобильных устройств
   const optimizedItemHeight = useMemo(() => {
@@ -44,11 +45,27 @@ export function VirtualizedList<T>({
     return { startIndex, endIndex };
   }, [scrollTop, containerHeight, optimizedItemHeight, optimizedOverscan, items.length]);
 
-  // Обработчик скролла с дебаунсингом
+  // Улучшенный обработчик скролла с дебаунсингом
   const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
     const target = event.target as HTMLDivElement;
     setScrollTop(target.scrollTop);
-  }, []);
+    
+    // Устанавливаем флаг скролла для оптимизации
+    if (!isScrolling) {
+      setIsScrolling(true);
+    }
+  }, [isScrolling]);
+
+  // Сбрасываем флаг скролла через небольшую задержку
+  useEffect(() => {
+    if (isScrolling) {
+      const timeoutId = setTimeout(() => {
+        setIsScrolling(false);
+      }, 150);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isScrolling]);
 
   // Вычисляем общую высоту списка
   const totalHeight = items.length * optimizedItemHeight;
@@ -61,30 +78,47 @@ export function VirtualizedList<T>({
     return items.slice(visibleRange.startIndex, visibleRange.endIndex + 1);
   }, [items, visibleRange.startIndex, visibleRange.endIndex]);
 
-  // Оптимизация для мобильных устройств
+  // Улучшенная оптимизация для мобильных устройств
   const containerStyle = useMemo(() => ({
     height: containerHeight,
-    overflow: 'auto',
-    willChange: 'scroll-position',
-    WebkitOverflowScrolling: 'touch' as const,
+    overflow: 'auto' as const,
+    willChange: componentConfig.scroll.willChange,
+    WebkitOverflowScrolling: componentConfig.scroll.webkitOverflowScrolling as 'touch' | 'auto',
+    touchAction: componentConfig.scroll.touchAction,
+    scrollBehavior: componentConfig.scroll.scrollBehavior as 'smooth' | 'auto',
+    // Дополнительные оптимизации для iOS
+    ...(config.hasTouchScreen && {
+      overscrollBehavior: 'contain' as const,
+    }),
+    // Оптимизация производительности
     ...(config.isMobile && {
-      overscrollBehavior: 'contain' as const
-    })
-  }), [containerHeight, config.isMobile]);
+      transform: componentConfig.performance.transform3d ? 'translateZ(0)' : 'none',
+      backfaceVisibility: componentConfig.performance.backfaceVisibility ? 'hidden' as const : 'visible' as const,
+    }),
+  }), [containerHeight, config, componentConfig]);
 
   const contentStyle = useMemo(() => ({
     height: totalHeight,
     position: 'relative' as const,
-    willChange: 'transform'
-  }), [totalHeight]);
+    willChange: 'transform',
+    // Оптимизация для GPU
+    ...(config.isMobile && {
+      transform: 'translateZ(0)',
+      backfaceVisibility: 'hidden' as const,
+    }),
+  }), [totalHeight, config.isMobile]);
 
   const itemsStyle = useMemo(() => ({
     position: 'absolute' as const,
     top: offsetY,
     left: 0,
     right: 0,
-    willChange: 'transform'
-  }), [offsetY]);
+    willChange: 'transform',
+    // Плавные переходы для мобильных
+    ...(config.hasTouchScreen && {
+      transition: isScrolling ? 'none' : 'transform 0.1s ease-out',
+    }),
+  }), [offsetY, config.hasTouchScreen, isScrolling]);
 
   return (
     <div
@@ -92,6 +126,17 @@ export function VirtualizedList<T>({
       className={className}
       style={containerStyle}
       onScroll={handleScroll}
+      onTouchStart={() => {
+        // Оптимизация для touch событий
+        if (config.hasTouchScreen) {
+          setIsScrolling(true);
+        }
+      }}
+      onTouchEnd={() => {
+        if (config.hasTouchScreen) {
+          setTimeout(() => setIsScrolling(false), 100);
+        }
+      }}
     >
       <div style={contentStyle}>
         <div style={itemsStyle}>
@@ -102,7 +147,17 @@ export function VirtualizedList<T>({
                 key={actualIndex}
                 style={{
                   height: optimizedItemHeight,
-                  position: 'relative'
+                  position: 'relative',
+                  // Оптимизация для touch устройств
+                  ...(config.hasTouchScreen && {
+                    touchAction: 'pan-y',
+                    userSelect: 'none' as const,
+                  }),
+                  // Оптимизация производительности
+                  ...(config.isMobile && {
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden' as const,
+                  }),
                 }}
               >
                 {renderItem(item, actualIndex)}

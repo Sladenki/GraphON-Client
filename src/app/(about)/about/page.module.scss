@@ -513,4 +513,58 @@
       transform: none !important;
     }
   }
+}
+
+// Дополнительные оптимизации для touch устройств
+@media (hover: none) and (pointer: coarse) {
+  .container {
+    // Улучшенный скролл для touch устройств
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    
+    // Оптимизация для iOS
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  // Улучшенные touch области
+  .primaryButton,
+  .secondaryButton {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+  
+  // Оптимизация для виртуальных списков
+  .virtualizedContainer {
+    will-change: scroll-position;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
+// Оптимизация для высокого refresh rate
+@media (min-resolution: 2dppx) {
+  .container {
+    // Улучшенная производительность для Retina дисплеев
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+// Оптимизация для слабых устройств
+@media (max-width: 480px) {
+  .container {
+    // Дополнительные оптимизации для маленьких экранов
+    font-size: 13px;
+    
+    * {
+      // Упрощаем все анимации
+      transition: none !important;
+      animation: none !important;
+    }
+  }
 } 

@@ -5,6 +5,8 @@ interface PerformanceConfig {
   isLowEndDevice: boolean;
   shouldReduceMotion: boolean;
   shouldOptimizeGraphics: boolean;
+  isHighRefreshRate: boolean;
+  hasTouchScreen: boolean;
 }
 
 export const useAboutPageOptimization = () => {
@@ -13,6 +15,8 @@ export const useAboutPageOptimization = () => {
     isLowEndDevice: false,
     shouldReduceMotion: false,
     shouldOptimizeGraphics: false,
+    isHighRefreshRate: false,
+    hasTouchScreen: false,
   });
 
   const [isClient, setIsClient] = useState(false);
@@ -27,12 +31,23 @@ export const useAboutPageOptimization = () => {
     const shouldOptimizeGraphics = isMobile || isLowEndDevice || 
                                  window.innerWidth <= 480 ||
                                  window.devicePixelRatio > 2;
+    
+    // Определяем поддержку высокого refresh rate
+    const isHighRefreshRate = 'devicePixelRatio' in window && 
+                             window.devicePixelRatio >= 2 && 
+                             'ontouchstart' in window;
+    
+    // Определяем наличие touch screen
+    const hasTouchScreen = 'ontouchstart' in window || 
+                          navigator.maxTouchPoints > 0;
 
     setConfig({
       isMobile,
       isLowEndDevice,
       shouldReduceMotion,
       shouldOptimizeGraphics,
+      isHighRefreshRate,
+      hasTouchScreen,
     });
   }, []);
 
@@ -74,6 +89,31 @@ export const useAboutPageOptimization = () => {
       enabled: !config.isMobile && !config.shouldOptimizeGraphics,
       quality: config.shouldOptimizeGraphics ? 'low' : 'high',
       antialiasing: !config.shouldOptimizeGraphics,
+    },
+    
+    // Настройки для скролла
+    scroll: {
+      // Улучшенные настройки для мобильных
+      smoothScrolling: config.hasTouchScreen,
+      momentumScrolling: config.isHighRefreshRate,
+      scrollBehavior: config.hasTouchScreen ? 'smooth' : 'auto',
+      // Оптимизация для touch устройств
+      touchAction: config.hasTouchScreen ? 'pan-y' : 'auto',
+      // Улучшенная производительность скролла
+      willChange: config.isMobile ? 'scroll-position' : 'auto',
+      // Оптимизация для iOS
+      webkitOverflowScrolling: config.hasTouchScreen ? 'touch' : 'auto',
+    },
+    
+    // Настройки для производительности
+    performance: {
+      // Оптимизация рендеринга
+      transform3d: config.isMobile,
+      backfaceVisibility: config.isMobile,
+      // Оптимизация анимаций
+      animationFrameRate: config.isHighRefreshRate ? 60 : 30,
+      // Оптимизация памяти
+      memoryOptimization: config.isLowEndDevice,
     },
   }), [config]);
 
@@ -185,6 +225,51 @@ export const useAboutPageOptimization = () => {
     }, [callback, delay, isScrolling]);
   };
 
+  // Хук для плавного скролла
+  const useSmoothScroll = () => {
+    const scrollToElement = useCallback((element: HTMLElement | string, offset = 0) => {
+      const targetElement = typeof element === 'string' 
+        ? document.querySelector(element) as HTMLElement
+        : element;
+      
+      if (!targetElement) return;
+
+      const targetPosition = targetElement.offsetTop - offset;
+      
+      if (config.hasTouchScreen) {
+        // Плавный скролл для touch устройств
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      } else {
+        // Обычный скролл для десктопа
+        window.scrollTo(0, targetPosition);
+      }
+    }, [config.hasTouchScreen]);
+
+    return { scrollToElement };
+  };
+
+  // Хук для оптимизации touch событий
+  const useTouchOptimization = () => {
+    const [isTouching, setIsTouching] = useState(false);
+
+    const handleTouchStart = useCallback(() => {
+      setIsTouching(true);
+    }, []);
+
+    const handleTouchEnd = useCallback(() => {
+      setIsTouching(false);
+    }, []);
+
+    return {
+      isTouching,
+      handleTouchStart,
+      handleTouchEnd,
+    };
+  };
+
   return {
     config,
     isClient,
@@ -194,5 +279,7 @@ export const useAboutPageOptimization = () => {
     useIntersectionObserver,
     useDebounce,
     useOptimizedScroll,
+    useSmoothScroll,
+    useTouchOptimization,
   };
 }; 
