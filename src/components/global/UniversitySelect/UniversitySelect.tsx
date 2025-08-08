@@ -17,10 +17,10 @@ const universities: University[] = [
     name: 'КГТУ',
     graphId: '67a499dd08ac3c0df94d6ab7'
   },
-  // {
-  //   name: 'БГА',
-  //   graphId: '683edc75c21bf7c5b2b85b21'
-  // },
+  {
+    name: 'КБК',
+    graphId: '6896447465255a1c4ed48eaf'
+  },
 ];
 
 export const UniversitySelect = () => {
