@@ -4,6 +4,7 @@ import { AdminService } from '@/services/admin.service';
 import { IGraphList } from '@/types/graph.interface';
 import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
 import { GraphService } from '@/services/graph.service';
+import { notifyError, notifySuccess } from '@/lib/notifications';
 
 
 export const CreateGraphForm = () => {
@@ -17,6 +18,8 @@ export const CreateGraphForm = () => {
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const queryClient = useQueryClient();
+
+    const ABOUT_MAX_LENGTH = 200;
 
     // Получение глобальных графов
     const { data: globalGraphs, isLoading: isLoadingGlobalGraphs } = useQuery({
@@ -65,16 +68,27 @@ export const CreateGraphForm = () => {
             setAbout('');
             setImage(null);
             setImagePreview(null);
-            alert('Граф успешно создан');
+            notifySuccess('Граф успешно создан');
         },
-        onError: (error) => {
+        onError: (error: any) => {
             console.error('Failed to create graph:', error);
-            alert('Ошибка при создании графа');
+            
+            // Обработка ошибок валидации от сервера
+            if (error?.response?.data?.message) {
+                const messages = Array.isArray(error.response.data.message) 
+                    ? error.response.data.message 
+                    : [error.response.data.message];
+                notifyError(messages.join('; '));
+            } else {
+                notifyError('Ошибка при создании графа');
+            }
         }
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Проверка обязательных полей
         if (!graphName || !selectedGlobalGraph || !selectedParentGraph || !image) {
             console.log('Form validation failed:', {
                 graphName: !graphName,
@@ -84,6 +98,13 @@ export const CreateGraphForm = () => {
             });
             return;
         }
+
+        // Проверка длины описания
+        if (about.length > ABOUT_MAX_LENGTH) {
+            notifyError(`Описание не может быть длиннее ${ABOUT_MAX_LENGTH} символов`);
+            return;
+        }
+
         createGraph();
     };
 
@@ -191,7 +212,16 @@ export const CreateGraphForm = () => {
                     onChange={(e) => setAbout(e.target.value)}
                     placeholder="Введите описание графа"
                     rows={4}
+                    maxLength={ABOUT_MAX_LENGTH}
                 />
+                <div style={{ 
+                    fontSize: '12px', 
+                    color: about.length > ABOUT_MAX_LENGTH ? '#e74c3c' : '#666',
+                    marginTop: '4px',
+                    textAlign: 'right'
+                }}>
+                    {about.length}/{ABOUT_MAX_LENGTH} символов
+                </div>
             </FormInputGroup>
 
             <FormInputGroup label="Изображение графа:">
