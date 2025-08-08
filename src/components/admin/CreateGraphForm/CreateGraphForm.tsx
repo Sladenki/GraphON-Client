@@ -6,20 +6,32 @@ import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/u
 import { GraphService } from '@/services/graph.service';
 
 
-export const CreateGraphForm = ({ globalGraphId }: { globalGraphId: string }) => {
+export const CreateGraphForm = () => {
     const [graphName, setGraphName] = useState('');
+    const [selectedGlobalGraph, setSelectedGlobalGraph] = useState('');
     const [selectedParentGraph, setSelectedParentGraph] = useState('');
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const queryClient = useQueryClient();
 
-    // Получение главных графов
-    const { isPending: isPendingGraphTopics, isError, data: mainTopics, error } = useQuery({
-        queryKey: ['graph/getTopicGraphstGraphs'],
+    // Получение глобальных графов
+    const { data: globalGraphs, isLoading: isLoadingGlobalGraphs } = useQuery({
+        queryKey: ['graph/getGlobalGraphs'],
         queryFn: async () => {
-            const response = await GraphService.getGraphsByTopic(globalGraphId);
+            const response = await GraphService.getGlobalGraphs();
             return response.data as IGraphList[];
         },
+    });
+
+    // Получение родительских графов (графов-тематик) после выбора глобального графа
+    const { data: parentGraphs, isLoading: isLoadingParentGraphs } = useQuery({
+        queryKey: ['graph/getTopicGraphs', selectedGlobalGraph],
+        queryFn: async () => {
+            if (!selectedGlobalGraph) return [];
+            const response = await GraphService.getGraphsByTopic(selectedGlobalGraph);
+            return response.data as IGraphList[];
+        },
+        enabled: !!selectedGlobalGraph, // Запрос выполняется только если выбран глобальный граф
     });
 
     const { mutate: createGraph, isPending } = useMutation({
@@ -30,13 +42,14 @@ export const CreateGraphForm = ({ globalGraphId }: { globalGraphId: string }) =>
                 name: graphName,
                 parentGraphId: selectedParentGraph,
                 image: image,
-                globalGraphId: globalGraphId
+                globalGraphId: selectedGlobalGraph
             });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['graph/getParentGraphs'] });
-            queryClient.invalidateQueries({ queryKey: ['graph/getTopicGraphstGraphs'] });
+            queryClient.invalidateQueries({ queryKey: ['graph/getTopicGraphs'] });
             setGraphName('');
+            setSelectedGlobalGraph('');
             setSelectedParentGraph('');
             setImage(null);
             setImagePreview(null);
@@ -50,9 +63,10 @@ export const CreateGraphForm = ({ globalGraphId }: { globalGraphId: string }) =>
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!graphName || !selectedParentGraph || !image) {
+        if (!graphName || !selectedGlobalGraph || !selectedParentGraph || !image) {
             console.log('Form validation failed:', {
                 graphName: !graphName,
+                selectedGlobalGraph: !selectedGlobalGraph,
                 selectedParentGraph: !selectedParentGraph,
                 image: !image
             });
@@ -73,7 +87,14 @@ export const CreateGraphForm = ({ globalGraphId }: { globalGraphId: string }) =>
         }
     };
 
-    const isFormValid = graphName && selectedParentGraph && image;
+    const handleGlobalGraphChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newGlobalGraphId = e.target.value;
+        setSelectedGlobalGraph(newGlobalGraphId);
+        // Сбрасываем выбор родительского графа при смене глобального графа
+        setSelectedParentGraph('');
+    };
+
+    const isFormValid = graphName && selectedGlobalGraph && selectedParentGraph && image;
 
     return (
         <AdminForm
@@ -93,18 +114,35 @@ export const CreateGraphForm = ({ globalGraphId }: { globalGraphId: string }) =>
                 />
             </FormInputGroup>
 
-            <FormInputGroup label="Родительский граф:">
+            <FormInputGroup label="Глобальный граф:">
                 <FormSelect
-                    value={selectedParentGraph}
-                    onChange={(e) => setSelectedParentGraph(e.target.value)}
+                    value={selectedGlobalGraph}
+                    onChange={handleGlobalGraphChange}
                     options={[
-                        { value: '', label: 'Выберите родительский граф' },
-                        ...(mainTopics?.map((graph: IGraphList) => ({
+                        { value: '', label: 'Выберите глобальный граф' },
+                        ...(globalGraphs?.map((graph: IGraphList) => ({
                             value: graph._id,
                             label: graph.name
                         })) || [])
                     ]}
                     required
+                    disabled={isLoadingGlobalGraphs}
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="Родительский граф (граф-тематика):">
+                <FormSelect
+                    value={selectedParentGraph}
+                    onChange={(e) => setSelectedParentGraph(e.target.value)}
+                    options={[
+                        { value: '', label: selectedGlobalGraph ? 'Выберите родительский граф' : 'Сначала выберите глобальный граф' },
+                        ...(parentGraphs?.map((graph: IGraphList) => ({
+                            value: graph._id,
+                            label: graph.name
+                        })) || [])
+                    ]}
+                    required
+                    disabled={!selectedGlobalGraph || isLoadingParentGraphs}
                 />
             </FormInputGroup>
 

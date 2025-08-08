@@ -96,7 +96,7 @@ const CreatePost = () => {
                     emoji="📊"
                     role={UserRole.Admin}
                 >
-                    <CreateGraphForm globalGraphId={user?.selectedGraphId || ''} />
+                    <CreateGraphForm />
                 </AdminSection>
             )}
             
