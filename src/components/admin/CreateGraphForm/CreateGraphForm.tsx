@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminService } from '@/services/admin.service';
 import { IGraphList } from '@/types/graph.interface';
-import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/ui/AdminForm';
+import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
 import { GraphService } from '@/services/graph.service';
 
 
@@ -13,6 +13,7 @@ export const CreateGraphForm = () => {
     const [directorName, setDirectorName] = useState('');
     const [directorVkLink, setDirectorVkLink] = useState('');
     const [vkLink, setVkLink] = useState('');
+    const [about, setAbout] = useState('');
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const queryClient = useQueryClient();
@@ -48,7 +49,8 @@ export const CreateGraphForm = () => {
                 globalGraphId: selectedGlobalGraph,
                 directorName: directorName || undefined,
                 directorVkLink: directorVkLink || undefined,
-                vkLink: vkLink || undefined
+                vkLink: vkLink || undefined,
+                about: about || undefined
             });
         },
         onSuccess: () => {
@@ -60,6 +62,7 @@ export const CreateGraphForm = () => {
             setDirectorName('');
             setDirectorVkLink('');
             setVkLink('');
+            setAbout('');
             setImage(null);
             setImagePreview(null);
             alert('Граф успешно создан');
@@ -179,6 +182,15 @@ export const CreateGraphForm = () => {
                     value={vkLink}
                     onChange={(e) => setVkLink(e.target.value)}
                     placeholder="https://vk.com/group_name"
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="Описание графа (необязательно):">
+                <FormTextarea
+                    value={about}
+                    onChange={(e) => setAbout(e.target.value)}
+                    placeholder="Введите описание графа"
+                    rows={4}
                 />
             </FormInputGroup>
 

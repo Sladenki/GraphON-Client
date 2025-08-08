@@ -52,6 +52,7 @@ export const AdminService = {
         directorName?: string;
         directorVkLink?: string;
         vkLink?: string;
+        about?: string;
     }) {
         const formData = new FormData();
         formData.append('name', data.name);
@@ -68,6 +69,9 @@ export const AdminService = {
         }
         if (data.vkLink) {
             formData.append('vkLink', data.vkLink);
+        }
+        if (data.about) {
+            formData.append('about', data.about);
         }
 
         const { data: response } = await axiosAuth.post('/admin/createGraph', formData, {
