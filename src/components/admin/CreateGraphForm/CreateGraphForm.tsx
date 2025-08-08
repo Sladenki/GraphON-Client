@@ -10,6 +10,9 @@ export const CreateGraphForm = () => {
     const [graphName, setGraphName] = useState('');
     const [selectedGlobalGraph, setSelectedGlobalGraph] = useState('');
     const [selectedParentGraph, setSelectedParentGraph] = useState('');
+    const [directorName, setDirectorName] = useState('');
+    const [directorVkLink, setDirectorVkLink] = useState('');
+    const [vkLink, setVkLink] = useState('');
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const queryClient = useQueryClient();
@@ -42,7 +45,10 @@ export const CreateGraphForm = () => {
                 name: graphName,
                 parentGraphId: selectedParentGraph,
                 image: image,
-                globalGraphId: selectedGlobalGraph
+                globalGraphId: selectedGlobalGraph,
+                directorName: directorName || undefined,
+                directorVkLink: directorVkLink || undefined,
+                vkLink: vkLink || undefined
             });
         },
         onSuccess: () => {
@@ -51,6 +57,9 @@ export const CreateGraphForm = () => {
             setGraphName('');
             setSelectedGlobalGraph('');
             setSelectedParentGraph('');
+            setDirectorName('');
+            setDirectorVkLink('');
+            setVkLink('');
             setImage(null);
             setImagePreview(null);
             alert('Граф успешно создан');
@@ -143,6 +152,33 @@ export const CreateGraphForm = () => {
                     ]}
                     required
                     disabled={!selectedGlobalGraph || isLoadingParentGraphs}
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="Имя директора (необязательно):">
+                <FormInput
+                    type="text"
+                    value={directorName}
+                    onChange={(e) => setDirectorName(e.target.value)}
+                    placeholder="Введите имя директора"
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="Ссылка на VK директора (необязательно):">
+                <FormInput
+                    type="url"
+                    value={directorVkLink}
+                    onChange={(e) => setDirectorVkLink(e.target.value)}
+                    placeholder="https://vk.com/username"
+                />
+            </FormInputGroup>
+
+            <FormInputGroup label="Ссылка на VK графа (необязательно):">
+                <FormInput
+                    type="url"
+                    value={vkLink}
+                    onChange={(e) => setVkLink(e.target.value)}
+                    placeholder="https://vk.com/group_name"
                 />
             </FormInputGroup>
 
