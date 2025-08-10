@@ -34,29 +34,6 @@ export const UserStats: React.FC = () => {
                 <h4>Всего пользователей</h4>
                 <div className={styles.statValue}>{stats.totalUsers}</div>
             </div>
-            
-            <div className={styles.statCard}>
-                <h4>Всего графов</h4>
-                <div className={styles.statValue}>{stats.totalGraphs}</div>
-            </div>
-            
-            <div className={styles.statCard}>
-                <h4>Пользователи по ролям</h4>
-                <div className={styles.roleStats}>
-                    <div className={styles.roleItem}>
-                        <span>Пользователи:</span>
-                        <span>{stats.usersByRole.user}</span>
-                    </div>
-                    <div className={styles.roleItem}>
-                        <span>Администраторы:</span>
-                        <span>{stats.usersByRole.admin}</span>
-                    </div>
-                    <div className={styles.roleItem}>
-                        <span>Создатели:</span>
-                        <span>{stats.usersByRole.create}</span>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }; 
