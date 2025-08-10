@@ -56,8 +56,6 @@ const InfoGraphPopUp: FC<InfoGraphPopUpProps> = React.memo(({
         e.stopPropagation();
     }), [createOptimizedHandler]);
 
-    console.log('data', data)
-
     // Определяем размеры для разных устройств для предотвращения дергания
     const popupDimensions = useMemo(() => {
         const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;

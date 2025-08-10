@@ -4,7 +4,6 @@ export const EventRegService = {
 
     // --- Регистрация на мероприятие ---
     async toggleEvent(eventId: string) {
-        console.log('eventId', eventId)
         return axiosAuth.patch(`/eventRegs/${eventId}`);
     },
 
