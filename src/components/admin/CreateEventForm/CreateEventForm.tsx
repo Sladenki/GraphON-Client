@@ -5,13 +5,18 @@ import { GraphService } from '@/services/graph.service';
 import { IGraphList } from '@/types/graph.interface';
 import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
 import { notifyError, notifySuccess } from '@/lib/notifications';
+import { useAuth } from '@/providers/AuthProvider';
 
 interface CreateEventFormProps {
-    globalGraphId: string;
+    globalGraphId?: string; // Делаем опциональным
 }
 
 export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
     const DESCRIPTION_MAX_LENGTH = 300;
+    const { user } = useAuth();
+    
+    // Используем selectedGraphId из пользователя, если globalGraphId не передан
+    const selectedGraphId = globalGraphId || user?.selectedGraphId;
     
     const [eventData, setEventData] = useState({
         name: '',
@@ -26,18 +31,27 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
     const queryClient = useQueryClient();
 
     const { data: mainTopics = [], isLoading: isLoadingTopics } = useQuery<IGraphList[]>({
-        queryKey: ['mainTopics', globalGraphId],
+        queryKey: ['mainTopics', selectedGraphId],
         queryFn: async () => {
-            const response = await GraphService.getAllChildrenByGlobal(globalGraphId);
+            if (!selectedGraphId) {
+                throw new Error('Не выбран граф');
+            }
+            const response = await GraphService.getAllChildrenByGlobal(selectedGraphId);
             return response.data;
-        }
+        },
+        enabled: !!selectedGraphId // Запрос выполняется только если есть selectedGraphId
     });
 
     const { mutate: createEvent, isPending } = useMutation({
-        mutationFn: () => EventService.createEvent({
-            ...eventData,
-            globalGraphId
-        }),
+        mutationFn: () => {
+            if (!selectedGraphId) {
+                throw new Error('Не выбран граф');
+            }
+            return EventService.createEvent({
+                ...eventData,
+                globalGraphId: selectedGraphId
+            });
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['eventsList'] });
             setEventData({
@@ -68,6 +82,10 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!selectedGraphId) {
+            notifyError('Не выбран граф для создания мероприятия');
+            return;
+        }
         if (!eventData.name || !eventData.description || !eventData.place || !eventData.eventDate || 
             !eventData.timeFrom || !eventData.timeTo || !eventData.graphId) return;
             
@@ -103,6 +121,19 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
         eventData.graphId;
 
     return (
+        <>
+        {!selectedGraphId ? (
+            <div style={{ 
+                padding: '20px', 
+                textAlign: 'center', 
+                color: '#6b7280',
+                backgroundColor: '#f9fafb',
+                borderRadius: '8px',
+                border: '1px solid #e5e7eb'
+            }}>
+                <p>Для создания мероприятия необходимо выбрать граф в настройках профиля</p>
+            </div>
+        ) : (
         <AdminForm
             title="Создание нового мероприятия"
             onSubmit={handleSubmit}
@@ -213,5 +244,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                 </FormInputGroup>
             </div>
         </AdminForm>
+        )}
+        </>
     );
 }; 

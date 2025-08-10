@@ -20,8 +20,6 @@ export const UserStats: React.FC = () => {
         queryFn: () => AdminService.getApplicationStats(),
     });
 
-    console.log(data);
-
     if (isPending) return <SpinnerLoader />;
     if (isError) return <p>Ошибка: {error.message}</p>;
     if (!data) return <p>Нет данных</p>;
