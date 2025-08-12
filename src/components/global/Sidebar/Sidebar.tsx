@@ -16,8 +16,17 @@ const Sidebar: React.FC<{}> = ({}) => {
 
   return (
     <div className={styles.sidebar}>
+      {/* Название проекта - отображается только на ПК */}
+      {!small && (
+        <div className={styles.projectTitle}>
+          GraphON
+          <div className={styles.betaLabel}>
+            Альфа версия
+          </div>
+        </div>
+      )}
         
-        {/* @ts-expect-error типизация */}
+      {/* @ts-expect-error типизация */}
       <RenderMenuList arrayItems={sidebar} small={small}  />
 
     </div>
