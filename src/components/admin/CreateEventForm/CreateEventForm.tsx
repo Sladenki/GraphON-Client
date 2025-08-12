@@ -88,6 +88,29 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
         }
         if (!eventData.name || !eventData.description || !eventData.place || !eventData.eventDate || 
             !eventData.timeFrom || !eventData.timeTo || !eventData.graphId) return;
+        
+        // Проверяем, что дата мероприятия не в прошлом
+        const selectedDate = new Date(eventData.eventDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Убираем время, оставляем только дату
+        
+        if (selectedDate < today) {
+            notifyError('Нельзя создать мероприятие на прошедшую дату');
+            return;
+        }
+        
+        // Если выбрана сегодняшняя дата, проверяем что время начала в будущем
+        if (selectedDate.getTime() === today.getTime()) {
+            const now = new Date();
+            const [fromHours, fromMinutes] = eventData.timeFrom.split(':').map(Number);
+            const eventStartTime = new Date();
+            eventStartTime.setHours(fromHours, fromMinutes, 0, 0);
+            
+            if (eventStartTime <= now) {
+                notifyError('Время начала мероприятия должно быть в будущем');
+                return;
+            }
+        }
             
         // Validate that end time is after start time
         const [fromHours, fromMinutes] = eventData.timeFrom.split(':').map(Number);
@@ -212,33 +235,45 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             </FormInputGroup>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-                <FormInputGroup label="Дата:">
+                <FormInputGroup 
+                    label="Дата:"
+                >
                     <FormInput
                         name="eventDate"
                         type="date"
                         value={eventData.eventDate}
                         onChange={handleChange}
-                        min="2025-01-01"
+                        min={new Date().toISOString().split('T')[0]}
                         required
                     />
                 </FormInputGroup>
 
-                <FormInputGroup label="Время начала:">
+                <FormInputGroup 
+                    label="Время начала:"
+                >
                     <FormInput
                         name="timeFrom"
                         type="time"
                         value={eventData.timeFrom}
                         onChange={handleChange}
+                        min={eventData.eventDate === new Date().toISOString().split('T')[0] ? 
+                            new Date().toTimeString().slice(0, 5) : undefined
+                        }
                         required
                     />
                 </FormInputGroup>
 
-                <FormInputGroup label="Время окончания:">
+                <FormInputGroup 
+                    label="Время окончания:"
+                >
                     <FormInput
                         name="timeTo"
                         type="time"
                         value={eventData.timeTo}
                         onChange={handleChange}
+                        min={eventData.timeFrom && eventData.timeFrom !== '' ? 
+                            eventData.timeFrom : undefined
+                        }
                         required
                     />
                 </FormInputGroup>
