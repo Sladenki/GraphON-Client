@@ -16,8 +16,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  padding: 3rem 2rem;
+  gap: 1.5rem;
+  padding: 2.25rem 1.75rem;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 24px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
@@ -27,7 +27,7 @@
   overflow: hidden;
   width: 100%;
   max-width: 600px;
-  min-height: 500px;
+  min-height: 440px;
 
   &::before {
     content: '';
@@ -39,6 +39,13 @@
     background: linear-gradient(135deg, rgba(var(--main-Color-rgb), 0.15), rgba(var(--main-Color-rgb), 0.05));
     z-index: 0;
   }
+}
+
+/* Компактная шапка, когда ВУЗ не выбран */
+.headerCompact {
+  min-height: 350px;
+  padding: 2rem 1.5rem;
+  gap: 1.5rem;
 }
 
 .avatar {
@@ -66,6 +73,13 @@
   position: relative;
   z-index: 1;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nameGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .role {
@@ -244,12 +258,12 @@
 
 .selectedUniversity {
   width: fit-content;
-  margin: 12px auto 0;
+  margin: 4px auto 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 4px 12px;
   border-radius: 12px;
   background: rgba(var(--main-Color-rgb), 0.06);
   border: 1px solid rgba(var(--main-Color-rgb), 0.15);

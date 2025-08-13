@@ -142,29 +142,30 @@ export default function Profile() {
         <div className={styles.profileWrapper}>
             {typedUser ? (
                 <>
-                    <div className={styles.header}>
-                            <Image 
-                                src={typedUser.avaPath && typedUser.avaPath.startsWith('http') ? typedUser.avaPath : NoImage} 
-                                className={styles.avatar} 
-                                alt="Аватар" 
-                                width={160}
-                                height={160}
-                                onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    target.src = NoImage.src;
-                                }}
-                                onLoad={() => console.log('Avatar loaded successfully')}
-                            />    
+                    <div className={`${styles.header} ${!typedUser.selectedGraphId ? styles.headerCompact : ''}`}>
+                        <Image 
+                            src={typedUser.avaPath && typedUser.avaPath.startsWith('http') ? typedUser.avaPath : NoImage} 
+                            className={styles.avatar} 
+                            alt="Аватар" 
+                            width={160}
+                            height={160}
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = NoImage.src;
+                            }}
+                            onLoad={() => console.log('Avatar loaded successfully')}
+                        />    
                        
-                        <span className={styles.name}>
-                            {getDisplayName(typedUser)}
-                        </span>
-
-                        {typedUser.role !== 'user' && (
-                            <span className={styles.role}>
-                                {RoleTitles[typedUser.role]}
+                        <div className={styles.nameGroup}>
+                            <span className={styles.name}>
+                                {getDisplayName(typedUser)}
                             </span>
-                        )}
+                            {typedUser.role !== 'user' && (
+                                <span className={styles.role}>
+                                    {RoleTitles[typedUser.role]}
+                                </span>
+                            )}
+                        </div>
 
                         {/* Отображение выбранного ВУЗа */}
                         {!!typedUser.selectedGraphId && selectedGraphName && (
