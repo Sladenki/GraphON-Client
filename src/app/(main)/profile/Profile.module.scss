@@ -27,7 +27,7 @@
   overflow: hidden;
   width: 100%;
   max-width: 600px;
-  min-height: 300px;
+  min-height: 500px;
 
   &::before {
     content: '';
@@ -169,6 +169,114 @@
   align-items: center;
   margin-top: 2rem;
   width: 100%;
+}
+
+/* University picker */
+.universityCard {
+  width: 100%;
+  max-width: 800px;
+  margin: 1rem auto 0;
+  padding: 1.25rem;
+  background: var(--block-color);
+  border: 1px solid rgba(var(--main-Color), 0.15);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.universityTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--main-text);
+  margin: 0 0 10px 0;
+}
+
+.universityRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.select {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid rgba(var(--main-Color), 0.25);
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--main-text);
+  background-color: var(--block-color);
+  transition: all 0.2s ease;
+  appearance: none;
+}
+
+.applyBtn {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--main-Color), 0.3);
+  background: linear-gradient(135deg, rgba(var(--main-Color-rgb), 0.15), rgba(var(--main-Color-rgb), 0.05));
+  color: var(--main-text);
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.applyBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: rgba(var(--main-Color-rgb), 0.25);
+  background: linear-gradient(135deg, rgba(var(--main-Color-rgb), 0.12), rgba(var(--main-Color-rgb), 0.04));
+  color: var(--main-text);
+}
+
+.applyBtn:not(:disabled) {
+  background: rgb(var(--main-Color));
+  color: #ffffff;
+  border-color: rgb(var(--main-Color));
+  box-shadow: 0 6px 18px rgba(var(--main-Color-rgb), 0.35);
+}
+
+.applyBtn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(var(--main-Color-rgb), 0.45);
+}
+
+.selectedUniversity {
+  width: fit-content;
+  margin: 12px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(var(--main-Color-rgb), 0.06);
+  border: 1px solid rgba(var(--main-Color-rgb), 0.15);
+  text-align: center;
+}
+
+.selectedUniversityIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(150,130,238);
+}
+
+.selectedUniversityText {
+  display: flex;
+  flex-direction: column;
+}
+
+.selectedUniversityLabel {
+  font-size: 12px;
+  color: var(--main-text);
+  opacity: 0.7;
+}
+
+.selectedUniversityName {
+  font-weight: 700;
+  color: rgb(150, 130, 238);
 }
 
 /* Поддержка уменьшенного движения */

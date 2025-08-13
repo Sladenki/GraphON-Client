@@ -7,6 +7,8 @@ import { IUser, RoleTitles } from '@/types/user.interface';
 import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButton';
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { GraduationCap } from 'lucide-react';
 import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '@/components/ui/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
@@ -14,18 +16,36 @@ import NoImage from '../../../../public/noImage.png'
 import ThemeToggle from '@/components/global/ThemeToggle/ThemeToggle';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import MissingDataMessage from './MissingDataMessage/MissingDataMessage';
+import { GraphService } from '@/services/graph.service';
+import { UserService } from '@/services/user.service';
+import { IGraphList } from '@/types/graph.interface';
+import { useSetSelectedGraphId } from '@/stores/useUIStore';
 
 
 export default function Profile() {
-    const { user, loading, error } = useAuth();
+    const { user, setUser, loading, error } = useAuth();
     const queryClient = useQueryClient();
     const small = useMediaQuery('(max-width: 650px)')
+    const setSelectedGraphId = useSetSelectedGraphId();
     
     const { data: allEvents, isLoading: loadingEvents } = useQuery({
         queryKey: ['eventsList'],
         queryFn: () => EventRegService.getEventsByUserId(),
         enabled: !!user
     });
+
+    // Загружаем список ВУЗов (глобальных графов)
+    const { data: globalGraphsResp, isLoading: isLoadingUniversities } = useQuery<IGraphList[]>({
+        queryKey: ['graph/getGlobalGraphs'],
+        queryFn: async () => {
+            const res = await GraphService.getGlobalGraphs();
+            return res.data as IGraphList[];
+        }
+    });
+
+    // Локальный выбор ВУЗа (применяется по кнопке)
+    const [pendingUniversity, setPendingUniversity] = useState<string>('');
+    const [isApplyingUniversity, setIsApplyingUniversity] = useState<boolean>(false);
 
     const handleDelete = (eventId: string) => {
         queryClient.setQueryData(['eventsList'], (old: any) => {
@@ -85,6 +105,39 @@ export default function Profile() {
         }
     };
 
+    // Выбранный ВУЗ: отображаем название если доступно
+    const selectedGraphName = (() => {
+        const sg: any = typedUser?.selectedGraphId as any;
+        if (!sg) return null;
+        if (typeof sg === 'object' && sg?.name) return sg.name as string;
+        if (typeof sg === 'string' && globalGraphsResp) {
+            const found = globalGraphsResp.find(g => g._id === sg);
+            return found?.name ?? null;
+        }
+        return null;
+    })();
+
+    const handleUniversitySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setPendingUniversity(e.target.value);
+    };
+
+    const handleApplyUniversity = async () => {
+        if (!pendingUniversity) return;
+        try {
+            setIsApplyingUniversity(true);
+            await UserService.updateSelectedGraph(pendingUniversity);
+            if (user) {
+                setUser({ ...user, selectedGraphId: pendingUniversity });
+            }
+            setSelectedGraphId(pendingUniversity);
+            queryClient.invalidateQueries({ queryKey: ['eventsList'] });
+        } catch (err) {
+            console.error('Ошибка выбора ВУЗа:', err);
+        } finally {
+            setIsApplyingUniversity(false);
+        }
+    };
+
     return (
         <div className={styles.profileWrapper}>
             {typedUser ? (
@@ -112,7 +165,51 @@ export default function Profile() {
                                 {RoleTitles[typedUser.role]}
                             </span>
                         )}
+
+                        {/* Отображение выбранного ВУЗа */}
+                        {!!typedUser.selectedGraphId && selectedGraphName && (
+                            <div className={styles.selectedUniversity}>
+                                <span className={styles.selectedUniversityIcon}>
+                                    <GraduationCap size={18} />
+                                </span>
+                                <div className={styles.selectedUniversityText}>
+                                    <span className={styles.selectedUniversityLabel}>Выбранный ВУЗ</span>
+                                    <span className={styles.selectedUniversityName}>{selectedGraphName}</span>
+                                </div>
+                            </div>
+                        )}
                     </div>
+
+                    {/* Блок выбора ВУЗа при отсутствии selectedGraphId */}
+                    {!typedUser.selectedGraphId && (
+                        <div className={styles.universityCard}>
+                            <h3 className={styles.universityTitle}>Выберите университет</h3>
+                            <div className={styles.universityRow}>
+                                <select
+                                    id="universitySelect"
+                                    onChange={handleUniversitySelect}
+                                    disabled={isLoadingUniversities}
+                                    className={styles.select}
+                                    value={pendingUniversity}
+                                >
+                                    <option value="" disabled>{isLoadingUniversities ? 'Загрузка…' : '— Выберите ВУЗ —'}</option>
+                                    {(globalGraphsResp || []).map(g => (
+                                        <option key={g._id} value={g._id}>{g.name}</option>
+                                    ))}
+                                </select>
+                                <button 
+                                    type="button"
+                                    className={styles.applyBtn} 
+                                    disabled={isLoadingUniversities || !pendingUniversity || isApplyingUniversity}
+                                    onClick={handleApplyUniversity}
+                                >
+                                    {isApplyingUniversity ? 'Применение…' : 'Применить'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+    
 
                     {missingFields.length > 0 && (
                         <MissingDataMessage missingFields={missingFields} />
