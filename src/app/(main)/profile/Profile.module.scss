@@ -27,7 +27,7 @@
   overflow: hidden;
   width: 100%;
   max-width: 600px;
-  min-height: 440px;
+  min-height: 370px;
 
   &::before {
     content: '';
@@ -66,7 +66,7 @@
 }
 
 .name {
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   font-weight: 600;
   color: var(--main-text);
   text-align: center;
@@ -79,20 +79,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+}
+
+@media (min-width: 600px) {
+  .nameGroup {
+    flex-direction: row;
+    gap: 8px;
+  }
 }
 
 .role {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--main-Color);
   text-align: center;
   position: relative;
   z-index: 1;
   background: rgba(var(--main-Color-rgb), 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  border: 1px solid rgba(var(--main-Color-rgb), 0.2);
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(var(--main-Color-rgb), 0.25);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -204,7 +211,8 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--main-text);
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0;
+  justify-content: center;
 }
 
 .universityRow {
@@ -212,6 +220,16 @@
   gap: 12px;
   align-items: center;
   justify-content: center;
+}
+
+@media (max-width: 520px) {
+  .universityRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .applyBtn {
+    width: 100%;
+  }
 }
 
 .select {
@@ -224,6 +242,12 @@
   background-color: var(--block-color);
   transition: all 0.2s ease;
   appearance: none;
+}
+
+.select:focus {
+  outline: none;
+  border-color: rgb(var(--main-Color));
+  box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.12);
 }
 
 .applyBtn {
@@ -283,9 +307,11 @@
 }
 
 .selectedUniversityLabel {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--main-text);
   opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .selectedUniversityName {
