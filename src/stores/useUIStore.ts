@@ -43,17 +43,24 @@ export const useUIStore = create<UIState>()(
       
       setSelectedGraphId: (id: string | null) => {
         const currentState = get();
+        // Нормализация: поддержка случаев, когда приходит объект вместо строки
+        const raw: any = id as any;
+        const normalizedId: string | null =
+          raw && typeof raw === 'object'
+            ? (raw._id ?? raw.$oid ?? null)
+            : (id ?? null);
+
         // Избегаем обновления если значение не изменилось
-        if (currentState.selectedGraphId === id) return;
-        
-        set({ selectedGraphId: id });
+        if (currentState.selectedGraphId === normalizedId) return;
+
+        set({ selectedGraphId: normalizedId });
         
         // Dispatch custom event for backward compatibility
         // (for components that haven't been migrated yet)
         // Используем setTimeout чтобы избежать синхронных обновлений
-        if (typeof window !== 'undefined' && id) {
+        if (typeof window !== 'undefined' && normalizedId) {
           setTimeout(() => {
-            const event = new CustomEvent('graphSelected', { detail: id });
+            const event = new CustomEvent('graphSelected', { detail: normalizedId });
             window.dispatchEvent(event);
           }, 0);
         }
@@ -82,7 +89,17 @@ export const useUIStore = create<UIState>()(
         // Don't persist searchQuery and isMobileNavOpen
       }),
       // Добавляем версию для избежания конфликтов при изменении структуры
-      version: 1,
+      version: 2,
+      migrate: (persistedState: any, version) => {
+        const state = { ...persistedState };
+        if (version < 2) {
+          const maybeId = state.selectedGraphId;
+          if (maybeId && typeof maybeId === 'object') {
+            state.selectedGraphId = maybeId._id ?? maybeId.$oid ?? null;
+          }
+        }
+        return state;
+      },
     }
   )
 );

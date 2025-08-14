@@ -63,8 +63,16 @@ export default function GraphView() {
 
   useEffect(() => {
     // Инициализация selectedGraphId из пользователя только один раз и только если разные
-    if (user?.selectedGraphId && user.selectedGraphId !== selectedGraphId && !isInitialized.current) {
-      setSelectedGraphId(user.selectedGraphId);
+    const rawSelected = user?.selectedGraphId as any;
+    const normalizedId =
+      typeof rawSelected === 'object' && rawSelected?._id
+        ? (rawSelected._id as string)
+        : typeof rawSelected === 'string'
+          ? rawSelected
+          : null;
+
+    if (normalizedId && normalizedId !== selectedGraphId && !isInitialized.current) {
+      setSelectedGraphId(normalizedId);
       isInitialized.current = true;
     }
   }, [user?.selectedGraphId, selectedGraphId, setSelectedGraphId]);

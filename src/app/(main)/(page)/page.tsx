@@ -31,8 +31,16 @@ const Homepage = () => {
 
   useEffect(() => {
     // Initialize selectedGraphId from user only once and only if different
-    if (user?.selectedGraphId && user.selectedGraphId !== selectedGraphId && !isInitialized.current) {
-      setSelectedGraphId(user.selectedGraphId);
+    const rawSelected = user?.selectedGraphId as any;
+    const normalizedId =
+      typeof rawSelected === 'object' && rawSelected?._id
+        ? (rawSelected._id as string)
+        : typeof rawSelected === 'string'
+          ? rawSelected
+          : null;
+
+    if (normalizedId && normalizedId !== selectedGraphId && !isInitialized.current) {
+      setSelectedGraphId(normalizedId);
       isInitialized.current = true;
     }
   }, [user?.selectedGraphId, selectedGraphId, setSelectedGraphId]);
