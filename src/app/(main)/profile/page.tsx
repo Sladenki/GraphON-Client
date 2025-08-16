@@ -3,7 +3,7 @@
 import { useAuth } from '@/providers/AuthProvider';
 import styles from './Profile.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
-import { IUser, RoleTitles } from '@/types/user.interface';
+import { IUser, RoleTitles, UserRole } from '@/types/user.interface';
 import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButton';
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -138,6 +138,9 @@ export default function Profile() {
         }
     };
 
+    // Текущее значение select: выбранное пользователем или уже установленный ВУЗ (для роли create)
+    const selectValue = pendingUniversity || (typeof typedUser?.selectedGraphId === 'string' ? typedUser.selectedGraphId : '');
+
     return (
         <div className={styles.profileWrapper}>
             {typedUser ? (
@@ -181,8 +184,8 @@ export default function Profile() {
                         )}
                     </div>
 
-                    {/* Блок выбора ВУЗа при отсутствии selectedGraphId */}
-                    {!typedUser.selectedGraphId && (
+                    {/* Блок выбора ВУЗа доступен всегда для роли create, иначе только при отсутствии selectedGraphId */}
+                    {(!typedUser.selectedGraphId || typedUser.role === UserRole.Create) && (
                         <div className={styles.universityCard}>
                             <h3 className={styles.universityTitle}>Выберите университет</h3>
                             <div className={styles.universityRow}>
@@ -191,7 +194,7 @@ export default function Profile() {
                                     onChange={handleUniversitySelect}
                                     disabled={isLoadingUniversities}
                                     className={styles.select}
-                                    value={pendingUniversity}
+                                    value={selectValue}
                                 >
                                     <option value="" disabled>{isLoadingUniversities ? 'Загрузка…' : '— Выберите ВУЗ —'}</option>
                                     {(globalGraphsResp || []).map(g => (
