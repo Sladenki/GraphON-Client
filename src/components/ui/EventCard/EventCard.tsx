@@ -36,7 +36,8 @@ import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { UserRole } from "@/types/user.interface";
 import { useEventCardOptimization } from './useEventCardOptimization';
 import { useDeclensionWord } from "@/hooks/useDeclension";
-import DeleteConfirmPopUp from './DeleteConfirmPopUp';
+import DeleteConfirmPopUp from './DeleteConfirmPopUp/DeleteConfirmPopUp';
+import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
 import styles from './EventCard.module.scss';
 
 interface EventProps {
@@ -45,6 +46,7 @@ interface EventProps {
     graphId: {
       _id: string;
       name: string;
+      ownerUserId?: string;
       imgPath?: string;
     };
     globalGraphId: string;
@@ -236,11 +238,15 @@ DescriptionTextarea.displayName = 'DescriptionTextarea';
 const EventInfo = React.memo(({ 
   formattedTime, 
   place, 
-  regedUsers 
+  regedUsers,
+  canViewAttendees,
+  onParticipantsClick
 }: { 
   formattedTime: string, 
   place: string, 
-  regedUsers: number 
+  regedUsers: number,
+  canViewAttendees?: boolean,
+  onParticipantsClick?: () => void
 }) => {
   const correctRegedUsers = useDeclensionWord(regedUsers, 'PARTICIPANT');
   
@@ -256,7 +262,20 @@ const EventInfo = React.memo(({
         <span className={styles.infoText}>{place}</span>
       </div>
       
-      <div className={styles.infoItem}>
+      <div
+        className={`${styles.infoItem} ${canViewAttendees ? styles.clickable : ''}`}
+        onClick={canViewAttendees ? onParticipantsClick : undefined}
+        role={canViewAttendees ? 'button' : undefined}
+        tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
+        onKeyDown={canViewAttendees ? (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (onParticipantsClick) {
+              onParticipantsClick();
+            }
+          }
+        } : undefined}
+      >
         <UsersRound size={18} />
         <span className={styles.infoText}>{regedUsers} {correctRegedUsers}</span>
       </div>
@@ -273,6 +292,13 @@ const EventCard: React.FC<EventProps> = React.memo(({
 }) => {
   const { isLoggedIn, user } = useAuth();
   const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
+  const [isAttendeesOpen, setIsAttendeesOpen] = React.useState(false);
+  const canViewAttendees = Boolean(
+    user && (
+      user.role === UserRole.Create ||
+      (user._id && initialEvent.graphId?.ownerUserId && user._id === initialEvent.graphId.ownerUserId)
+    )
+  );
   
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
     initialEvent?._id || '', 
@@ -469,6 +495,8 @@ const EventCard: React.FC<EventProps> = React.memo(({
               formattedTime={formattedTime}
               place={event.place}
               regedUsers={event.regedUsers}
+              canViewAttendees={canViewAttendees}
+              onParticipantsClick={() => setIsAttendeesOpen(true)}
             />
             
             {registerButton}
@@ -483,6 +511,14 @@ const EventCard: React.FC<EventProps> = React.memo(({
         onConfirm={handleConfirmDelete}
         eventName={event.name}
         isDeleting={isDeleting}
+      />
+
+      {/* PopUp со списком участников */}
+      <AttendeesPopUp
+        isOpen={isAttendeesOpen}
+        onClose={() => setIsAttendeesOpen(false)}
+        eventId={event._id}
+        eventName={event.name}
       />
     </Card>
   );

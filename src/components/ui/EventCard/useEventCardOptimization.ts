@@ -8,6 +8,7 @@ interface Event {
   graphId: {
     _id: string;
     name: string;
+    ownerUserId?: string;
     imgPath?: string;
   };
   globalGraphId: string;

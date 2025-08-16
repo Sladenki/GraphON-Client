@@ -12,4 +12,9 @@ export const EventRegService = {
         return axiosAuth.get(`/eventRegs/getEventsByUserId`);
     },
 
+    // --- Получение пользователей на мероприятии ---
+    async getUsersByEventId(eventId: string) {
+        return axiosAuth.get(`/eventRegs/getUsersByEventId/${eventId}`);
+    },
+
 }

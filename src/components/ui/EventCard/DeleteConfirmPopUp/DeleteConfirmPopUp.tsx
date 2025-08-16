@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@heroui/react';
 import { Trash2, X } from 'lucide-react';
-import PopUpWrapper from '../../global/PopUpWrapper/PopUpWrapper';
+import PopUpWrapper from '../../../global/PopUpWrapper/PopUpWrapper';
 import styles from './DeleteConfirmPopUp.module.scss';
 
 interface DeleteConfirmPopUpProps {
