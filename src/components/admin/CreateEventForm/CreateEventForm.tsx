@@ -16,7 +16,23 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
     const { user } = useAuth();
     
     // Используем selectedGraphId из пользователя, если globalGraphId не передан
-    const selectedGraphId = globalGraphId || user?.selectedGraphId;
+    const selectedGraphIdRaw: any = globalGraphId || user?.selectedGraphId;
+    const selectedGraphId =
+        selectedGraphIdRaw && typeof selectedGraphIdRaw === 'object'
+            ? (selectedGraphIdRaw._id ?? selectedGraphIdRaw.$oid ?? '')
+            : (selectedGraphIdRaw ?? '');
+    
+    // Минимально допустимая дата для создания мероприятия — завтрашний день (локальная дата)
+    const formatDateYYYYMMDD = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    const tomorrowDateLocal = new Date();
+    tomorrowDateLocal.setHours(0, 0, 0, 0);
+    tomorrowDateLocal.setDate(tomorrowDateLocal.getDate() + 1);
+    const tomorrowISO = formatDateYYYYMMDD(tomorrowDateLocal);
     
     const [eventData, setEventData] = useState({
         name: '',
@@ -89,27 +105,10 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
         if (!eventData.name || !eventData.description || !eventData.place || !eventData.eventDate || 
             !eventData.timeFrom || !eventData.timeTo || !eventData.graphId) return;
         
-        // Проверяем, что дата мероприятия не в прошлом
-        const selectedDate = new Date(eventData.eventDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Убираем время, оставляем только дату
-        
-        if (selectedDate < today) {
-            notifyError('Нельзя создать мероприятие на прошедшую дату');
+        // Проверяем, что дата мероприятия не сегодня и не в прошлом (строго с завтрашнего дня)
+        if (eventData.eventDate < tomorrowISO) {
+            notifyError('Мероприятие можно создать только на следующий день');
             return;
-        }
-        
-        // Если выбрана сегодняшняя дата, проверяем что время начала в будущем
-        if (selectedDate.getTime() === today.getTime()) {
-            const now = new Date();
-            const [fromHours, fromMinutes] = eventData.timeFrom.split(':').map(Number);
-            const eventStartTime = new Date();
-            eventStartTime.setHours(fromHours, fromMinutes, 0, 0);
-            
-            if (eventStartTime <= now) {
-                notifyError('Время начала мероприятия должно быть в будущем');
-                return;
-            }
         }
             
         // Validate that end time is after start time
@@ -243,7 +242,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                         type="date"
                         value={eventData.eventDate}
                         onChange={handleChange}
-                        min={new Date().toISOString().split('T')[0]}
+                        min={tomorrowISO}
                         required
                     />
                 </FormInputGroup>
@@ -256,9 +255,6 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                         type="time"
                         value={eventData.timeFrom}
                         onChange={handleChange}
-                        min={eventData.eventDate === new Date().toISOString().split('T')[0] ? 
-                            new Date().toTimeString().slice(0, 5) : undefined
-                        }
                         required
                     />
                 </FormInputGroup>

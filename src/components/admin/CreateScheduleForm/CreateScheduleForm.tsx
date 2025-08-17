@@ -26,6 +26,13 @@ const DAYS_OF_WEEK = [
 ];
 
 export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) => {
+    // Нормализуем возможный объектный идентификатор в строку
+    const rawGlobalId: any = globalGraphId as any;
+    const normalizedGlobalId: string =
+        rawGlobalId && typeof rawGlobalId === 'object'
+            ? (rawGlobalId._id ?? rawGlobalId.$oid ?? '')
+            : (rawGlobalId ?? '');
+
     const [formData, setFormData] = useState<ICreateScheduleDto>({
         graphId: '',
         name: '',
@@ -39,11 +46,12 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
     const queryClient = useQueryClient();
 
     const { data: graphs = [], isLoading: isLoadingGraphs } = useQuery<IGraphList[]>({
-        queryKey: ['graphs', globalGraphId],
+        queryKey: ['graphs', normalizedGlobalId],
         queryFn: async () => {
-            const response = await GraphService.getAllChildrenByGlobal(globalGraphId);
+            const response = await GraphService.getAllChildrenByGlobal(normalizedGlobalId);
             return response.data;
-        }
+        },
+        enabled: !!normalizedGlobalId
     });
 
     const { mutate: createSchedule, isPending } = useMutation({
