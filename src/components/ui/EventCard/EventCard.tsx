@@ -296,7 +296,9 @@ const EventCard: React.FC<EventProps> = React.memo(({
   const canViewAttendees = Boolean(
     user && (
       user.role === UserRole.Create ||
-      (user._id && initialEvent.graphId?.ownerUserId && user._id === initialEvent.graphId.ownerUserId)
+      (user._id && initialEvent.graphId?.ownerUserId && user._id === initialEvent.graphId.ownerUserId) ||
+      // @ts-ignore
+      (user.role === UserRole.Admin && !!user.selectedGraphId && user.selectedGraphId._id === initialEvent.globalGraphId)
     )
   );
   
