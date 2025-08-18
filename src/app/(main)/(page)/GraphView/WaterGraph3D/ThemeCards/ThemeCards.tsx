@@ -6,7 +6,8 @@ import { THEME_CONFIG } from '../constants';
 import styles from './ThemeCards.module.scss';
 
 export const ThemeCards = ({ data, onThemeSelect, selectedTheme, onSubgraphSelect }: ThemeCardsProps) => {
-  const rootNode = useMemo(() => data.find(n => n.name === 'КГТУ') || null, [data]);
+  // Определяем корневой (глобальный) граф независимо от названия
+  const rootNode = useMemo(() => data.find(n => n.graphType === 'global') || null, [data]);
   const themes = useMemo(() => rootNode ? data.filter(n => n.parentGraphId?.$oid === rootNode._id.$oid) : [], [data, rootNode]);
   const subgraphs = useMemo(() => selectedTheme ? data.filter(n => n.parentGraphId?.$oid === selectedTheme._id.$oid) : [], [data, selectedTheme]);
 

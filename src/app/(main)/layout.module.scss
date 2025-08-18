@@ -1,5 +1,5 @@
 // Больше 1000px
-@media only screen and (min-width: 680px) {
+@media only screen and (min-width: 1000px) {
     .wrapper{
       height: 100vh;
       display: grid;
@@ -59,7 +59,7 @@
 }
   
 // Меньше 1000Px
-@media only screen and (max-width: 680px) {
+@media only screen and (max-width: 1000px) {
   .wrapper {
     padding-bottom: 80px;
     display: flex;
@@ -68,7 +68,7 @@
   }
 
   .BottomMenu{
-    z-index: 10; // Выше чем у ThemeCards (1000)
+    z-index: 2000; // Должно быть выше любых элементов графа/карточек
     display: block;
     position: fixed;
     bottom: 0;
