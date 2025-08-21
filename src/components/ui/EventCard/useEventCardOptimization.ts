@@ -20,6 +20,7 @@ interface Event {
   timeTo: string;
   regedUsers: number;
   isAttended: boolean;
+  isDateTbd?: boolean;
 }
 
 interface UseEventCardOptimizationProps {
@@ -54,7 +55,8 @@ export const useEventCardOptimization = ({
     eventDate: initialEvent.eventDate?.split('T')[0] || new Date().toISOString().split('T')[0],
     timeFrom: initialEvent.timeFrom,
     timeTo: initialEvent.timeTo,
-    place: initialEvent.place
+    place: initialEvent.place,
+    isDateTbd: initialEvent.isDateTbd || false
   }), [initialEvent]);
 
   const [editedEvent, setEditedEvent] = useState(initialEditState);
@@ -86,7 +88,10 @@ export const useEventCardOptimization = ({
 
   // Мемоизированное форматирование времени
   const formattedTime = useMemo(() => {
-    const { eventDate, timeFrom, timeTo } = event;
+    const { eventDate, timeFrom, timeTo, isDateTbd } = event;
+    
+    // Если дата уточняется, показываем соответствующее сообщение
+    if (isDateTbd) return 'Дата и время уточняется';
     
     if (!eventDate || !timeFrom || !timeTo) return 'Время не указано';
 
@@ -110,7 +115,7 @@ export const useEventCardOptimization = ({
     } catch {
       return 'Ошибка формата времени';
     }
-  }, [event.eventDate, event.timeFrom, event.timeTo]);
+  }, [event.eventDate, event.timeFrom, event.timeTo, event.isDateTbd]);
 
   // Мемоизированные обработчики
   const handleRegistration = useCallback(async () => {
@@ -165,7 +170,9 @@ export const useEventCardOptimization = ({
     try {
       const updatedEvent = await EventService.updateEvent(event._id, {
         ...editedEvent,
-        graphId: event.graphId._id
+        graphId: event.graphId._id,
+        // Если дата уточняется, отправляем isDateTbd: true
+        ...(editedEvent.isDateTbd && { eventDate: undefined, timeFrom: undefined, timeTo: undefined })
       });
       setEvent(updatedEvent.data);
       setIsEditing(false);
@@ -185,7 +192,7 @@ export const useEventCardOptimization = ({
   }, []);
 
   // Мгновенное обновление состояния для отзывчивого интерфейса
-  const updateEditedEvent = useCallback((key: string, value: string) => {
+  const updateEditedEvent = useCallback((key: string, value: string | boolean) => {
       setEditedEvent(prev => ({ ...prev, [key]: value }));
   }, []);
 

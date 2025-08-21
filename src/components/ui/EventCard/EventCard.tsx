@@ -58,6 +58,7 @@ interface EventProps {
     timeTo: string;
     regedUsers: number;
     isAttended: boolean;
+    isDateTbd?: boolean;
   };
   isAttended?: boolean;
   onDelete?: (eventId: string) => void;
@@ -123,7 +124,7 @@ LazyGraphAvatar.displayName = 'LazyGraphAvatar';
 // Оптимизированные компоненты для редактирования без лишних ререндеров
 const EditFormInputs = React.memo<{ 
   editedEvent: any; 
-  updateEditedEvent: (key: string, value: string) => void;
+  updateEditedEvent: (key: string, value: string | boolean) => void;
 }>(({ editedEvent, updateEditedEvent }) => {
   // Мемоизированные обработчики для предотвращения ререндеров
   const handleDateChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,41 +143,65 @@ const EditFormInputs = React.memo<{
     updateEditedEvent('place', e.target.value);
   }, [updateEditedEvent]);
 
+  const handleIsDateTbdChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('isDateTbd', e.target.checked);
+  }, [updateEditedEvent]);
+
   return (
   <div className={styles.editForm}>
-    <Input
-      type="date"
-      label="Дата мероприятия"
-      value={editedEvent.eventDate}
-        onChange={handleDateChange}
-      variant="bordered"
-      startContent={<Calendar size={16} />}
-      className={styles.dateInput}
-    />
-    <div className={styles.timeInputs}>
-      <Input
-        type="time"
-        label="Время начала"
-        value={editedEvent.timeFrom}
-          onChange={handleTimeFromChange}
-        variant="bordered"
-        startContent={<Clock size={16} />}
-        className={styles.timeInput}
-      />
-      <Input
-        type="time"
-        label="Время окончания"
-        value={editedEvent.timeTo}
-          onChange={handleTimeToChange}
-        variant="bordered"
-        startContent={<Clock size={16} />}
-        className={styles.timeInput}
-      />
+    <div style={{ marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem' }}>
+        <input
+          type="checkbox"
+          id="editIsDateTbd"
+          checked={editedEvent.isDateTbd || false}
+          onChange={handleIsDateTbdChange}
+          style={{ width: '16px', height: '16px' }}
+        />
+        <label htmlFor="editIsDateTbd" style={{ fontSize: '14px', color: '#374151' }}>
+          Дата и время уточняется
+        </label>
+      </div>
     </div>
+
+    {!editedEvent.isDateTbd && (
+      <>
+        <Input
+          type="date"
+          label="Дата мероприятия"
+          value={editedEvent.eventDate}
+          onChange={handleDateChange}
+          variant="bordered"
+          startContent={<Calendar size={16} />}
+          className={styles.dateInput}
+        />
+        <div className={styles.timeInputs}>
+          <Input
+            type="time"
+            label="Время начала"
+            value={editedEvent.timeFrom}
+            onChange={handleTimeFromChange}
+            variant="bordered"
+            startContent={<Clock size={16} />}
+            className={styles.timeInput}
+          />
+          <Input
+            type="time"
+            label="Время окончания"
+            value={editedEvent.timeTo}
+            onChange={handleTimeToChange}
+            variant="bordered"
+            startContent={<Clock size={16} />}
+            className={styles.timeInput}
+          />
+        </div>
+      </>
+    )}
+
     <Input
       label="Место проведения"
       value={editedEvent.place}
-        onChange={handlePlaceChange}
+      onChange={handlePlaceChange}
       variant="bordered"
       startContent={<MapPinned size={16} />}
       placeholder="Введите место проведения"

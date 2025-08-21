@@ -30,9 +30,10 @@ export const EventService = {
         graphId: string;
         name: string;
         description: string;
-        eventDate: string;
-        timeFrom: string;
-        timeTo: string;
+        eventDate?: string;
+        timeFrom?: string;
+        timeTo?: string;
+        isDateTbd?: boolean;
     }) {
         return axiosAuth.put(`/event/${eventId}`, eventData);
     },

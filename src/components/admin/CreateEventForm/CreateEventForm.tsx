@@ -41,7 +41,8 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
         eventDate: '',
         timeFrom: '',
         timeTo: '',
-        graphId: ''
+        graphId: '',
+        isDateTbd: false
     });
 
     const queryClient = useQueryClient();
@@ -65,7 +66,9 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             }
             return EventService.createEvent({
                 ...eventData,
-                globalGraphId: selectedGraphId
+                globalGraphId: selectedGraphId,
+                // Если дата не указана, отправляем isDateTbd: true
+                ...(eventData.isDateTbd && { eventDate: undefined })
             });
         },
         onSuccess: () => {
@@ -77,7 +80,8 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                 eventDate: '',
                 timeFrom: '',
                 timeTo: '',
-                graphId: ''
+                graphId: '',
+                isDateTbd: false
             });
             notifySuccess('Мероприятие успешно создано!');
         },
@@ -102,24 +106,32 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             notifyError('Не выбран граф для создания мероприятия');
             return;
         }
-        if (!eventData.name || !eventData.description || !eventData.place || !eventData.eventDate || 
-            !eventData.timeFrom || !eventData.timeTo || !eventData.graphId) return;
+        if (!eventData.name || !eventData.description || !eventData.place || !eventData.graphId) {
+            // Если дата уточняется, то eventDate не обязателен
+            if (!eventData.isDateTbd && !eventData.eventDate) return;
+        }
+        
+        // Если дата уточняется, то время не обязательно
+        if (!eventData.isDateTbd && (!eventData.timeFrom || !eventData.timeTo)) return;
         
         // Проверяем, что дата мероприятия не сегодня и не в прошлом (строго с завтрашнего дня)
-        if (eventData.eventDate < tomorrowISO) {
+        // Только если дата не уточняется
+        if (!eventData.isDateTbd && eventData.eventDate < tomorrowISO) {
             notifyError('Мероприятие можно создать только на следующий день');
             return;
         }
             
-        // Validate that end time is after start time
-        const [fromHours, fromMinutes] = eventData.timeFrom.split(':').map(Number);
-        const [toHours, toMinutes] = eventData.timeTo.split(':').map(Number);
-        const fromTime = fromHours * 60 + fromMinutes;
-        const toTime = toHours * 60 + toMinutes;
-        
-        if (toTime <= fromTime) {
-            alert('Время окончания должно быть позже времени начала');
-            return;
+        // Validate that end time is after start time (только если дата не уточняется)
+        if (!eventData.isDateTbd) {
+            const [fromHours, fromMinutes] = eventData.timeFrom.split(':').map(Number);
+            const [toHours, toMinutes] = eventData.timeTo.split(':').map(Number);
+            const fromTime = fromHours * 60 + fromMinutes;
+            const toTime = toHours * 60 + toMinutes;
+            
+            if (toTime <= fromTime) {
+                alert('Время окончания должно быть позже времени начала');
+                return;
+            }
         }
         
         createEvent();
@@ -137,10 +149,9 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
         eventData.description && 
         eventData.description.length <= DESCRIPTION_MAX_LENGTH &&
         eventData.place &&
-        eventData.eventDate && 
-        eventData.timeFrom && 
-        eventData.timeTo && 
-        eventData.graphId;
+        eventData.graphId &&
+        // Если дата уточняется, то eventDate и время не обязательны
+        (eventData.isDateTbd || (eventData.eventDate && eventData.timeFrom && eventData.timeTo));
 
     return (
         <>
@@ -233,47 +244,71 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                 />
             </FormInputGroup>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-                <FormInputGroup 
-                    label="Дата:"
-                >
-                    <FormInput
-                        name="eventDate"
-                        type="date"
-                        value={eventData.eventDate}
-                        onChange={handleChange}
-                        min={tomorrowISO}
-                        required
+            <FormInputGroup 
+                label="Дата и время"
+                description="Укажите, уточнена ли дата и время мероприятия"
+            >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input
+                        type="checkbox"
+                        id="isDateTbd"
+                        name="isDateTbd"
+                        checked={eventData.isDateTbd}
+                        onChange={(e) => setEventData(prev => ({
+                            ...prev,
+                            isDateTbd: e.target.checked
+                        }))}
+                        style={{ width: '16px', height: '16px' }}
                     />
-                </FormInputGroup>
+                    <label htmlFor="isDateTbd" style={{ fontSize: '14px', color: '#374151' }}>
+                        Дата и время уточняется
+                    </label>
+                </div>
+            </FormInputGroup>
 
-                <FormInputGroup 
-                    label="Время начала:"
-                >
-                    <FormInput
-                        name="timeFrom"
-                        type="time"
-                        value={eventData.timeFrom}
-                        onChange={handleChange}
-                        required
-                    />
-                </FormInputGroup>
+            {!eventData.isDateTbd && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+                    <FormInputGroup 
+                        label="Дата:"
+                    >
+                        <FormInput
+                            name="eventDate"
+                            type="date"
+                            value={eventData.eventDate}
+                            onChange={handleChange}
+                            min={tomorrowISO}
+                            required
+                        />
+                    </FormInputGroup>
 
-                <FormInputGroup 
-                    label="Время окончания:"
-                >
-                    <FormInput
-                        name="timeTo"
-                        type="time"
-                        value={eventData.timeTo}
-                        onChange={handleChange}
-                        min={eventData.timeFrom && eventData.timeFrom !== '' ? 
-                            eventData.timeFrom : undefined
-                        }
-                        required
-                    />
-                </FormInputGroup>
-            </div>
+                    <FormInputGroup 
+                        label="Время начала:"
+                    >
+                        <FormInput
+                            name="timeFrom"
+                            type="time"
+                            value={eventData.timeFrom}
+                            onChange={handleChange}
+                            required
+                        />
+                    </FormInputGroup>
+
+                    <FormInputGroup 
+                        label="Время окончания:"
+                    >
+                        <FormInput
+                            name="timeTo"
+                            type="time"
+                            value={eventData.timeTo}
+                            onChange={handleChange}
+                            min={eventData.timeFrom && eventData.timeFrom !== '' ? 
+                                eventData.timeFrom : undefined
+                            }
+                            required
+                        />
+                    </FormInputGroup>
+                </div>
+            )}
         </AdminForm>
         )}
         </>
