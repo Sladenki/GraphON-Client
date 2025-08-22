@@ -8,7 +8,7 @@ import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import React from "react";
 import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
 import { AllGraphsOptimized } from "@/app/(main)/(page)/AllGraphs/AllGraphsOptimized";
-import { Users, Calendar, Heart, Network } from "lucide-react";
+import { Users, Calendar, Heart, Network, Hexagon } from "lucide-react";
 import { useActiveTab, useSearchQuery, useSelectedGraphId, useSetActiveTab, useSetSearchQuery, useSetSelectedGraphId, TabType } from "@/stores/useUIStore";
 import Tabs from "./Tabs/Tabs";
 
@@ -16,6 +16,7 @@ import Tabs from "./Tabs/Tabs";
 const Subs = dynamic(() => import("./Subs/SubsOptimized"), { ssr: false });
 const GraphView = dynamic(() => import("./GraphView/GraphView"), { ssr: false });
 const EventsList = dynamic(() => import("./EventsList/EventsListOptimized"), { ssr: false });
+const Graphs2View = dynamic(() => import("./Graphs2/Graphs2View"), { ssr: false });
 
 const Homepage = () => {
   const { user } = useAuth();
@@ -63,6 +64,7 @@ const Homepage = () => {
     { name: "events", label: "События", icon: <Calendar size={18} /> },
     ...(user?.graphSubsNum && user.graphSubsNum > 0 ? [{ name: "subs", label: "Подписки", icon: <Heart size={18} /> }] : []),
     { name: "graphSystem", label: "Графы", icon: <Network size={18} /> },
+    { name: "graphs2", label: "Графы 2", icon: <Hexagon size={18} /> },
   ], [user?.graphSubsNum]);
 
   // Проверяем наличие выбранного университета
@@ -88,7 +90,7 @@ const Homepage = () => {
           tabs={tabs}
           activeTab={activeTab}
           setActiveTab={handleTabChange}
-          showSearch={activeTab === "groups" || activeTab === "events" || activeTab === "subs"}
+          showSearch={activeTab === "groups" || activeTab === "events" || activeTab === "subs" || activeTab === "graphs2"}
           searchValue={searchQuery}
           onSearchChange={setSearchQuery}
         />
@@ -111,6 +113,12 @@ const Homepage = () => {
         {activeTab === 'graphSystem' && (
           <Suspense fallback={<SpinnerLoader />}>
             <GraphView />
+          </Suspense>
+        )}
+
+        {activeTab === 'graphs2' && (
+          <Suspense fallback={<SpinnerLoader />}>
+            <Graphs2View searchQuery={searchQuery} />
           </Suspense>
         )}
 

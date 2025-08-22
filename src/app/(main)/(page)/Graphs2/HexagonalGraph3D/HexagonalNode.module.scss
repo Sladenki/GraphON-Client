@@ -1,0 +1,38 @@
+.hexagonalNode {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.nodeInfo {
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  
+  &.visible {
+    opacity: 1;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .nodeInfo {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+

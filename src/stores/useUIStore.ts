@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type TabType = 'events' | 'groups' | 'graphSystem' | 'subs';
+export type TabType = 'events' | 'groups' | 'graphSystem' | 'graphs2' | 'subs';
 
 interface UIState {
   // Navigation state
