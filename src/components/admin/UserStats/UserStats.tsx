@@ -6,12 +6,9 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 
 interface UserStatsData {
     totalUsers: number;
-    totalGraphs: number;
-    usersByRole: {
-        user: number;
-        admin: number;
-        create: number;
-    };
+    usersKgtu: number;
+    usersKbk: number;
+    usersNoGraph: number;
 }
 
 export const UserStats: React.FC = () => {
@@ -31,6 +28,18 @@ export const UserStats: React.FC = () => {
             <div className={styles.statCard}>
                 <h4>Всего пользователей</h4>
                 <div className={styles.statValue}>{stats.totalUsers}</div>
+            </div>
+            <div className={styles.statCard}>
+                <h4>Пользователи КГТУ</h4>
+                <div className={styles.statValue}>{stats.usersKgtu}</div>
+            </div>
+            <div className={styles.statCard}>
+                <h4>Пользователи КБК</h4>
+                <div className={styles.statValue}>{stats.usersKbk}</div>
+            </div>
+            <div className={styles.statCard}>
+                <h4>Пользователи без выбранного графа</h4>
+                <div className={styles.statValue}>{stats.usersNoGraph}</div>
             </div>
         </div>
     );
