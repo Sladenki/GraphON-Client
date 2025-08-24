@@ -1,17 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --main-Color: 150, 130, 238;  /* Тёплый фиолетовый */
   --light-main: rgba(var(--main-Color), .2);
 
-  // --parent-node: rgb(106, 87, 232); /* Основной цвет для родительского узла */
-  // --intermediate-node: rgba(89, 76, 169, 0.2); /* Цвет для промежуточного узла */
-  // --child-node: rgba(106, 87, 232, 0.1); /* Цвет для дочернего узла */
-
-  --parent-node: #ff6b6b;
-  --intermediate-node: #ffcc29;
-  --child-node: #1e90ff;
-
-  --google-color: #4285f4;
-  --google-hover: #357ae8;
+  /* Font variables for Next.js Font optimization */
+  --font-inter: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-orbitron: 'Orbitron', 'Space Grotesk', 'Trebuchet MS', monospace, sans-serif;
+  --font-poppins: 'Poppins', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-montserrat: 'Montserrat', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-playfair: 'Playfair Display', 'Georgia', serif;
 
   --popup-bg: rgba(0, 0, 0, 0.5);
   --popup-content-bg: var(--background-color);
@@ -27,23 +27,9 @@
   --border-color: #e0e0e0;
   --node-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   --node-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --node-border-radius: 8px;
-  --node-padding: 12px;
-  --node-margin: 8px;
-  --node-font-size: 14px;
-  --node-line-height: 1.4;
-  --node-transition: all 0.2s ease;
   --node-selected-border: 2px solid var(--primary-color);
   --node-hover-border: 1px solid var(--primary-color);
   --node-default-border: 1px solid var(--border-color);
-  --node-parent-bg: rgba(106, 87, 232, 0.1);
-  --node-intermediate-bg: rgba(89, 76, 169, 0.05);
-  --node-child-bg: rgba(106, 87, 232, 0.05);
-  --node-expand-icon-size: 16px;
-  --node-expand-icon-color: var(--text-secondary);
-  --node-expand-icon-hover: var(--primary-color);
-  --node-expand-icon-transition: transform 0.2s ease;
-  --node-expand-icon-rotation: 45deg;
 
   // 3D граф
   --primary-bg: #1a1b3d;
@@ -63,6 +49,26 @@
   --glass-hover: rgba(255, 255, 255, 0.05);
   --gradient-start: #3a1c6b;
   --gradient-end: #2a2b5d;
+
+  /* Landing page variables - Modern Design */
+  --landing-primary-color: #6366f1;
+  --landing-primary-color-rgb: 99, 102, 241;
+  --landing-secondary-color: #8b5cf6;
+  --landing-secondary-color-rgb: 139, 92, 246;
+  --landing-accent-color: #06b6d4;
+  --landing-accent-color-rgb: 6, 182, 212;
+  --landing-dark-bg: #0f172a;
+  --landing-dark-bg-rgb: 15, 23, 42;
+  --landing-card-bg: rgba(30, 41, 59, 0.8);
+  --landing-text-light: #f8fafc;
+  --landing-text-dark: #1e293b;
+  --landing-text-muted: #94a3b8;
+  --landing-gradient-primary: linear-gradient(135deg, var(--landing-primary-color), var(--landing-secondary-color));
+  --landing-gradient-secondary: linear-gradient(135deg, var(--landing-secondary-color), var(--landing-accent-color));
+  --landing-gradient-dark: linear-gradient(135deg, var(--landing-dark-bg), #1e293b);
+  --landing-gradient-card: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  --landing-glow-primary: 0 0 20px rgba(var(--landing-primary-color-rgb), 0.3);
+  --landing-glow-secondary: 0 0 30px rgba(var(--landing-secondary-color-rgb), 0.4);
 }
 
 html[data-theme="light"] {
@@ -86,9 +92,6 @@ html[data-theme="dark"] {
   --border-color: #4a4d53;
   --node-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   --node-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  --node-parent-bg: rgba(138, 122, 248, 0.15);
-  --node-intermediate-bg: rgba(138, 122, 248, 0.1);
-  --node-child-bg: rgba(138, 122, 248, 0.05);
 }
 
 html,
@@ -98,7 +101,7 @@ body {
   margin: 0;
   box-sizing: border-box;
   background-color: var(--background-color);
-
+  scroll-behavior: smooth;
 }
 
 *{
@@ -130,4 +133,51 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(var(--main-Color), 0.2);
 }
+
+// ==============================================
+// Mobile optimization for screens < 419px
+// ============================================== 
+// @media (max-width: 419px) {
+//   /* Only disable the most expensive effects */
+//   * {
+//     backdrop-filter: none !important;
+//     -webkit-backdrop-filter: none !important;
+//   }
+  
+//   /* Optimize scrollbars for mobile */
+//   *::-webkit-scrollbar {
+//     width: 8px;
+//   }
+  
+//   *::-webkit-scrollbar-thumb {
+//     background-color: rgba(var(--main-Color), 0.3);
+//     border: 1px solid var(--background-color);
+//     border-radius: 8px;
+//   }
+  
+//   /* Disable expensive effects for specific elements */
+//   .glow-effect, 
+//   .neon-text,
+//   .theme-glow,
+//   .shadow-effect {
+//     text-shadow: none !important;
+//     box-shadow: none !important;
+//   }
+  
+//   /* Optimize image rendering for mobile */
+//   img {
+//     image-rendering: -webkit-optimize-contrast;
+//     image-rendering: crisp-edges;
+//     /* Enable hardware acceleration for images */
+//     transform: translateZ(0);
+//     backface-visibility: hidden;
+//   }
+  
+//   /* Simplify popup overlays for mobile */
+//   .popup-overlay,
+//   .modal-overlay {
+//     backdrop-filter: none !important;
+//     background: rgba(0, 0, 0, 0.6) !important;
+//   }
+// }
   

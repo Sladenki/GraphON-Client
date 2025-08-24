@@ -1,16 +1,41 @@
 .themeOverlay {
   position: fixed;
-  bottom: 70px;
+  bottom: 60px; // Высота BottomMenu + отступы
+  bottom: calc(60px + env(safe-area-inset-bottom, 0));
   width: 100%;
-  background: rgba(20, 20, 40, 0.7);
-  backdrop-filter: blur(12px);
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  z-index: 2147483647;
-  padding: 0.75rem 1rem;
+  background: rgba(20, 20, 40, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  z-index: 5; 
+  padding: 1rem;
+  padding-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  max-height: 80vh;
+  max-height: 40vh;
+  min-height: 140px;
+  
+  // iPhone-specific adjustments
+  @media screen and (max-width: 430px) and (-webkit-min-device-pixel-ratio: 2) {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 0.875rem;
+    padding-bottom: 0.875rem;
+    max-height: 37vh;
+    bottom: 70px;
+    bottom: calc(70px + env(safe-area-inset-bottom, 0));
+  }
+  
+  // iPhone SE and small screens
+  @media screen and (max-width: 375px) {
+    padding: 0.75rem;
+    padding-bottom: 0.75rem;
+    max-height: 35vh;
+    min-height: 120px;
+    bottom: 70px;
+    bottom: calc(70px + env(safe-area-inset-bottom, 0));
+  }
 }
 
 .themeScroll {
@@ -22,6 +47,8 @@
   align-items: center;
   scroll-snap-type: x mandatory;
   padding: 0;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
     display: none;
@@ -29,30 +56,55 @@
 }
 
 .themeCard {
-  flex: 0 0 160px;
-  height: 100%;
+  flex: 0 0 140px;
+  height: 100px;
   scroll-snap-align: start;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  padding: 0.75rem;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
+  &:hover, &:active {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(1.02);
   }
 
   &:first-child {
-    margin-left: 1rem; // задаём левый отступ только первой карточке
+    margin-left: 1rem;
   }
 
   &:last-child {
-    margin-right: 2rem; // задаём правый отступ только последней карточке
+    margin-right: 1rem;
+  }
+  
+  // iPhone-specific adjustments
+  @media screen and (max-width: 430px) {
+    flex: 0 0 130px;
+    height: 90px;
+    padding: 0.4rem;
+    border-radius: 10px;
+  }
+  
+  @media screen and (max-width: 375px) {
+    flex: 0 0 120px;
+    height: 85px;
+    padding: 0.35rem;
+    
+    &:first-child {
+      margin-left: 0.75rem;
+    }
+    
+    &:last-child {
+      margin-right: 0.75rem;
+    }
   }
 }
 
@@ -61,19 +113,58 @@
   margin-bottom: 0.4rem;
 }
 
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  height: 100%;
+  justify-content: center;
+}
+
 .cardTitle {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
   display: block;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+  hyphens: auto;
+  
+  @media screen and (max-width: 430px) {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+  }
+  
+  @media screen and (max-width: 375px) {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2;
+  }
 }
 
 .cardSubtitle {
   font-size: 0.75rem;
   color: var(--text-secondary);
   display: block;
-  margin-top: 0.2rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   word-break: break-word;
+  
+  @media screen and (max-width: 430px) {
+    font-size: 0.7rem;
+  }
+  
+  @media screen and (max-width: 375px) {
+    font-size: 0.65rem;
+  }
 }
 
 .subgraphContent {
@@ -84,6 +175,8 @@
   align-items: flex-start;
   scroll-snap-type: x mandatory;
   padding: 0; // убираем лишние отступы
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
     display: none;
@@ -112,20 +205,31 @@
 
 .subgraphCard {
   flex: 0 0 160px;
-  height: 120px; // или auto с min-height, если контент может быть динамичным
+  height: 140px;
   scroll-snap-align: start;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 0.5rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 0.5rem;
+  justify-content: center;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    transition-duration: 0.1s;
   }
 
   &:first-child {
@@ -135,22 +239,32 @@
   &:last-child {
     margin-right: 1rem;
   }
-}
-
-.vkLink {
-  align-self: flex-end;
-  color: var(--accent-color);
-  border: 1px solid var(--accent-color);
-  border-radius: 6px;
-  padding: 0.3rem 0.6rem;
-  font-size: 0.7rem;
-  text-decoration: none;
-
-  &:hover {
-    background: var(--accent-color);
-    color: #fff;
+  
+  // Mobile adjustments
+  @media screen and (max-width: 430px) {
+    flex: 0 0 150px;
+    height: 130px;
+    padding: 0.8rem;
+    border-radius: 14px;
+    
+    &:first-child {
+      margin-left: 0.75rem;
+    }
+    
+    &:last-child {
+      margin-right: 0.75rem;
+    }
+  }
+  
+  @media screen and (max-width: 375px) {
+    flex: 0 0 140px;
+    height: 120px;
+    padding: 0.7rem;
+    border-radius: 12px;
   }
 }
+
+
 
 .emptyState {
   text-align: center;

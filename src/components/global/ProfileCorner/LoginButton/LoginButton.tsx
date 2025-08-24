@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './LoginButton.module.scss'
 import { MessageCircle } from 'lucide-react';
+import { ENV_CONFIG } from '@/config/env';
 
 interface User {
   avaPath?: string;
@@ -41,7 +42,7 @@ const LoginButton = () => {
 
     setMessageTimer(timer);
 
-    const telegramBotUrl = `https://t.me/graphon_klgtu_bot?start=auth`;
+    const telegramBotUrl = `${ENV_CONFIG.TELEGRAM_BOT_URL}?start=auth`;
     window.location.href = telegramBotUrl;
   };
 

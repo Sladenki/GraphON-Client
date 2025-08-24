@@ -1,9 +1,53 @@
 // Список графов
 .postsList {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+  position: relative;
+  min-height: 200px;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
+  
+  // Анимации только на десктопе
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
+}
+
+.loaderWrapper {
   display: flex;
   justify-content: center;
-  min-height: 200px; // Фиксируем минимальную высоту
-  align-items: center;
+  padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  // Оставляем contain для лоадера, так как он не влияет на popup-ы
+  contain: layout style paint;
+}
+
+.graphsListWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
+  
+  // Анимации только на десктопе
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
 }
 
 .emptyMessage {
@@ -23,7 +67,7 @@
   font-family: var(--font-family, 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
   
   &::before {
-    content: '🎓';
+    content: '🔍';
     font-size: 4rem;
     margin-bottom: 20px;
     animation: bounce 2s infinite;
@@ -85,10 +129,80 @@
   }
 }
 
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--glass-bg);
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  margin: 20px;
+  // Оставляем contain для error блока, так как он не влияет на popup-ы
+  contain: layout style paint;
+  
+  // Тяжелые эффекты только на десктопе
+  @media (min-width: 768px) {
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
+
+  .errorIcon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    
+    // Анимация только на десктопе
+    @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+      animation: shake 0.5s ease-in-out;
+    }
+  }
+
+  .errorText {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--error-color);
+    margin-bottom: 16px;
+  }
+
+  .retryButton {
+    padding: 12px 24px;
+    background: var(--theme-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    touch-action: manipulation;
+
+    // Hover эффекты только на десктопе
+    @media (min-width: 768px) {
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--main-Color), 0.2);
+      }
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+// Упрощенные анимации
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -123,13 +237,80 @@
   }
 }
 
-.error {
-  color: var(--text-primary);
-  text-align: center;
-  padding: 2rem;
-  font-size: 1rem;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 767px) {
+  .postsList {
+    padding: 0 8px;
+    // Упрощенная отрисовка на мобильных
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .graphsListWrapper {
+    gap: 16px;
+    // Отключаем все анимации на мобильных
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .error {
+    padding: 32px 16px;
+    margin: 16px;
+    // Убираем тяжелые эффекты на мобильных
+    backdrop-filter: none;
+    animation: none !important;
+    
+    .errorIcon {
+      font-size: 3.5rem;
+      animation: none !important;
+    }
+    
+    .errorText {
+      font-size: 1.3rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .postsList {
+    padding: 0 4px;
+  }
+
+  .graphsListWrapper {
+    gap: 12px;
+  }
+}
+
+// Планшеты
+@media (min-width: 768px) and (max-width: 1024px) {
+  .postsList {
+    padding: 0 12px;
+  }
+  
+  .graphsListWrapper {
+    gap: 20px;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 } 

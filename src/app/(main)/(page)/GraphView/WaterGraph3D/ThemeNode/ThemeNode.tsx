@@ -25,7 +25,28 @@ const checkLabelOverlap = (pos1: THREE.Vector3, pos2: THREE.Vector3, camera: THR
 
 // Функция для получения оптимального размера шрифта
 const getOptimalFontSize = (childrenCount: number, isMobile: boolean): number => {
+  // Проверяем, является ли устройство iPhone
+  const isIPhone = typeof window !== 'undefined' && /iPhone|iPod/.test(navigator.userAgent);
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+  const isSmallScreen = screenWidth <= 375;
+  const isLargeIPhone = screenWidth >= 430;
+  
   if (isMobile) {
+    if (isLargeIPhone) {
+      if (childrenCount > 8) return 0.65;
+      if (childrenCount > 5) return 0.7;
+      return 0.75;
+    }
+    if (isSmallScreen && isIPhone) {
+      if (childrenCount > 8) return 0.55;
+      if (childrenCount > 5) return 0.6;
+      return 0.65;
+    }
+    if (isIPhone) {
+      if (childrenCount > 8) return 0.6;
+      if (childrenCount > 5) return 0.65;
+      return 0.7;
+    }
     if (childrenCount > 8) return 0.65;
     if (childrenCount > 5) return 0.7;
     return 0.75;
@@ -49,9 +70,35 @@ const getMobileScale = (active: boolean, isMobile: boolean): number => {
 
 // Функция для расчета радиуса орбиты
 const calculateOrbitRadius = (childrenCount: number, isMobile: boolean): number => {
-  const baseRadius = isMobile ? 1.8 : 2.2;
-  const minRadius = isMobile ? 1.5 : 1.8;
-  const maxRadius = isMobile ? 2.5 : 3.0;
+  // Проверяем, является ли устройство iPhone
+  const isIPhone = typeof window !== 'undefined' && /iPhone|iPod/.test(navigator.userAgent);
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+  const isSmallScreen = screenWidth <= 375;
+  const isLargeIPhone = screenWidth >= 430; // iPhone 14 Pro Max и подобные
+  
+  let baseRadius, minRadius, maxRadius;
+  
+  if (isLargeIPhone) {
+    baseRadius = 3.2;
+    minRadius = 2.8;
+    maxRadius = 4.5;
+  } else if (isSmallScreen && isIPhone) {
+    baseRadius = 2.6;
+    minRadius = 2.3;
+    maxRadius = 3.8;
+  } else if (isIPhone) {
+    baseRadius = 2.8;
+    minRadius = 2.5;
+    maxRadius = 4.0;
+  } else if (isMobile) {
+    baseRadius = 1.8;
+    minRadius = 1.5;
+    maxRadius = 2.5;
+  } else {
+    baseRadius = 2.2;
+    minRadius = 1.8;
+    maxRadius = 3.0;
+  }
   
   // Увеличиваем радиус в зависимости от количества подграфов
   const radius = baseRadius + (childrenCount * 0.1);
@@ -87,31 +134,82 @@ export function ThemeNode({
     [theme, data]
   );
 
-  // Обновляем размеры с учетом новой орбитальной системы
-  const orbitRadius = useMemo(() => (isMobile ? 1.87 : 3.5) * scale, [isMobile, scale]);
+  // Определяем тип устройства для более точных настроек
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+  const isSmallScreen = screenWidth <= 375;
+  const isLargeIPhone = screenWidth >= 430;
+  const isIPhone = typeof window !== 'undefined' && /iPhone|iPod/.test(navigator.userAgent);
+  
+  // Обновляем размеры с учетом новой орбитальной системы и iPhone
+  const orbitRadius = useMemo(() => {
+    if (isSmallScreen && isIPhone) return 1.9 * 2 * scale; // Увеличиваем в 2 раза для маленьких iPhone
+    if (isIPhone) return 2.1 * 2 * scale; // Увеличиваем в 2 раза для обычных iPhone
+    return (isMobile ? 1.87 : 3.5) * scale;
+  }, [isMobile, scale, isSmallScreen, isIPhone]);
+  
   const nodeScale = useMemo(() => {
+    // Увеличенные базовые размеры только для iPhone
+    const baseScale = isSmallScreen && isIPhone ? 1.4 : (isIPhone ? 1.5 : 1);
+    
+    // Определяем базовые размеры в зависимости от устройства
+    let baseMobileSize, baseDesktopSize;
+    
+    if (isIPhone) {
+      // Увеличенные размеры только для iPhone
+      baseMobileSize = 0.35; // Увеличено с 0.23
+      baseDesktopSize = 0.45; // Остается как было
+    } else {
+      // Оригинальные размеры для всех остальных устройств
+      baseMobileSize = 0.23; // Оригинальный размер
+      baseDesktopSize = 0.45; // Остается как было
+    }
+    
     // Если это глобальный граф
     if (theme.graphType === 'global') {
       if (anyActive) {
-        return (isMobile ? 0.09 : 0.18) * scale; // Уменьшаем в 2.5 раза при активации любого графа
+        const activeSize = isIPhone ? 0.12 : 0.09; // Увеличено только для iPhone
+        return (isMobile ? activeSize : 0.18) * scale * baseScale;
       }
-      return (isMobile ? 0.23 : 0.45) * scale; // Нормальный размер
+      return (isMobile ? baseMobileSize : baseDesktopSize) * scale * baseScale;
     }
+    
     // Для остальных графов
-    if (active) return (isMobile ? 0.17 : 0.3) * scale;
-    if (anyActive) return (isMobile ? 0.13 : 0.25) * scale;
-    return (isMobile ? 0.23 : 0.45) * scale;
-  }, [isMobile, scale, active, anyActive, theme.graphType]);
+    if (active) {
+      const activeSize = isIPhone ? 0.25 : 0.17; // Увеличено только для iPhone
+      return (isMobile ? activeSize : 0.3) * scale * baseScale;
+    }
+    if (anyActive) {
+      const anyActiveSize = isIPhone ? 0.18 : 0.13; // Увеличено только для iPhone
+      return (isMobile ? anyActiveSize : 0.25) * scale * baseScale;
+    }
+    return (isMobile ? baseMobileSize : baseDesktopSize) * scale * baseScale;
+  }, [isMobile, scale, active, anyActive, theme.graphType, isSmallScreen, isIPhone]);
   
-  const childOrbitRadius = useMemo(() => 
-    calculateOrbitRadius(children.length, isMobile) * scale,
-    [children.length, isMobile, scale]
-  );
+  const childOrbitRadius = useMemo(() => {
+    const baseRadius = calculateOrbitRadius(children.length, isMobile);
+    if (isLargeIPhone) return baseRadius * 1.4 * scale;
+    if (isSmallScreen && isIPhone) return baseRadius * 1.2 * scale;
+    if (isIPhone) return baseRadius * 1.3 * scale;
+    return baseRadius * scale;
+  }, [children.length, isMobile, scale, isSmallScreen, isIPhone, isLargeIPhone]);
   
-  const childNodeScale = useMemo(() => 
-    (isMobile ? 0.15 : 0.28) * scale,
-    [isMobile, scale]
-  );
+  const childNodeScale = useMemo(() => {
+    let baseChildScale;
+    if (isLargeIPhone) {
+      baseChildScale = 1.2; // Увеличено только для больших iPhone
+    } else if (isSmallScreen && isIPhone) {
+      baseChildScale = 1.0; // Увеличено только для маленьких iPhone
+    } else if (isIPhone) {
+      baseChildScale = 1.1; // Увеличено только для обычных iPhone
+    } else {
+      baseChildScale = 1; // Оригинальный размер для всех остальных
+    }
+    
+    // Определяем базовый размер в зависимости от устройства
+    const baseMobileSize = isIPhone ? 0.22 : 0.15; // Увеличено только для iPhone
+    
+    return (isMobile ? baseMobileSize : 0.28) * scale * baseChildScale;
+  }, [isMobile, scale, isSmallScreen, isIPhone, isLargeIPhone]);
 
   // Вычисляем позицию узла с учетом активного состояния
   const angle = (index / total) * Math.PI * 2;
@@ -142,10 +240,21 @@ export function ThemeNode({
   );
 
   // Максимальная длина текста для подписей
-  const maxTextLength = useMemo(() => 
-    isMobile ? (children.length > 5 ? 12 : 16) : (children.length > 8 ? 14 : 20),
-    [children.length, isMobile]
-  );
+  const maxTextLength = useMemo(() => {
+    if (isMobile) {
+      if (isLargeIPhone) {
+        return children.length > 5 ? 12 : 16;
+      }
+      if (isSmallScreen && isIPhone) {
+        return children.length > 5 ? 8 : 12;
+      }
+      if (isIPhone) {
+        return children.length > 5 ? 10 : 14;
+      }
+      return children.length > 5 ? 12 : 16;
+    }
+    return children.length > 8 ? 14 : 20;
+  }, [children.length, isMobile, isSmallScreen, isIPhone, isLargeIPhone]);
 
   // Проверяем видимость подписей
   useEffect(() => {
@@ -297,7 +406,7 @@ export function ThemeNode({
 
       {/* Подпись основного узла */}
       {labelVisible && (
-        <Billboard position={[0, (isMobile ? 0.3 : 0.8), 0]}>
+        <Billboard position={[0, (isMobile ? (isIPhone ? 0.45 : 0.3) : 0.8), 0]}>
           <Html center>
             <div 
               className={`${styles.themeLabel} ${active ? styles.active : ''} ${anyActive && !active ? styles.inactive : ''}`}

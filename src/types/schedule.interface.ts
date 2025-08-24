@@ -21,6 +21,7 @@ export interface EventItem {
     graphId: {
         _id: string;
         name: string;
+        imgPath?: string;
     };
     globalGraphId: string;
     name: string;

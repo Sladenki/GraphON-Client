@@ -1,5 +1,5 @@
 // Больше 1000px
-@media only screen and (min-width: 680px) {
+@media only screen and (min-width: 1000px) {
     .wrapper{
       height: 100vh;
       display: grid;
@@ -21,6 +21,8 @@
           overflow-y: auto;
           border-radius: 60px 0 0 60px;
           box-shadow: -16px 0px 28px 0px rgba(var(--main-Color), 0.03);
+          display: flex;
+          flex-direction: column;
           
           // Стилизация скроллбара
           &::-webkit-scrollbar {
@@ -57,13 +59,16 @@
 }
   
 // Меньше 1000Px
-@media only screen and (max-width: 680px) {
+@media only screen and (max-width: 1000px) {
   .wrapper {
     padding-bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
   }
 
   .BottomMenu{
-    z-index: 10;
+    z-index: 2000; // Должно быть выше любых элементов графа/карточек
     display: block;
     position: fixed;
     bottom: 0;

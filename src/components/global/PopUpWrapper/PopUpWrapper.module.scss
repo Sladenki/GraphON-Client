@@ -1,0 +1,184 @@
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--popup-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  animation: fadeIn 0.2s ease-out forwards;
+  overflow: auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  
+  transition: opacity 0.2s ease-out;
+  
+  @media (max-width: 768px) {
+    animation: fadeInMobile 0.15s ease-out forwards;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+.popupContent {
+  background-color: var(--popup-content-bg);
+  padding: 0;
+  border-radius: var(--popup-border-radius);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 90vw;
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  max-height: calc(100vh - 2rem);
+  transform: scale(0.8);
+  animation: scaleIn 0.2s ease-out forwards;
+  display: flex;
+  flex-direction: column;
+  
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  
+  @media (max-width: 768px) {
+    animation: scaleInMobile 0.15s ease-out forwards;
+    transform: translateY(20px);
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform;
+  }
+  
+  @media (min-width: 768px) {
+    max-width: min(90vw, 900px);
+    max-height: calc(100vh - 4rem);
+  }
+  
+  @media (min-width: 1024px) {
+    max-width: min(80vw, 900px);
+    max-height: calc(100vh - 6rem);
+  }
+}
+
+.closeButton {
+  position: absolute; 
+  top: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  transition: all 0.2s ease-out;
+  color: #666;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.15);
+    transform: scale(1.1);
+    color: #333;
+  }
+  
+  @media (max-width: 768px) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.15);
+    transition: background-color 0.15s ease-out;
+    
+    &:active {
+      background: rgba(0, 0, 0, 0.25);
+      transform: scale(0.95);
+    }
+  }
+  
+  @media (max-width: 640px) {
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 36px;
+    height: 36px;
+  }
+}
+  
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInMobile {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleInMobile {
+  from {
+    transform: translateY(20px);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+  
+@media (max-width: 640px) {
+  .popupOverlay {
+    padding: 0.5rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+  
+  .popupContent {
+    max-width: 95vw;
+    max-height: calc(100vh - 1rem);
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .popupOverlay {
+    padding: 0.25rem;
+    padding-top: 1rem;
+  }
+  
+  .popupContent {
+    max-width: 98vw;
+    border-radius: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popupOverlay,
+  .popupContent,
+  .closeButton {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+  

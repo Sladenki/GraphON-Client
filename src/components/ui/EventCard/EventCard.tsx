@@ -1,13 +1,44 @@
-import React, { useEffect, useState } from "react";
-import styles from "./EventCard.module.scss";
+'use client'
+
+import React, { useMemo } from "react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Button,
+  Input,
+  Textarea,
+  Chip,
+  Tooltip,
+  Divider,
+  ButtonGroup,
+  Spinner,
+  Image as HeroImage
+} from "@heroui/react";
+import { 
+  Edit3, 
+  Trash2, 
+  Save, 
+  X,
+  UserPlus,
+  UserX,
+  LogIn,
+  CalendarClock,
+  MapPinned,
+  UsersRound,
+  Calendar,
+  Clock
+} from "lucide-react";
 import { useEventRegistration } from "@/hooks/useEventRegistration";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
-import { EventService } from "@/services/event.service";
 import { UserRole } from "@/types/user.interface";
-import { notifyError, notifyInfo, notifySuccess } from "@/lib/notifications";
-import { useRouter } from "next/navigation";
-
+import { useEventCardOptimization } from './useEventCardOptimization';
+import { useDeclensionWord } from "@/hooks/useDeclension";
+import DeleteConfirmPopUp from './DeleteConfirmPopUp/DeleteConfirmPopUp';
+import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
+import styles from './EventCard.module.scss';
 
 interface EventProps {
   event: {
@@ -15,6 +46,8 @@ interface EventProps {
     graphId: {
       _id: string;
       name: string;
+      ownerUserId?: string;
+      imgPath?: string;
     };
     globalGraphId: string;
     name: string;
@@ -25,274 +58,499 @@ interface EventProps {
     timeTo: string;
     regedUsers: number;
     isAttended: boolean;
+    isDateTbd?: boolean;
   };
   isAttended?: boolean;
   onDelete?: (eventId: string) => void;
 }
 
-const formatEventTime = (startDate?: string, startTime?: string, endDate?: string, endTime?: string): string => {
-  if (!startDate || !startTime || !endDate || !endTime) return 'Время не указано';
+// Lazy загружаемое изображение для графа
+const LazyGraphAvatar = React.memo<{ 
+  src: string; 
+  alt: string; 
+  fallback: string;
+}>(({ src, alt, fallback }) => {
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [hasError, setHasError] = React.useState(false);
+  const imgRef = React.useRef<HTMLImageElement>(null);
 
-  try {
-    const start = new Date(startDate);
-    const [startHours, startMinutes] = startTime.split(':');
-    start.setHours(parseInt(startHours, 10), parseInt(startMinutes, 10));
-
-    const end = new Date(endDate);
-    const [endHours, endMinutes] = endTime.split(':');
-    end.setHours(parseInt(endHours, 10), parseInt(endMinutes, 10));
-
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) return 'Некорректная дата';
-
-    const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
-    const durationText = duration === 1 ? 'час' : 
-                        duration >= 2 && duration <= 4 ? 'часа' : 
-                        'часов';
-
-    return `${start.toLocaleString('ru-RU', { day: 'numeric', month: 'long' })}\n${start.toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit' })} (${Math.floor(duration)} ${durationText})`;
-  } catch (error) {
-    console.error('Ошибка форматирования времени:', error);
-    return 'Ошибка формата времени';
-  }
-};
-
-const EventCard: React.FC<EventProps> = ({ event: initialEvent, isAttended, onDelete }) => {
-  const { isLoggedIn, user } = useAuth();
-  const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
-  const [isEditing, setIsEditing] = useState(false);
-  const [event, setEvent] = useState(initialEvent);
-  const [editedEvent, setEditedEvent] = useState({
-    name: initialEvent.name,
-    description: initialEvent.description,
-    eventDate: initialEvent.eventDate?.split('T')[0] || new Date().toISOString().split('T')[0],
-    timeFrom: initialEvent.timeFrom,
-    timeTo: initialEvent.timeTo
-  });
-
-  const { isRegistered, toggleRegistration, isLoading, error } = useEventRegistration(
-    event?._id || '', 
-    isAttended
-  );
-
-  const router = useRouter();
-
-  const handleRegistration = async () => {
-    console.log('123')
-
-    if (!isLoggedIn) {
-      router.push('/signIn');
+  React.useEffect(() => {
+    if (!src || hasError) {
+      setHasError(true);
       return;
     }
 
-    try {
-      await toggleRegistration();
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && imgRef.current) {
+          const nativeImg = new window.Image();
+          nativeImg.onload = () => setIsLoaded(true);
+          nativeImg.onerror = () => setHasError(true);
+          nativeImg.src = src;
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-      // Уведомления показываем сразу на основе оптимистичного состояния
-      if (!isRegistered) {
-        notifySuccess("Вы записались на мероприятие", "Оно появится в вашем личном расписании");
-      } else {
-        notifyInfo("Вы отменили участие", "Мероприятие удалено из вашего расписания");
-      }
-
-    } catch (error) {
-      console.error('Ошибка при изменении статуса регистрации:', error);
-      // Показываем уведомление об ошибке
-      notifyError("Произошла ошибка", "Не удалось изменить статус регистрации");
+    if (imgRef.current) {
+      observer.observe(imgRef.current);
     }
-  };
 
-  // Синхронизируем локальное состояние с текущим статусом регистрации
-  useEffect(() => {
-    const originalCount = initialEvent.regedUsers || 0;
-    const wasInitiallyRegistered = isAttended || false;
-    
-    let updatedCount = originalCount;
-    
-    // Обновляем счетчик только если статус изменился от начального
-    if (isRegistered !== wasInitiallyRegistered) {
-      updatedCount = isRegistered 
-        ? originalCount + 1
-        : Math.max(0, originalCount - 1);
-    }
-    
-    setEvent(prev => ({
-      ...prev,
-      regedUsers: updatedCount
-    }));
-  }, [isRegistered, initialEvent.regedUsers, isAttended]);
-
-  const handleDelete = async () => {
-    if (!event._id) return;
-    try {
-      await EventService.deleteEvent(event._id);
-      onDelete?.(event._id);
-    } catch (error) {
-      console.error('Ошибка при удалении мероприятия:', error);
-    }
-  };
-
-  const handleEdit = async () => {
-    if (!event._id) return;
-    try {
-      const updatedEvent = await EventService.updateEvent(event._id, {
-        ...editedEvent,
-        graphId: event.graphId._id
-      });
-      setEvent(updatedEvent.data);
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Ошибка при редактировании мероприятия:', error);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setEditedEvent(prev => ({ ...prev, [name]: value }));
-  };
-
-  if (!event || !event._id) return null;
+    return () => observer.disconnect();
+  }, [src, hasError]);
 
   return (
-    <div className={styles.eventCard}>
-      <div className={styles.header}>
-        <div className={styles.titleSection}>
-          {isEditing ? (
-            <input
-              type="text"
-              name="name"
-              value={editedEvent.name}
-              onChange={handleChange}
-              className={styles.editInput}
-              placeholder="Название мероприятия"
-            />
-          ) : (
-            <h3 className={styles.title}>{event.name}</h3>
-          )}
-          <span className={styles.author}>{event.graphId.name}</span>
-        </div>
-        
-        {canAccessEditor && (
-          <div className={styles.actions}>
-            {isEditing ? (
-              <>
-                <button 
-                  className={styles.saveButton}
-                  onClick={handleEdit}
-                  title="Сохранить изменения"
-                >
-                  💾
-                </button>
-                <button 
-                  className={styles.cancelButton}
-                  onClick={() => {
-                    setIsEditing(false);
-                    setEditedEvent({
-                      name: event.name,
-                      description: event.description,
-                      eventDate: event.eventDate?.split('T')[0] || new Date().toISOString().split('T')[0],
-                      timeFrom: event.timeFrom,
-                      timeTo: event.timeTo
-                    });
-                  }}
-                  title="Отменить редактирование"
-                >
-                  ❌
-                </button>
-              </>
-            ) : (
-              <>
-                <button 
-                  className={styles.editButton}
-                  onClick={() => setIsEditing(true)}
-                  title="Редактировать мероприятие"
-                >
-                  ✏️
-                </button>
-                <button 
-                  className={styles.deleteButton}
-                  onClick={handleDelete}
-                  title="Удалить мероприятие"
-                >
-                  🗑️
-                </button>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-      
-      {isEditing ? (
-        <textarea
-          name="description"
-          value={editedEvent.description}
-          onChange={handleChange}
-          className={styles.editTextarea}
-          placeholder="Описание мероприятия"
+    <div className={styles.graphAvatar} ref={imgRef}>
+      {isLoaded && !hasError ? (
+        <HeroImage
+          src={src}
+          alt={alt}
+          className={styles.avatarImage}
+          width={48}
+          height={48}
+          loading="lazy"
         />
       ) : (
-        <p className={styles.description}>{event.description}</p>
+        <div className={styles.avatarFallback}>
+          {fallback.charAt(0).toUpperCase()}
+        </div>
       )}
+    </div>
+  );
+});
+LazyGraphAvatar.displayName = 'LazyGraphAvatar';
+
+// Оптимизированные компоненты для редактирования без лишних ререндеров
+const EditFormInputs = React.memo<{ 
+  editedEvent: any; 
+  updateEditedEvent: (key: string, value: string | boolean) => void;
+}>(({ editedEvent, updateEditedEvent }) => {
+  // Мемоизированные обработчики для предотвращения ререндеров
+  const handleDateChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('eventDate', e.target.value);
+  }, [updateEditedEvent]);
+
+  const handleTimeFromChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('timeFrom', e.target.value);
+  }, [updateEditedEvent]);
+
+  const handleTimeToChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('timeTo', e.target.value);
+  }, [updateEditedEvent]);
+
+  const handlePlaceChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('place', e.target.value);
+  }, [updateEditedEvent]);
+
+  const handleIsDateTbdChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateEditedEvent('isDateTbd', e.target.checked);
+  }, [updateEditedEvent]);
+
+  return (
+  <div className={styles.editForm}>
+    <div style={{ marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem' }}>
+        <input
+          type="checkbox"
+          id="editIsDateTbd"
+          checked={editedEvent.isDateTbd || false}
+          onChange={handleIsDateTbdChange}
+          style={{ width: '16px', height: '16px' }}
+        />
+        <label htmlFor="editIsDateTbd" style={{ fontSize: '14px', color: '#374151' }}>
+          Дата и время уточняется
+        </label>
+      </div>
+    </div>
+
+    {!editedEvent.isDateTbd && (
+      <>
+        <Input
+          type="date"
+          label="Дата мероприятия"
+          value={editedEvent.eventDate}
+          onChange={handleDateChange}
+          variant="bordered"
+          startContent={<Calendar size={16} />}
+          className={styles.dateInput}
+        />
+        <div className={styles.timeInputs}>
+          <Input
+            type="time"
+            label="Время начала"
+            value={editedEvent.timeFrom}
+            onChange={handleTimeFromChange}
+            variant="bordered"
+            startContent={<Clock size={16} />}
+            className={styles.timeInput}
+          />
+          <Input
+            type="time"
+            label="Время окончания"
+            value={editedEvent.timeTo}
+            onChange={handleTimeToChange}
+            variant="bordered"
+            startContent={<Clock size={16} />}
+            className={styles.timeInput}
+          />
+        </div>
+      </>
+    )}
+
+    <Input
+      label="Место проведения"
+      value={editedEvent.place}
+      onChange={handlePlaceChange}
+      variant="bordered"
+      startContent={<MapPinned size={16} />}
+      placeholder="Введите место проведения"
+      className={styles.placeInput}
+    />
+  </div>
+  );
+});
+
+EditFormInputs.displayName = 'EditFormInputs';
+
+// Оптимизированный компонент для редактирования названия
+const TitleInput = React.memo<{
+  value: string;
+  onChange: (value: string) => void;
+}>(({ value, onChange }) => {
+  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  }, [onChange]);
+
+  return (
+    <Input
+      value={value}
+      onChange={handleChange}
+      placeholder="Название мероприятия"
+      variant="bordered"
+      size="lg"
+      classNames={{
+        input: styles.titleInput
+      }}
+    />
+  );
+});
+TitleInput.displayName = 'TitleInput';
+
+// Оптимизированный компонент для редактирования описания
+const DescriptionTextarea = React.memo<{
+  value: string;
+  onChange: (value: string) => void;
+}>(({ value, onChange }) => {
+  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  }, [onChange]);
+
+  return (
+    <Textarea
+      value={value}
+      onChange={handleChange}
+      placeholder="Описание мероприятия"
+      variant="bordered"
+      minRows={3}
+      maxRows={6}
+      className={styles.descriptionInput}
+    />
+  );
+});
+DescriptionTextarea.displayName = 'DescriptionTextarea';
+
+const EventInfo = React.memo(({ 
+  formattedTime, 
+  place, 
+  regedUsers,
+  canViewAttendees,
+  onParticipantsClick
+}: { 
+  formattedTime: string, 
+  place: string, 
+  regedUsers: number,
+  canViewAttendees?: boolean,
+  onParticipantsClick?: () => void
+}) => {
+  const correctRegedUsers = useDeclensionWord(regedUsers, 'PARTICIPANT');
+  
+  return (
+    <div className={styles.infoSection}>
+      <div className={styles.infoItem}>
+        <CalendarClock size={18} />
+        <span className={styles.infoText}>{formattedTime}</span>
+      </div>
       
-      <div className={styles.footer}>
-        {isEditing ? (
-          <div className={styles.editTime}>
-            <input
-              type="date"
-              name="eventDate"
-              value={editedEvent.eventDate}
-              onChange={handleChange}
-              className={styles.editInput}
-            />
-            <div className={styles.timeInputs}>
-              <input
-                type="time"
-                name="timeFrom"
-                value={editedEvent.timeFrom}
-                onChange={handleChange}
-                className={styles.editInput}
-              />
-              <input
-                type="time"
-                name="timeTo"
-                value={editedEvent.timeTo}
-                onChange={handleChange}
-                className={styles.editInput}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className={styles.eventInfo}>
-            <span className={styles.time}>
-              {formatEventTime(event.eventDate, event.timeFrom, event.eventDate, event.timeTo)}
-            </span>
-            <span className={styles.location}>
-              <span className={styles.locationIcon}>📍</span>
-              <span>{event.place}</span>
-            </span>
-            <div className={styles.usersCount}>
-              <span className={styles.usersIcon}>👥</span>
-              <span>{event.regedUsers}</span>
-            </div>
-          </div>
-        )}
-        
-        <button 
-          className={styles.registerButton} 
-          onClick={handleRegistration}
-          disabled={isLoading}
-          data-registered={isRegistered}
-          data-logged={isLoggedIn}
-        >
-          {isLoggedIn 
-            ? isRegistered 
-              ? 'Отменить регистрацию' 
-              : 'Зарегистрироваться' 
-            : 'Войдите, чтобы зарегистрироваться'
+      <div className={styles.infoItem}>
+        <MapPinned size={18} />
+        <span className={styles.infoText}>{place}</span>
+      </div>
+      
+      <div
+        className={`${styles.infoItem} ${canViewAttendees ? styles.clickable : ''}`}
+        onClick={canViewAttendees ? onParticipantsClick : undefined}
+        role={canViewAttendees ? 'button' : undefined}
+        tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
+        onKeyDown={canViewAttendees ? (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (onParticipantsClick) {
+              onParticipantsClick();
+            }
           }
-        </button>
+        } : undefined}
+      >
+        <UsersRound size={18} />
+        <span className={styles.infoText}>{regedUsers} {correctRegedUsers}</span>
       </div>
     </div>
   );
-};
+});
+
+EventInfo.displayName = 'EventInfo';
+
+const EventCard: React.FC<EventProps> = React.memo(({ 
+  event: initialEvent, 
+  isAttended, 
+  onDelete 
+}) => {
+  const { isLoggedIn, user } = useAuth();
+  const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
+  const [isAttendeesOpen, setIsAttendeesOpen] = React.useState(false);
+  const canViewAttendees = Boolean(
+    user && (
+      user.role === UserRole.Create ||
+      (user._id && initialEvent.graphId?.ownerUserId && user._id === initialEvent.graphId.ownerUserId) ||
+      // @ts-ignore
+      (user.role === UserRole.Admin && !!user.selectedGraphId && user.selectedGraphId._id === initialEvent.globalGraphId)
+    )
+  );
+  
+  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
+    initialEvent?._id || '', 
+    isAttended
+  );
+
+  const {
+    event,
+    editedEvent,
+    isEditing,
+    fullImageUrl,
+    formattedTime,
+    registerButtonStyles,
+    showDeleteConfirm,
+    isDeleting,
+    handleRegistration,
+    handleDelete,
+    handleConfirmDelete,
+    handleCancelDelete,
+    handleEdit,
+    handleCancel,
+    handleStartEdit,
+    updateEditedEvent
+  } = useEventCardOptimization({
+    initialEvent,
+    isAttended,
+    onDelete,
+    isLoggedIn,
+    // @ts-expect-error 123
+    toggleRegistration,
+    isRegistered,
+    isLoading
+  });
+
+  // Мемоизированные элементы для предотвращения лишних рендеров
+  const actionButtons = useMemo(() => {
+    if (!canAccessEditor) return null;
+
+    return (
+      <ButtonGroup variant="flat" size="sm" className={styles.actionButtons}>
+        {isEditing ? (
+          <>
+            <Tooltip content="Сохранить изменения">
+              <Button
+                isIconOnly
+                color="success"
+                variant="flat"
+                onPress={handleEdit}
+                className={styles.actionButton}
+              >
+                <Save size={16} />
+              </Button>
+            </Tooltip>
+            <Tooltip content="Отменить редактирование">
+              <Button
+                isIconOnly
+                color="default"
+                variant="flat"
+                onPress={handleCancel}
+                className={styles.actionButton}
+              >
+                <X size={16} />
+              </Button>
+            </Tooltip>
+          </>
+        ) : (
+          <>
+            <Tooltip content="Редактировать мероприятие">
+              <Button
+                isIconOnly
+                color="primary"
+                variant="flat"
+                onPress={handleStartEdit}
+                className={styles.actionButton}
+              >
+                <Edit3 size={16} />
+              </Button>
+            </Tooltip>
+            <Tooltip content="Удалить мероприятие">
+              <Button
+                isIconOnly
+                color="danger"
+                variant="flat"
+                onPress={handleDelete}
+                className={styles.actionButton}
+              >
+                <Trash2 size={16} />
+              </Button>
+            </Tooltip>
+          </>
+        )}
+      </ButtonGroup>
+    );
+  }, [canAccessEditor, isEditing, handleEdit, handleCancel, handleStartEdit, handleDelete]);
+
+  const registerButton = useMemo(() => (
+    <Button
+      color={isLoggedIn ? (isRegistered ? "danger" : "primary") : "default"}
+      variant={isRegistered ? "flat" : "solid"}
+      size="md"
+      onPress={handleRegistration}
+      isDisabled={isLoading}
+      startContent={
+        isLoading ? (
+          <Spinner size="sm" />
+        ) : !isLoggedIn ? (
+          <LogIn size={16} />
+        ) : isRegistered ? (
+          <UserX size={16} />
+        ) : (
+          <UserPlus size={16} />
+        )
+      }
+      className={styles.registerButton}
+      style={registerButtonStyles}
+    >
+      {isLoggedIn 
+        ? isRegistered 
+          ? 'Отменить регистрацию' 
+          : 'Зарегистрироваться' 
+        : 'Войдите, чтобы зарегистрироваться'
+      }
+    </Button>
+  ), [isLoggedIn, isRegistered, isLoading, handleRegistration, registerButtonStyles]);
+
+  // Early return для невалидных данных
+  if (!event || !event._id) {
+    return null;
+  }
+
+  return (
+    <Card className={styles.eventCard}>
+      {/* Header */}
+      <CardHeader className={styles.cardHeader}>
+        <div className={styles.headerContent}>
+          <div className={styles.graphAvatar}>
+            <LazyGraphAvatar
+              src={fullImageUrl}
+              alt={event.graphId.name}
+              fallback={event.graphId.name}
+            />
+          </div>
+          <div className={styles.titleSection}>
+            {isEditing ? (
+              <TitleInput
+                value={editedEvent.name}
+                onChange={(value) => updateEditedEvent('name', value)}
+              />
+            ) : (
+              <h3 className={styles.title}>
+                {event.name}
+              </h3>
+            )}
+            
+            <Chip
+              variant="flat"
+              size="sm"
+              className={styles.graphChip}
+            >
+              {event.graphId.name}
+            </Chip>
+          </div>
+        </div>
+        
+        {actionButtons}
+      </CardHeader>
+      
+      {/* Body */}
+      <CardBody className={styles.cardBody}>
+        {isEditing ? (
+          <DescriptionTextarea
+            value={editedEvent.description}
+            onChange={(value) => updateEditedEvent('description', value)}
+          />
+        ) : (
+          <p className={styles.description}>
+            {event.description}
+          </p>
+        )}
+      </CardBody>
+
+      <Divider className={styles.divider} />
+      
+      {/* Footer */}
+      <CardFooter className={styles.cardFooter}>
+        {isEditing ? (
+          <EditFormInputs 
+            editedEvent={editedEvent} 
+            updateEditedEvent={updateEditedEvent}
+          />
+        ) : (
+          <div className={styles.eventInfo}>
+            <EventInfo 
+              formattedTime={formattedTime}
+              place={event.place}
+              regedUsers={event.regedUsers}
+              canViewAttendees={canViewAttendees}
+              onParticipantsClick={() => setIsAttendeesOpen(true)}
+            />
+            
+            {registerButton}
+          </div>
+        )}
+      </CardFooter>
+      
+      {/* PopUp подтверждения удаления */}
+      <DeleteConfirmPopUp
+        isOpen={showDeleteConfirm}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        eventName={event.name}
+        isDeleting={isDeleting}
+      />
+
+      {/* PopUp со списком участников */}
+      <AttendeesPopUp
+        isOpen={isAttendeesOpen}
+        onClose={() => setIsAttendeesOpen(false)}
+        eventId={event._id}
+        eventName={event.name}
+      />
+    </Card>
+  );
+});
+
+EventCard.displayName = 'EventCard';
 
 export default EventCard;

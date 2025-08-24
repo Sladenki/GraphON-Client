@@ -1,0 +1,50 @@
+.parallaxSection {
+  position: relative;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.floatingElement {
+  position: relative;
+  will-change: transform, opacity;
+}
+
+// Анимации для разных элементов
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.floatingElement {
+  animation: float 6s ease-in-out infinite;
+}
+
+.floatingElement:nth-child(even) {
+  animation-delay: -3s;
+}
+
+.floatingElement:nth-child(3n) {
+  animation-delay: -1.5s;
+} 

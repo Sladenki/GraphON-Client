@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { ScheduleService } from '@/services/schedule.service';
 
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
-import { ScheduleList } from '@/components/ui/ScheduleList/ScheduleList';
+import SchedulePage from '@/components/ui/Schedule/Schedule';
 
 interface SubgraphPopUpProps {
   subgraph: GraphNode | null;
@@ -86,7 +86,7 @@ const SubgraphPopUp = ({ subgraph, onClose }: SubgraphPopUpProps) => {
                 <SpinnerLoader />
               ) : data?.data ? (
                 <div className={styles.lightThemeWrapper}>
-                  <ScheduleList
+                  <SchedulePage
                     schedule={data.data.schedule}
                     events={data.data.events}
                   />

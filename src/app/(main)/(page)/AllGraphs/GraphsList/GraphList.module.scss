@@ -1,44 +1,107 @@
 .postsListWrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); // Гибкая сетка
-    gap: 30px;
-    // padding: 20px;
-    justify-items: center;
-  }
+  width: 100%;
+  padding: 1rem;
+  overflow: hidden;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
+}
+
+.graphsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
+}
+
+.graphItem {
+  width: 100%;
+  opacity: 1;
+  // Убираем contain для избежания проблем с position: fixed в popup-ах
+  // contain: layout style paint;
   
-  /* Анимация появления */
-  .graphItem {
+  // Анимации только на десктопе
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
     opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.5s ease-out forwards;
+    animation: fadeInUp 0.4s ease-out forwards;
     animation-delay: var(--delay);
-    width: 100%;
-    max-width: 400px;
+    will-change: transform, opacity;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+    opacity: 1;
+    transform: none !important;
+  }
+}
+
+// Упрощенная анимация только для десктопа
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 767px) {
+  .postsListWrapper {
+    padding: 0.5rem;
+    // Упрощенная отрисовка на мобильных
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .graphsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
   
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .graphItem {
+    // Полностью отключаем анимации на мобильных
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+    
+    // GPU acceleration только для transform
+    transform: translateZ(0);
   }
-  
-  /* Адаптивность */
-  @media (max-width: 1024px) {
-    .postsListWrapper {
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
+}
+
+@media (max-width: 480px) {
+  .postsListWrapper {
+    padding: 0.25rem;
   }
-  
-  @media (max-width: 768px) {
-    .postsListWrapper {
-      grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
-      gap: 15px;
-    }
+
+  .graphsGrid {
+    gap: 0.75rem;
   }
+}
+
+// Планшеты
+@media (min-width: 768px) and (max-width: 1024px) {
+  .postsListWrapper {
+    padding: 0.75rem;
+  }
+
+  .graphsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+// Большие экраны
+@media (min-width: 1025px) {
+  .postsListWrapper {
+    padding: 1.5rem;
+  }
+
+  .graphsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+}
   

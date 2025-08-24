@@ -1,31 +1,27 @@
 'use client';
-import { useAuth } from '../../../providers/AuthProvider'; // Импортируем useAuth
-
-import { useRouter } from 'next/navigation';
-import ProfileUser from './ProfileUser/ProfileUser';
+import { useAuth } from '@/providers/AuthProvider'; // Импортируем useAuth
 import LoginButton from './LoginButton/LoginButton';
+import ProfileUser from './ProfileUser/ProfileUser';
+import { usePathname } from 'next/navigation';
 
-export const ProfileCorner = () => {
-    const { isLoggedIn, user, logout, loading, error } = useAuth(); // Используем useContext для доступа к контексту
-    
-    // if (loading) {
-    //     return <div>Загрузка...</div>;
-    // }
+const ProfileCorner = () => {
+    const { user } = useAuth();
+    const pathname = usePathname();
 
-    // if (error) {
-    //     return <div>ProfileCorner - {error}</div>; // Отображаем сообщение об ошибке в компоненте
-    // }
+    // Скрываем компонент на странице профиля
+    if (pathname === '/profile' || pathname === '/profile/') {
+        return null;
+    }
 
     return (
         <>
-            {isLoggedIn ? (
-                <div>
-                    {/* @ts-ignore 123 */}
-                    <ProfileUser user={user} />
-                </div>
+            {user ? (
+                <ProfileUser user={user} />
             ) : (
                 <LoginButton />
             )}
         </>
     );
 };
+
+export default ProfileCorner;

@@ -2,21 +2,20 @@
 
 import Link from "next/link";
 import { FC } from "react";
-import { IUser } from "@/types/user.interface";
 import Image from "next/image";
-
 import styles from './ProfileUser.module.scss'
-
 import NoImage from '../../../../../public/noImage.png'
 
+interface ProfileUserProps {
+    user: {
+        avaPath?: string;
+    };
+}
 
-const ProfileUser: FC<{user: IUser}> = ({ user }) => {
-
+const ProfileUser: FC<ProfileUserProps> = ({ user }) => {
     return (
         <Link href={{ pathname: "/profile" }}>
-            <div 
-                className={styles.ProfileCornerWrapper}  
-            >
+            <div className={styles.ProfileCornerWrapper}>
                 <Image
                     className={styles.img} 
                     src={user.avaPath ? user.avaPath : NoImage} 

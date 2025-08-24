@@ -1,23 +1,23 @@
 'use client';
 
-
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import { GraphSubsService } from "@/services/graphSubs.service";
 import { useQuery } from "@tanstack/react-query";
 
 import styles from './Schedule.module.scss'
-import { WarningText } from "@/components/ui/WarningText/WarningText";
-import { ScheduleList } from "@/components/ui/ScheduleList/ScheduleList";
 import { useRouter } from "next/navigation";
 import { notifyError } from "@/lib/notifications";
 import { AxiosError } from "axios";
+import { EmptyState } from "@/components/global/EmptyState/EmptyState";
+import SchedulePage from "../../../components/ui/Schedule/Schedule";
+
 
 const Schedule = () => {
   const router = useRouter();
 
   // Получаем расписание и мероприятия по подписанным графам 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['graphSubs/getSubsSchedule'],
+    queryKey: ['subsSchedule'],
     queryFn: () => GraphSubsService.getSubsSchedule(),
   });
 
@@ -40,12 +40,12 @@ const Schedule = () => {
   return (
     <div className={styles.ScheduleWrapper}>
       {scheduleByDays.schedule == 0 && scheduleByDays.events == 0 ? (
-        <div className={styles.warningText}>
-          <WarningText text="Ваше личное расписание строиться на основе подписанных графов." />
-          <WarningText text="Чтобы появилось расписание, сначала нужно подписаться на графы" />
-        </div>
+        <EmptyState
+          message="Тут пока пусто"
+          subMessage="На этой неделе нет занятий или мероприятий"
+        />
       ) : (
-        <ScheduleList schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
+        <SchedulePage schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
       )}
     </div>
   );

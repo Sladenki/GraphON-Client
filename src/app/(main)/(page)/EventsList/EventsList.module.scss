@@ -1,97 +1,43 @@
 .eventsListWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
   box-sizing: border-box;
-}
-
-.emptyMessage {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  text-align: center;
-  background: var(--glass-bg);
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  margin: 20px;
-  transition: all 0.3s ease;
-  animation: fadeIn 0.5s ease-out;
-  font-family: var(--font-family, 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  gap: 24px;
   
-  &::before {
-    content: '🎉';
-    font-size: 4rem;
-    margin-bottom: 20px;
-    animation: bounce 2s infinite;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
-  }
+  // Оптимизация для скролла
+  contain: layout style;
+  will-change: scroll-position;
+}
+
+.eventCardWrapper {
+  width: 100%;
+  opacity: 1;
+  contain: layout style paint;
   
-  .mainText {
-    font-size: 1.75rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--theme-color) 0%, rgba(var(--main-Color), 0.8) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 16px;
-    letter-spacing: -0.02em;
-    font-feature-settings: "salt" on, "ss01" on;
-  }
-  
-  .subText {
-    font-size: 1.1rem;
-    color: var(--main-text);
-    max-width: 460px;
-    line-height: 1.6;
-    font-weight: 400;
-    letter-spacing: -0.01em;
+  // Анимации только на десктопе
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    animation: fadeInDesktop 0.4s ease-out forwards;
+    animation-delay: calc(var(--index, 0) * 0.05s);
+    will-change: transform, opacity;
   }
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(var(--main-Color), 0.15);
-    border-color: var(--glass-hover);
-    background: var(--glass-hover);
-    
-    &::before {
-      animation: wave 0.5s ease-in-out;
-    }
-
-    .mainText {
-      background-position: 100% center;
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 32px 16px;
-    margin: 16px;
-
-    &::before {
-      font-size: 3.5rem;
-    }
-
-    .mainText {
-      font-size: 1.5rem;
-    }
-
-    .subText {
-      font-size: 1rem;
-      max-width: 320px;
-    }
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+    opacity: 1;
+    transform: none !important;
   }
 }
 
-@keyframes fadeIn {
+// Упрощенная анимация только для десктопа
+@keyframes fadeInDesktop {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -99,53 +45,130 @@
   }
 }
 
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
+// Мобильные оптимизации
+@media (max-width: 767px) {
+  .eventsListWrapper {
+    padding: 10px 8px;
+    gap: 16px;
+    // Упрощенная отрисовка на мобильных
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    // Используем flex-grow вместо min-height
+    flex-grow: 1;
   }
-  40% {
-    transform: translateY(-20px) scale(1.1);
-  }
-  60% {
-    transform: translateY(-10px) scale(1.05);
-  }
-}
-
-@keyframes wave {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  25% {
-    transform: rotate(-15deg) scale(1.1);
-  }
-  75% {
-    transform: rotate(15deg) scale(1.1);
-  }
-  100% {
-    transform: rotate(0deg) scale(1);
+  
+  .eventCardWrapper {
+    // Полностью отключаем анимации на мобильных
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+    
+    // GPU acceleration только для transform
+    transform: translateZ(0);
   }
 }
 
 @media (max-width: 480px) {
   .eventsListWrapper {
-    padding: 0 8px;
-    gap: 16px;
-    margin: 0;
-    width: 100%;
+    padding: 0 4px;
+    gap: 12px;
+    // Используем flex-grow вместо min-height
+    flex-grow: 1;
+  }
+}
+
+// Планшеты
+@media (min-width: 768px) and (max-width: 1024px) {
+  .eventsListWrapper {
+    padding: 0 12px;
+    gap: 20px;
+  }
+}
+
+.virtualizedEventsWrapper {
+  width: 100%;
+  position: relative;
+  padding: 1rem;
+  box-sizing: border-box;
+  
+  // Smooth scrolling
+  scroll-behavior: smooth;
+  
+  // Mobile optimizations
+  @media (max-width: 767px) {
+    padding: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    // Используем flex-grow вместо min-height
+    flex-grow: 1;
     
-    > div {
-      width: 100%;
-      margin: 0;
-      padding: 0;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  // Desktop scrollbar styling
+  @media (min-width: 768px) {
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(150, 130, 238, 0.4);
+      border-radius: 4px;
+      
+      &:hover {
+        background: rgba(150, 130, 238, 0.6);
+      }
     }
   }
 }
 
-@media (max-width: 768px) {
-  .eventsListWrapper {
-    padding: 0 12px;
-    width: 100%;
-    margin: 0;
+.virtualEventCard {
+  padding: 0.5rem 0;
+  
+  // Performance optimization for mobile
+  @media (max-width: 767px) {
+    contain: layout style paint;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  
+  // Disable animations on mobile for better performance
+  @media (max-width: 767px) {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  // Smooth animations only on desktop
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    animation: fadeInCard 0.3s ease-out forwards;
+    animation-delay: calc(var(--index, 0) * 0.02s);
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInCard {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

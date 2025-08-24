@@ -19,26 +19,79 @@
   flex: 1;
   position: relative;
   height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease, filter 0.3s ease;
   
   @media (max-width: 768px) {
     height: 70vh;
-    min-height: 300px;
+    min-height: 350px;
+    padding: 0;
+    // Обеспечиваем правильные пропорции на мобильных
+    aspect-ratio: auto;
+  }
+  
+  // Затемняем и блокируем взаимодействие при открытии MobileNav
+  &.navOpen {
+    @media (max-width: 768px) {
+      opacity: 0.3;
+      filter: blur(2px);
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+  
+  // iPhone-specific adjustments - убираем жесткие ограничения по высоте
+  @media screen and (max-width: 430px) and (-webkit-min-device-pixel-ratio: 2) {
+    height: 70vh;
+    min-height: 350px;
+    padding-top: env(safe-area-inset-top, 0);
+  }
+  
+  // iPhone SE and small screens
+  @media screen and (max-width: 375px) and (max-height: 667px) {
+    height: 70vh;
+    min-height: 330px;
+  }
+  
+  // iPhone 12 mini and similar
+  @media screen and (max-width: 375px) and (min-height: 800px) {
+    height: 70vh;
+    min-height: 350px;
   }
 }
 
-// iOS-specific fixes
+// iOS-specific fixes with better viewport handling
 @supports (-webkit-touch-callout: none) {
   .container {
+    height: 100vh;
     height: -webkit-fill-available;
+    min-height: -webkit-fill-available;
   }
   
   .graphContainer {
-    height: calc(-webkit-fill-available - 200px);
-  }
-  
-  @media (max-width: 360px) {
-    .graphContainer {
-      height: calc(-webkit-fill-available - 180px);
+    // Убираем жесткие calc ограничения, сохраняем естественные пропорции
+    height: 70vh;
+    height: calc(-webkit-fill-available * 0.7);
+    min-height: 350px;
+    
+    @media (max-width: 430px) {
+      height: 70vh;
+      height: calc(-webkit-fill-available * 0.7);
+      min-height: 350px;
+    }
+    
+    @media (max-width: 375px) {
+      height: 70vh;
+      height: calc(-webkit-fill-available * 0.7);
+      min-height: 330px;
+    }
+    
+    @media (max-width: 320px) {
+      height: 70vh;
+      height: calc(-webkit-fill-available * 0.7);
+      min-height: 330px;
     }
   }
 } 

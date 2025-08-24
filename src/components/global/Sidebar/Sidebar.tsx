@@ -12,12 +12,21 @@ import RenderMenuList from './RenderMenuList/RenderMenuList';
 
 const Sidebar: React.FC<{}> = ({}) => {
 
-  const small = useMediaQuery(1000)
+  const small = useMediaQuery('(max-width: 1000px)')
 
   return (
     <div className={styles.sidebar}>
+      {/* Название проекта - отображается только на ПК */}
+      {!small && (
+        <div className={styles.projectTitle}>
+          GraphON
+          <div className={styles.betaLabel}>
+            Альфа версия
+          </div>
+        </div>
+      )}
         
-        {/* @ts-expect-error типизация */}
+      {/* @ts-expect-error типизация */}
       <RenderMenuList arrayItems={sidebar} small={small}  />
 
     </div>

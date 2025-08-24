@@ -6,12 +6,9 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 
 interface UserStatsData {
     totalUsers: number;
-    totalGraphs: number;
-    usersByRole: {
-        user: number;
-        admin: number;
-        create: number;
-    };
+    usersKgtu: number;
+    usersKbk: number;
+    usersNoGraph: number;
 }
 
 export const UserStats: React.FC = () => {
@@ -19,8 +16,6 @@ export const UserStats: React.FC = () => {
         queryKey: ['admin/user-stats'],
         queryFn: () => AdminService.getApplicationStats(),
     });
-
-    console.log(data);
 
     if (isPending) return <SpinnerLoader />;
     if (isError) return <p>Ошибка: {error.message}</p>;
@@ -34,28 +29,17 @@ export const UserStats: React.FC = () => {
                 <h4>Всего пользователей</h4>
                 <div className={styles.statValue}>{stats.totalUsers}</div>
             </div>
-            
             <div className={styles.statCard}>
-                <h4>Всего графов</h4>
-                <div className={styles.statValue}>{stats.totalGraphs}</div>
+                <h4>Пользователи КГТУ</h4>
+                <div className={styles.statValue}>{stats.usersKgtu}</div>
             </div>
-            
             <div className={styles.statCard}>
-                <h4>Пользователи по ролям</h4>
-                <div className={styles.roleStats}>
-                    <div className={styles.roleItem}>
-                        <span>Пользователи:</span>
-                        <span>{stats.usersByRole.user}</span>
-                    </div>
-                    <div className={styles.roleItem}>
-                        <span>Администраторы:</span>
-                        <span>{stats.usersByRole.admin}</span>
-                    </div>
-                    <div className={styles.roleItem}>
-                        <span>Создатели:</span>
-                        <span>{stats.usersByRole.create}</span>
-                    </div>
-                </div>
+                <h4>Пользователи КБК</h4>
+                <div className={styles.statValue}>{stats.usersKbk}</div>
+            </div>
+            <div className={styles.statCard}>
+                <h4>Пользователи без выбранного графа</h4>
+                <div className={styles.statValue}>{stats.usersNoGraph}</div>
             </div>
         </div>
     );

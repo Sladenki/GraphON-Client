@@ -1,10 +1,12 @@
 import { useState, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { GraphSubsService } from '@/services/graphSubs.service';
+import { useAuth } from '@/providers/AuthProvider';
 
 export const useSubscription = (initialIsSubscribed: boolean, graphId: string) => {
   const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
   const queryClient = useQueryClient();
+  const { refreshUser } = useAuth();
 
   const mutation = useMutation({
     mutationFn: () => GraphSubsService.toggleGraphSub(graphId),
@@ -28,9 +30,33 @@ export const useSubscription = (initialIsSubscribed: boolean, graphId: string) =
       setIsSubscribed((prev) => !prev);
     },
     onSuccess: () => {
+        // Инвалидируем кеш подписки для конкретного графа
         queryClient.invalidateQueries({
             queryKey: ['subscriptions', graphId],
         });
+        
+        // Инвалидируем кеш событий подписок для обновления раздела "Подписки"
+        queryClient.invalidateQueries({
+            queryKey: ['subsEvents'],
+        });
+        
+        // Инвалидируем кеш пользователя для обновления счетчика подписок
+        queryClient.invalidateQueries({
+            queryKey: ['user'],
+        });
+        
+        // Инвалидируем кеш всех графов для обновления состояния подписки
+        queryClient.invalidateQueries({
+            queryKey: ['graph'],
+        });
+        
+        // Инвалидируем кеш событий пользователя
+        queryClient.invalidateQueries({
+            queryKey: ['eventsList'],
+        });
+        
+        // Обновляем данные пользователя для обновления счетчика подписок
+        refreshUser();
     },
   });
 

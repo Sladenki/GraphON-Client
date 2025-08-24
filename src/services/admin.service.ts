@@ -44,13 +44,34 @@ export const AdminService = {
     },
 
     // --- Создание графа --- 
-    async createGraph(data: { name: string; parentGraphId: string; image?: File; globalGraphId: string }) {
+    async createGraph(data: { 
+        name: string; 
+        parentGraphId: string; 
+        image?: File; 
+        globalGraphId: string;
+        directorName?: string;
+        directorVkLink?: string;
+        vkLink?: string;
+        about?: string;
+    }) {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('parentGraphId', data.parentGraphId);
         formData.append('globalGraphId', data.globalGraphId);
         if (data.image) {
             formData.append('image', data.image);
+        }
+        if (data.directorName) {
+            formData.append('directorName', data.directorName);
+        }
+        if (data.directorVkLink) {
+            formData.append('directorVkLink', data.directorVkLink);
+        }
+        if (data.vkLink) {
+            formData.append('vkLink', data.vkLink);
+        }
+        if (data.about) {
+            formData.append('about', data.about);
         }
 
         const { data: response } = await axiosAuth.post('/admin/createGraph', formData, {

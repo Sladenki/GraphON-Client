@@ -10,6 +10,12 @@ export const GraphSubsService = {
     // Получение расписания из подписанных графов
     async getSubsSchedule() {
         return axiosAuth.get(`/graphSubs/getSubsSchedule`)
+    },
+
+    // Для подписок
+    // Получение событий из подписанных графов
+    async getSubsEvents() {
+        return axiosAuth.get(`/graphSubs/getSubsEvents`)
     }
 
 }

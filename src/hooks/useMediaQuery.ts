@@ -1,18 +1,51 @@
-import { useSyncExternalStore } from 'react'
+import { useState, useEffect } from 'react';
 
-// Подписка на изменения размера окна
-const subscribe = (callback: () => void) => {
-  window.addEventListener('resize', callback)
-  return () => window.removeEventListener('resize', callback)
-}
+// Кэш для медиа-запросов
+const mediaQueryCache = new Map<string, MediaQueryList>();
 
-// Основной хук
-export const useMediaQuery = (maxWidth: number) => {
-  const windowWidth = useSyncExternalStore(
-    subscribe,
-    () => window.innerWidth, // Получение текущего состояния
-    () => 1024 // Значение для серверного рендеринга
-  )
+export function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState<boolean>(() => {
+    // SSR-безопасная инициализация
+    if (typeof window === 'undefined') return false;
+    
+    // Используем кэш для повторных запросов
+    let media = mediaQueryCache.get(query);
+    if (!media) {
+      media = window.matchMedia(query);
+      mediaQueryCache.set(query, media);
+    }
+    
+    return media.matches;
+  });
 
-  return windowWidth <= maxWidth
+  useEffect(() => {
+    // Получаем из кэша или создаем новый
+    let media = mediaQueryCache.get(query);
+    if (!media) {
+      media = window.matchMedia(query);
+      mediaQueryCache.set(query, media);
+    }
+    
+    // Проверяем начальное значение
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+
+    // Оптимизированный обработчик
+    const handleChange = (e: MediaQueryListEvent) => {
+      setMatches(e.matches);
+    };
+
+    // Используем современный API
+    if (media.addEventListener) {
+      media.addEventListener('change', handleChange);
+      return () => media!.removeEventListener('change', handleChange);
+    } else {
+      // Fallback для старых браузеров
+      media.addListener(handleChange);
+      return () => media!.removeListener(handleChange);
+    }
+  }, [query, matches]);
+
+  return matches;
 }

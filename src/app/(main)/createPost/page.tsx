@@ -89,22 +89,23 @@ const CreatePost = () => {
                 </AdminSection>
             )}
 
-            
-            {canAccessAdmin && mainTopics && (
+            {/* Вернуть на Admin */}
+            {canAccessCreate && mainTopics && (
                 <AdminSection 
                     title="Создание графа"
                     emoji="📊"
-                    role={UserRole.Admin}
+                    role={UserRole.Create}
                 >
-                    <CreateGraphForm globalGraphId={user?.selectedGraphId || ''} />
+                    <CreateGraphForm />
                 </AdminSection>
             )}
             
-            {canAccessAdmin && mainTopics && (
+             {/* Вернуть на Admin */}
+            {canAccessCreate && mainTopics && (
                 <AdminSection 
                     title="Передача прав на граф"
                     emoji="🔑"
-                    role={UserRole.Admin}
+                    role={UserRole.Create}
                 >
                     <TransferGraphOwnershipForm graphs={mainTopics.data} />
                 </AdminSection>

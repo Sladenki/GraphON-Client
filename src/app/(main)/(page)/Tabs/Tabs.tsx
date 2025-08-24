@@ -5,6 +5,9 @@ import clsx from "clsx";
 import { Search } from "lucide-react";
 import styles from "./Tabs.module.scss";
 
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import MobileNav from "@/components/global/MobileNav/MobileNav";
+
 interface Tab {
   name: string;
   label: string;
@@ -30,8 +33,9 @@ const Tabs: FC<TabsProps> = ({
   showSearch = false,
   searchValue = "",
   onSearchChange,
-  searchPlaceholder = activeTab === "events" ? "Поиск по событиям" : "Поиск по группам"
+  searchPlaceholder = activeTab === "events" ? "Поиск по событиям" : activeTab === "groups" ? "Поиск по группам" : activeTab === "graphSystem" ? "Поиск по графам" : "Поиск по подпискам"
 }) => {
+  const isMobile = useMediaQuery("(max-width: 680px)");
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIndex = tabs.findIndex((tab) => tab.name === activeTab);
 
@@ -91,6 +95,16 @@ const Tabs: FC<TabsProps> = ({
     </>
   );
 
+  if (isMobile) {
+    return (
+        <MobileNav
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          tabs={tabs}
+        />
+    );
+  }
+
   return (
     <div className={styles.tabWrapper}>
       <div 
@@ -127,11 +141,6 @@ const Tabs: FC<TabsProps> = ({
           </div>
         )}
       </div>
-      {showSearch && onSearchChange && (
-        <div className={styles.mobileSearch}>
-          {searchInput}
-        </div>
-      )}
     </div>
   );
 };

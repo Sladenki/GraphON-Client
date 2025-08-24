@@ -1,121 +1,329 @@
-.profileWrapper{
-    margin-top: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 50px;
-
-    .header{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 30px;
-
-        .avatar{
-            min-height: 120px;
-            min-width: 120px;
-            border-radius: 50%;
-            
-            img{
-                object-fit: cover;
-                border-radius: 50%;
-            }
-        }
-
-        .name{
-            font-family: 'Roboto', sans-serif;
-            color: var(--main-text);
-            font-weight: 300;
-            font-size: 30px;
-        }
-    }
-
-    .text{
-        font-family: 'Roboto', sans-serif;
-        color: var(--main-text);
-        font-weight: 300;
-        font-size: 27px;
-    }
-}
-
-.themeSwitchWrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-
-    .themeLabel {
-        font-size: 16px;
-        font-family: 'Roboto', sans-serif;
-        font-weight: 300;
-    }
-
-    .themeSwitch {
-        position: relative;
-        display: inline-block;
-        width: 50px;
-        height: 25px;
-    
-        input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-    
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(var(--main-Color), 0.5);
-            transition: 0.4s;
-            border-radius: 25px;
-    
-            &::before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 2.5px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-            }
-        }
-    
-        input:checked + .slider {
-            background-color: rgb(var(--main-Color));
-        }
-    
-        input:checked + .slider::before {
-            transform: translateX(25px);
-        }
-    }
-}
-
-.eventsHeader {
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--main-text);
-  margin: 24px 0 16px;
+.profileWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, rgba(var(--block-color-rgb), 0.8), rgba(var(--block-color-rgb), 0.95));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2.25rem 1.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 600px;
+  min-height: 370px;
 
   &::before {
-    content: '📋';
-    font-size: 24px;
-    color: rgb(var(--main-Color));
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(var(--main-Color-rgb), 0.15), rgba(var(--main-Color-rgb), 0.05));
+    z-index: 0;
   }
 }
 
-.eventsList{
+/* Компактная шапка, когда ВУЗ не выбран */
+.headerCompact {
+  min-height: 350px;
+  padding: 2rem 1.5rem;
+  gap: 1.5rem;
+}
+
+.avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.name {
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--main-text);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nameGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (min-width: 600px) {
+  .nameGroup {
+    flex-direction: row;
+    gap: 8px;
+  }
+}
+
+.role {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--main-Color);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  background: rgba(var(--main-Color-rgb), 0.1);
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(var(--main-Color-rgb), 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+
+
+.eventsHeader {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--main-text);
+  margin: 2rem 0 1.5rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.5rem;
+  width: 100%;
+  max-width: 800px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(var(--main-Color-rgb), 0.8), rgba(var(--main-Color-rgb), 0.4));
+    border-radius: 3px;
+  }
+}
+
+.eventCardWrapper{
+  margin-bottom: 20px;
+}
+
+.eventsList {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .profileWrapper {
+    padding: 1rem;
+    align-items: stretch;
+  }
+
+  .header {
+    padding: 2rem 1.5rem;
+    max-width: none;
+    min-height: 220px;
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+  }
+
+  .name {
+    font-size: 2rem;
+  }
+
+  .eventsHeader {
+    max-width: none;
+  }
+
+  .eventsList {
+    max-width: none;
+  }
+}
+
+/* Поддержка тёмной темы */
+@media (prefers-color-scheme: dark) {
+  .header {
+    background: rgba(31, 41, 55, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+
+}
+
+/* LogOut контейнер для центрирования */
+.logoutContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+/* University picker */
+.universityCard {
+  width: 100%;
+  max-width: 800px;
+  margin: 1rem auto 0;
+  padding: 1.25rem;
+  background: var(--block-color);
+  border: 1px solid rgba(var(--main-Color), 0.15);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.universityTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--main-text);
+  margin: 0 0 12px 0;
+  justify-content: center;
+}
+
+.universityRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 520px) {
+  .universityRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .applyBtn {
     width: 100%;
+  }
+}
+
+.select {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid rgba(var(--main-Color), 0.25);
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--main-text);
+  background-color: var(--block-color);
+  transition: all 0.2s ease;
+  appearance: none;
+}
+
+.select:focus {
+  outline: none;
+  border-color: rgb(var(--main-Color));
+  box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.12);
+}
+
+.applyBtn {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--main-Color), 0.3);
+  background: linear-gradient(135deg, rgba(var(--main-Color-rgb), 0.15), rgba(var(--main-Color-rgb), 0.05));
+  color: var(--main-text);
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.applyBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: rgba(var(--main-Color-rgb), 0.25);
+  background: linear-gradient(135deg, rgba(var(--main-Color-rgb), 0.12), rgba(var(--main-Color-rgb), 0.04));
+  color: var(--main-text);
+}
+
+.applyBtn:not(:disabled) {
+  background: rgb(var(--main-Color));
+  color: #ffffff;
+  border-color: rgb(var(--main-Color));
+  box-shadow: 0 6px 18px rgba(var(--main-Color-rgb), 0.35);
+}
+
+.applyBtn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(var(--main-Color-rgb), 0.45);
+}
+
+.selectedUniversity {
+  width: fit-content;
+  margin: 4px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: rgba(var(--main-Color-rgb), 0.06);
+  border: 1px solid rgba(var(--main-Color-rgb), 0.15);
+  text-align: center;
+}
+
+.selectedUniversityIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(150,130,238);
+}
+
+.selectedUniversityText {
+  display: flex;
+  flex-direction: column;
+}
+
+.selectedUniversityLabel {
+  font-size: 11px;
+  color: var(--main-text);
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.selectedUniversityName {
+  font-weight: 700;
+  color: rgb(150, 130, 238);
+}
+
+/* Поддержка уменьшенного движения */
+@media (prefers-reduced-motion: reduce) {
+  .avatar {
+    transition: none;
+  }
 }
 
 
