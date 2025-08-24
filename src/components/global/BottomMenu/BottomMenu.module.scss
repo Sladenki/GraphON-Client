@@ -5,6 +5,8 @@
   padding: 12px 0;
   padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
   box-shadow: 0px 0px 28px 15px rgba(var(--main-Color), 0.05);
+  position: relative;
+  z-index: 2100; // поверх контента
 }
 
 .listMenu {
@@ -38,6 +40,22 @@
   transition: color 0.3s, transform 0.3s;
 }
 
+.iconWrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.iconBadge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444; // red-500
+  box-shadow: 0 0 0 2px var(--block-color);
+}
+
 // Овальная обводка для активного элемента
 .active {
   background-color: rgba(var(--main-Color), 0.2); // Лёгкий фон
@@ -49,6 +67,8 @@
     transform: scale(1.2);
   }
 }
+
+// Удалён общий badge, используем точку на иконке профиля
 
 /* Адаптивность */
 @media (max-width: 480px) {

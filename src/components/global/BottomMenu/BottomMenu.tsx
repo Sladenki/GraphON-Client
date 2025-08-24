@@ -11,6 +11,7 @@ import { UserRole } from "@/types/user.interface";
 const BottomMenu: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
   const pathname = usePathname();
+  const showProfileBadge = isLoggedIn && !user?.selectedGraphId;
 
   const menuItems = useMemo(() => {
     return sidebarMobile.filter(({ forAuthUsers, path }) => {
@@ -35,7 +36,12 @@ const BottomMenu: React.FC = () => {
           return (
             <li key={id} className={styles.listItem}>
               <Link href={path} className={`${styles.link} ${isActive ? styles.active : ""}`}>
-                <span className={styles.icon}>{icon}</span>
+                <span className={styles.iconWrapper}>
+                  <span className={styles.icon}>{icon}</span>
+                  {showProfileBadge && path === '/profile/' && (
+                    <span className={styles.iconBadge} aria-hidden="true" />
+                  )}
+                </span>
                 {/* <span className={styles.title}>{title}</span> */}
               </Link>
             </li>
