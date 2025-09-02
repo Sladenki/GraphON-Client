@@ -7,6 +7,7 @@ import {
 import { useEventsListOptimized } from './useEventsListOptimized';
 import VirtualizedEventsList from './VirtualizedEventsList';
 import AdvertisementBanner, { Advertisement } from '@/components/advertisment/AdvertisementBanner';
+import BoostedEventCard from '@/components/ui/EventCard/BoostedEventCard';
 import { useSearchQuery } from '@/stores/useUIStore';
 
 interface EventsListOptimizedProps {
@@ -34,15 +35,19 @@ const EventsListOptimized: React.FC<EventsListOptimizedProps> = React.memo(({ ad
     return <EmptyEventsComponent />;
   }
 
+  // Подготовим данные: первый и остальные
+  const boostedEvent = filteredEvents?.[0];
+  const restEvents = filteredEvents?.slice(1) || [];
+
   // Основной рендер списка событий
   return (
     <VirtualizedEventsList 
-      events={filteredEvents}
+      events={restEvents}
       onDelete={handleDelete}
       itemHeight={420} // Высота карточки + отступы
       containerHeight={typeof window !== 'undefined' ? window.innerHeight - 200 : 600}
-      headerNode={ad ? <AdvertisementBanner ad={ad} /> : undefined}
-      headerHeight={ad ? 180 : 0}
+      headerNode={boostedEvent ? <BoostedEventCard event={boostedEvent} onDelete={handleDelete} /> : undefined}
+      headerHeight={boostedEvent ? 420 : 0}
     />
   );
 });

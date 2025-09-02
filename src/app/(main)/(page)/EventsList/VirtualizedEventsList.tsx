@@ -120,7 +120,7 @@ const VirtualizedEventsList: React.FC<VirtualizedEventsListProps> = React.memo((
       {/* Spacer для поддержания правильной высоты скролла */}
       <div style={{ height: totalHeight, position: 'relative' }}>
         {headerNode && (
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: headerHeight, paddingBottom: 16 }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: headerHeight }}>
             {headerNode}
           </div>
         )}

@@ -1,0 +1,46 @@
+.boostedWrapper {
+	position: relative;
+	border-radius: 16px;
+	background: color-mix(in oklab, var(--primary-bg) 88%, white 12%);
+	/* Bright purple outline */
+	border: 2px solid #7c3aed; /* vivid purple */
+	box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.16);
+	padding: 1px; /* create subtle outline around inner card */
+	will-change: transform;
+	contain: layout style;
+}
+
+.badge {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(139, 92, 246, 0.14);
+	color: #4c1d95;
+	border: 1px solid rgba(139, 92, 246, 0.35);
+	padding: 6px 10px;
+	border-radius: 999px;
+	/* Disable backdrop heavy effects by default for performance */
+	/* backdrop-filter intentionally omitted on mobile */
+}
+
+.badgeIcon { color: #7c3aed; }
+.badgeText { font-weight: 700; font-size: 12px; letter-spacing: 0.3px; }
+
+@media (max-width: 768px), (hover: none) {
+	.boostedWrapper {
+		box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.12);
+	}
+	.badge {
+		padding: 5px 8px; top: 8px; right: 8px;
+		/* Ensure no backdrop-filter on touch devices */
+		/* explicit: */
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
+	.badgeText { font-size: 11px; }
+}
+
+
