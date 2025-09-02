@@ -8,13 +8,17 @@ interface VirtualizedEventsListProps {
   onDelete: (eventId: string) => void;
   itemHeight?: number;
   containerHeight?: number;
+  headerNode?: React.ReactNode;
+  headerHeight?: number;
 }
 
 const VirtualizedEventsList: React.FC<VirtualizedEventsListProps> = React.memo(({ 
   events, 
   onDelete,
   itemHeight = 400,
-  containerHeight = 600
+  containerHeight = 600,
+  headerNode,
+  headerHeight = 0
 }) => {
   const [scrollTop, setScrollTop] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,10 +64,11 @@ const VirtualizedEventsList: React.FC<VirtualizedEventsListProps> = React.memo((
   // Мемоизируем вычисления видимых элементов
   const visibleItems = useMemo(() => {
     const bufferSize = 2; // Количество элементов для предзагрузки
-    const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - bufferSize);
+    const adjustedScroll = Math.max(0, scrollTop - headerHeight);
+    const startIndex = Math.max(0, Math.floor(adjustedScroll / itemHeight) - bufferSize);
     const endIndex = Math.min(
       events.length, 
-      startIndex + Math.ceil(containerHeight / itemHeight) + bufferSize * 2
+      startIndex + Math.ceil((containerHeight - Math.min(headerHeight, containerHeight)) / itemHeight) + bufferSize * 2
     );
     
     return {
@@ -71,15 +76,20 @@ const VirtualizedEventsList: React.FC<VirtualizedEventsListProps> = React.memo((
       endIndex,
       items: events.slice(startIndex, endIndex)
     };
-  }, [events, scrollTop, itemHeight, containerHeight]);
+  }, [events, scrollTop, itemHeight, containerHeight, headerHeight]);
 
   // Мемоизируем общую высоту контейнера
-  const totalHeight = useMemo(() => events.length * itemHeight, [events.length, itemHeight]);
+  const totalHeight = useMemo(() => headerHeight + events.length * itemHeight, [events.length, itemHeight, headerHeight]);
 
   // Если событий мало, используем обычный рендер
   if (events.length <= 8) {
     return (
       <div className={styles.eventsListWrapper}>
+        {headerNode && (
+          <div style={{ marginBottom: 16 }}>
+            {headerNode}
+          </div>
+        )}
         {events.map((event, index) => (
           <div 
             key={event._id} 
@@ -109,6 +119,11 @@ const VirtualizedEventsList: React.FC<VirtualizedEventsListProps> = React.memo((
     >
       {/* Spacer для поддержания правильной высоты скролла */}
       <div style={{ height: totalHeight, position: 'relative' }}>
+        {headerNode && (
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: headerHeight, paddingBottom: 16 }}>
+            {headerNode}
+          </div>
+        )}
         {visibleItems.items.map((event, index) => {
           const actualIndex = visibleItems.startIndex + index;
           return (
@@ -117,7 +132,7 @@ const VirtualizedEventsList: React.FC<VirtualizedEventsListProps> = React.memo((
               className={styles.virtualEventCard}
               style={{
                 position: 'absolute',
-                top: actualIndex * itemHeight,
+                top: headerHeight + actualIndex * itemHeight,
                 width: '100%',
                 height: itemHeight,
                 '--index': actualIndex

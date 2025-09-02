@@ -1,0 +1,145 @@
+.banner {
+	position: relative;
+	border-radius: 16px;
+	padding: 20px;
+	background: linear-gradient(135deg, #ff7a18 0%, #ffb347 50%, #ff9f1c 100%);
+	color: #1a1a1a;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+	overflow: hidden;
+	transform: translateZ(0);
+	backface-visibility: hidden;
+}
+
+.content {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 16px;
+	align-items: center;
+}
+
+.left {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.discountBadge {
+	align-self: flex-start;
+	background: #1a1a1a;
+	color: #ffcf66;
+	border-radius: 999px;
+	padding: 6px 12px;
+	font-weight: 700;
+	font-size: 14px;
+	letter-spacing: 0.5px;
+	transform: translateZ(0);
+}
+
+.title {
+	margin: 0;
+	font-size: 22px;
+	line-height: 1.2;
+	font-weight: 800;
+}
+
+.subtitle {
+	margin: 0;
+	opacity: 0.9;
+	font-size: 15px;
+}
+
+.promo {
+	margin-top: 4px;
+	font-size: 14px;
+	color: #1a1a1a;
+}
+
+.description {
+	margin: 4px 0 0 0;
+	font-size: 14px;
+	opacity: 0.95;
+}
+
+.actions {
+	margin-top: 10px;
+}
+
+.ctaButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 16px;
+	border-radius: 12px;
+	background: #1a1a1a;
+	color: #ffcf66;
+	font-weight: 700;
+	text-decoration: none;
+	will-change: transform;
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+@media (hover: hover) {
+	.ctaButton:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+	}
+}
+
+.smallPrint {
+	margin-top: 8px;
+	font-size: 12px;
+	opacity: 0.8;
+}
+
+.right {
+	position: relative;
+	width: 160px;
+	height: 120px;
+	contain: layout style;
+}
+
+.pizzaArt {
+	position: absolute;
+	right: -10px;
+	bottom: -20px;
+	width: 220px;
+	height: 220px;
+	border-radius: 50%;
+	background: radial-gradient(circle at 40% 35%, #ffd280 0%, #ffb347 60%, rgba(255, 179, 71, 0) 65%),
+		radial-gradient(circle at 60% 60%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 50%);
+	filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+	transform: translateZ(0);
+}
+
+.slice {
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-left: 60px solid transparent;
+	border-right: 60px solid transparent;
+	border-top: 100px solid #ffe5a3;
+	transform-origin: bottom center;
+	border-radius: 6px;
+}
+
+.slice1 { transform: rotate(0deg) translate(-50%, -50%); left: 50%; top: 55%; }
+.slice2 { transform: rotate(90deg) translate(-50%, -50%); left: 55%; top: 55%; }
+.slice3 { transform: rotate(180deg) translate(-50%, -50%); left: 50%; top: 60%; }
+.slice4 { transform: rotate(270deg) translate(-50%, -50%); left: 45%; top: 55%; }
+
+@media (max-width: 768px), (hover: none) {
+	.content {
+		grid-template-columns: 1fr;
+	}
+	.right {
+		display: none;
+	}
+	.banner {
+		padding: 16px;
+		border-radius: 14px;
+	}
+	.title { font-size: 20px; }
+	.subtitle { font-size: 14px; }
+}
+
+

@@ -11,6 +11,7 @@ import { AllGraphsOptimized } from "@/app/(main)/(page)/AllGraphs/AllGraphsOptim
 import { Users, Calendar, Heart, Network } from "lucide-react";
 import { useActiveTab, useSearchQuery, useSelectedGraphId, useSetActiveTab, useSetSearchQuery, useSetSelectedGraphId, TabType } from "@/stores/useUIStore";
 import Tabs from "./Tabs/Tabs";
+import type { Advertisement } from '@/components/advertisment/AdvertisementBanner';
 
 // Lazy loading только для контента табов
 const Subs = dynamic(() => import("./Subs/SubsOptimized"), { ssr: false });
@@ -65,6 +66,18 @@ const Homepage = () => {
     { name: "graphSystem", label: "Графы", icon: <Network size={18} /> },
   ], [user?.graphSubsNum]);
 
+  const DODO_AD: Advertisement = {
+    title: 'Скидка 30% в ДоДо Пицца',
+    subtitle: 'Только для пользователей GraphON',
+    description: 'Закажите любимую пиццу с приятной скидкой. Акция действует до конца месяца.',
+    ctaText: 'Заказать со скидкой',
+    ctaLink: 'https://dodopizza.ru',
+    promoCode: 'GRAPHON30',
+    discount: '−30%',
+    smallPrint: 'Скидка не суммируется с другими акциями. Подробности на сайте.',
+    backgroundGradient: 'linear-gradient(135deg, #ff7a18 0%, #ffb347 50%, #ff9f1c 100%)'
+  };
+
   // Проверяем наличие выбранного университета
   if (!user?.selectedGraphId && !selectedGraphId) {
     return (
@@ -104,7 +117,7 @@ const Homepage = () => {
 
         {activeTab === 'events' && (
           <Suspense fallback={<SpinnerLoader />}>
-            <EventsList />
+            <EventsList ad={DODO_AD} />
           </Suspense>
         )}
 

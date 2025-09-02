@@ -6,13 +6,14 @@ import {
 } from '@/components/ui/StateComponents';
 import { useEventsListOptimized } from './useEventsListOptimized';
 import VirtualizedEventsList from './VirtualizedEventsList';
+import AdvertisementBanner, { Advertisement } from '@/components/advertisment/AdvertisementBanner';
 import { useSearchQuery } from '@/stores/useUIStore';
 
 interface EventsListOptimizedProps {
-  // Больше не нужны props, так как используем Zustand
+  ad?: Advertisement;
 }
 
-const EventsListOptimized: React.FC<EventsListOptimizedProps> = React.memo(() => {
+const EventsListOptimized: React.FC<EventsListOptimizedProps> = React.memo(({ ad }) => {
   // Используем Zustand store
   const searchQuery = useSearchQuery();
   
@@ -40,6 +41,8 @@ const EventsListOptimized: React.FC<EventsListOptimizedProps> = React.memo(() =>
       onDelete={handleDelete}
       itemHeight={420} // Высота карточки + отступы
       containerHeight={typeof window !== 'undefined' ? window.innerHeight - 200 : 600}
+      headerNode={ad ? <AdvertisementBanner ad={ad} /> : undefined}
+      headerHeight={ad ? 180 : 0}
     />
   );
 });
