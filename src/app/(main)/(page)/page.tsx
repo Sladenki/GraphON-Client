@@ -117,7 +117,7 @@ const Homepage = () => {
 
         {activeTab === 'events' && (
           <Suspense fallback={<SpinnerLoader />}>
-            <EventsList />
+            <EventsList ad={DODO_AD} />
           </Suspense>
         )}
 
