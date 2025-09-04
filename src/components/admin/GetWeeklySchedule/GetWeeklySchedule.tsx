@@ -88,95 +88,164 @@ export const GetWeeklySchedule = () => {
                 <div style={{ padding: 12, color: '#6b7280' }}>Загрузка…</div>
             )}
 
-            {sortedData.length > 0 && (
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    gap: 12,
-                    marginTop: 4
-                }}>
-                    {sortedData.map((group: any) => (
-                        <div key={group.graph?._id} style={{
-                            border: '1px solid #e5e7eb',
-                            borderRadius: 8,
-                            overflow: 'hidden',
-                            background: 'white'
-                        }}>
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 12,
-                                padding: '10px 12px',
-                                background: '#f9fafb',
-                                borderBottom: '1px solid #f1f5f9'
-                            }}>
-                                <div style={{
-                                    width: 36,
-                                    height: 36,
-                                    borderRadius: 8,
-                                    background: '#e5e7eb',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    color: '#374151',
-                                    fontWeight: 600,
-                                    flex: '0 0 auto'
-                                }}>
-                                    {(group.graph?.name || 'G').charAt(0).toUpperCase()}
-                                </div>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <div style={{ fontWeight: 600, color: '#111827' }}>{group.graph?.name}</div>
-                                    {group.graph?.imgPath && (
-                                        <div style={{ fontSize: 12, color: '#6b7280' }}>
-                                            {group.graph?.imgPath}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+            {/* Календарная недельная сетка */}
+            {Array.isArray(weeklyData) && weeklyData.length > 0 && (() => {
+                // Плоский список событий с графом
+                const flat = weeklyData.flatMap((group: any) =>
+                    (group.events || []).map((ev: any) => ({ ...ev, __graph: group.graph }))
+                );
 
-                            {group.events?.length ? (
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8, padding: 12 }}>
-                                    {group.events.map((ev: any) => (
-                                        <div key={ev._id} style={{
-                                            display: 'grid',
-                                            gridTemplateColumns: '120px 1fr',
-                                            gap: 12,
-                                            alignItems: 'start',
-                                            border: '1px solid #f1f5f9',
-                                            borderRadius: 8,
-                                            padding: 10,
-                                            background: '#ffffff'
+                // Если нет событий
+                if (flat.length === 0) return null;
+
+                // Вспомогательные функции
+                const toLocalKey = (d: Date) => {
+                    const y = d.getFullYear();
+                    const m = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    return `${y}-${m}-${day}`;
+                };
+                const startOfWeekMonday = (d: Date) => {
+                    const copy = new Date(d);
+                    copy.setHours(0, 0, 0, 0);
+                    const day = copy.getDay(); // 0..6, где 1 — понедельник
+                    const diff = (day + 6) % 7; // смещение к понедельнику
+                    copy.setDate(copy.getDate() - diff);
+                    return copy;
+                };
+                const getHueFromId = (id: string) => {
+                    let hash = 0;
+                    for (let i = 0; i < (id || '').length; i++) {
+                        hash = (hash << 5) - hash + id.charCodeAt(i);
+                        hash |= 0;
+                    }
+                    const hue = Math.abs(hash) % 360;
+                    return hue;
+                };
+
+                // Определяем неделю по минимальной дате события
+                const minDate = flat.reduce((acc: Date | null, ev: any) => {
+                    const d = new Date(ev.eventDate);
+                    return !acc || d < acc ? d : acc;
+                }, null) || new Date();
+                const weekStart = startOfWeekMonday(minDate);
+                const days = Array.from({ length: 7 }).map((_, i) => {
+                    const d = new Date(weekStart);
+                    d.setDate(weekStart.getDate() + i);
+                    return d;
+                });
+
+                // Группируем события по дням
+                const eventsByDay = new Map<string, any[]>();
+                for (const ev of flat) {
+                    const d = new Date(ev.eventDate);
+                    const key = toLocalKey(d);
+                    const arr = eventsByDay.get(key) || [];
+                    arr.push(ev);
+                    eventsByDay.set(key, arr);
+                }
+
+                // Сортируем события в каждом дне по времени
+                for (const [k, arr] of eventsByDay.entries()) {
+                    arr.sort((a: any, b: any) => (a.timeFrom || '').localeCompare(b.timeFrom || ''));
+                    eventsByDay.set(k, arr);
+                }
+
+                const weekdayFormat = new Intl.DateTimeFormat('ru-RU', { weekday: 'short' });
+                const dateFormat = new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short' });
+
+                return (
+                    <div style={{
+                        overflowX: 'auto',
+                        paddingBottom: 8
+                    }}>
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(7, minmax(180px, 1fr))',
+                            gap: 12,
+                            minWidth: 7 * 180
+                        } as any}>
+                            {days.map((d) => {
+                                const key = toLocalKey(d);
+                                const dayEvents = eventsByDay.get(key) || [];
+                                return (
+                                    <div key={key} style={{
+                                        border: '1px solid #e5e7eb',
+                                        borderRadius: 8,
+                                        background: 'white',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        minHeight: 220
+                                    }}>
+                                        <div style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'baseline',
+                                            padding: '10px 12px',
+                                            borderBottom: '1px solid #f1f5f9',
+                                            background: '#f9fafb'
                                         }}>
-                                            <div style={{
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                gap: 6,
-                                                color: '#374151',
-                                                fontSize: 13
-                                            }}>
-                                                <div style={{ fontWeight: 600 }}>{formatDate(ev.eventDate)}</div>
-                                                <div style={{ color: '#6b7280' }}>{ev.timeFrom}–{ev.timeTo}</div>
+                                            <div style={{ fontWeight: 700, textTransform: 'capitalize', color: '#111827' }}>
+                                                {weekdayFormat.format(d)}
                                             </div>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                                                <div style={{ fontWeight: 600, color: '#111827' }}>{ev.name}</div>
-                                                {ev.description && (
-                                                    <div style={{ color: '#374151', whiteSpace: 'pre-line' }}>{ev.description}</div>
-                                                )}
-                                                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', fontSize: 13, color: '#6b7280' }}>
-                                                    {ev.place && <span>Место: {ev.place}</span>}
-                                                    {typeof ev.regedUsers === 'number' && <span>Участников: {ev.regedUsers}</span>}
-                                                </div>
+                                            <div style={{ color: '#6b7280', fontSize: 12 }}>
+            								{dateFormat.format(d)}
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div style={{ padding: 12, color: '#6b7280' }}>Нет событий</div>
-                            )}
+                                        <div style={{ padding: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                            {dayEvents.length === 0 ? (
+                                                <div style={{ color: '#9ca3af', fontSize: 13 }}>Нет событий</div>
+                                            ) : dayEvents.map((ev: any) => {
+                                                const graph = ev.__graph || {};
+                                                const hue = getHueFromId(graph._id || '');
+                                                const borderColor = `hsl(${hue}, 70%, 45%)`;
+                                                const bgColor = `hsl(${hue}, 85%, 96%)`;
+                                                return (
+                                                    <div key={ev._id} style={{
+                                                        borderLeft: `4px solid ${borderColor}`,
+                                                        background: bgColor,
+                                                        borderRadius: 6,
+                                                        padding: '8px 10px',
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        gap: 4
+                                                    }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
+                                                            <div style={{ fontWeight: 600, color: '#111827' }}>{ev.name}</div>
+                                                            <div style={{ color: '#374151', fontSize: 12 }}>{ev.timeFrom}–{ev.timeTo}</div>
+                                                        </div>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#374151', fontSize: 12 }}>
+                                                            <div style={{
+                                                                width: 18,
+                                                                height: 18,
+                                                                borderRadius: 4,
+                                                                background: borderColor,
+                                                                color: 'white',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                fontSize: 11,
+                                                                fontWeight: 700,
+                                                                flex: '0 0 auto'
+                                                            }}>
+                                                                {(graph.name || 'G').charAt(0).toUpperCase()}
+                                                            </div>
+                                                            <span style={{ fontWeight: 500 }}>{graph.name}</span>
+                                                        </div>
+                                                        {ev.place && (
+                                                            <div style={{ color: '#6b7280', fontSize: 12 }}>Место: {ev.place}</div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    ))}
-                </div>
-            )}
+                    </div>
+                );
+            })()}
 
             {selectedGraphId && isFetched && !isFetching && Array.isArray(weeklyData) && weeklyData.length === 0 && (
                 <div style={{ padding: 12, color: '#6b7280' }}>Нет данных за неделю</div>
