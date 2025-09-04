@@ -18,6 +18,7 @@ import { UserStats } from '@/components/admin/UserStats/UserStats';
 import { ServerStats } from '@/components/admin/ServerStats/ServerStats';
 import { CreateGlobalGraphForm } from '@/components/admin/CreateGlobalGraphForm/CreateGlobalGraphForm';
 import { CreateTopicGraphForm } from '@/components/admin/CreateTopicGraphForm/CreateTopicGraphForm';
+import { GetWeeklySchedule } from '@/components/admin/GetWeeklySchedule/GetWeeklySchedule';
 
 const CreatePost = () => {
     const { user } = useAuth();
@@ -128,6 +129,16 @@ const CreatePost = () => {
                     role={UserRole.Editor}
                 >
                     <CreateScheduleForm globalGraphId={user?.selectedGraphId || ''} />
+                </AdminSection>
+            )}
+
+            {canAccessEditor && (
+                <AdminSection 
+                    title="Получить расписание всего графа"
+                    emoji="📆"
+                    role={UserRole.Editor}
+                >
+                    <GetWeeklySchedule />
                 </AdminSection>
             )}
         </div>
