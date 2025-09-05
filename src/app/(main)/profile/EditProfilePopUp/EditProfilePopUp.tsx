@@ -58,7 +58,11 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                                 lastName: formState.lastName?.trim() || ''
                             };
                             if (!isUsernameLocked) {
-                                payload.username = formState.username?.trim() || '';
+                                const rawUsername = (formState.username || '').trim();
+                                const sanitizedUsername = rawUsername.replace(/^@+/, '');
+                                if (sanitizedUsername) {
+                                    payload.username = sanitizedUsername;
+                                }
                             }
                             await UserService.updateProfile(payload);
                             if (typedUser) {
