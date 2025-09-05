@@ -59,9 +59,21 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                             };
                             if (!isUsernameLocked) {
                                 const rawUsername = (formState.username || '').trim();
-                                const sanitizedUsername = rawUsername.replace(/^@+/, '');
-                                if (sanitizedUsername) {
-                                    payload.username = sanitizedUsername;
+                                // Extract Telegram handle from various formats: @name, t.me/name, https://t.me/name
+                                const urlMatch = rawUsername.match(/^(?:https?:\/\/)?(?:t(?:elegram)?\.me)\/([^\/?#]+)/i);
+                                let handle = '';
+                                if (urlMatch && urlMatch[1]) {
+                                    handle = urlMatch[1];
+                                } else {
+                                    // Fallback: remove leading @ and take last segment after '/'
+                                    const noAt = rawUsername.replace(/^@+/, '');
+                                    const parts = noAt.split('/');
+                                    handle = parts[parts.length - 1] || '';
+                                }
+                                // Clean trailing slashes and keep only allowed chars
+                                handle = handle.replace(/\/+$/, '').replace(/[^A-Za-z0-9_]/g, '');
+                                if (handle) {
+                                    payload.username = handle;
                                 }
                             }
                             await UserService.updateProfile(payload);
