@@ -18,6 +18,7 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
     const { user, setUser } = useAuth();
     const typedUser = user as IUser | null;
     const small = useMediaQuery('(max-width: 650px)');
+    const isUsernameLocked = Boolean(typedUser?.username && typedUser.username.trim() !== '');
 
     const [formState, setFormState] = useState<IUpdateUserDto>({ firstName: '', lastName: '', username: '' });
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -54,9 +55,11 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                             setIsSubmitting(true);
                             const payload: IUpdateUserDto = {
                                 firstName: formState.firstName?.trim() || '',
-                                lastName: formState.lastName?.trim() || '',
-                                username: formState.username?.trim() || ''
+                                lastName: formState.lastName?.trim() || ''
                             };
+                            if (!isUsernameLocked) {
+                                payload.username = formState.username?.trim() || '';
+                            }
                             await UserService.updateProfile(payload);
                             if (typedUser) {
                                 setUser({ ...typedUser, ...payload } as any);
@@ -104,11 +107,14 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                                 name="username"
                                 value={formState.username || ''}
                                 onChange={(e) => setFormState(v => ({ ...v, username: e.target.value }))}
-                                placeholder="ivan123"
+                                placeholder={isUsernameLocked ? '' : 'ivan123'}
                                 className={styles.input}
+                                disabled={isUsernameLocked}
                                 autoComplete="username"
                             />
-                            <span className={styles.fieldHint}>Будет отображаться как @username</span>
+                            <span className={styles.fieldHint}>
+                                {isUsernameLocked ? 'Username уже установлен и не может быть изменён' : 'Будет отображаться как @username'}
+                            </span>
                         </label>
                     </div>
                     <div className={styles.divider} />

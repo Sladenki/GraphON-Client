@@ -78,6 +78,12 @@
   transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
 
+.input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: rgba(var(--block-color-rgb, 255,255,255), 0.6);
+}
+
 .input:hover {
   background: rgba(var(--block-color-rgb, 255,255,255), 0.9);
 }
