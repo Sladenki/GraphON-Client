@@ -1,6 +1,6 @@
 import { axiosAuth, axiosClassic } from "@/api/interceptors"
 import { IGoogleAuthUser } from "@/types/user.interface"
-import { IUser } from '@/types/user.interface';
+import { IUser, IUpdateUserDto } from '@/types/user.interface';
 
 export const UserService = {
     // Google Авторизация
@@ -24,6 +24,11 @@ export const UserService = {
 
     async updateSelectedGraph(selectedGraphId: string) {
         const { data } = await axiosAuth.patch(`/user/selected-graph`, { selectedGraphId });
+        return data;
+    },
+
+    async updateProfile(dto: IUpdateUserDto) {
+        const { data } = await axiosAuth.patch(`/user/profile`, dto);
         return data;
     }
 }

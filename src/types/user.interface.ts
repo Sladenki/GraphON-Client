@@ -40,3 +40,9 @@ export interface IUser {
     attentedEventsNum: number;
     selectedGraphId: string | null;
 }
+
+export interface IUpdateUserDto {
+    firstName?: string;
+    lastName?: string;
+    username?: string;
+}
