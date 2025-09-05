@@ -20,6 +20,7 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
     const small = useMediaQuery('(max-width: 650px)');
 
     const [formState, setFormState] = useState<IUpdateUserDto>({ firstName: '', lastName: '', username: '' });
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
         if (typedUser) {
@@ -41,12 +42,16 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
             modalId="edit-profile-popup"
         >
             <div className={styles.editFormWrapper}>
-                <h3 className={styles.editTitle}>Редактировать профиль</h3>
+                <div className={styles.formHeader}>
+                    <h3 className={styles.editTitle}>Редактировать профиль</h3>
+                    <p className={styles.description}>Заполните или обновите основные данные профиля. Эти данные видят другие пользователи.</p>
+                </div>
                 <form 
                     className={styles.editForm}
                     onSubmit={async (e) => {
                         e.preventDefault();
                         try {
+                            setIsSubmitting(true);
                             const payload: IUpdateUserDto = {
                                 firstName: formState.firstName?.trim() || '',
                                 lastName: formState.lastName?.trim() || '',
@@ -60,40 +65,70 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                             onClose();
                         } catch (err: any) {
                             notifyError('Не удалось обновить', err?.message || 'Попробуйте позже');
+                        } finally {
+                            setIsSubmitting(false);
                         }
                     }}
                 >
-                    <label className={styles.inputGroup}>
-                        <span>Имя</span>
-                        <input 
-                            type="text" 
-                            value={formState.firstName || ''}
-                            onChange={(e) => setFormState(v => ({ ...v, firstName: e.target.value }))}
-                            placeholder="Введите имя"
-                            className={styles.input}
-                        />
-                    </label>
-                    <label className={styles.inputGroup}>
-                        <span>Фамилия</span>
-                        <input 
-                            type="text" 
-                            value={formState.lastName || ''}
-                            onChange={(e) => setFormState(v => ({ ...v, lastName: e.target.value }))}
-                            placeholder="Введите фамилию"
-                            className={styles.input}
-                        />
-                    </label>
-                    <label className={styles.inputGroup}>
-                        <span>Username</span>
-                        <input 
-                            type="text" 
-                            value={formState.username || ''}
-                            onChange={(e) => setFormState(v => ({ ...v, username: e.target.value }))}
-                            placeholder="Введите username"
-                            className={styles.input}
-                        />
-                    </label>
-                    <button type="submit" className={styles.submitBtn}>Обновить данные</button>
+                    <div className={styles.formGrid}>
+                        <label className={styles.inputGroup}>
+                            <span className={styles.fieldLabel}>Имя</span>
+                            <input 
+                                type="text"
+                                name="firstName"
+                                value={formState.firstName || ''}
+                                onChange={(e) => setFormState(v => ({ ...v, firstName: e.target.value }))}
+                                placeholder="Иван"
+                                className={styles.input}
+                                autoComplete="given-name"
+                            />
+                            <span className={styles.fieldHint}>Как к вам обращаться</span>
+                        </label>
+                        <label className={styles.inputGroup}>
+                            <span className={styles.fieldLabel}>Фамилия</span>
+                            <input 
+                                type="text"
+                                name="lastName"
+                                value={formState.lastName || ''}
+                                onChange={(e) => setFormState(v => ({ ...v, lastName: e.target.value }))}
+                                placeholder="Иванов"
+                                className={styles.input}
+                                autoComplete="family-name"
+                            />
+                            <span className={styles.fieldHint}>Необязательное поле</span>
+                        </label>
+                        <label className={styles.inputGroup}>
+                            <span className={styles.fieldLabel}>Username</span>
+                            <input 
+                                type="text"
+                                name="username"
+                                value={formState.username || ''}
+                                onChange={(e) => setFormState(v => ({ ...v, username: e.target.value }))}
+                                placeholder="ivan123"
+                                className={styles.input}
+                                autoComplete="username"
+                            />
+                            <span className={styles.fieldHint}>Будет отображаться как @username</span>
+                        </label>
+                    </div>
+                    <div className={styles.divider} />
+                    <div className={styles.actions}>
+                        <button 
+                            type="button" 
+                            className={styles.secondaryBtn}
+                            onClick={onClose}
+                            disabled={isSubmitting}
+                        >
+                            Отмена
+                        </button>
+                        <button 
+                            type="submit" 
+                            className={styles.submitBtn}
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? 'Сохранение…' : 'Сохранить'}
+                        </button>
+                    </div>
                 </form>
             </div>
         </PopUpWrapper>

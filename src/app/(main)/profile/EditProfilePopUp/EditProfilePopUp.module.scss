@@ -17,11 +17,55 @@
   gap: 12px;
 }
 
+.formHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 16px 0 16px;
+}
+
+.description {
+  margin: 0;
+  color: var(--subtext-color, #778);
+  font-size: 0.9rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0 16px;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(var(--main-Color-rgb), 0.15);
+  margin: 4px 16px 0 16px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 16px 16px 16px;
+}
+
 .inputGroup {
   display: flex;
   flex-direction: column;
   gap: 6px;
   color: var(--main-text);
+}
+
+.fieldLabel {
+  font-size: 0.9rem;
+  color: var(--main-text);
+  opacity: 0.9;
+}
+
+.fieldHint {
+  font-size: 0.75rem;
+  color: var(--subtext-color, #778);
 }
 
 .input {
@@ -30,6 +74,18 @@
   border-radius: 10px;
   background: var(--block-color);
   color: var(--main-text);
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.input:hover {
+  background: rgba(var(--block-color-rgb, 255,255,255), 0.9);
+}
+
+.input:focus {
+  border-color: rgb(var(--main-Color));
+  box-shadow: 0 0 0 3px rgba(var(--main-Color-rgb), 0.12);
+  background: var(--block-color);
 }
 
 .submitBtn {
@@ -39,6 +95,29 @@
   background: rgb(var(--main-Color));
   color: #fff;
   cursor: pointer;
+  min-width: 140px;
+  transition: transform .15s ease, box-shadow .2s ease, opacity .15s ease;
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.secondaryBtn {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--main-Color-rgb), 0.25);
+  background: transparent;
+  color: var(--main-text);
+  cursor: pointer;
+  min-width: 120px;
+}
+
+@media (max-width: 700px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 
