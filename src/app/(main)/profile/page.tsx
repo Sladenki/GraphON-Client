@@ -7,8 +7,8 @@ import { IUser, RoleTitles, UserRole } from '@/types/user.interface';
 import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButton';
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { GraduationCap } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { GraduationCap, Pencil } from 'lucide-react';
 import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '@/components/ui/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
@@ -20,6 +20,7 @@ import { GraphService } from '@/services/graph.service';
 import { UserService } from '@/services/user.service';
 import { IGraphList } from '@/types/graph.interface';
 import { useSetSelectedGraphId } from '@/stores/useUIStore';
+import EditProfilePopUp from './EditProfilePopUp/EditProfilePopUp';
 
 
 export default function Profile() {
@@ -27,6 +28,7 @@ export default function Profile() {
     const queryClient = useQueryClient();
     const small = useMediaQuery('(max-width: 650px)')
     const setSelectedGraphId = useSetSelectedGraphId();
+    const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
     
     const { data: allEvents, isLoading: loadingEvents } = useQuery({
         queryKey: ['eventsList'],
@@ -47,6 +49,9 @@ export default function Profile() {
     const [pendingUniversity, setPendingUniversity] = useState<string>('');
     const [isApplyingUniversity, setIsApplyingUniversity] = useState<boolean>(false);
 
+    const typedUser = user as IUser | null;
+    // form state moved into EditProfilePopUp
+
     const handleDelete = (eventId: string) => {
         queryClient.setQueryData(['eventsList'], (old: any) => {
             if (!old?.data) return old;
@@ -65,7 +70,6 @@ export default function Profile() {
       return <div>{error}</div>
     }
 
-    const typedUser = user as IUser | null;
     const subsEvents = allEvents?.data;
 
     // Определяем недостающие данные
@@ -143,6 +147,14 @@ export default function Profile() {
 
     return (
         <div className={styles.profileWrapper}>
+            <button 
+                type="button"
+                className={styles.editFloatingButton}
+                aria-label="Редактировать профиль"
+                onClick={() => setIsEditOpen(true)}
+            >
+                <Pencil />
+            </button>
             {typedUser ? (
                 <>
                     <div className={`${styles.header} ${!typedUser.selectedGraphId ? styles.headerCompact : ''}`}>
@@ -249,6 +261,8 @@ export default function Profile() {
                     <div className={styles.logoutContainer}>
                         <LogOut/>
                     </div>
+                    
+                    <EditProfilePopUp isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
                  
                 </>
             ) : <LoginButton/>}

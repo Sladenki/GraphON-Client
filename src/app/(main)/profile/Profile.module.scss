@@ -80,6 +80,8 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 600px) {
@@ -87,6 +89,92 @@
     flex-direction: row;
     gap: 8px;
   }
+}
+
+.editFloatingButton {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--block-color);
+  color: rgb(var(--main-Color));
+  border: 1px solid rgba(var(--main-Color-rgb), 0.35);
+  box-shadow: 0 10px 26px rgba(var(--main-Color-rgb), 0.25);
+  cursor: pointer;
+  z-index: 2000;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.editFloatingButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(var(--main-Color-rgb), 0.35);
+}
+
+.editFloatingButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.editFloatingButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 640px) {
+  .editFloatingButton {
+    top: 12px;
+    right: max(12px, env(safe-area-inset-right));
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+  }
+}
+
+.editFormWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.editTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--main-text);
+  margin: 0 0 6px;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--main-text);
+}
+
+.input {
+  padding: 10px 12px;
+  border: 1px solid rgba(var(--main-Color), 0.25);
+  border-radius: 10px;
+  background: var(--block-color);
+  color: var(--main-text);
+}
+
+.submitBtn {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--main-Color-rgb), 0.3);
+  background: rgb(var(--main-Color));
+  color: #fff;
+  cursor: pointer;
 }
 
 .role {

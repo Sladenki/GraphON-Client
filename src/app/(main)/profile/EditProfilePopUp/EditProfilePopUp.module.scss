@@ -1,0 +1,44 @@
+.editFormWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.editTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--main-text);
+  margin: 0 0 6px;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--main-text);
+}
+
+.input {
+  padding: 10px 12px;
+  border: 1px solid rgba(var(--main-Color), 0.25);
+  border-radius: 10px;
+  background: var(--block-color);
+  color: var(--main-text);
+}
+
+.submitBtn {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--main-Color-rgb), 0.3);
+  background: rgb(var(--main-Color));
+  color: #fff;
+  cursor: pointer;
+}
+
+
