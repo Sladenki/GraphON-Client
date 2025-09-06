@@ -25,6 +25,16 @@ export const EventService = {
         return axiosAuth.get(`/event/weekly/${globalGraphId}`);
     },
 
+    // --- Получение мероприятий по ID графа ---
+    async getEventsByGraphId(graphId: string) {
+        return axiosAuth.get(`/event/by-graph/${graphId}`);
+    },
+
+    // --- Получение прошедших мероприятий по ID графа ---
+    async getPastEventsByGraphId(graphId: string) {
+        return axiosAuth.get(`/event/past/by-graph/${graphId}`);
+    },
+
     // --- Удаление мероприятия ---
     async deleteEvent(eventId: string) {
         return axiosAuth.delete(`/event/${eventId}`);

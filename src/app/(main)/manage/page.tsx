@@ -16,7 +16,8 @@ export default function ManagePage() {
 
     const { data, isLoading, isError, refetch } = useQuery<GraphInfo>({
         queryKey: ['manageGraph', graphId],
-        queryFn: () => GraphService.getGraphById(graphId),
+        queryFn: ({ queryKey }) => GraphService.getGraphById(String(queryKey[1])),
+        enabled: Boolean(graphId),
         staleTime: 60_000,
     });
 
