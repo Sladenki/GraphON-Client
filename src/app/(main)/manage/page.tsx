@@ -19,6 +19,8 @@ export default function ManagePage() {
     const managedIds: string[] = Array.isArray(anyUser?.managed_graph_id) ? anyUser.managed_graph_id : (Array.isArray(anyUser?.managedGraphIds) ? anyUser.managedGraphIds : []);
     const graphId = searchParams.get('id') || managedIds[0];
 
+    const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
+
     const { data, isLoading, isError, refetch } = useQuery<GraphInfo>({
         queryKey: ['manageGraph', graphId],
         queryFn: ({ queryKey }) => GraphService.getGraphById(String(queryKey[1])),
@@ -37,11 +39,9 @@ export default function ManagePage() {
     const { data: pastResp, isLoading: isLoadingPast, isError: isErrorPast, refetch: refetchPast } = useQuery({
         queryKey: ['pastEventsByGraph', graphId],
         queryFn: () => EventService.getPastEventsByGraphId(String(graphId)),
-        enabled: Boolean(graphId),
+        enabled: Boolean(graphId && activeTab === 'past'),
         staleTime: 30_000,
     });
-
-    const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
 
     if (!graphId) return <div className={styles.manageWrapper}>Не найден доступный граф для управления</div>;
     if (isLoading) return <SpinnerLoader/>;
