@@ -62,6 +62,7 @@ interface EventProps {
   };
   isAttended?: boolean;
   onDelete?: (eventId: string) => void;
+  disableRegistration?: boolean;
 }
 
 // Lazy загружаемое изображение для графа
@@ -313,7 +314,8 @@ EventInfo.displayName = 'EventInfo';
 const EventCard: React.FC<EventProps> = React.memo(({ 
   event: initialEvent, 
   isAttended, 
-  onDelete 
+  onDelete,
+  disableRegistration
 }) => {
   const { isLoggedIn, user } = useAuth();
   const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
@@ -398,6 +400,7 @@ const EventCard: React.FC<EventProps> = React.memo(({
                 isIconOnly
                 color="primary"
                 variant="flat"
+                isDisabled={!!disableRegistration}
                 onPress={handleStartEdit}
                 className={styles.actionButton}
               >
@@ -409,6 +412,7 @@ const EventCard: React.FC<EventProps> = React.memo(({
                 isIconOnly
                 color="danger"
                 variant="flat"
+                isDisabled={!!disableRegistration}
                 onPress={handleDelete}
                 className={styles.actionButton}
               >
@@ -419,7 +423,7 @@ const EventCard: React.FC<EventProps> = React.memo(({
         )}
       </ButtonGroup>
     );
-  }, [canAccessEditor, isEditing, handleEdit, handleCancel, handleStartEdit, handleDelete]);
+  }, [canAccessEditor, isEditing, handleEdit, handleCancel, handleStartEdit, handleDelete, disableRegistration]);
 
   const registerButton = useMemo(() => (
     <Button
@@ -427,7 +431,7 @@ const EventCard: React.FC<EventProps> = React.memo(({
       variant={isRegistered ? "flat" : "solid"}
       size="md"
       onPress={handleRegistration}
-      isDisabled={isLoading}
+      isDisabled={isLoading || !!disableRegistration}
       startContent={
         isLoading ? (
           <Spinner size="sm" />
@@ -442,14 +446,14 @@ const EventCard: React.FC<EventProps> = React.memo(({
       className={styles.registerButton}
       style={registerButtonStyles}
     >
-      {isLoggedIn 
+      {disableRegistration ? 'Регистрация недоступна' : isLoggedIn 
         ? isRegistered 
           ? 'Отменить регистрацию' 
           : 'Зарегистрироваться' 
         : 'Войдите, чтобы зарегистрироваться'
       }
     </Button>
-  ), [isLoggedIn, isRegistered, isLoading, handleRegistration, registerButtonStyles]);
+  ), [isLoggedIn, isRegistered, isLoading, handleRegistration, registerButtonStyles, disableRegistration]);
 
   // Early return для невалидных данных
   if (!event || !event._id) {

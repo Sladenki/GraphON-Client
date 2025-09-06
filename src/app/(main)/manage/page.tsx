@@ -60,7 +60,7 @@ export default function ManagePage() {
             <div className={styles.eventsListGrid}>
                 {events.map((ev: EventItem) => (
                     <div key={ev._id} className={styles.cardItem}>
-                        <EventCard event={ev as any} isAttended={ev.isAttended} />
+                        <EventCard event={ev as any} isAttended={ev.isAttended} disableRegistration={activeTab === 'past'} />
                     </div>
                 ))}
             </div>
