@@ -4,6 +4,9 @@ import { Button, Card, CardBody, CardHeader, Divider } from '@heroui/react';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import { useMobileNavOptimization } from './useMobileNavOptimization';
 import styles from './MobileNav.module.scss';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useAuth } from '@/providers/AuthProvider';
 
 interface MobileNavProps {
   activeTab: string;
@@ -28,6 +31,8 @@ interface MobileNavProps {
 
 const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTab, tabs }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
+  const pathname = usePathname();
 
   // Используем оптимизированный хук
   const { handleOpenMenu, handleCloseMenu, handleBackdropClick, handleTabChange } = 
@@ -39,11 +44,10 @@ const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTa
     [tabs, activeTab]
   );
 
-  // Мемоизируем элементы навигации
-  const navigationItems = useMemo(() => 
-    tabs.map((tab) => {
+  // Мемоизируем элементы навигации + пункт Управление (условно)
+  const navigationItems = useMemo(() => {
+    const items = tabs.map((tab) => {
       const isActiveTab = activeTab === tab.name;
-      
       return (
         <Button
           key={tab.name}
@@ -56,9 +60,33 @@ const MobileNav: React.FC<MobileNavProps> = React.memo(({ activeTab, setActiveTa
           {tab.label}
         </Button>
       );
-    }),
-    [tabs, activeTab, handleTabChange]
-  );
+    });
+
+    const hasManageAccess = (() => {
+      if (!user) return false;
+      const anyUser: any = user as any;
+      const managedIds = anyUser?.managed_graph_id ?? anyUser?.managedGraphIds ?? [];
+      return Array.isArray(managedIds) && managedIds.length > 0;
+    })();
+
+    if (hasManageAccess) {
+      const isManageActive = pathname === '/manage' || pathname === '/manage/';
+      items.splice(2, 0, (
+        <Link href="/manage/" key="manage" className={styles.manageLink}>
+          <Button
+            variant={isManageActive ? "flat" : "light"}
+            color={isManageActive ? "primary" : "default"}
+            startContent={<Settings size={16} />}
+            className={`${styles.navButton} ${isManageActive ? styles.navButtonActive : ''}`}
+          >
+            Управление
+          </Button>
+        </Link>
+      ));
+    }
+
+    return items;
+  }, [tabs, activeTab, handleTabChange, user, pathname]);
 
   return (
     <>
