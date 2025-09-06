@@ -10,6 +10,7 @@ import { EventItem } from '@/types/schedule.interface';
 import { useState } from 'react';
 import EventCard from '@/components/ui/EventCard/EventCard';
 import { useAuth } from '@/providers/AuthProvider';
+import styles from './Manage.module.scss';
 
 export default function ManagePage() {
     const searchParams = useSearchParams();
@@ -42,78 +43,60 @@ export default function ManagePage() {
 
     const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
 
-    if (!graphId) return <div style={{ padding: 16 }}>Не найден доступный граф для управления</div>;
+    if (!graphId) return <div className={styles.manageWrapper}>Не найден доступный граф для управления</div>;
     if (isLoading) return <SpinnerLoader/>;
     if (isError || !data) return (
-        <div style={{ padding: 16 }}>
+        <div className={styles.manageWrapper}>
             <p>Ошибка загрузки данных графа</p>
-            <button onClick={() => refetch()}>Повторить</button>
+            <button onClick={() => refetch()} className={styles.refreshButton}>Повторить</button>
         </div>
     );
 
     const renderList = (events: EventItem[] | undefined) => {
         if (!events || events.length === 0) {
-            return <div style={{ opacity: 0.8 }}>Нет мероприятий</div>;
+            return <div className={styles.emptyState}>Нет мероприятий</div>;
         }
         return (
-            <div style={{ display: 'grid', gap: 12 }}>
+            <div className={styles.eventsListGrid}>
                 {events.map((ev: EventItem) => (
-                    <EventCard key={ev._id} event={ev as any} isAttended={ev.isAttended} />
+                    <div key={ev._id} className={styles.cardItem}>
+                        <EventCard event={ev as any} isAttended={ev.isAttended} />
+                    </div>
                 ))}
             </div>
         );
     };
 
     return (
-        <div style={{ padding: 16 }}>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 12 }}>Управление графом</h1>
-            <div style={{
-                border: '1px solid rgba(150,130,238,0.25)',
-                borderRadius: 12,
-                padding: 16,
-                background: 'var(--block-color)'
-            }}>
-                <div style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Название</div>
-                <div style={{ marginBottom: 16 }}>{data.name}</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: 8 }}>Подписки</div>
-                <div>{data.subsNum}</div>
+        <div className={styles.manageWrapper}>
+            <h1 className={styles.pageTitle}>Управление графом</h1>
+            <div className={styles.headerCard}>
+                <div className={styles.headerRow}>
+                    <div>
+                        <div className={styles.headerLabel}>Название</div>
+                        <div className={styles.headerValue}>{data.name}</div>
+                    </div>
+                    <div>
+                        <div className={styles.headerLabel}>Подписки</div>
+                        <div className={styles.headerValue}>{data.subsNum}</div>
+                    </div>
+                </div>
             </div>
 
             {/* Переключатели списков */}
-            <div style={{ display: 'flex', gap: 8, marginTop: 20, marginBottom: 12 }}>
+            <div className={styles.tabBar}>
                 <button
                     onClick={() => setActiveTab('upcoming')}
-                    style={{
-                        padding: '8px 12px',
-                        borderRadius: 10,
-                        border: '1px solid rgba(150,130,238,0.3)',
-                        background: activeTab === 'upcoming' ? 'rgb(var(--main-Color))' : 'transparent',
-                        color: activeTab === 'upcoming' ? '#fff' : 'var(--main-text)',
-                        cursor: 'pointer'
-                    }}
+                    className={`${styles.tabButton} ${activeTab === 'upcoming' ? styles.tabButtonActive : ''}`}
                 >
                     Текущие
                 </button>
                 <button
                     onClick={() => setActiveTab('past')}
-                    style={{
-                        padding: '8px 12px',
-                        borderRadius: 10,
-                        border: '1px solid rgba(150,130,238,0.3)',
-                        background: activeTab === 'past' ? 'rgb(var(--main-Color))' : 'transparent',
-                        color: activeTab === 'past' ? '#fff' : 'var(--main-text)',
-                        cursor: 'pointer'
-                    }}
+                    className={`${styles.tabButton} ${activeTab === 'past' ? styles.tabButtonActive : ''}`}
                 >
                     Прошедшие
                 </button>
-                <div style={{ marginLeft: 'auto' }}>
-                    {activeTab === 'upcoming' ? (
-                        <button onClick={() => refetchUpcoming()} style={{ padding: '8px 12px', borderRadius: 10, border: '1px solid rgba(150,130,238,0.3)', background: 'transparent', cursor: 'pointer' }}>Обновить</button>
-                    ) : (
-                        <button onClick={() => refetchPast()} style={{ padding: '8px 12px', borderRadius: 10, border: '1px solid rgba(150,130,238,0.3)', background: 'transparent', cursor: 'pointer' }}>Обновить</button>
-                    )}
-                </div>
             </div>
 
             {/* Контент списка */}

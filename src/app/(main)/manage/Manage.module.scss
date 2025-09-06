@@ -1,0 +1,99 @@
+.manageWrapper {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--main-text);
+}
+
+.headerCard {
+  border: 1px solid rgba(150,130,238,0.25);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--block-color);
+}
+
+.headerRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.headerLabel {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--main-text);
+  margin-bottom: 6px;
+}
+
+.headerValue {
+  color: var(--main-text);
+  opacity: 0.9;
+}
+
+.tabBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.tabButton {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(150,130,238,0.3);
+  background: transparent;
+  color: var(--main-text);
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, box-shadow .2s ease;
+}
+
+.tabButtonActive {
+  background: rgb(var(--main-Color));
+  color: #fff;
+  border-color: rgb(var(--main-Color));
+  box-shadow: 0 6px 18px rgba(var(--main-Color-rgb), 0.35);
+}
+
+.refreshButton {
+  margin-left: auto;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(150,130,238,0.3);
+  background: transparent;
+  color: var(--main-text);
+  cursor: pointer;
+}
+
+.eventsListGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardItem {
+  width: 100%;
+}
+
+.emptyState {
+  opacity: 0.8;
+  color: var(--main-text);
+}
+
+@media (min-width: 720px) {
+}
+
+@media (max-width: 520px) {
+  .headerRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+
