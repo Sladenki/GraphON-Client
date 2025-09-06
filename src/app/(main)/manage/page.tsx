@@ -14,7 +14,7 @@ import styles from './Manage.module.scss';
 
 export default function ManagePage() {
     const searchParams = useSearchParams();
-    const { user } = useAuth();
+    const { user, isLoggedIn } = useAuth();
     const anyUser: any = user as any;
     const managedIds: string[] = Array.isArray(anyUser?.managed_graph_id) ? anyUser.managed_graph_id : (Array.isArray(anyUser?.managedGraphIds) ? anyUser.managedGraphIds : []);
     const graphId = searchParams.get('id') || managedIds[0];
@@ -43,6 +43,7 @@ export default function ManagePage() {
         staleTime: 30_000,
     });
 
+    if (!isLoggedIn) return null;
     if (!graphId) return <div className={styles.manageWrapper}>Не найден доступный граф для управления</div>;
     if (isLoading) return <SpinnerLoader/>;
     if (isError || !data) return (

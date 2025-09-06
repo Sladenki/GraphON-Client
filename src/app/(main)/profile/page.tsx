@@ -147,14 +147,16 @@ export default function Profile() {
 
     return (
         <div className={styles.profileWrapper}>
-            <button 
-                type="button"
-                className={styles.editFloatingButton}
-                aria-label="Редактировать профиль"
-                onClick={() => setIsEditOpen(true)}
-            >
-                <Pencil />
-            </button>
+            {typedUser && (
+                <button 
+                    type="button"
+                    className={styles.editFloatingButton}
+                    aria-label="Редактировать профиль"
+                    onClick={() => setIsEditOpen(true)}
+                >
+                    <Pencil />
+                </button>
+            )}
             {typedUser ? (
                 <>
                     <div className={`${styles.header} ${!typedUser.selectedGraphId ? styles.headerCompact : ''}`}>
