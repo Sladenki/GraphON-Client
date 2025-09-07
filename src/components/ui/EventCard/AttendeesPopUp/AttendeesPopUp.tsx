@@ -60,7 +60,9 @@ const AttendeesPopUp: React.FC<AttendeesPopUpProps> = ({ isOpen, onClose, eventI
         {!isLoading && !isError && (
           <div className={styles.list}>
             {(data || []).map((u) => {
-              const display = u.firstName || u.username || u.lastName || 'Пользователь';
+              const display = (u.firstName && u.lastName)
+                ? `${u.firstName} ${u.lastName}`
+                : (u.firstName || u.lastName || u.username || 'Пользователь');
               return (
                 <div key={u._id} className={styles.item}>
                   <div className={styles.avatar}>
@@ -72,9 +74,7 @@ const AttendeesPopUp: React.FC<AttendeesPopUpProps> = ({ isOpen, onClose, eventI
                   </div>
                   <div className={styles.info}>
                     <div className={styles.name}>{display}</div>
-                    {(u.firstName && u.lastName) && (
-                      <div className={styles.meta}>@{u.username || '—'}</div>
-                    )}
+                    <div className={styles.meta}>@{u.username || '—'}</div>
                   </div>
                 </div>
               );
