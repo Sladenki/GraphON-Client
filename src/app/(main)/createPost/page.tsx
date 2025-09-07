@@ -134,7 +134,7 @@ const CreatePost = () => {
 
             {canAccessEditor && (
                 <AdminSection 
-                    title="Получить расписание всего по ВУЗу"
+                    title="Получить расписание по ВУЗу"
                     emoji="📆"
                     role={UserRole.Editor}
                 >

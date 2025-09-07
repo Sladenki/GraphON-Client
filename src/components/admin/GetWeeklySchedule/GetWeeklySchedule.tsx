@@ -154,6 +154,13 @@ export const GetWeeklySchedule = () => {
                 const weekdayFormat = new Intl.DateTimeFormat('ru-RU', { weekday: 'short' });
                 const dateFormat = new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short' });
 
+                // Подготовим ширины колонок: шире, если есть события, уже — если нет
+                const columnDefs = days.map((d) => {
+                    const key = toLocalKey(d);
+                    const hasEvents = (eventsByDay.get(key) || []).length > 0;
+                    return hasEvents ? 'minmax(220px, 1fr)' : 'minmax(140px, 1fr)';
+                }).join(' ');
+
                 return (
                     <div style={{
                         overflowX: 'auto',
@@ -161,9 +168,9 @@ export const GetWeeklySchedule = () => {
                     }}>
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(7, minmax(180px, 1fr))',
+                            gridTemplateColumns: columnDefs,
                             gap: 12,
-                            minWidth: 7 * 180
+                            minWidth: 7 * 140
                         } as any}>
                             {days.map((d) => {
                                 const key = toLocalKey(d);
@@ -210,9 +217,9 @@ export const GetWeeklySchedule = () => {
                                                         flexDirection: 'column',
                                                         gap: 4
                                                     }}>
-                                                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
-                                                            <div style={{ fontWeight: 600, color: '#111827' }}>{ev.name}</div>
-                                                            <div style={{ color: '#374151', fontSize: 12 }}>{ev.timeFrom}–{ev.timeTo}</div>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
+                                                            <div style={{ fontWeight: 600, color: '#111827', overflowWrap: 'anywhere', wordBreak: 'break-word', flex: 1, minWidth: 0 }}>{ev.name}</div>
+                                                            <div style={{ color: '#374151', fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexShrink: 0, maxWidth: '45%' }}>{ev.timeFrom}–{ev.timeTo}</div>
                                                         </div>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#374151', fontSize: 12 }}>
                                                             <div style={{
@@ -230,7 +237,7 @@ export const GetWeeklySchedule = () => {
                                                             }}>
                                                                 {(graph.name || 'G').charAt(0).toUpperCase()}
                                                             </div>
-                                                            <span style={{ fontWeight: 500 }}>{graph.name}</span>
+                                                            <span style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{graph.name}</span>
                                                         </div>
                                                         {ev.place && (
                                                             <div style={{ color: '#6b7280', fontSize: 12 }}>Место: {ev.place}</div>
