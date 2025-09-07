@@ -107,3 +107,38 @@
         box-shadow: none;
     }
 } 
+
+/* Theme-aware notice box */
+.notice {
+    padding: 20px;
+    text-align: center;
+    color: var(--main-text);
+    background: var(--block-color);
+    border-radius: 8px;
+    border: 1px solid rgba(var(--main-Color-rgb), 0.2);
+}
+
+.checkboxRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkboxLabel {
+    font-size: 14px;
+    color: var(--main-text);
+    opacity: 0.9;
+}
+
+.counter {
+    font-size: 12px;
+    color: var(--main-text);
+    opacity: 0.7;
+    margin-top: 4px;
+    text-align: right;
+}
+
+.counterError {
+    color: #ef4444;
+    opacity: 1;
+}

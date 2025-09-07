@@ -6,6 +6,7 @@ import { IGraphList } from '@/types/graph.interface';
 import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useAuth } from '@/providers/AuthProvider';
+import styles from './CreateEventForm.module.scss';
 
 interface CreateEventFormProps {
     globalGraphId?: string; // Делаем опциональным
@@ -156,14 +157,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
     return (
         <>
         {!selectedGraphId ? (
-            <div style={{ 
-                padding: '20px', 
-                textAlign: 'center', 
-                color: '#6b7280',
-                backgroundColor: '#f9fafb',
-                borderRadius: '8px',
-                border: '1px solid #e5e7eb'
-            }}>
+            <div className={styles.notice}>
                 <p>Для создания мероприятия необходимо выбрать граф в настройках профиля</p>
             </div>
         ) : (
@@ -214,12 +208,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                     maxLength={DESCRIPTION_MAX_LENGTH}
                     required
                 />
-                <div style={{ 
-                    fontSize: '12px', 
-                    color: eventData.description.length > DESCRIPTION_MAX_LENGTH ? '#ef4444' : '#6b7280',
-                    marginTop: '4px',
-                    textAlign: 'right'
-                }}>
+                <div className={`${styles.counter} ${eventData.description.length > DESCRIPTION_MAX_LENGTH ? styles.counterError : ''}`}>
                     {eventData.description.length}/{DESCRIPTION_MAX_LENGTH} символов
                 </div>
             </FormInputGroup>
@@ -248,7 +237,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                 label="Дата и время"
                 description="Укажите, уточнена ли дата и время мероприятия"
             >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className={styles.checkboxRow}>
                     <input
                         type="checkbox"
                         id="isDateTbd"
@@ -260,7 +249,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                         }))}
                         style={{ width: '16px', height: '16px' }}
                     />
-                    <label htmlFor="isDateTbd" style={{ fontSize: '14px', color: '#374151' }}>
+                    <label htmlFor="isDateTbd" className={styles.checkboxLabel}>
                         Дата и время уточняется
                     </label>
                 </div>
