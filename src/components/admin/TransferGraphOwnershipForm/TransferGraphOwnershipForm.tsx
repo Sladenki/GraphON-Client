@@ -2,16 +2,24 @@ import { AdminService } from '@/services/admin.service';
 import { UserService } from '@/services/user.service';
 import { IUser } from '@/types/user.interface';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AdminForm, FormInputGroup, FormSelect } from '@/components/ui/AdminForm';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import { useSelectedGraphId as useSelectedGraphIdStore } from '@/stores/useUIStore';
 
 interface TransferGraphOwnershipFormProps {
     graphs: Array<{ _id: string; name: string }>;
 }
 
 export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFormProps) => {
-    const [selectedGraphId, setSelectedGraphId] = useState('');
+    const selectedGraphIdFromStore = useSelectedGraphIdStore();
+    const [selectedGraphId, setSelectedGraphId] = useState(selectedGraphIdFromStore ?? '');
+    
+    useEffect(() => {
+        if (selectedGraphIdFromStore) {
+            setSelectedGraphId(selectedGraphIdFromStore);
+        }
+    }, [selectedGraphIdFromStore]);
     const [selectedUserId, setSelectedUserId] = useState('');
     const queryClient = useQueryClient();
 
@@ -19,8 +27,9 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
         data,
         isLoading: isLoadingUsers
     } = useQuery({
-        queryKey: ['users'],
-        queryFn: () => UserService.getAllUsers(),
+        queryKey: ['usersByGraph', selectedGraphId],
+        queryFn: () => UserService.getAllUsersByGraph(selectedGraphId),
+        enabled: Boolean(selectedGraphId),
         refetchOnWindowFocus: false,
         refetchOnMount: false
     });

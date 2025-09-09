@@ -17,16 +17,25 @@ export const UserService = {
     //     return data;
     // },
 
+    // Получение всех пользователей
     async getAllUsers() {        
         const { data } = await axiosClassic.get(`/user/allUsers`);
         return data;
     },
 
+    // Получение всех пользователей по графу
+    async getAllUsersByGraph(graphId: string): Promise<IUser[]> {
+        const { data } = await axiosAuth.get<IUser[]>(`/user/allUsersByGraph/${graphId}`);
+        return data;
+    },
+
+    // Смена выбора графа пользователя 
     async updateSelectedGraph(selectedGraphId: string) {
         const { data } = await axiosAuth.patch(`/user/selected-graph`, { selectedGraphId });
         return data;
     },
 
+    // Обновление профиля
     async updateProfile(dto: IUpdateUserDto) {
         const { data } = await axiosAuth.patch(`/user/profile`, dto);
         return data;
