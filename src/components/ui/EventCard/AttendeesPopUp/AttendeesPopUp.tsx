@@ -3,8 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { EventRegService } from '@/services/eventReg.service';
 import PopUpWrapper from '../../../global/PopUpWrapper/PopUpWrapper';
 import { Spinner } from '@heroui/react';
-import Image from 'next/image';
 import styles from './AttendeesPopUp.module.scss';
+import AttendeeItem from './AttendeeItem';
+import { AttendeeUser } from './types';
 
 interface AttendeesPopUpProps {
   isOpen: boolean;
@@ -13,14 +14,7 @@ interface AttendeesPopUpProps {
   eventName: string;
 }
 
-interface AttendeeUser {
-  _id: string;
-  telegramId?: string;
-  avaPath?: string;
-  firstName?: string;
-  username?: string;
-  lastName?: string;
-}
+ 
 
 const AttendeesPopUp: React.FC<AttendeesPopUpProps> = ({ isOpen, onClose, eventId, eventName }) => {
   const { data, isLoading, isError } = useQuery({
@@ -60,24 +54,7 @@ const AttendeesPopUp: React.FC<AttendeesPopUpProps> = ({ isOpen, onClose, eventI
         {!isLoading && !isError && (
           <div className={styles.list}>
             {(data || []).map((u) => {
-              const display = (u.firstName && u.lastName)
-                ? `${u.firstName} ${u.lastName}`
-                : (u.firstName || u.lastName || u.username || 'Пользователь');
-              return (
-                <div key={u._id} className={styles.item}>
-                  <div className={styles.avatar}>
-                    {u.avaPath ? (
-                      <Image src={u.avaPath} alt={display} width={40} height={40} />
-                    ) : (
-                      <div className={styles.fallback}>{display.charAt(0).toUpperCase()}</div>
-                    )}
-                  </div>
-                  <div className={styles.info}>
-                    <div className={styles.name}>{display}</div>
-                    <div className={styles.meta}>@{u.username || '—'}</div>
-                  </div>
-                </div>
-              );
+              return <AttendeeItem key={u._id} user={u} />;
             })}
             {(!data || data.length === 0) && (
               <div className={styles.center}>Пока нет участников</div>
