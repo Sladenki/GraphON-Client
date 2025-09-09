@@ -7,10 +7,22 @@ interface AttendeeItemProps {
   user: AttendeeUser;
 }
 
+const stringToHslColor = (str: string, saturation = 65, lightness = 55) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
+
 const AttendeeItem: React.FC<AttendeeItemProps> = ({ user }) => {
   const display = (user.firstName && user.lastName)
     ? `${user.firstName} ${user.lastName}`
     : (user.firstName || user.lastName || user.username || 'Пользователь');
+  const initial = display.charAt(0).toUpperCase();
+  const colorKey = user.username || display || user._id;
+  const bgColor = stringToHslColor(colorKey);
 
   return (
     <div className={styles.item}>
@@ -18,7 +30,7 @@ const AttendeeItem: React.FC<AttendeeItemProps> = ({ user }) => {
         {user.avaPath ? (
           <Image src={user.avaPath} alt={display} width={40} height={40} />
         ) : (
-          <div className={styles.fallback}>{display.charAt(0).toUpperCase()}</div>
+          <div className={styles.fallback} style={{ backgroundColor: bgColor }}>{initial}</div>
         )}
       </div>
       <div className={styles.info}>
