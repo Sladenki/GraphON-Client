@@ -5,7 +5,7 @@ import styles from './layout.module.scss'
 import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
 import { AllProvers } from "@/providers/main";
 import type { Metadata } from 'next';
-import { Inter, Orbitron } from 'next/font/google';
+import { inter, orbitron } from "@/app/fonts";
 import '../../styles/globals.scss'
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import Script from "next/script";
@@ -14,20 +14,8 @@ import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
 import ProfileCorner from "@/components/global/ProfileCorner/ProfileCorner";
 import { Providers } from '../providers';
-import VpnWatcher from "@/components/global/VpnWatcher";
 
-const inter = Inter({ 
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
-const orbitron = Orbitron({ 
-  subsets: ['latin'],
-  variable: '--font-orbitron',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-});
+// Fonts are configured in server file src/app/fonts.ts
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
@@ -79,7 +67,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   <div className={styles.content}>
                     {/* Добавляем компонент для отслеживания переходов */}
                     {/* <GoogleAnalytics />  */}
-                    <VpnWatcher/>
                     {children}
                   </div>
                 </div>
