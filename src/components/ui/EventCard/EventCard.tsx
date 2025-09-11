@@ -39,6 +39,7 @@ import { useDeclensionWord } from "@/hooks/useDeclension";
 import DeleteConfirmPopUp from './DeleteConfirmPopUp/DeleteConfirmPopUp';
 import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
 import styles from './EventCard.module.scss';
+import { linkifyText } from '@/lib/linkify';
 
 interface EventProps {
   event: {
@@ -506,7 +507,7 @@ const EventCard: React.FC<EventProps> = React.memo(({
           />
         ) : (
           <p className={styles.description}>
-            {event.description}
+            {linkifyText(event.description)}
           </p>
         )}
       </CardBody>

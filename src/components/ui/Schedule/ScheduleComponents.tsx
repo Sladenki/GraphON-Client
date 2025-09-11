@@ -6,6 +6,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { ScheduleItem, EventItem } from '@/types/schedule';
 import styles from './Schedule.module.scss';
+import { linkifyText } from '@/lib/linkify';
 import { useDeclensionWord } from '@/hooks/useDeclension';
 
 // Оптимизированный хук для EventCard в Schedule
@@ -125,7 +126,7 @@ export const EventCard = React.memo<EventCardProps>(({ event, onToggleSubscripti
                 </Chip>
               )}
             </div>
-            <p className={styles.cardDescription}>{event.description}</p>
+            <p className={styles.cardDescription}>{linkifyText(event.description)}</p>
             <div className={styles.cardMeta}>
               <div className={styles.metaItem}>
                 <Clock size={14} />
