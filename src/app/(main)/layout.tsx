@@ -14,6 +14,7 @@ import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
 import ProfileCorner from "@/components/global/ProfileCorner/ProfileCorner";
 import { Providers } from '../providers';
+import VpnWatcher from "@/components/global/VpnWatcher";
 
 const inter = Inter({ 
   subsets: ['latin', 'cyrillic'],
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   <div className={styles.content}>
                     {/* Добавляем компонент для отслеживания переходов */}
                     {/* <GoogleAnalytics />  */}
+                    <VpnWatcher/>
                     {children}
                   </div>
                 </div>
