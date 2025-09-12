@@ -111,7 +111,12 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
         transferOwnership();
     };
 
-    const isFormValid = selectedGraphId && selectedUserId;
+    const selectedGraph = graphs.find(g => g._id === selectedGraphId) || null;
+    const currentOwner = selectedGraphId ? ownerByGraphId[selectedGraphId] : null;
+    const selectedUser = users.find(u => u._id === selectedUserId) || null;
+    const isSameOwner = Boolean(currentOwner && selectedUser && currentOwner._id === selectedUser._id);
+
+    const isFormValid = Boolean(selectedGraphId && selectedUserId && !isSameOwner);
 
     if (isLoadingUsers) {
         return <SpinnerLoader />;
@@ -183,6 +188,31 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
                             <div className={styles.emptyState}>Сначала выберите граф</div>
                         )}
                     </div>
+                </div>
+            </div>
+
+            <div className={styles.summary}>
+                <div className={styles.summaryTitle}>Итог</div>
+                <div className={styles.summaryRows}>
+                    <div className={styles.summaryRow}>
+                        <span className={styles.tag}>Граф</span>
+                        <span className={styles.value}>{selectedGraph ? selectedGraph.name : 'не выбран'}</span>
+                    </div>
+                    <div className={styles.summaryRow}>
+                        <span className={styles.tag}>Текущий владелец</span>
+                        <span className={styles.value}>
+                            {currentOwner ? `${currentOwner.firstName} ${currentOwner.lastName} (@${currentOwner.username})` : '—'}
+                        </span>
+                    </div>
+                    <div className={styles.summaryRow}>
+                        <span className={styles.tag}>Новый владелец</span>
+                        <span className={styles.value}>
+                            {selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName} (@${selectedUser.username})` : 'не выбран'}
+                        </span>
+                    </div>
+                    {isSameOwner && (
+                        <div className={styles.notice}>Этот пользователь уже является владельцем выбранного графа</div>
+                    )}
                 </div>
             </div>
         </AdminForm>
