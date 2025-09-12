@@ -134,7 +134,13 @@ export const UserRoleManager = () => {
                             );
                         })}
                         {filteredUsers.length === 0 && (
-                            <div className={styles.emptyState}>Пользователи не найдены</div>
+                            <div className={styles.emptyState}>
+                                <div className={styles.emptyIcon} aria-hidden>🔎</div>
+                                <div className={styles.emptyTitle}>Пользователи не найдены</div>
+                                <div className={styles.emptyDesc}>
+                                    Уточните запрос. Возможно, пользователь ещё не зарегистрирован или у него не выбран глобальный граф в профиле.
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>

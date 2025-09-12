@@ -137,10 +137,17 @@
 .roleUser { background: rgba(154, 160, 166, 0.15); color: #9aa0a6; border-color: rgba(154, 160, 166, 0.35); }
 
 .emptyState {
-    padding: 16px;
-    color: var(--text-color-secondary, #8a8a8a);
+    padding: 24px 16px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
 }
+
+.emptyIcon { font-size: 24px; opacity: 0.8; }
+.emptyTitle { font-weight: 600; color: var(--main-text); }
+.emptyDesc { color: var(--text-color-secondary, #8a8a8a); font-size: 13px; }
 
 .select {
     width: 100%;
