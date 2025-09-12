@@ -6,12 +6,15 @@ import styles from './UserRoleManager.module.scss';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useSelectedGraphId } from '@/stores/useUIStore';
+import { useAuth } from '@/providers/AuthProvider';
 
 export const UserRoleManager = () => {
     const [selectedUser, setSelectedUser] = useState<string>('');
     const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.User);
     const queryClient = useQueryClient();
     const selectedGraphId = useSelectedGraphId();
+    const { user } = useAuth();
+    const isAdminUser = user?.role === UserRole.Admin;
 
     const {
         data,
@@ -26,9 +29,19 @@ export const UserRoleManager = () => {
 
     const users = data || [];
 
+    const availableRolesEntries = Object.entries(RoleTitles).filter(([roleKey]) => {
+        // Админ не может назначать владельцев и сис.админов
+        if (isAdminUser && (roleKey === UserRole.Create || roleKey === UserRole.SysAdmin)) return false;
+        return true;
+    }) as Array<[UserRole, string]>;
+
     const { mutate: assignRole, isPending: isAssigningRole } = useMutation({
-        mutationFn: ({ userId, role }: { userId: string; role: UserRole }) => 
-            AdminService.assignRole(userId, role),
+        mutationFn: ({ userId, role }: { userId: string; role: UserRole }) => {
+            if (isAdminUser && (role === UserRole.Create || role === UserRole.SysAdmin)) {
+                throw new Error('Администратор не может назначать роль Владелец или Сис.Админ');
+            }
+            return AdminService.assignRole(userId, role);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['usersByGraph', selectedGraphId] });
             alert('Роль успешно изменена');
@@ -72,7 +85,7 @@ export const UserRoleManager = () => {
                     onChange={(e) => setSelectedRole(e.target.value as UserRole)}
                     className={styles.select}
                 >
-                    {Object.entries(RoleTitles).map(([role, title]) => (
+                    {availableRolesEntries.map(([role, title]) => (
                         <option key={role} value={role}>
                             {title}
                         </option>

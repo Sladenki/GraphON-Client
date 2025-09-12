@@ -50,11 +50,11 @@ const CreatePost = () => {
                 </AdminSection>
             )}
 
-            {canAccessCreate && (
+            {canAccessSysAdmin && (
                 <AdminSection 
                     title="Изменить роль пользователя"
                     emoji="👥"
-                    role={UserRole.Create}
+                    role={UserRole.Admin}
                 >
                     <UserRoleManager />
                 </AdminSection>
