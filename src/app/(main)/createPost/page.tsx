@@ -19,24 +19,23 @@ import { ServerStats } from '@/components/admin/ServerStats/ServerStats';
 import { CreateGlobalGraphForm } from '@/components/admin/CreateGlobalGraphForm/CreateGlobalGraphForm';
 import { CreateTopicGraphForm } from '@/components/admin/CreateTopicGraphForm/CreateTopicGraphForm';
 import { GetWeeklySchedule } from '@/components/admin/GetWeeklySchedule/GetWeeklySchedule';
+import { useSelectedGraphId } from '@/stores/useUIStore';
 
 const CreatePost = () => {
     const { user } = useAuth();
     const typedUser = user as IUser | null;
     const { canAccessCreate, canAccessEditor, canAccessSysAdmin, canAccessAdmin } = useRoleAccess(typedUser?.role);
 
-    // Получение главных графов
+    // Получение дочерних графов выбранного графа
+    const selectedGraphId = useSelectedGraphId();
     const { isPending, isError, data: mainTopics, error } = useQuery({
-        queryKey: ['graph/getParentGraphs'],
-        queryFn: () => GraphService.getParentGraphs(),
+        queryKey: ['graph/getAllChildrenGraphs', selectedGraphId],
+        queryFn: () => GraphService.getAllChildrenGraphs(selectedGraphId as string),
+        enabled: Boolean(selectedGraphId),
     });
 
     if (isPending) return <SpinnerLoader/>;
     if (isError) return <p>Ошибка: {error.message}</p>;
-
-    // if (!canAccessSysAdmin) {
-    //     return <p>У вас нет доступа к этой странице</p>
-    // }
 
     return (
         <div className={styles.createPostWrapper}>
@@ -50,7 +49,7 @@ const CreatePost = () => {
                 </AdminSection>
             )}
 
-            {canAccessSysAdmin && (
+            {canAccessAdmin && (
                 <AdminSection 
                     title="Изменить роль пользователя"
                     emoji="👥"
@@ -60,12 +59,11 @@ const CreatePost = () => {
                 </AdminSection>
             )}
 
-            {/* Вернуть на Admin */}
-            {canAccessCreate && mainTopics && (
+            {canAccessAdmin && mainTopics && (
                 <AdminSection 
                     title="Передача прав на граф"
                     emoji="🔑"
-                    role={UserRole.Create}
+                    role={UserRole.Admin}
                 >
                     <TransferGraphOwnershipForm graphs={mainTopics.data} />
                 </AdminSection>
