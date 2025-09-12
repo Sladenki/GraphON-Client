@@ -1,56 +1,110 @@
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    background: var(--background-color, #fff);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+.controls {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
 
-.formGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    label {
-        font-weight: 500;
-        color: var(--text-color, #333);
-    }
-
-    select {
-        padding: 0.75rem;
-        border: 1px solid var(--border-color, #ddd);
-        border-radius: 8px;
-        background: var(--input-background, #f5f5f5);
-        font-size: 1rem;
-        color: var(--text-color, #333);
-        transition: border-color 0.2s, box-shadow 0.2s;
-
-        &:focus {
-            outline: none;
-            border-color: var(--primary-color, #1976d2);
-            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
-        }
+    @media (min-width: 900px) {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
     }
 }
 
-.submitButton {
-    padding: 0.75rem 1.5rem;
-    background: var(--primary-color, #1976d2);
-    color: white;
-    border: none;
+.picker {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pickerTitle {
+    font-weight: 600;
+    color: var(--main-text);
+}
+
+.searchInput {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(var(--main-Color), 0.2);
     border-radius: 8px;
-    font-weight: 500;
+    font-size: 15px;
+    color: var(--text-color);
+    background-color: var(--block-color);
+    transition: all 0.2s ease;
+    font-family: 'Roboto', sans-serif;
+
+    &:focus {
+        outline: none;
+        border-color: rgb(var(--main-Color));
+        box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.1);
+    }
+}
+
+.list {
+    max-height: 280px;
+    overflow: auto;
+    border: 1px solid rgba(var(--main-Color), 0.12);
+    border-radius: 10px;
+    background: var(--block-color);
+    padding: 6px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    scrollbar-gutter: stable both-edges;
+}
+
+.item {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.15s ease;
+    text-align: left;
 
-    &:hover:not(:disabled) {
-        background: var(--primary-color-dark, #1565c0);
+    &:hover {
+        background: rgba(var(--main-Color), 0.06);
+        border-color: rgba(var(--main-Color), 0.12);
     }
+}
 
-    &:disabled {
-        background: var(--disabled-color, #ccc);
-        cursor: not-allowed;
-    }
+.itemActive {
+    background: rgba(var(--main-Color), 0.12);
+    border-color: rgba(var(--main-Color), 0.2);
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(var(--main-Color), 0.15);
+    color: rgb(var(--main-Color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.name {
+    color: var(--main-text);
+    font-weight: 500;
+}
+
+.secondary {
+    color: var(--text-color-secondary, #8a8a8a);
+    font-size: 13px;
+}
+
+.emptyState {
+    padding: 16px;
+    color: var(--text-color-secondary, #8a8a8a);
+    text-align: center;
 } 

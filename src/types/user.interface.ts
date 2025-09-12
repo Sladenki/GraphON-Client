@@ -39,6 +39,7 @@ export interface IUser {
     postsNum: number;
     attentedEventsNum: number;
     selectedGraphId: string | null;
+    managedGraphIds?: Array<{ _id: string; name: string }>; 
 }
 
 export interface IUpdateUserDto {
