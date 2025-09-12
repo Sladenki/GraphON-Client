@@ -5,18 +5,21 @@ import { IUser, UserRole, RoleTitles } from '@/types/user.interface';
 import styles from './UserRoleManager.module.scss';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import { useSelectedGraphId } from '@/stores/useUIStore';
 
 export const UserRoleManager = () => {
     const [selectedUser, setSelectedUser] = useState<string>('');
     const [selectedRole, setSelectedRole] = useState<UserRole>(UserRole.User);
     const queryClient = useQueryClient();
+    const selectedGraphId = useSelectedGraphId();
 
     const {
         data,
         isLoading: isLoadingUsers
     } = useQuery({
-        queryKey: ['users'],
-        queryFn: () => UserService.getAllUsers(),
+        queryKey: ['usersByGraph', selectedGraphId],
+        queryFn: () => UserService.getAllUsersByGraph(selectedGraphId as string),
+        enabled: Boolean(selectedGraphId),
         refetchOnWindowFocus: false,
         refetchOnMount: false
     });
@@ -27,7 +30,7 @@ export const UserRoleManager = () => {
         mutationFn: ({ userId, role }: { userId: string; role: UserRole }) => 
             AdminService.assignRole(userId, role),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: ['usersByGraph', selectedGraphId] });
             alert('Роль успешно изменена');
             setSelectedUser('');
         },

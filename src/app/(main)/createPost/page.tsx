@@ -60,6 +60,17 @@ const CreatePost = () => {
                 </AdminSection>
             )}
 
+            {/* Вернуть на Admin */}
+            {canAccessCreate && mainTopics && (
+                <AdminSection 
+                    title="Передача прав на граф"
+                    emoji="🔑"
+                    role={UserRole.Create}
+                >
+                    <TransferGraphOwnershipForm graphs={mainTopics.data} />
+                </AdminSection>
+            )}
+
             {canAccessCreate && (
                 <AdminSection 
                     title="Создание глобального графа"
@@ -101,16 +112,7 @@ const CreatePost = () => {
                 </AdminSection>
             )}
             
-             {/* Вернуть на Admin */}
-            {canAccessCreate && mainTopics && (
-                <AdminSection 
-                    title="Передача прав на граф"
-                    emoji="🔑"
-                    role={UserRole.Create}
-                >
-                    <TransferGraphOwnershipForm graphs={mainTopics.data} />
-                </AdminSection>
-            )}
+
             
             {canAccessEditor && mainTopics && (
                 <AdminSection 
