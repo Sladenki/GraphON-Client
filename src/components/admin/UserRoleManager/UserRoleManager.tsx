@@ -75,7 +75,7 @@ export const UserRoleManager = () => {
                     <option value="">Выберите пользователя</option>
                     {users.map((user: IUser) => (
                         <option key={user._id} value={user._id}>
-                            {user.firstName} {user.lastName} ({user.username})
+                            {user.firstName} {user.lastName} ({user.username}) — {RoleTitles[user.role]}
                         </option>
                     ))}
                 </select>
