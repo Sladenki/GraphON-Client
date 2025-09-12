@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useSelectedGraphId } from '@/stores/useUIStore';
 import { useAuth } from '@/providers/AuthProvider';
+import { notifySuccess, notifyError } from '@/lib/notifications';
 
 export const UserRoleManager = () => {
     const [selectedUser, setSelectedUser] = useState<string>('');
@@ -67,12 +68,12 @@ export const UserRoleManager = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['usersByGraph', selectedGraphId] });
-            alert('Роль успешно изменена');
+            notifySuccess('Роль успешно изменена');
             setSelectedUser('');
         },
         onError: (error) => {
             console.error('Failed to assign role:', error);
-            alert('Ошибка при изменении роли');
+            notifyError('Ошибка при изменении роли');
         }
     });
 
