@@ -2,7 +2,7 @@ import { AdminService } from '@/services/admin.service';
 import { UserService } from '@/services/user.service';
 import { IUser, RoleTitles } from '@/types/user.interface';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AdminForm } from '@/components/ui/AdminForm';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useSelectedGraphId as useSelectedGraphIdStore } from '@/stores/useUIStore';
@@ -23,16 +23,15 @@ interface TransferGraphOwnershipFormProps {
 }
 
 export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFormProps) => {
-    const selectedGraphIdFromStore = useSelectedGraphIdStore();
-    const [selectedGraphId, setSelectedGraphId] = useState(selectedGraphIdFromStore ?? '');
-    const [graphSearch, setGraphSearch] = useState('');
-    const [userSearch, setUserSearch] = useState('');
+    const selectedGlobalGraphId = useSelectedGraphIdStore();
+    const [selectedGraphId, setSelectedGraphId] = useState(selectedGlobalGraphId ?? '');
+    
     
     useEffect(() => {
-        if (selectedGraphIdFromStore) {
-            setSelectedGraphId(selectedGraphIdFromStore);
+        if (selectedGlobalGraphId) {
+            setSelectedGraphId(selectedGlobalGraphId);
         }
-    }, [selectedGraphIdFromStore]);
+    }, [selectedGlobalGraphId]);
     const [selectedUserId, setSelectedUserId] = useState('');
     const queryClient = useQueryClient();
 
@@ -40,9 +39,9 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
         data,
         isLoading: isLoadingUsers
     } = useQuery({
-        queryKey: ['usersByGraph', selectedGraphId],
-        queryFn: () => UserService.getAllUsersByGraph(selectedGraphId),
-        enabled: Boolean(selectedGraphId),
+        queryKey: ['usersByGraph', selectedGlobalGraphId],
+        queryFn: () => UserService.getAllUsersByGraph(selectedGlobalGraphId as string),
+        enabled: Boolean(selectedGlobalGraphId),
         refetchOnWindowFocus: false,
         refetchOnMount: false
     });
@@ -91,23 +90,7 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [graphs]);
 
-    const filteredGraphs = useMemo(() => {
-        if (!graphSearch.trim()) return graphs;
-        const q = graphSearch.toLowerCase();
-        return graphs.filter(g => g.name.toLowerCase().includes(q));
-    }, [graphs, graphSearch]);
-
-    const filteredUsers = useMemo(() => {
-        if (!userSearch.trim()) return users;
-        const q = userSearch.toLowerCase();
-        return users.filter(u => {
-            const full = `${u.firstName} ${u.lastName}`.toLowerCase();
-            const un = (u.username || '').toLowerCase();
-            const role = RoleTitles[u.role].toLowerCase();
-            const owned = (u.managedGraphIds?.map(g => g.name).join(' ') || '').toLowerCase();
-            return full.includes(q) || un.includes(q) || role.includes(q) || owned.includes(q);
-        });
-    }, [users, userSearch]);
+    // Без поисковых полей: используем исходные списки graphs и users
 
     const { mutate: transferOwnership, isPending } = useMutation({
         mutationFn: () => AdminService.transferGraphOwnership(selectedGraphId, selectedUserId),
@@ -145,15 +128,8 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
             <div className={styles.controls}>
                 <div className={styles.picker}>
                     <div className={styles.pickerTitle}>Графы</div>
-                    <input
-                        type="text"
-                        className={styles.searchInput}
-                        placeholder="Поиск графов..."
-                        value={graphSearch}
-                        onChange={(e) => setGraphSearch(e.target.value)}
-                    />
                     <div className={styles.list}>
-                        {filteredGraphs.map((g) => {
+                        {graphs.map((g) => {
                             const isActive = selectedGraphId === g._id;
                             const owner = ownerByGraphId[g._id];
                             return (
@@ -173,7 +149,7 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
                                 </button>
                             );
                         })}
-                        {filteredGraphs.length === 0 && (
+                        {graphs.length === 0 && (
                             <div className={styles.emptyState}>Графы не найдены</div>
                         )}
                     </div>
@@ -181,16 +157,8 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
 
                 <div className={styles.picker}>
                     <div className={styles.pickerTitle}>Пользователи</div>
-                    <input
-                        type="text"
-                        className={styles.searchInput}
-                        placeholder="Поиск пользователей..."
-                        value={userSearch}
-                        onChange={(e) => setUserSearch(e.target.value)}
-                        disabled={!selectedGraphId}
-                    />
                     <div className={styles.list}>
-                        {filteredUsers.map((u: IUser) => {
+                        {users.map((u: IUser) => {
                             const isActive = selectedUserId === u._id;
                             const owned = u.managedGraphIds?.map(g => g.name) || [];
                             return (
@@ -208,7 +176,7 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
                                 </button>
                             );
                         })}
-                        {selectedGraphId && filteredUsers.length === 0 && (
+                        {selectedGraphId && users.length === 0 && (
                             <div className={styles.emptyState}>Пользователи не найдены</div>
                         )}
                         {!selectedGraphId && (
