@@ -7,6 +7,7 @@ const fetchUserData = async (userId: string, accessToken: string) => {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    credentials: 'include',
   });
 
   if (!res.ok) {

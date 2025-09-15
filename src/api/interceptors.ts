@@ -10,14 +10,16 @@ export const getContentType = () => ({
 // --- Запрос без авторизации ---
 export const axiosClassic = axios.create({
     baseURL: API_URL,
-    headers: getContentType()
+    headers: getContentType(),
+    withCredentials: true
 })
 
 
 // --- Запросы, при который нужна авторизация ---
 export const axiosAuth = axios.create({
     baseURL: API_URL,
-    headers: getContentType()
+    headers: getContentType(),
+    withCredentials: true
 })
 
 axiosAuth.interceptors.request.use(
