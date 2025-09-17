@@ -11,6 +11,9 @@
   overflow: hidden;
   isolation: isolate;
   box-shadow: 0 12px 30px rgba(14,165,233,.25);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .content {

@@ -28,6 +28,7 @@ export const AdBanner: React.FC<AdBannerProps> = ({
     className
 }) => {
     const [open, setOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
@@ -36,6 +37,29 @@ export const AdBanner: React.FC<AdBannerProps> = ({
     };
 
     const rootClass = useMemo(() => [styles.bannerRoot, className].filter(Boolean).join(' '), [className]);
+
+    const handleCopyEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(email);
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = email;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+        } catch (_) {
+            // no-op
+        }
+    };
 
     return (
         <div className={rootClass}>
@@ -50,7 +74,9 @@ export const AdBanner: React.FC<AdBannerProps> = ({
                 </div>
                 <div className={styles.actions}>
                     <button className={styles.ctaButton} onClick={handleOpen}>{ctaText}</button>
-                    <a className={styles.contactButton} href={`mailto:${email}`} onClick={(e) => e.stopPropagation()}>📧 Email</a>
+                    <button type="button" className={styles.contactButton} onClick={handleCopyEmail} aria-label="Скопировать email">
+                        {copied ? '✅ Скопировано' : '📧 Email'}
+                    </button>
                     <a className={styles.tgContactButton} href={`https://t.me/${tg.replace('@','')}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>✈️ Telegram</a>
                 </div>
             </div>
@@ -83,12 +109,12 @@ export const AdBanner: React.FC<AdBannerProps> = ({
                     </div>
 
                     <div className={styles.contacts}>
-                        <a className={styles.mailButton} href={`mailto:${email}`}>Написать на {email}</a>
+                        <button type="button" className={styles.mailButton} onClick={handleCopyEmail} aria-label="Скопировать email">
+                            {copied ? '✅ Скопировано' : `Скопировать ${email}`}
+                        </button>
                         <a className={styles.tgButton} href={`https://t.me/${tg.replace('@','')}`} target="_blank" rel="noreferrer">Написать в Telegram {tg}</a>
                     </div>
-                    <div className={styles.modalFooter}>
-                        <button className={styles.secondaryButton} onClick={handleClose}>Закрыть</button>
-                    </div>
+                    {/* Кнопку закрытия убрали по запросу */}
                 </div>
             </PopUpWrapper>
         </div>
