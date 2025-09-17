@@ -1,16 +1,20 @@
 import React from 'react';
-import { 
-  LoadingComponent,
-  NoSearchResultsComponent,
-  EmptyEventsComponent 
-} from '@/components/ui/StateComponents';
-import { useEventsListOptimized } from './useEventsListOptimized';
+import { useSelectedGraphId } from '@/stores/useUIStore';
+import { useOptimizedSearch } from '@/hooks/useOptimizedSearch';
+import { useQueryWithRetry } from '@/hooks/useQueryWithRetry';
+import { useListState } from '@/hooks/useListState';
+import { LoadingComponent, NoSearchResultsComponent, EmptyEventsComponent } from '@/components/ui/StateComponents';
 import VirtualizedEventsList from './VirtualizedEventsList';
+import { EventItem } from '@/types/schedule.interface';
+import { useEventsListOptimized } from './useEventsListOptimized';
 import { useSearchQuery } from '@/stores/useUIStore';
+import { AdBanner } from '@/components/ads/banner';
 
 interface EventsListOptimizedProps {
-  // Больше не нужны props, так как используем Zustand
+
 }
+
+const SHOW_AD_BANNER = true;
 
 const EventsListOptimized: React.FC<EventsListOptimizedProps> = React.memo(() => {
   // Используем Zustand store
@@ -35,12 +39,19 @@ const EventsListOptimized: React.FC<EventsListOptimizedProps> = React.memo(() =>
 
   // Основной рендер списка событий
   return (
-    <VirtualizedEventsList 
-      events={filteredEvents}
-      onDelete={handleDelete}
-      itemHeight={420} // Высота карточки + отступы
-      containerHeight={typeof window !== 'undefined' ? window.innerHeight - 200 : 600}
-    />
+    <>
+      {SHOW_AD_BANNER && (
+        <div style={{ marginBottom: 16 }}>
+          <AdBanner />
+        </div>
+      )}
+      <VirtualizedEventsList 
+        events={filteredEvents}
+        onDelete={handleDelete}
+        itemHeight={420} // Высота карточки + отступы
+        containerHeight={typeof window !== 'undefined' ? window.innerHeight - 200 : 600}
+      />
+    </>
   );
 });
 

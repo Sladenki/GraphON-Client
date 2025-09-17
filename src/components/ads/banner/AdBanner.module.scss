@@ -1,0 +1,154 @@
+.bannerRoot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #fff;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.content {
+  display: grid;
+  gap: 8px;
+}
+
+.badge {
+  align-self: start;
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.ctaButton {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  color: #0b1220;
+  background: #fff;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.ctaButton:active {
+  transform: translateY(1px) scale(.99);
+}
+
+.link {
+  color: #fff;
+  opacity: .95;
+  text-decoration: underline;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .2);
+  color: #fff;
+  cursor: pointer;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  width: min(640px, 92vw);
+  background: #0b1220;
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.4);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.modalClose {
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  cursor: pointer;
+}
+
+.modalBody {
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.contacts {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.mailButton,
+.tgButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fff;
+  color: #0b1220;
+  text-decoration: none;
+}
+
+.tgButton {
+  background: #2ca5e0;
+  color: #fff;
+}
+
+@media (hover: hover) {
+  .ctaButton:hover { box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+  .link:hover { opacity: 1; }
+  .close:hover { background: rgba(255,255,255,.3); }
+  .modalClose:hover { background: rgba(255,255,255,.18); }
+}
+
+
