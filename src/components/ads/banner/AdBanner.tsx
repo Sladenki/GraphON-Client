@@ -40,15 +40,21 @@ export const AdBanner: React.FC<AdBannerProps> = ({
     return (
         <div className={rootClass}>
             <div className={styles.content}>
-                <div className={styles.badge}>Вакансия</div>
+                <div className={styles.badge}>✨ Вакансия</div>
                 <h3 className={styles.title}>{title}</h3>
                 <p className={styles.subtitle}>{subtitle}</p>
+                <div className={styles.chips}>
+                    <span className={styles.chip}>Без опыта</span>
+                    <span className={styles.chip}>Креатив</span>
+                    <span className={styles.chip}>SMM</span>
+                </div>
                 <div className={styles.actions}>
                     <button className={styles.ctaButton} onClick={handleOpen}>{ctaText}</button>
-                    <a className={styles.link} href={`mailto:${email}`} onClick={(e) => e.stopPropagation()}>{email}</a>
-                    <a className={styles.link} href={`https://t.me/${tg.replace('@','')}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>{tg}</a>
+                    <a className={styles.contactButton} href={`mailto:${email}`} onClick={(e) => e.stopPropagation()}>📧 Email</a>
+                    <a className={styles.tgContactButton} href={`https://t.me/${tg.replace('@','')}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>✈️ Telegram</a>
                 </div>
             </div>
+            <div className={styles.glow} aria-hidden="true" />
 
             <PopUpWrapper isOpen={open} onClose={handleClose} width={"min(680px, 92vw)"}>
                 <div className={styles.modalHeader}>

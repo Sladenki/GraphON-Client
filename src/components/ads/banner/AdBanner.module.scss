@@ -18,6 +18,22 @@
   gap: 8px;
 }
 
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+
 .badge {
   align-self: start;
   display: inline-flex;
@@ -68,6 +84,31 @@
   color: #fff;
   opacity: .95;
   text-decoration: underline;
+}
+
+.contactButton,
+.tgContactButton {
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  background: rgba(255,255,255,.16);
+  color: #fff;
+}
+
+.tgContactButton {
+  background: rgba(44,165,224,.9);
+}
+
+.glow {
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.25), rgba(255,255,255,0));
+  pointer-events: none;
 }
 
 .modalOverlay {
