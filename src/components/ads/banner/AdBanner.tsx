@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './AdBanner.module.scss';
 
 export interface AdBannerProps {
@@ -27,6 +28,7 @@ export const AdBanner: React.FC<AdBannerProps> = ({
     className
 }) => {
     const [open, setOpen] = useState(false);
+    const [isClient, setIsClient] = useState(false);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
@@ -35,6 +37,10 @@ export const AdBanner: React.FC<AdBannerProps> = ({
     };
 
     const rootClass = useMemo(() => [styles.bannerRoot, className].filter(Boolean).join(' '), [className]);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     return (
         <div className={rootClass}>
@@ -48,14 +54,11 @@ export const AdBanner: React.FC<AdBannerProps> = ({
                     <a className={styles.link} href={`https://t.me/${tg.replace('@','')}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>{tg}</a>
                 </div>
             </div>
-            <button className={styles.close} onClick={onClose} aria-label="Закрыть баннер">×</button>
-
-            {open && (
+            {open && isClient && createPortal(
                 <div className={styles.modalOverlay} onClick={handleClose}>
-                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                    <div className={styles.modal} role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
                         <div className={styles.modalHeader}>
                             <h3>Добринское фермерское хозяйство</h3>
-                            <button className={styles.modalClose} onClick={handleClose} aria-label="Закрыть">×</button>
                         </div>
                         <div className={styles.modalBody}>
                             <p><strong>Нужен энергичный, креативный и амбициозный человек для работы с соцсетями.</strong></p>
@@ -76,9 +79,13 @@ export const AdBanner: React.FC<AdBannerProps> = ({
                                 <a className={styles.mailButton} href={`mailto:${email}`}>Написать на {email}</a>
                                 <a className={styles.tgButton} href={`https://t.me/${tg.replace('@','')}`} target="_blank" rel="noreferrer">Написать в Telegram {tg}</a>
                             </div>
+                            <div className={styles.modalFooter}>
+                                <button className={styles.secondaryButton} onClick={handleClose}>Закрыть</button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
