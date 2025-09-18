@@ -219,6 +219,7 @@
   display: grid;
   gap: 8px;
   margin-top: 8px;
+  grid-template-columns: 1fr;
 }
 
 .mailButton,
@@ -232,6 +233,12 @@
   text-decoration: none;
   border: 1px solid rgba(255,255,255,.22);
   box-shadow: 0 4px 12px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.5);
+  width: 100%;
+  min-height: 44px;
+  font-weight: 700;
+  position: relative;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .tgButton {
@@ -243,6 +250,24 @@
 .mailButton {
   background: linear-gradient(180deg, #ffffff, #f5f7ff);
   color: #0b1220;
+}
+
+.mailButton::before {
+  content: '📧';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.tgButton::before {
+  content: '✈️';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .mailButton:active,
@@ -262,6 +287,7 @@
   .contactButton:hover { background: rgba(255,255,255,.2); border-color: rgba(255,255,255,.3); }
   .tgContactButton:hover { filter: brightness(1.02); }
   .tgButton:hover { filter: brightness(1.02); }
+  .mailButton:hover { box-shadow: 0 6px 16px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.6); }
 }
 
 @media (max-width: 460px) {
@@ -319,6 +345,22 @@
     padding: 7px 9px;
     font-size: 12px;
     text-align: center;
+  }
+
+  .contacts {
+    grid-template-columns: 1fr;
+  }
+
+  .mailButton,
+  .tgButton {
+    min-height: 40px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 560px) {
+  .contacts {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
