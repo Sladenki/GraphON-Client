@@ -215,4 +215,62 @@
   .link:hover { opacity: 1; }
 }
 
+@media (max-width: 460px) {
+  .bannerRoot {
+    grid-template-columns: 1fr;
+    padding: 14px 12px;
+    border-radius: 14px;
+  }
+
+  .glow {
+    right: -40px;
+    top: -40px;
+    width: 160px;
+    height: 160px;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .title {
+    font-size: 19px;
+    line-height: 1.25;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .chips {
+    gap: 4px;
+  }
+
+  .chip {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .ctaButton {
+    grid-column: 1 / -1;
+    padding: 9px 12px;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255,255,255,.22);
+  }
+
+  .contactButton,
+  .tgContactButton {
+    padding: 8px 10px;
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
 
