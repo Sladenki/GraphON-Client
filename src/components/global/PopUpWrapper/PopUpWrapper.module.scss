@@ -33,6 +33,7 @@
   max-width: 90vw;
   position: relative;
   margin: 0;
+  /* allow inner scrolling area to handle overflow */
   overflow: hidden;
   max-height: calc(100vh - 2rem);
   transform: scale(0.8);
@@ -169,6 +170,9 @@
   .popupContent {
     max-width: 98vw;
     border-radius: 16px;
+    /* keep header/footer visible, body should scroll */
+    display: flex;
+    flex-direction: column;
   }
 }
 

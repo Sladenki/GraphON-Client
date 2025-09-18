@@ -149,6 +149,12 @@
   padding: 16px;
   display: grid;
   gap: 10px;
+  /* allow inner content to scroll inside popup */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* become a flexible child in popupContent flex column */
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .lead {
