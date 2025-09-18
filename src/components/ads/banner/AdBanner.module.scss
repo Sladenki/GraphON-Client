@@ -69,18 +69,23 @@
 
 .ctaButton {
   padding: 10px 14px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 600;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.28);
+  font-weight: 700;
   color: #0b1220;
-  background: #fff;
+  background: linear-gradient(180deg, #ffffff, #f5f7ff);
   cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
-  box-shadow: 0 6px 16px rgba(255,255,255,.25);
+  transition: transform .15s ease, box-shadow .15s ease, background .2s ease, border-color .2s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.6);
 }
 
 .ctaButton:active {
   transform: translateY(1px) scale(.99);
+}
+
+.ctaButton:focus-visible {
+  outline: 2px solid rgba(255,255,255,.9);
+  outline-offset: 2px;
 }
 
 .link {
@@ -91,16 +96,34 @@
 
 .contactButton,
 .tgContactButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 12px;
   text-decoration: none;
   font-weight: 600;
-  background: rgba(255,255,255,.16);
+  background: rgba(255,255,255,.14);
   color: #fff;
+  border: 1px solid rgba(255,255,255,.22);
+  transition: background .2s ease, transform .15s ease, box-shadow .15s ease, border-color .2s ease;
 }
 
 .tgContactButton {
-  background: rgba(44,165,224,.9);
+  background: linear-gradient(180deg, #2ca5e0, #1f9adf);
+  border-color: rgba(22, 132, 189, 0.6);
+}
+
+.contactButton:active,
+.tgContactButton:active {
+  transform: translateY(1px) scale(.99);
+}
+
+.contactButton:focus-visible,
+.tgContactButton:focus-visible {
+  outline: 2px solid rgba(255,255,255,.9);
+  outline-offset: 2px;
 }
 
 .glow {
@@ -205,20 +228,40 @@
   justify-content: center;
   gap: 8px;
   padding: 10px 14px;
-  border-radius: 10px;
-  background: #fff;
-  color: #0b1220;
+  border-radius: 12px;
   text-decoration: none;
+  border: 1px solid rgba(255,255,255,.22);
+  box-shadow: 0 4px 12px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.5);
 }
 
 .tgButton {
-  background: #2ca5e0;
+  background: linear-gradient(180deg, #2ca5e0, #1f9adf);
   color: #fff;
+  border-color: rgba(22, 132, 189, 0.6);
+}
+
+.mailButton {
+  background: linear-gradient(180deg, #ffffff, #f5f7ff);
+  color: #0b1220;
+}
+
+.mailButton:active,
+.tgButton:active {
+  transform: translateY(1px) scale(.99);
+}
+
+.mailButton:focus-visible,
+.tgButton:focus-visible {
+  outline: 2px solid rgba(255,255,255,.9);
+  outline-offset: 2px;
 }
 
 @media (hover: hover) {
-  .ctaButton:hover { box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+  .ctaButton:hover { box-shadow: 0 10px 22px rgba(0,0,0,.18); }
   .link:hover { opacity: 1; }
+  .contactButton:hover { background: rgba(255,255,255,.2); border-color: rgba(255,255,255,.3); }
+  .tgContactButton:hover { filter: brightness(1.02); }
+  .tgButton:hover { filter: brightness(1.02); }
 }
 
 @media (max-width: 460px) {
