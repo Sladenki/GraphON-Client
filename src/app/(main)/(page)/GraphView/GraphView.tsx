@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import WaterGraph3D from './WaterGraph3D/WaterGraph3D';
 import { useEffect, useState, useRef } from 'react';
@@ -43,7 +43,6 @@ interface GraphNode {
   city?: string;
 }
 
-
 export default function GraphView() {
   const { user } = useAuth();
   const isInitialized = useRef(false);
@@ -80,7 +79,7 @@ export default function GraphView() {
   const { data, isLoading, error } = useQuery<GraphResponse>({
     queryKey: ['graphWithTopics', selectedGraphId],
     queryFn: async () => {
-      if (!selectedGraphId) return { globalGraph: null, topicGraphs: [] };
+      if (!selectedGraphId) return { globalGraph: null, topicGraphs: [] } as any;
       const response = await GraphService.getTopicGraphsWithGlobal(selectedGraphId);
       return response.data;
     },
@@ -89,20 +88,20 @@ export default function GraphView() {
 
   if (isLoading) return <SpinnerLoader />;
   if (error) return <div>Ошибка при загрузке данных</div>;
-  if (!isLoading && data?.globalGraph === null) {
+  if (!isLoading && (data as any)?.globalGraph === null) {
     return <div>Нет данных для отображения</div>;
   }
 
-  if (!data) return null;
+  if (!data) return null as any;
 
   // Преобразуем данные в формат, ожидаемый компонентом WaterGraph3D
   const graphData: GraphNode[] = [
     {
-      ...data.globalGraph,
-      _id: { $oid: data.globalGraph._id },
-      ownerUserId: { $oid: data.globalGraph.ownerUserId }
+      ...(data as any).globalGraph,
+      _id: { $oid: (data as any).globalGraph._id },
+      ownerUserId: { $oid: (data as any).globalGraph.ownerUserId }
     },
-    ...data.topicGraphs.map(graph => ({
+    ...(data as any).topicGraphs.map((graph: any) => ({
       ...graph,
       _id: { $oid: graph._id },
       ownerUserId: { $oid: graph.ownerUserId },

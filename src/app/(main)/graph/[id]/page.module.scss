@@ -1,0 +1,45 @@
+.pageWrapper {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.hero {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 280px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.18);
+}
+
+.heroMedia { position: absolute; inset: 0; }
+.heroImage { object-fit: cover; filter: saturate(1.1); }
+.heroOverlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,.1)); }
+
+.heroContent {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 20px;
+  color: #fff;
+}
+.badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.badge { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 6px 10px; font-weight: 600; font-size: 13px; }
+.title { margin: 0; font-size: 28px; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.35); }
+.director { opacity: .95; margin-top: 4px; }
+
+.aboutSection, .eventsSection { margin-top: 18px; }
+.sectionTitle { margin: 0 0 10px 0; font-size: 18px; font-weight: 700; color: var(--main-text); }
+.about { margin: 0; padding: 14px; border-radius: 14px; background: var(--block-color); border: 1px solid rgba(0,0,0,.08); color: var(--main-text); }
+
+.eventsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.cardItem { display: contents; }
+.empty { padding: 24px; text-align: center; color: var(--main-text); opacity: .7; background: var(--block-color); border: 1px solid rgba(0,0,0,.06); border-radius: 12px; }
+
+.errorWrapper { display: grid; place-items: center; padding: 40px; }
+.retry { padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(var(--main-Color-rgb), .35); background: rgb(var(--main-Color)); color: #fff; }
+
+@media (max-width: 640px) {
+  .hero { height: 220px; border-radius: 16px; }
+  .title { font-size: 22px; }
+}
+
+

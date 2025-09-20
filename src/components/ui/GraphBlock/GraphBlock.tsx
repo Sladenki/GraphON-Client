@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Calendar, Info, Heart, HeartCrack } from "lucide-react";
 import { notifyInfo, notifySuccess } from "@/lib/notifications";
 import { Card, Button } from "@heroui/react";
+import { useRouter } from "next/navigation";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -28,6 +29,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   handleScheduleButtonClick, 
   handleInfoGraphButtonClick,
 }) => {
+  const router = useRouter();
   const fullImageUrl = useMemo(() => 
     imgPath ? `${BASE_S3_URL}/${imgPath}` : "", 
     [imgPath]
@@ -49,16 +51,22 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
     }
   }, [toggleSubscription, isSubscribed]);
 
-  const handleScheduleClick = useCallback(() => {
+  const handleScheduleClick = useCallback((e?: React.MouseEvent) => {
+    e?.stopPropagation();
     handleScheduleButtonClick();
   }, [handleScheduleButtonClick]);
 
-  const handleInfoClick = useCallback(() => {
+  const handleInfoClick = useCallback((e?: React.MouseEvent) => {
+    e?.stopPropagation();
     handleInfoGraphButtonClick();
   }, [handleInfoGraphButtonClick]);
 
+  const handleNavigate = useCallback(() => {
+    router.push(`/graph/${id}`);
+  }, [router, id]);
+
   return (
-    <Card className={styles.graphBlock}>
+    <Card className={styles.graphBlock} isPressable onPress={handleNavigate}>
       <div className={styles.contentWrapper}>
         <div className={styles.imageContainer}>
           {imgPath ? (
@@ -88,7 +96,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
 
         <footer className={styles.footer}>
           <button 
-            onClick={handleScheduleClick}
+            onClick={(e) => handleScheduleClick(e)}
             className={`${styles.actionButton} ${styles.scheduleButton}`}
             aria-label="Открыть расписание"
           >
@@ -97,7 +105,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
           </button>
           
           <button 
-            onClick={handleInfoClick}
+            onClick={(e) => handleInfoClick(e)}
             className={`${styles.actionButton} ${styles.infoButton}`}
             aria-label="Показать информацию"
           >
@@ -110,7 +118,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
         {isLoggedIn && (
           <div className={styles.subscribeRow}>
             <button
-              onClick={handleSubscription}
+              onClick={(e) => { e.stopPropagation(); handleSubscription(); }}
               disabled={isLoading}
               className={`${styles.actionButton} ${isSubscribed ? styles.unsubscribeButton : styles.subscribeButton} ${styles.subscribeWide}`}
               aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
