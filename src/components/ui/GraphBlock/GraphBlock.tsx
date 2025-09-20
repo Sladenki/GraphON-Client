@@ -3,7 +3,7 @@ import styles from "./GraphBlock.module.scss";
 import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useAuth } from "@/providers/AuthProvider";
 import Image from "next/image";
-import { Calendar, Info } from "lucide-react";
+import { Calendar, Info, Heart, HeartCrack } from "lucide-react";
 import { notifyInfo, notifySuccess } from "@/lib/notifications";
 import { Card, Button } from "@heroui/react";
 
@@ -79,23 +79,6 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
           )}
           <div className={styles.overlay}>
             <h3 className={styles.title}>{name}</h3>
-            {isLoggedIn && (
-              <button
-                onClick={handleSubscription}
-                disabled={isLoading}
-                className={`${styles.subscriptionButton} ${isSubscribed ? styles.unsubscribe : styles.subscribe}`}
-                aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
-                title={isSubscribed ? "Отписаться" : "Подписаться"}
-              >
-                {isLoading ? (
-                  <div className={styles.loader} />
-                ) : isSubscribed ? (
-                  "Отписаться"
-                ) : (
-                  "Подписаться"
-                )}
-              </button>
-            )}
           </div>
         </div>
 
@@ -121,7 +104,29 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
             <Info size={16} />
             <span>Инфо</span>
           </button>
+
         </footer>
+
+        {isLoggedIn && (
+          <div className={styles.subscribeRow}>
+            <button
+              onClick={handleSubscription}
+              disabled={isLoading}
+              className={`${styles.actionButton} ${isSubscribed ? styles.unsubscribeButton : styles.subscribeButton} ${styles.subscribeWide}`}
+              aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
+              title={isSubscribed ? "Отписаться" : "Подписаться"}
+            >
+              {isLoading ? (
+                <div className={styles.loader} />
+              ) : (
+                <>
+                  {isSubscribed ? <HeartCrack size={16} /> : <Heart size={16} />}
+                  <span>{isSubscribed ? 'Отписаться' : 'Подписаться'}</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </Card>
   );
