@@ -244,14 +244,14 @@ const DescriptionTextarea = React.memo<{
   value: string;
   onChange: (value: string) => void;
 }>(({ value, onChange }) => {
-  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+  const handleChange = React.useCallback((val: string) => {
+    onChange(val);
   }, [onChange]);
 
   return (
     <Textarea
       value={value}
-      onChange={handleChange}
+      onValueChange={handleChange}
       placeholder="Описание мероприятия"
       variant="bordered"
       minRows={3}
@@ -293,7 +293,7 @@ const EventInfo = React.memo(({
         className={`${styles.infoItem} ${canViewAttendees ? styles.clickable : ''}`}
         onClick={canViewAttendees ? onParticipantsClick : undefined}
         role={canViewAttendees ? 'button' : undefined}
-        tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
+        tabIndex={canViewAttendees ? 0 : undefined}
         onKeyDown={canViewAttendees ? (e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -466,13 +466,11 @@ const EventCard: React.FC<EventProps> = React.memo(({
       {/* Header */}
       <CardHeader className={styles.cardHeader}>
         <div className={styles.headerContent}>
-          <div className={styles.graphAvatar}>
-            <LazyGraphAvatar
-              src={fullImageUrl}
-              alt={event.graphId.name}
-              fallback={event.graphId.name}
-            />
-          </div>
+          <LazyGraphAvatar
+            src={fullImageUrl}
+            alt={event.graphId.name}
+            fallback={event.graphId.name}
+          />
           <div className={styles.titleSection}>
             {isEditing ? (
               <TitleInput
