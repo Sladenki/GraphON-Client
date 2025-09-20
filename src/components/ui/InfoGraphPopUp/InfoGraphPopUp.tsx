@@ -48,13 +48,8 @@ const InfoGraphPopUp: FC<InfoGraphPopUpProps> = React.memo(({
     );
 
     // Оптимизированные обработчики
-    const handleVkClick = useCallback(createOptimizedHandler((e: React.MouseEvent) => {
-        e.stopPropagation();
-    }), [createOptimizedHandler]);
-
-    const handleDirectorClick = useCallback(createOptimizedHandler((e: React.MouseEvent) => {
-        e.stopPropagation();
-    }), [createOptimizedHandler]);
+    const handleVkClick = useCallback(createOptimizedHandler(() => {}), [createOptimizedHandler]);
+    const handleDirectorClick = useCallback(createOptimizedHandler(() => {}), [createOptimizedHandler]);
 
     // Определяем размеры для разных устройств для предотвращения дергания
     const popupDimensions = useMemo(() => {
