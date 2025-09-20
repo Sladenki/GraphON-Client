@@ -1,37 +1,7 @@
-@use "sass:color";
-
-// Variables - optimized
-$primary-color: rgb(150, 130, 238);
-$primary-glow: rgba(150, 130, 238, 0.25);
-$accent-color: #00ffff;
-$accent-glow: rgba(0, 255, 255, 0.25);
-$glass-bg: rgba(255, 255, 255, 0.03);
+// Variables
 $glass-border: rgba(255, 255, 255, 0.08);
-$glass-hover: rgba(255, 255, 255, 0.05);
-$danger-color: #ff4d4d;
-$danger-glow: rgba(255, 77, 77, 0.25);
-$gradient-start: rgba(150, 130, 238, 0.1);
-$gradient-end: rgba(0, 255, 255, 0.05);
 
 // Mixins - optimized for mobile performance
-@mixin glass-effect-light {
-  background: $glass-bg;
-  border: 1px solid $glass-border;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-@mixin glass-effect {
-  @include glass-effect-light;
-  
-  // Only apply heavy effects on desktop
-  @media (min-width: 768px) {
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 
-      0 4px 12px rgba(0, 0, 0, 0.08),
-      0 0 0 1px rgba(255, 255, 255, 0.05);
-  }
-}
 
 @mixin neon-glow($color, $intensity: 0.2) {
   // Reduced glow for mobile
@@ -42,12 +12,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   }
 }
 
-@mixin gradient-text {
-  background: linear-gradient(135deg, $primary-color, $accent-color);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+// (removed unused gradient-text mixin)
 
 // Component Styles - optimized
 .eventCard {
@@ -115,29 +80,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   min-width: 0;
 }
 
-.graphAvatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(150, 130, 238, 0.2);
-  background: rgba(150, 130, 238, 0.05);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  @media (min-width: 768px) {
-    backdrop-filter: blur(4px);
-  }
-  
-  .avatarImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-}
+// .graphAvatar wrapper is no longer used (avatar rendered directly)
 
 .titleSection {
   display: flex;
