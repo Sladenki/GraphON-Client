@@ -239,15 +239,15 @@
   cursor: pointer;
   
   &.scheduleButton {
-    /* Mint (teal-400) for calendar */
-    background: rgba(45, 212, 191, 0.92); /* #2dd4bf */
-    border: 1px solid rgba(45, 212, 191, 0.35);
+    /* Dark blue for calendar */
+    background: rgba(30, 58, 138, 0.95); /* #1E3A8A */
+    border: 1px solid rgba(30, 58, 138, 0.45);
     
     &:hover {
-      background: rgba(45, 212, 191, 1);
-      border-color: rgba(45, 212, 191, 0.55);
+      background: rgba(30, 58, 138, 1);
+      border-color: rgba(30, 58, 138, 0.6);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(45, 212, 191, 0.35);
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.35);
     }
   }
   
