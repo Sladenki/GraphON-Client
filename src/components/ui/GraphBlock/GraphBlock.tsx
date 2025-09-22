@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useCallback } from "react";
+import React, { memo, useMemo, useCallback, useRef } from "react";
 import styles from "./GraphBlock.module.scss";
 import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useAuth } from "@/providers/AuthProvider";
@@ -65,7 +65,35 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
     router.push(`/graph/${id}`);
   }, [router, id]);
 
+  const tiltRef = useRef<HTMLDivElement | null>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = tiltRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const px = x / rect.width; // 0..1
+    const py = y / rect.height; // 0..1
+    const rotateY = (px - 0.5) * 12; // deg
+    const rotateX = (0.5 - py) * 8; // deg
+    el.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
+    el.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
+    el.style.setProperty('--mx', `${(px * 100).toFixed(1)}%`);
+    el.style.setProperty('--my', `${(py * 100).toFixed(1)}%`);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    const el = tiltRef.current;
+    if (!el) return;
+    el.style.setProperty('--rx', '0deg');
+    el.style.setProperty('--ry', '0deg');
+    el.style.setProperty('--mx', '50%');
+    el.style.setProperty('--my', '50%');
+  }, []);
+
   return (
+    <div className={styles.tiltWrap} ref={tiltRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
     <Card className={styles.graphBlock} isPressable onPress={handleNavigate}>
       <div className={styles.contentWrapper}>
         <div className={styles.imageContainer}>
@@ -77,6 +105,9 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
               height={300}
               className={styles.graphImage}
               priority={false}
+              sizes="(max-width: 480px) 100vw, 380px"
+              loading="lazy"
+              decoding="async"
               placeholder="blur"
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+hxZLjN8pbGkT7z8D2ElwSjL1eX5/lLn8YQFaRGhTK0j6/u0Vj/9k="
             />
@@ -84,6 +115,21 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
             <div className={styles.placeholderImage}>
               <div className={styles.placeholderIcon}>📷</div>
             </div>
+          )}
+          {isLoggedIn && (
+            <button
+              onClick={(e) => { e.stopPropagation(); handleSubscription(); }}
+              disabled={isLoading}
+              className={`${styles.fabSubscribe} ${isSubscribed ? styles.fabActive : ''}`}
+              aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
+              title={isSubscribed ? "Отписаться" : "Подписаться"}
+            >
+              {isLoading ? (
+                <div className={styles.loader} />
+              ) : (
+                isSubscribed ? <HeartCrack size={16} /> : <Heart size={16} />
+              )}
+            </button>
           )}
           <div className={styles.overlay}>
             <h3 className={styles.title}>{name}</h3>
@@ -115,28 +161,9 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
 
         </footer>
 
-        {isLoggedIn && (
-          <div className={styles.subscribeRow}>
-            <button
-              onClick={(e) => { e.stopPropagation(); handleSubscription(); }}
-              disabled={isLoading}
-              className={`${styles.actionButton} ${isSubscribed ? styles.unsubscribeButton : styles.subscribeButton} ${styles.subscribeWide}`}
-              aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
-              title={isSubscribed ? "Отписаться" : "Подписаться"}
-            >
-              {isLoading ? (
-                <div className={styles.loader} />
-              ) : (
-                <>
-                  {isSubscribed ? <HeartCrack size={16} /> : <Heart size={16} />}
-                  <span>{isSubscribed ? 'Отписаться' : 'Подписаться'}</span>
-                </>
-              )}
-            </button>
-          </div>
-        )}
       </div>
     </Card>
+    </div>
   );
 };
 
