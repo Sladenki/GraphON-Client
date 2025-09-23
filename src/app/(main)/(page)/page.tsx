@@ -8,6 +8,8 @@ import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import React from "react";
 import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
 import { AllGraphsOptimized } from "@/app/(main)/(page)/AllGraphs/AllGraphsOptimized";
+import { GraphService } from "@/services/graph.service";
+import { useGroupsCache } from "@/stores/useGroupsCache";
 import { Users, Calendar, Heart, Network } from "lucide-react";
 import { useActiveTab, useSearchQuery, useSelectedGraphId, useSetActiveTab, useSetSearchQuery, useSetSelectedGraphId, TabType } from "@/stores/useUIStore";
 import Tabs from "./Tabs/Tabs";
@@ -28,6 +30,8 @@ const Homepage = () => {
   const setActiveTab = useSetActiveTab();
   const setSearchQuery = useSetSearchQuery();
   const setSelectedGraphId = useSetSelectedGraphId();
+  const setGroupsCache = useGroupsCache((s) => s.setCached);
+  const groupsCache = useGroupsCache((s) => s.cache);
 
   useEffect(() => {
     // Initialize selectedGraphId from user only once and only if different
@@ -44,6 +48,32 @@ const Homepage = () => {
       isInitialized.current = true;
     }
   }, [user?.selectedGraphId, selectedGraphId, setSelectedGraphId]);
+
+  // Prefetch groups for instant appearance when switching to Groups tab
+  const normalizedGraphId = useMemo(() => {
+    const raw = user?.selectedGraphId as any;
+    const userId = raw && typeof raw === 'object' && raw?._id ? (raw._id as string) : (typeof raw === 'string' ? (raw as string) : null);
+    return selectedGraphId || userId || null;
+  }, [selectedGraphId, user?.selectedGraphId]);
+
+  const cachedLen = useMemo(() => {
+    return normalizedGraphId ? (groupsCache[normalizedGraphId]?.length || 0) : 0;
+  }, [groupsCache, normalizedGraphId]);
+
+  useEffect(() => {
+    if (!normalizedGraphId) return;
+    if (cachedLen > 0) return; // already cached, skip fetching
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await GraphService.getAllChildrenGraphs(normalizedGraphId);
+        if (!cancelled && Array.isArray(res.data)) {
+          setGroupsCache(normalizedGraphId, res.data);
+        }
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, [normalizedGraphId, cachedLen, setGroupsCache]);
 
   useEffect(() => {
     // Если активный таб - "subs", но у пользователя нет подписок, переключаем на "events"
