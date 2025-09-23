@@ -7,6 +7,7 @@ import styles from "./Tabs.module.scss";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import MobileNav from "@/components/global/MobileNav/MobileNav";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface Tab {
   name: string;
@@ -80,7 +81,7 @@ const Tabs: FC<TabsProps> = ({
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement | null>(null);
-  const searchWrapRef = useRef<HTMLDivElement | null>(null);
+  const searchWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isSearchOpen) {
@@ -92,19 +93,11 @@ const Tabs: FC<TabsProps> = ({
     setIsSearchOpen((v) => !v);
   }, []);
 
-  // Закрыть и очистить поиск при клике вне области
-  useEffect(() => {
-    const onDocClick = (e: MouseEvent) => {
-      if (!isSearchOpen) return;
-      const wrap = searchWrapRef.current;
-      if (wrap && e.target instanceof Node && !wrap.contains(e.target)) {
-        setIsSearchOpen(false);
-        onSearchChange?.("");
-      }
-    };
-    document.addEventListener('mousedown', onDocClick);
-    return () => document.removeEventListener('mousedown', onDocClick);
-  }, [isSearchOpen, onSearchChange]);
+  useClickOutside(searchWrapRef, () => {
+    if (!isSearchOpen) return;
+    setIsSearchOpen(false);
+    onSearchChange?.("");
+  }, isSearchOpen);
 
   const searchInput = (
     <div ref={searchWrapRef} className={clsx(styles.searchWrapper, { [styles.open]: isSearchOpen })}>
