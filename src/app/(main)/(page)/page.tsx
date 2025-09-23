@@ -12,7 +12,7 @@ import { GraphService } from "@/services/graph.service";
 import { useGroupsCache } from "@/stores/useGroupsCache";
 import { Users, Calendar, Heart, Network } from "lucide-react";
 import { useActiveTab, useSearchQuery, useSelectedGraphId, useSetActiveTab, useSetSearchQuery, useSetSelectedGraphId, TabType } from "@/stores/useUIStore";
-import Tabs from "./Tabs/Tabs";
+import Tabs from "../../../components/global/Tabs/Tabs";
 
 // Lazy loading только для контента табов
 const Subs = dynamic(() => import("./Subs/SubsOptimized"), { ssr: false });

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, memo, useCallback, useRef, useEffect, KeyboardEvent } from "react";
+import React, { FC, memo, useCallback, useRef, useEffect, useState, KeyboardEvent } from "react";
 import clsx from "clsx";
 import { Search } from "lucide-react";
 import styles from "./Tabs.module.scss";
@@ -78,21 +78,54 @@ const Tabs: FC<TabsProps> = ({
     }
   }, []);
 
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const searchWrapRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      searchRef.current?.focus();
+    }
+  }, [isSearchOpen]);
+
+  const onToggleSearch = useCallback(() => {
+    setIsSearchOpen((v) => !v);
+  }, []);
+
+  // Закрыть и очистить поиск при клике вне области
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (!isSearchOpen) return;
+      const wrap = searchWrapRef.current;
+      if (wrap && e.target instanceof Node && !wrap.contains(e.target)) {
+        setIsSearchOpen(false);
+        onSearchChange?.("");
+      }
+    };
+    document.addEventListener('mousedown', onDocClick);
+    return () => document.removeEventListener('mousedown', onDocClick);
+  }, [isSearchOpen, onSearchChange]);
+
   const searchInput = (
-    <>
-      <Search 
-        size={18} 
-        className={styles.searchIcon} 
-      />
+    <div ref={searchWrapRef} className={clsx(styles.searchWrapper, { [styles.open]: isSearchOpen })}>
+      <button
+        type="button"
+        className={styles.searchButton}
+        aria-label={isSearchOpen ? "Закрыть поиск" : "Открыть поиск"}
+        onClick={onToggleSearch}
+      >
+        <Search size={18} />
+      </button>
       <input
+        ref={searchRef}
         type="text"
         className={styles.searchInput}
-        placeholder={searchPlaceholder}
+        placeholder={isSearchOpen ? searchPlaceholder : ""}
         value={searchValue}
         onChange={(e) => onSearchChange?.(e.target.value)}
         aria-label={searchPlaceholder}
       />
-    </>
+    </div>
   );
 
   if (isMobile) {
@@ -135,11 +168,7 @@ const Tabs: FC<TabsProps> = ({
             </button>
           ))}
         </div>
-        {showSearch && onSearchChange && (
-          <div className={styles.searchWrapper}>
-            {searchInput}
-          </div>
-        )}
+        {showSearch && onSearchChange && searchInput}
       </div>
     </div>
   );

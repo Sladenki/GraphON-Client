@@ -52,47 +52,53 @@
 .searchWrapper {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   padding-right: 0.25rem;
   position: relative;
-  
+
   @media (max-width: 768px) {
-    display: none; // Скрываем на мобильных
+    display: none; // desktop only
+  }
+
+  &.open .searchInput {
+    width: 220px;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    background: transparent;
   }
 }
 
-.searchIcon {
-  position: absolute;
-  left: 0.75rem;
+.searchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
   color: var(--main-text);
-  opacity: 0.5;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 1;
-  top: 50%;
-  transform: translateY(-50%);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 
-  input:focus + & {
-    opacity: 0.7;
-  }
+  &:hover { background: transparent; }
 }
 
 .searchInput {
-  background: transparent;
+  width: 0;
+  opacity: 1;
   border: none;
-  padding: 0.5rem 1rem 0.5rem 2.5rem;
-  font-size: 0.9rem;
+  outline: none;
+  background: transparent;
   color: var(--main-text);
-  width: 200px;
+  font-size: 0.9rem;
+  border-radius: 8px;
   transition: width 0.2s ease;
-  
+  padding: 0; // collapsed state
+
   &::placeholder {
     color: var(--main-text);
     opacity: 0.5;
-  }
-  
-  &:focus {
-    outline: none;
-    width: 250px;
   }
 }
 
