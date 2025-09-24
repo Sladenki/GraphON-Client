@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './LoginButton.module.scss'
-import { MessageCircle } from 'lucide-react';
+import { LogIn } from 'lucide-react';
 const TELEGRAM_BOT_URL = process.env.NEXT_PUBLIC_TELEGRAM_BOT_URL || 'https://t.me/Graph_ON_bot';
 
 interface User {
@@ -62,10 +62,10 @@ const LoginButton = () => {
             onClick={handleLogin} 
             disabled={isLoading} 
             className={styles.telegramButton}
-            aria-label="Войти через Telegram"
+            aria-label="Войти"
           >
-            <MessageCircle className={styles.telegramIcon} />
-            <span>{isLoading ? "Переход в Telegram..." : "Войти через Telegram"}</span>
+            <LogIn className={styles.telegramIcon} />
+            <span>{isLoading ? "Переход в Telegram..." : "Войти"}</span>
           </button>
 
           {showMessage && (

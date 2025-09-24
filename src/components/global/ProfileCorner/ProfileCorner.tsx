@@ -18,7 +18,10 @@ const ProfileCorner = () => {
             {user ? (
                 <ProfileUser user={user} />
             ) : (
-                <LoginButton />
+                <div style={{ marginTop: '7px'}}>
+                    <LoginButton />
+                </div>
+                
             )}
         </>
     );
