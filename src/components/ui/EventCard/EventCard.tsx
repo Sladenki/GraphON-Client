@@ -433,6 +433,21 @@ const EventCard: React.FC<EventProps> = React.memo(({
       size="md"
       onPress={handleRegistration}
       isDisabled={isLoading || !!disableRegistration}
+      data-loading={isLoading ? 'true' : 'false'}
+      aria-busy={isLoading}
+      aria-pressed={isLoggedIn ? !!isRegistered : undefined}
+      aria-label={disableRegistration
+        ? 'Регистрация недоступна'
+        : isLoggedIn
+          ? (isRegistered ? 'Отменить регистрацию' : 'Зарегистрироваться')
+          : 'Войдите, чтобы зарегистрироваться'
+      }
+      title={disableRegistration
+        ? 'Регистрация недоступна'
+        : isLoggedIn
+          ? (isRegistered ? 'Отменить регистрацию' : 'Зарегистрироваться')
+          : 'Войдите, чтобы зарегистрироваться'
+      }
       startContent={
         isLoading ? (
           <Spinner size="sm" />

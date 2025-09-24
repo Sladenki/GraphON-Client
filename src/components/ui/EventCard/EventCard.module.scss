@@ -20,7 +20,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
   margin: 0 auto;
   background: var(--block-color);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: 18px;
   transition: none; // Remove on mobile
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   
@@ -81,6 +81,43 @@ $glass-border: rgba(255, 255, 255, 0.08);
 }
 
 // .graphAvatar wrapper is no longer used (avatar rendered directly)
+// Modern circular avatar with gradient ring
+.graphAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  padding: 2px;
+  background: conic-gradient(from 180deg at 50% 50%, rgba(150, 130, 238, 0.9), rgba(100, 210, 255, 0.9));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+
+  @media (max-width: 640px) {
+    width: 48px;
+    height: 48px;
+  }
+
+  @media (min-width: 768px) {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    &:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+  }
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  object-fit: cover;
+  display: block;
+  background: rgba(0, 0, 0, 0.1);
+}
 
 .titleSection {
   display: flex;
@@ -227,6 +264,10 @@ $glass-border: rgba(255, 255, 255, 0.08);
   opacity: 0.8;
   line-height: 1.6;
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 
   a {
     color: var(--heroui-primary, #60a5fa);
@@ -490,6 +531,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  letter-spacing: 0.2px;
   
   @media (min-width: 768px) {
     transition: all 0.2s ease;
@@ -501,7 +543,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
       opacity: 0;
       transition: opacity 0.2s ease;
     }
