@@ -22,7 +22,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="ru" className={`${inter.variable} ${orbitron.variable}`}>
       <head>
         <title>GraphON</title>
-
       </head>
       <body className={inter.className}>
         <Providers>
@@ -31,7 +30,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
             <div className={styles.wrapper}>
               <AllProvers>
-
                 
                 {/* Sidebar */}
                 <div className={styles.sidebar}>

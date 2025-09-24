@@ -1,6 +1,6 @@
 'use client'
 
-import LoginButton from "@/components/global/ProfileCorner/LoginButton/LoginButton";
+import LoginButton from "@/components/global/LoginButton/LoginButton";
 import styles from './signIn.module.scss'
 
 

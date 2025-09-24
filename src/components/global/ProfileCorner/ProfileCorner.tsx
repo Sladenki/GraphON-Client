@@ -1,6 +1,6 @@
 'use client';
 import { useAuth } from '@/providers/AuthProvider'; // Импортируем useAuth
-import LoginButton from './LoginButton/LoginButton';
+import LoginButton from '../LoginButton/LoginButton';
 import ProfileUser from './ProfileUser/ProfileUser';
 import { usePathname } from 'next/navigation';
 

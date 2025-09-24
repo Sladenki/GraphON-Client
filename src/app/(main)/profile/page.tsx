@@ -4,7 +4,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import styles from './Profile.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { IUser, RoleTitles, UserRole } from '@/types/user.interface';
-import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButton';
+import LoginButton from '@/components/global/LoginButton/LoginButton';
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
