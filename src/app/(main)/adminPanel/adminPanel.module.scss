@@ -1,4 +1,4 @@
-.createPostWrapper {
+.adminPanelWrapper {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
@@ -23,7 +23,7 @@
 
 @media only screen and (max-width: 680px) {
 
-  .createPostWrapper{
+  .adminPanelWrapper{
     max-width: 100vw;
   }
     
