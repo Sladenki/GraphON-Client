@@ -26,6 +26,7 @@ export default function MongoPage() {
   const { loading: docMutating, patch, remove } = useMongoDocOps(DB_NAME);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmPayload, setConfirmPayload] = useState<{ mode: 'delete' | 'patch'; id: string; payload?: string } | null>(null);
+  const [searchText, setSearchText] = useState<string>("");
 
   const canSearch = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
 
@@ -56,8 +57,22 @@ export default function MongoPage() {
       return;
     }
 
+    const baseQuery = queryParsed.value || {};
+    const trimmed = searchText.trim();
+    const searchQuery = trimmed
+      ? { $or: [
+          { lastName: { $regex: trimmed, $options: 'i' } },
+          { firtName: { $regex: trimmed, $options: 'i' } },
+          { username: { $regex: trimmed, $options: 'i' } },
+        ] }
+      : null;
+
+    const finalQuery = searchQuery
+      ? (Object.keys(baseQuery).length ? { $and: [baseQuery, searchQuery] } : searchQuery)
+      : baseQuery;
+
     const body = {
-      query: queryParsed.value || {},
+      query: finalQuery,
       options: {
         limit: Number.isFinite(limit) && limit > 0 ? limit : 20,
         skip: Number.isFinite(skip) && skip >= 0 ? skip : 0,
@@ -67,7 +82,7 @@ export default function MongoPage() {
     };
 
     find(selectedCollection, body.query, body.options);
-  }, [limit, projectionText, queryText, selectedCollection, skip, sortText]);
+  }, [limit, projectionText, queryText, searchText, selectedCollection, skip, sortText]);
 
   const handleNextPage = useCallback(() => {
     setSkip((s) => s + Math.max(1, limit));
@@ -159,6 +174,16 @@ export default function MongoPage() {
         </aside>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", gap: 12 }}>
+            <Input
+              label="Поиск (lastName, firtName, username)"
+              value={searchText}
+              onValueChange={setSearchText}
+              placeholder="Введите строку для поиска"
+              onKeyDown={(e) => { if ((e as any).key === 'Enter') { e.preventDefault(); handleFind(); } }}
+            />
+          </div>
+
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
             <Select
               label="Коллекция"
