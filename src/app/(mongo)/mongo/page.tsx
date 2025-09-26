@@ -3,30 +3,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Input, Textarea, Select, SelectItem, Spinner, Chip } from "@heroui/react";
 import { toast } from "sonner";
+import { useMongoCollections } from "./useMongoCollections";
+import { useMongoFind } from "./useMongoFind";
+import { safeParseJson } from "./json";
+import type { MongoDocument } from "./types";
 
-type MongoDocument = Record<string, unknown>;
-
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4200/api').replace(/\/+$/, '');
 const DB_NAME = "test"; // всегда используем test по требованию
 
-type FetchState<T> = {
-  loading: boolean;
-  error: string | null;
-  data: T | null;
-};
-
-function safeParseJson<T>(text: string): { ok: true; value: T } | { ok: false; error: string } {
-  if (text.trim() === "") return { ok: true, value: {} as unknown as T };
-  try {
-    const value = JSON.parse(text);
-    return { ok: true, value };
-  } catch (e) {
-    return { ok: false, error: (e as Error).message };
-  }
-}
-
 export default function MongoPage() {
-  const [collectionsState, setCollectionsState] = useState<FetchState<string[]>>({ loading: false, error: null, data: null });
+  const { data: collections, loading: collectionsLoading, error: collectionsError, refetch } = useMongoCollections(DB_NAME);
   const [selectedCollection, setSelectedCollection] = useState<string>("");
 
   const [queryText, setQueryText] = useState<string>("{}");
@@ -35,42 +20,15 @@ export default function MongoPage() {
   const [limit, setLimit] = useState<number>(20);
   const [skip, setSkip] = useState<number>(0);
 
-  const [searching, setSearching] = useState<boolean>(false);
-  const [searchDurationMs, setSearchDurationMs] = useState<number | null>(null);
-  const [resultsState, setResultsState] = useState<FetchState<MongoDocument[]>>({ loading: false, error: null, data: null });
+  const { data: docs, loading: searching, error: resultsError, durationMs, find } = useMongoFind(DB_NAME);
 
   const canSearch = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
 
-  const fetchCollections = useCallback(async () => {
-    setCollectionsState({ loading: true, error: null, data: collectionsState.data });
-    try {
-      const res = await fetch(`${API_BASE}/mongo/collections/${DB_NAME}`);
-      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-      const json: unknown = await res.json();
-      const names: string[] = Array.isArray(json)
-        ? json
-            .map((item) => {
-              if (typeof item === "string") return item;
-              if (item && typeof item === "object" && "name" in item) return String((item as any).name);
-              return null;
-            })
-            .filter((x): x is string => Boolean(x))
-        : [];
-      setCollectionsState({ loading: false, error: null, data: names });
-      if (names && names.length && !selectedCollection) {
-        setSelectedCollection(names[0]);
-      }
-    } catch (e) {
-      const msg = (e as Error).message;
-      setCollectionsState({ loading: false, error: msg, data: null });
-      toast.error(`Не удалось получить коллекции: ${msg}`);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   useEffect(() => {
-    fetchCollections();
-  }, [fetchCollections]);
+    if (!selectedCollection && collections && collections.length) {
+      setSelectedCollection(collections[0]);
+    }
+  }, [collections, selectedCollection]);
 
   const handleFind = useCallback(async () => {
     if (!selectedCollection) return;
@@ -103,31 +61,7 @@ export default function MongoPage() {
       },
     };
 
-    setSearching(true);
-    setResultsState({ loading: true, error: null, data: null });
-    const started = performance.now();
-    try {
-      const res = await fetch(`${API_BASE}/mongo/find/${DB_NAME}/${encodeURIComponent(selectedCollection)}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const finished = performance.now();
-      setSearchDurationMs(finished - started);
-
-      if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        throw new Error(`${res.status} ${res.statusText}${text ? `: ${text}` : ""}`);
-      }
-      const docs: MongoDocument[] = await res.json();
-      setResultsState({ loading: false, error: null, data: docs });
-    } catch (e) {
-      const msg = (e as Error).message;
-      setResultsState({ loading: false, error: msg, data: null });
-      toast.error(`Ошибка запроса: ${msg}`);
-    } finally {
-      setSearching(false);
-    }
+    find(selectedCollection, body.query, body.options);
   }, [limit, projectionText, queryText, selectedCollection, skip, sortText]);
 
   const handleNextPage = useCallback(() => {
@@ -139,26 +73,26 @@ export default function MongoPage() {
   }, [limit]);
 
   const prettyResults = useMemo(() => {
-    if (!resultsState.data) return "";
+    if (!docs) return "";
     try {
-      return JSON.stringify(resultsState.data, null, 2);
+      return JSON.stringify(docs, null, 2);
     } catch {
       return "";
     }
-  }, [resultsState.data]);
+  }, [docs]);
 
   return (
     <main style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <h1 style={{ margin: 0 }}>Mongo</h1>
-        {collectionsState.loading && <Spinner size="sm" />}
-        {collectionsState.error && <Chip color="danger" variant="flat">Ошибка загрузки коллекций</Chip>}
+        {collectionsLoading && <Spinner size="sm" />}
+        {collectionsError && <Chip color="danger" variant="flat">Ошибка загрузки коллекций</Chip>}
         {searching && <Chip color="primary" variant="flat">Выполняю запрос...</Chip>}
-        {typeof searchDurationMs === "number" && !searching && (
-          <Chip variant="flat">{Math.round(searchDurationMs)} ms</Chip>
+        {typeof durationMs === "number" && !searching && (
+          <Chip variant="flat">{Math.round(durationMs)} ms</Chip>
         )}
         <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
-          <Button size="sm" onPress={fetchCollections} isDisabled={collectionsState.loading}>
+          <Button size="sm" onPress={refetch} isDisabled={collectionsLoading}>
             Обновить коллекции
           </Button>
         </div>
@@ -168,9 +102,9 @@ export default function MongoPage() {
         <aside style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Коллекции (DB: {DB_NAME})</h3>
           <div style={{ border: "1px solid var(--border-color, #e5e7eb)", borderRadius: 8, padding: 8, maxHeight: 360, overflow: "auto" }}>
-            {collectionsState.data?.length ? (
+            {collections?.length ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {collectionsState.data.map((name) => (
+                {collections.map((name) => (
                   <Button
                     key={name}
                     variant={selectedCollection === name ? "solid" : "light"}
@@ -184,7 +118,7 @@ export default function MongoPage() {
               </div>
             ) : (
               <div style={{ color: "#6b7280", fontSize: 14 }}>
-                {collectionsState.loading ? "Загрузка..." : "Нет данных"}
+                {collectionsLoading ? "Загрузка..." : "Нет данных"}
               </div>
             )}
           </div>
@@ -201,7 +135,7 @@ export default function MongoPage() {
               }}
               placeholder="Выберите коллекцию"
             >
-              {(collectionsState.data ?? []).map((c) => (
+              {(collections ?? []).map((c) => (
                 <SelectItem key={c}>
                   {c}
                 </SelectItem>
@@ -267,12 +201,12 @@ export default function MongoPage() {
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <Chip variant="bordered">skip: {skip}</Chip>
             <Chip variant="bordered">limit: {limit}</Chip>
-            {resultsState.data && <Chip color="success" variant="flat">docs: {resultsState.data.length}</Chip>}
-            {resultsState.error && <Chip color="danger" variant="flat">{resultsState.error}</Chip>}
+            {docs && <Chip color="success" variant="flat">docs: {docs.length}</Chip>}
+            {resultsError && <Chip color="danger" variant="flat">{resultsError}</Chip>}
           </div>
 
           <div style={{ border: "1px solid var(--border-color, #e5e7eb)", borderRadius: 8, padding: 12, minHeight: 160 }}>
-            {resultsState.loading ? (
+            {searching ? (
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <Spinner size="sm" /> Загрузка...
               </div>
