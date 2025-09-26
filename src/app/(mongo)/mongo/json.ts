@@ -8,4 +8,13 @@ export function safeParseJson<T>(text: string): { ok: true; value: T } | { ok: f
   }
 }
 
+export function extractId(value: unknown): string | null {
+  if (!value) return null;
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object' && '$oid' in (value as any) && typeof (value as any).$oid === 'string') {
+    return (value as any).$oid as string;
+  }
+  return null;
+}
+
 

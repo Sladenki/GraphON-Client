@@ -7,6 +7,9 @@ import { useMongoCollections } from "./useMongoCollections";
 import { useMongoFind } from "./useMongoFind";
 import { safeParseJson } from "./json";
 import type { MongoDocument } from "./types";
+import ConfirmDialog from "./ConfirmDialog";
+import { useMongoDocOps } from "./useMongoDocOps";
+import { extractId } from "./json";
 
 const DB_NAME = "test"; // всегда используем test по требованию
 
@@ -21,6 +24,9 @@ export default function MongoPage() {
   const [skip, setSkip] = useState<number>(0);
 
   const { data: docs, loading: searching, error: resultsError, durationMs, find } = useMongoFind(DB_NAME);
+  const { loading: docMutating, patch, remove } = useMongoDocOps(DB_NAME);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmPayload, setConfirmPayload] = useState<{ mode: 'delete' | 'patch'; id: string; payload?: string } | null>(null);
 
   const canSearch = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
 
@@ -80,6 +86,35 @@ export default function MongoPage() {
       return "";
     }
   }, [docs]);
+
+  const handleAskDelete = useCallback((id: string) => {
+    setConfirmPayload({ mode: 'delete', id });
+    setConfirmOpen(true);
+  }, []);
+
+  const handleAskPatch = useCallback((id: string) => {
+    setConfirmPayload({ mode: 'patch', id, payload: '{}' });
+    setConfirmOpen(true);
+  }, []);
+
+  const handleConfirm = useCallback(async () => {
+    if (!confirmPayload || !selectedCollection) return;
+    if (confirmPayload.mode === 'delete') {
+      await remove(selectedCollection, confirmPayload.id);
+      setConfirmOpen(false);
+      // refresh current page
+      handleFind();
+    } else if (confirmPayload.mode === 'patch') {
+      const parsed = safeParseJson<Record<string, unknown>>(confirmPayload.payload || '{}');
+      if (!parsed.ok) {
+        toast.error(`Ошибка JSON: ${parsed.error}`);
+        return;
+      }
+      await patch(selectedCollection, confirmPayload.id, parsed.value);
+      setConfirmOpen(false);
+      handleFind();
+    }
+  }, [confirmPayload, handleFind, patch, remove, selectedCollection]);
 
   return (
     <main style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
@@ -211,11 +246,33 @@ export default function MongoPage() {
                 <Spinner size="sm" /> Загрузка...
               </div>
             ) : (
-              <pre style={{ margin: 0, maxHeight: 420, overflow: "auto" }}>
-                <code>{prettyResults}</code>
-              </pre>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, maxHeight: 420, overflow: "auto" }}>
+                {(docs ?? []).map((doc, i) => {
+                  const id = extractId((doc as any)?._id) || String((doc as any)?._id || '');
+                  return (
+                    <div key={i} style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                        <strong style={{ flex: 1 }}>#{i + 1} {id && `— ${id}`}</strong>
+                        {id && <Button size="sm" variant="flat" onPress={() => handleAskPatch(id)}>Изменить</Button>}
+                        {id && <Button size="sm" color="danger" variant="flat" onPress={() => handleAskDelete(id)}>Удалить</Button>}
+                      </div>
+                      <pre style={{ margin: 0, overflow: 'auto' }}><code>{JSON.stringify(doc, null, 2)}</code></pre>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
+          <ConfirmDialog
+            open={confirmOpen}
+            title={confirmPayload?.mode === 'delete' ? 'Подтверждение удаления' : 'Подтверждение изменения'}
+            description={confirmPayload?.mode === 'delete' ? 'Вы уверены, что хотите удалить документ? Это действие необратимо.' : 'Укажите JSON с полями для обновления. Можно использовать операторы $set, $unset и т.п.'}
+            confirmText={confirmPayload?.mode === 'delete' ? 'Удалить' : 'Изменить'}
+            danger={confirmPayload?.mode === 'delete'}
+            loading={docMutating}
+            onConfirm={handleConfirm}
+            onClose={() => setConfirmOpen(false)}
+          />
         </div>
       </section>
     </main>

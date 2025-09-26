@@ -31,4 +31,28 @@ export async function postFind(dbName: string, collection: string, query: Record
   return res.json();
 }
 
+export async function patchDocument(dbName: string, collection: string, id: string, payload: Record<string, unknown>): Promise<{ matchedCount: number; modifiedCount: number; upsertedId: string | null }> {
+  const res = await fetch(`${API_BASE}/mongo/doc/${dbName}/${encodeURIComponent(collection)}/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`${res.status} ${res.statusText}${text ? `: ${text}` : ''}`);
+  }
+  return res.json();
+}
+
+export async function deleteDocument(dbName: string, collection: string, id: string): Promise<{ deletedCount: number }> {
+  const res = await fetch(`${API_BASE}/mongo/doc/${dbName}/${encodeURIComponent(collection)}/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`${res.status} ${res.statusText}${text ? `: ${text}` : ''}`);
+  }
+  return res.json();
+}
+
 
