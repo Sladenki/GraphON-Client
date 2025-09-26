@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getCollections } from './api';
-import { FetchState } from './types';
+import { getCollections } from '../api';
+import { FetchState } from '../utils/types';
 import { toast } from 'sonner';
 
 export function useMongoCollections(dbName: string) {

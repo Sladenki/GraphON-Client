@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import { postFind } from './api';
-import { FetchState, MongoDocument, MongoFindOptions } from './types';
+import { postFind } from '../api';
+import { FetchState, MongoDocument, MongoFindOptions } from '../utils/types';
 import { toast } from 'sonner';
 
 export function useMongoFind(dbName: string) {

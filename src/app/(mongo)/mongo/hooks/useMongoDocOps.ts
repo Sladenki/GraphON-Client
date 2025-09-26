@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { deleteDocument, patchDocument } from './api';
+import { deleteDocument, patchDocument } from '../api';
 import { toast } from 'sonner';
 
 export function useMongoDocOps(dbName: string) {

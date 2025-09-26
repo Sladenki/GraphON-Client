@@ -3,13 +3,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Input, Textarea, Select, SelectItem, Spinner, Chip } from "@heroui/react";
 import { toast } from "sonner";
-import { useMongoCollections } from "./useMongoCollections";
-import { useMongoFind } from "./useMongoFind";
-import { safeParseJson } from "./json";
-import type { MongoDocument } from "./types";
-import ConfirmDialog from "./ConfirmDialog";
-import { useMongoDocOps } from "./useMongoDocOps";
-import { extractId } from "./json";
+import { useMongoCollections } from "./hooks/useMongoCollections";
+import { useMongoFind } from "./hooks/useMongoFind";
+import { useMongoDocOps } from "./hooks/useMongoDocOps";
+import ConfirmDialog from "./components/ConfirmDialog";
+import { safeParseJson, extractId } from "./utils/json";
+import type { MongoDocument } from "./utils/types";
 
 const DB_NAME = "test"; // всегда используем test по требованию
 

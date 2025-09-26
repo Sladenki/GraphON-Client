@@ -1,4 +1,4 @@
-import { MongoDocument, MongoFindOptions } from './types';
+import type { MongoDocument, MongoFindOptions } from '@/app/(mongo)/mongo/utils/types';
 
 export const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4200/api').replace(/\/+$/, '');
 
