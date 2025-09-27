@@ -20,12 +20,20 @@ type Props = {
 
 export default function EditDocDialog({ open, doc, loading, onClose, onSave }: Props) {
   const [rows, setRows] = useState<Row[]>([]);
+  const UNIVERSITIES = useMemo(() => ([
+    { id: '67a499dd08ac3c0df94d6ab7', name: 'КГТУ' },
+    { id: '6896447465255a1c4ed48eaf', name: 'КБК' },
+  ]), []);
+
+  const hasSelectedGraphField = useMemo(() => Boolean(doc && typeof doc === 'object' && 'selectedGraphId' in (doc as any)), [doc]);
+  const originalSelectedGraphId: string = useMemo(() => extractIdLoose((doc as any)?.selectedGraphId), [doc]);
+  const [selectedGraphId, setSelectedGraphId] = useState<string>("");
 
   const original = useMemo(() => {
     const obj: Record<string, unknown> = {};
     if (doc && typeof doc === 'object') {
       for (const [k, v] of Object.entries(doc)) {
-        if (k === '_id') continue;
+        if (k === '_id' || k === 'selectedGraphId') continue;
         obj[k] = v as unknown;
       }
     }
@@ -35,6 +43,11 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
   useEffect(() => {
     const next: Row[] = Object.entries(original).map(([k, v]) => ({ key: k, valueText: safeStringify(v), isNew: false, error: null }));
     setRows(next);
+    if (hasSelectedGraphField) {
+      setSelectedGraphId(originalSelectedGraphId || "");
+    } else {
+      setSelectedGraphId("");
+    }
   }, [original, open]);
 
   const handleChangeKey = (idx: number, key: string) => {
@@ -86,6 +99,13 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
       if (!keySet.has(key)) unsetObj[key] = "";
     }
 
+    if (hasSelectedGraphField) {
+      if ((selectedGraphId || "") !== (originalSelectedGraphId || "")) {
+        if (selectedGraphId) setObj['selectedGraphId'] = selectedGraphId;
+        else unsetObj['selectedGraphId'] = "";
+      }
+    }
+
     const hasSet = Object.keys(setObj).length > 0;
     const hasUnset = Object.keys(unsetObj).length > 0;
     if (!hasSet && !hasUnset) return { ok: false, error: 'Изменений не обнаружено' };
@@ -116,6 +136,29 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
               <div style={{ color: '#6b7280', fontSize: 12, marginBottom: 8 }}>
                 Значения вводите как валидный JSON (строки в кавычках, числа без). Изменение <b>_id</b> недоступно.
               </div>
+              {hasSelectedGraphField && (
+                <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                  <div style={{ color: '#6b7280', fontSize: 12 }}>Университет (selectedGraphId)</div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <select
+                      value={selectedGraphId}
+                      onChange={(e) => setSelectedGraphId(e.target.value)}
+                      style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: '6px 8px' }}
+                    >
+                      {!selectedGraphId && <option value="">— Не выбрано —</option>}
+                      {(!UNIVERSITIES.find(u => u.id === selectedGraphId) && selectedGraphId) && (
+                        <option value={selectedGraphId}>{selectedGraphId}</option>
+                      )}
+                      {UNIVERSITIES.map(u => (
+                        <option key={u.id} value={u.id}>{u.name}</option>
+                      ))}
+                    </select>
+                    {selectedGraphId && (
+                      <Chip variant="flat">{UNIVERSITIES.find(u => u.id === selectedGraphId)?.name || selectedGraphId}</Chip>
+                    )}
+                  </div>
+                </div>
+              )}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {rows.map((row, idx) => (
                   <div key={idx} style={{ display: 'grid', gridTemplateColumns: '180px 1fr auto', gap: 8, alignItems: 'start' }}>
@@ -155,6 +198,17 @@ function deepEqual(a: unknown, b: unknown): boolean {
   } catch {
     return a === b;
   }
+}
+
+function extractIdLoose(value: any): string {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object') {
+    if (typeof value._id === 'string') return value._id;
+    if (value._id && typeof value._id === 'object' && typeof value._id.$oid === 'string') return value._id.$oid;
+    if (typeof value.$oid === 'string') return value.$oid;
+  }
+  try { return String(value); } catch { return ''; }
 }
 
 
