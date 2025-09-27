@@ -10,6 +10,7 @@ import { useMongoDocOps } from "./hooks/useMongoDocOps";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { safeParseJson, extractId } from "./utils/json";
 import CollectionStatsPanel from "./components/CollectionStatsPanel";
+import JsonPretty from "./components/JsonPretty";
 import type { MongoDocument, MongoCollectionInfo } from "./utils/types";
 
 const DB_NAME = "test"; // всегда используем test по требованию
@@ -309,7 +310,7 @@ export default function MongoPage() {
                         {id && <Button size="sm" variant="flat" onPress={() => handleAskPatch(id)}>Изменить</Button>}
                         {id && <Button size="sm" color="danger" variant="flat" onPress={() => handleAskDelete(id)}>Удалить</Button>}
                       </div>
-                      <pre style={{ margin: 0, overflow: 'auto' }}><code>{JSON.stringify(doc, null, 2)}</code></pre>
+                      <JsonPretty value={doc} />
                     </div>
                   );
                 })}
