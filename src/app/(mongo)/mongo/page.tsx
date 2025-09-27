@@ -11,6 +11,7 @@ import ConfirmDialog from "./components/ConfirmDialog";
 import { safeParseJson, extractId } from "./utils/json";
 import CollectionStatsPanel from "./components/CollectionStatsPanel";
 import JsonPretty from "./components/JsonPretty";
+import EditDocDialog from "./components/EditDocDialog";
 import type { MongoDocument, MongoCollectionInfo } from "./utils/types";
 
 const DB_NAME = "test"; // всегда используем test по требованию
@@ -32,6 +33,9 @@ export default function MongoPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmPayload, setConfirmPayload] = useState<{ mode: 'delete' | 'patch'; id: string; payload?: string } | null>(null);
   const [searchText, setSearchText] = useState<string>("");
+  const [editOpen, setEditOpen] = useState(false);
+  const [editDoc, setEditDoc] = useState<Record<string, unknown> | null>(null);
+  const [editDocId, setEditDocId] = useState<string | null>(null);
 
   const canSearch = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
 
@@ -139,9 +143,11 @@ export default function MongoPage() {
   }, []);
 
   const handleAskPatch = useCallback((id: string) => {
-    setConfirmPayload({ mode: 'patch', id, payload: '{}' });
-    setConfirmOpen(true);
-  }, []);
+    const doc = (docs ?? []).find((d) => extractId((d as any)?._id) === id || String((d as any)?._id || '') === id) as Record<string, unknown> | undefined;
+    setEditDoc(doc || null);
+    setEditDocId(id);
+    setEditOpen(true);
+  }, [docs]);
 
   const handleConfirm = useCallback(async () => {
     if (!confirmPayload || !selectedCollection) return;
@@ -326,6 +332,18 @@ export default function MongoPage() {
             loading={docMutating}
             onConfirm={handleConfirm}
             onClose={() => setConfirmOpen(false)}
+          />
+          <EditDocDialog
+            open={editOpen}
+            doc={editDoc}
+            loading={docMutating}
+            onClose={() => setEditOpen(false)}
+            onSave={async (payload) => {
+              if (!selectedCollection || !editDocId) return;
+              await patch(selectedCollection, editDocId, payload);
+              setEditOpen(false);
+              handleFind();
+            }}
           />
         </div>
       </section>
