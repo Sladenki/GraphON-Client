@@ -1,21 +1,33 @@
-import type { MongoDocument, MongoFindOptions } from '@/app/(mongo)/mongo/utils/types';
+import type { MongoDocument, MongoFindOptions, MongoCollectionInfo } from '@/app/(mongo)/mongo/utils/types';
 
 export const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4200/api').replace(/\/+$/, '');
 
-export async function getCollections(dbName: string): Promise<string[]> {
+export async function getCollections(dbName: string): Promise<MongoCollectionInfo[]> {
   const res = await fetch(`${API_BASE}/mongo/collections/${dbName}`);
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   const json: unknown = await res.json();
-  const names: string[] = Array.isArray(json)
+  const items: MongoCollectionInfo[] = Array.isArray(json)
     ? json
         .map((item) => {
-          if (typeof item === 'string') return item;
-          if (item && typeof item === 'object' && 'name' in item) return String((item as any).name);
+          if (item && typeof item === 'object' && 'name' in item) {
+            const obj = item as any;
+            return {
+              name: String(obj.name),
+              type: typeof obj.type === 'string' ? obj.type : 'collection',
+              count: typeof obj.count === 'number' ? obj.count : undefined,
+              sizeBytes: typeof obj.sizeBytes === 'number' ? obj.sizeBytes : undefined,
+              storageBytes: typeof obj.storageBytes === 'number' ? obj.storageBytes : undefined,
+              totalIndexBytes: typeof obj.totalIndexBytes === 'number' ? obj.totalIndexBytes : undefined,
+            } as MongoCollectionInfo;
+          }
+          if (typeof item === 'string') {
+            return { name: item, type: 'collection' } as MongoCollectionInfo;
+          }
           return null;
         })
-        .filter((x): x is string => Boolean(x))
+        .filter((x): x is MongoCollectionInfo => Boolean(x))
     : [];
-  return names;
+  return items;
 }
 
 export async function postFind(dbName: string, collection: string, query: Record<string, unknown>, options: MongoFindOptions): Promise<MongoDocument[]> {

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Input, Textarea, Select, SelectItem, Spinner, Chip } from "@heroui/react";
 import { toast } from "sonner";
@@ -8,7 +9,7 @@ import { useMongoFind } from "./hooks/useMongoFind";
 import { useMongoDocOps } from "./hooks/useMongoDocOps";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { safeParseJson, extractId } from "./utils/json";
-import type { MongoDocument } from "./utils/types";
+import type { MongoDocument, MongoCollectionInfo } from "./utils/types";
 
 const DB_NAME = "test"; // всегда используем test по требованию
 
@@ -32,7 +33,7 @@ export default function MongoPage() {
 
   useEffect(() => {
     if (!selectedCollection && collections && collections.length) {
-      setSelectedCollection(collections[0]);
+      setSelectedCollection(collections[0]?.name || "");
     }
   }, [collections, selectedCollection]);
 
@@ -101,6 +102,31 @@ export default function MongoPage() {
     }
   }, [docs]);
 
+  const formatBytes = useCallback((num?: number) => {
+    if (!num || !Number.isFinite(num)) return '';
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    let n = num;
+    let i = 0;
+    while (n >= 1024 && i < units.length - 1) {
+      n /= 1024;
+      i++;
+    }
+    return `${n.toFixed(n >= 100 ? 0 : n >= 10 ? 1 : 2)} ${units[i]}`;
+  }, []);
+
+  const formatNumber = useCallback((num?: number) => {
+    if (typeof num !== 'number' || !Number.isFinite(num)) return '';
+    try {
+      return new Intl.NumberFormat('ru-RU').format(num);
+    } catch {
+      return String(num);
+    }
+  }, []);
+
+  const selectedInfo = useMemo(() => {
+    return (collections ?? []).find((c) => c.name === selectedCollection) || null;
+  }, [collections, selectedCollection]);
+
   const handleAskDelete = useCallback((id: string) => {
     setConfirmPayload({ mode: 'delete', id });
     setConfirmOpen(true);
@@ -153,15 +179,15 @@ export default function MongoPage() {
           <div style={{ border: "1px solid var(--border-color, #e5e7eb)", borderRadius: 8, padding: 8, maxHeight: 360, overflow: "auto" }}>
             {collections?.length ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {collections.map((name) => (
+                {collections.map((c) => (
                   <Button
-                    key={name}
-                    variant={selectedCollection === name ? "solid" : "light"}
-                    color={selectedCollection === name ? "primary" : "default"}
-                    onPress={() => setSelectedCollection(name)}
+                    key={c.name}
+                    variant={selectedCollection === c.name ? "solid" : "light"}
+                    color={selectedCollection === c.name ? "primary" : "default"}
+                    onPress={() => setSelectedCollection(c.name)}
                     size="sm"
                   >
-                    {name}
+                    <span>{c.name}{c.type && c.type !== 'collection' ? ` (${c.type})` : ''}</span>
                   </Button>
                 ))}
               </div>
@@ -195,8 +221,8 @@ export default function MongoPage() {
               placeholder="Выберите коллекцию"
             >
               {(collections ?? []).map((c) => (
-                <SelectItem key={c}>
-                  {c}
+                <SelectItem key={c.name}>
+                  {c.name}{c.type && c.type !== 'collection' ? ` (${c.type})` : ''}
                 </SelectItem>
               ))}
             </Select>
@@ -225,6 +251,35 @@ export default function MongoPage() {
               </Button>
             </div>
           </div>
+
+          {selectedInfo && (
+            <div style={{ border: "1px solid var(--border-color, #e5e7eb)", borderRadius: 8, padding: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <strong style={{ fontSize: 16 }}>{selectedInfo.name}</strong>
+                {selectedInfo.type && selectedInfo.type !== 'collection' && (
+                  <Chip size="sm" variant="flat">{selectedInfo.type}</Chip>
+                )}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(120px, 1fr))', gap: 12 }}>
+                <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>Документов</div>
+                  <div style={{ fontSize: 18, fontWeight: 600 }}>{formatNumber(selectedInfo.count) || '—'}</div>
+                </div>
+                <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>Данные</div>
+                  <div style={{ fontSize: 18, fontWeight: 600 }}>{formatBytes(selectedInfo.sizeBytes) || '—'}</div>
+                </div>
+                <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>Хранение</div>
+                  <div style={{ fontSize: 18, fontWeight: 600 }}>{formatBytes(selectedInfo.storageBytes) || '—'}</div>
+                </div>
+                <div style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>Индексы</div>
+                  <div style={{ fontSize: 18, fontWeight: 600 }}>{formatBytes(selectedInfo.totalIndexBytes) || '—'}</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Textarea

@@ -14,3 +14,13 @@ export type MongoFindOptions = {
 };
 
 
+export type MongoCollectionInfo = {
+  name: string;
+  type: string; // 'collection' | 'view' | etc
+  count?: number;
+  sizeBytes?: number;
+  storageBytes?: number;
+  totalIndexBytes?: number;
+};
+
+
