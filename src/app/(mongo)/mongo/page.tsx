@@ -13,6 +13,8 @@ import CollectionStatsPanel from "./components/CollectionStatsPanel";
 import type { MongoDocument, MongoCollectionInfo } from "./utils/types";
 
 const DB_NAME = "test"; // всегда используем test по требованию
+const KGTU_GRAPH_ID = "67a499dd08ac3c0df94d6ab7";
+const KBK_GRAPH_ID = "6896447465255a1c4ed48eaf";
 
 export default function MongoPage() {
   const { data: collections, loading: collectionsLoading, error: collectionsError, refetch } = useMongoCollections(DB_NAME);
@@ -64,7 +66,7 @@ export default function MongoPage() {
     const searchQuery = trimmed
       ? { $or: [
           { lastName: { $regex: trimmed, $options: 'i' } },
-          { firtName: { $regex: trimmed, $options: 'i' } },
+          { firstName: { $regex: trimmed, $options: 'i' } },
           { username: { $regex: trimmed, $options: 'i' } },
         ] }
       : null;
@@ -108,6 +110,27 @@ export default function MongoPage() {
   const selectedInfo = useMemo(() => {
     return (collections ?? []).find((c) => c.name === selectedCollection) || null;
   }, [collections, selectedCollection]);
+
+  const userCollectionName = useMemo(() => {
+    const names = (collections ?? []).map((c) => c.name);
+    if (names.includes('User')) return 'User';
+    if (names.includes('Users')) return 'Users';
+    return '';
+  }, [collections]);
+
+  const runQuickUserQuery = useCallback((query: Record<string, unknown>) => {
+    const name = userCollectionName;
+    if (!name) return;
+    setSelectedCollection(name);
+    setQueryText(JSON.stringify(query, null, 2));
+    setSortText("{}");
+    setProjectionText("{}");
+    setSkip(0);
+    setTimeout(() => {
+      // используем текущие контролы поиска, чтобы не дублировать логику
+      (async () => { await handleFind(); })();
+    }, 0);
+  }, [handleFind, userCollectionName]);
 
   const handleAskDelete = useCallback((id: string) => {
     setConfirmPayload({ mode: 'delete', id });
@@ -184,7 +207,7 @@ export default function MongoPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ display: "flex", gap: 12 }}>
             <Input
-              label="Поиск (lastName, firtName, username)"
+              label="Поиск (lastName, firstName, username)"
               value={searchText}
               onValueChange={setSearchText}
               placeholder="Введите строку для поиска"
@@ -192,8 +215,17 @@ export default function MongoPage() {
             />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+          {userCollectionName && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              <Chip variant="flat">Быстрые запросы: {userCollectionName}</Chip>
+              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ selectedGraphId: KGTU_GRAPH_ID })}>Пользователи КГТУ</Button>
+              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ selectedGraphId: KBK_GRAPH_ID })}>Пользователи КБК</Button>
+              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ $or: [ { username: null }, { username: { $exists: false } } ] })}>username = null</Button>
+              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ $or: [ { firstName: { $regex: searchText.trim(), $options: 'i' } }, { lastName: { $regex: searchText.trim(), $options: 'i' } }, { username: { $regex: searchText.trim(), $options: 'i' } } ] })} isDisabled={!searchText.trim()}>Быстрый поиск</Button>
+            </div>
+          )}
 
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
             <Input
               type="number"
               label="Limit"
