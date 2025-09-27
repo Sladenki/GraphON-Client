@@ -219,8 +219,8 @@ export default function MongoPage() {
           {userCollectionName && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               <Chip variant="flat">Быстрые запросы: {userCollectionName}</Chip>
-              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ selectedGraphId: KGTU_GRAPH_ID })}>Пользователи КГТУ</Button>
-              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ selectedGraphId: KBK_GRAPH_ID })}>Пользователи КБК</Button>
+              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ selectedGraphId: { $oid: KGTU_GRAPH_ID } })}>Пользователи КГТУ</Button>
+              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ selectedGraphId: { $oid: KBK_GRAPH_ID } })}>Пользователи КБК</Button>
               <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ $or: [ { username: null }, { username: { $exists: false } } ] })}>username = null</Button>
               <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ $or: [ { firstName: { $regex: searchText.trim(), $options: 'i' } }, { lastName: { $regex: searchText.trim(), $options: 'i' } }, { username: { $regex: searchText.trim(), $options: 'i' } } ] })} isDisabled={!searchText.trim()}>Быстрый поиск</Button>
             </div>
