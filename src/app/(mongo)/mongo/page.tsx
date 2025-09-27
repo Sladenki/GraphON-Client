@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Input, Textarea, Select, SelectItem, Spinner, Chip } from "@heroui/react";
+import { Button, Input, Textarea, Spinner, Chip } from "@heroui/react";
 import { toast } from "sonner";
 import { useMongoCollections } from "./hooks/useMongoCollections";
 import { useMongoFind } from "./hooks/useMongoFind";
@@ -193,21 +193,6 @@ export default function MongoPage() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-            <Select
-              label="Коллекция"
-              selectedKeys={selectedCollection ? [selectedCollection] : []}
-              onSelectionChange={(keys) => {
-                const val = Array.from(keys)[0] as string | undefined;
-                setSelectedCollection(val ?? "");
-              }}
-              placeholder="Выберите коллекцию"
-            >
-              {(collections ?? []).map((c) => (
-                <SelectItem key={c.name}>
-                  {c.name}{c.type && c.type !== 'collection' ? ` (${c.type})` : ''}
-                </SelectItem>
-              ))}
-            </Select>
 
             <Input
               type="number"
