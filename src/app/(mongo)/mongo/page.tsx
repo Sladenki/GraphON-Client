@@ -327,7 +327,7 @@ export default function MongoPage() {
                 <Spinner size="sm" /> Загрузка...
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, maxHeight: 475, overflow: "auto" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, maxHeight: '70vh', overflow: "auto" }}>
                 {(docs ?? []).map((doc, i) => {
                   const id = extractId((doc as any)?._id) || String((doc as any)?._id || '');
                   return (
