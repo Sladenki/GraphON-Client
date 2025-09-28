@@ -13,6 +13,8 @@ import CollectionStatsPanel from "./components/CollectionStatsPanel";
 import JsonPretty from "./components/JsonPretty";
 import EditDocDialog from "./components/EditDocDialog";
 import { API_BASE } from "./api";
+import { useMongoExport } from "./hooks/useMongoExport";
+import UserQuickQueries from "./components/UserQuickQueries";
 import type { MongoDocument, MongoCollectionInfo } from "./utils/types";
 
 const DB_NAME = "test"; // всегда используем test по требованию
@@ -168,48 +170,14 @@ export default function MongoPage() {
     return params;
   }, [limit, projectionText, queryText, searchText, sortText]);
 
-  const triggerDownload = useCallback((href: string, suggestedName: string) => {
-    try {
-      const a = document.createElement('a');
-      a.href = href;
-      a.rel = 'noopener';
-      a.download = suggestedName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } catch (e) {
-      window.open(href, '_blank');
-    }
-  }, []);
+  const { exportCollection } = useMongoExport(DB_NAME);
 
   const handleExport = useCallback(async (fmt: 'json' | 'ndjson') => {
     if (!selectedCollection) { toast.error('Выберите коллекцию'); return; }
     const params = buildExportParams();
     if (!params) return;
-    params.set('format', fmt);
-    const base = (API_BASE || '').replace(/\/+$/, '');
-    const url = `${base}/mongo/export/${encodeURIComponent(DB_NAME)}/${encodeURIComponent(selectedCollection)}?${params.toString()}`;
-    const ts = new Date();
-    const pad = (n: number) => String(n).padStart(2, '0');
-    const timestamp = `${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}-${pad(ts.getHours())}${pad(ts.getMinutes())}${pad(ts.getSeconds())}`;
-    const ext = fmt === 'json' ? 'json' : 'ndjson';
-    const filename = `${selectedCollection}-${timestamp}.${ext}`;
-    try {
-      const res = await fetch(url, { credentials: 'include' });
-      if (!res.ok) {
-        const text = await res.text().catch(() => '');
-        toast.error(`Экспорт не удался: ${res.status} ${res.statusText}${text ? ` — ${text}` : ''}`);
-        return;
-      }
-      const blob = await res.blob();
-      const href = URL.createObjectURL(blob);
-      triggerDownload(href, filename);
-      setTimeout(() => URL.revokeObjectURL(href), 10_000);
-    } catch (e) {
-      const msg = (e as Error).message;
-      toast.error(`Ошибка сети при экспорте: ${msg}`);
-    }
-  }, [API_BASE, buildExportParams, selectedCollection, triggerDownload]);
+    await exportCollection(selectedCollection, params, fmt);
+  }, [buildExportParams, exportCollection, selectedCollection]);
 
   const handleAskDelete = useCallback((id: string) => {
     setConfirmPayload({ mode: 'delete', id });
@@ -296,15 +264,13 @@ export default function MongoPage() {
             />
           </div>
 
-          {userCollectionName && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              <Chip variant="flat">Быстрые запросы: {userCollectionName}</Chip>
-              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ selectedGraphId: { $oid: KGTU_GRAPH_ID } })}>Пользователи КГТУ</Button>
-              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ selectedGraphId: { $oid: KBK_GRAPH_ID } })}>Пользователи КБК</Button>
-              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ $or: [ { username: null }, { username: { $exists: false } } ] })}>username = null</Button>
-              <Button size="sm" variant="flat" onPress={() => runQuickUserQuery({ $or: [ { firstName: { $regex: searchText.trim(), $options: 'i' } }, { lastName: { $regex: searchText.trim(), $options: 'i' } }, { username: { $regex: searchText.trim(), $options: 'i' } } ] })} isDisabled={!searchText.trim()}>Быстрый поиск</Button>
-            </div>
-          )}
+          <UserQuickQueries
+            userCollectionName={userCollectionName}
+            searchText={searchText}
+            onRun={runQuickUserQuery}
+            KGTU_GRAPH_ID={KGTU_GRAPH_ID}
+            KBK_GRAPH_ID={KBK_GRAPH_ID}
+          />
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
             <Input
