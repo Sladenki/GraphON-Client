@@ -277,7 +277,7 @@ export default function MongoPage() {
             />
 
             <div style={{ display: "flex", gap: 8, alignItems: "end", justifyContent: "flex-end" }}>
-              <Button color="default" variant="flat" onPress={() => { setQueryText("{}"); setSortText("{}"); setProjectionText("{}"); setLimit(20); setSkip(0); }}>
+              <Button color="default" variant="flat" onPress={() => { setQueryText("{}"); setSortText("{}"); setProjectionText("{}"); setLimit(20); setSkip(0); setSearchText(""); }}>
                 Сбросить
               </Button>
               <Button color="primary" onPress={handleFind} isDisabled={!canSearch || searching}>
@@ -285,8 +285,8 @@ export default function MongoPage() {
               </Button>
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "end" }}>
-              <Button variant="flat" onPress={handlePrevPage} isDisabled={skip === 0 || searching}>Prev</Button>
-              <Button variant="flat" onPress={handleNextPage} isDisabled={searching}>Next</Button>
+              <Button variant="flat" onPress={handlePrevPage} isDisabled={skip === 0 || searching}>←</Button>
+              <Button variant="flat" onPress={handleNextPage} isDisabled={searching}>→</Button>
               <Button variant="flat" onPress={() => setShowEditors((v) => !v)}>
                 {showEditors ? 'Скрыть JSON' : 'Показать JSON'}
               </Button>
