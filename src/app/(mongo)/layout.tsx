@@ -1,20 +1,20 @@
-"use client";
 import '../../styles/globals.scss'
 import { inter, orbitron } from '@/app/fonts';
-import { Providers } from '../providers';
-import { HeroUIProvider } from '@heroui/react';
-import { Toaster } from 'sonner';
+import { cookies } from 'next/headers';
+import MongoClientRoot from './mongo/components/MongoClientRoot';
 
-export default function MongoLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function MongoLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const status = process.env.NEXT_CLIENT_STATUS;
+  const cookieStore = await cookies();
+  const hasAuthCookie = cookieStore.get('mongo_auth')?.value === '1';
+  const mustAskPassword = status === 'prod' && !hasAuthCookie;
+
   return (
     <html lang="ru" className={`${inter.variable} ${orbitron.variable}`}>
       <body className={inter.className}>
-        <Providers>
-          <HeroUIProvider>
-            <Toaster position="top-right" richColors />
-            {children}
-          </HeroUIProvider>
-        </Providers>
+        <MongoClientRoot mustAskPassword={mustAskPassword}>
+          {children}
+        </MongoClientRoot>
       </body>
     </html>
   );
