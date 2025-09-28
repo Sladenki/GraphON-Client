@@ -127,12 +127,12 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
   };
 
   return (
-    <Modal isOpen={open} onOpenChange={onClose} size="xl" backdrop="blur" scrollBehavior="outside">
-      <ModalContent>
+    <Modal isOpen={open} onOpenChange={onClose} size="xl" backdrop="blur" scrollBehavior="inside">
+      <ModalContent style={{ maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
         {() => (
           <>
-            <ModalHeader>Редактирование документа</ModalHeader>
-            <ModalBody>
+            <ModalHeader style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1, borderBottom: '1px solid #e5e7eb' }}>Редактирование документа</ModalHeader>
+            <ModalBody style={{ flex: '1 1 auto', overflow: 'auto' }}>
               <div style={{ color: '#6b7280', fontSize: 12, marginBottom: 8 }}>
                 Значения вводите как валидный JSON (строки в кавычках, числа без). Изменение <b>_id</b> недоступно.
               </div>
@@ -172,7 +172,7 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
                 </div>
               </div>
             </ModalBody>
-            <ModalFooter>
+            <ModalFooter style={{ position: 'sticky', bottom: 0, background: '#fff', borderTop: '1px solid #e5e7eb', zIndex: 1 }}>
               <Chip color="warning" variant="flat">Сохранение изменит данные. Действие необратимо.</Chip>
               <Button variant="flat" onPress={onClose} isDisabled={loading}>Отмена</Button>
               <Button color="primary" onPress={handleSave} isLoading={loading}>Сохранить</Button>
