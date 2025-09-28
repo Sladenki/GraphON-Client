@@ -12,10 +12,8 @@ import { safeParseJson, extractId } from "./utils/json";
 import CollectionStatsPanel from "./components/CollectionStatsPanel";
 import JsonPretty from "./components/JsonPretty";
 import EditDocDialog from "./components/EditDocDialog";
-import { API_BASE } from "./api";
 import { useMongoExport } from "./hooks/useMongoExport";
 import UserQuickQueries from "./components/UserQuickQueries";
-import type { MongoDocument, MongoCollectionInfo } from "./utils/types";
 
 const DB_NAME = "test"; // всегда используем test по требованию
 const KGTU_GRAPH_ID = "67a499dd08ac3c0df94d6ab7";
@@ -103,15 +101,6 @@ export default function MongoPage() {
   const handlePrevPage = useCallback(() => {
     setSkip((s) => Math.max(0, s - Math.max(1, limit)));
   }, [limit]);
-
-  const prettyResults = useMemo(() => {
-    if (!docs) return "";
-    try {
-      return JSON.stringify(docs, null, 2);
-    } catch {
-      return "";
-    }
-  }, [docs]);
 
   // formatting helpers moved to utils/format and used by CollectionStatsPanel
 
