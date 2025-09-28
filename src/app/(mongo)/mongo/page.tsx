@@ -13,6 +13,7 @@ import EditDocDialog from "./components/EditDocDialog";
 import { useMongoExport } from "./hooks/useMongoExport";
 import UserQuickQueries from "./components/UserQuickQueries";
 import { buildExportParams } from "./utils/export";
+import CollectionsSidebar from "./components/CollectionsSidebar";
 
 const DB_NAME = "test"; // всегда используем test по требованию
 const KGTU_GRAPH_ID = "67a499dd08ac3c0df94d6ab7";
@@ -214,30 +215,13 @@ export default function MongoPage() {
       </div>
 
       <section style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 16 }}>
-        <aside style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <h3 style={{ margin: 0 }}>Коллекции (DB: {DB_NAME})</h3>
-          <div style={{ border: "1px solid var(--border-color, #e5e7eb)", borderRadius: 8, padding: 8, maxHeight: 360, overflow: "auto" }}>
-            {collections?.length ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {collections.map((c) => (
-                  <Button
-                    key={c.name}
-                    variant={selectedCollection === c.name ? "solid" : "light"}
-                    color={selectedCollection === c.name ? "primary" : "default"}
-                    onPress={() => setSelectedCollection(c.name)}
-                    size="sm"
-                  >
-                    <span>{c.name}{c.type && c.type !== 'collection' ? ` (${c.type})` : ''}</span>
-                  </Button>
-                ))}
-              </div>
-            ) : (
-              <div style={{ color: "#6b7280", fontSize: 14 }}>
-                {collectionsLoading ? "Загрузка..." : "Нет данных"}
-              </div>
-            )}
-          </div>
-        </aside>
+        <CollectionsSidebar
+          dbName={DB_NAME}
+          collections={collections}
+          loading={collectionsLoading}
+          selectedCollection={selectedCollection}
+          onSelect={setSelectedCollection}
+        />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ display: "flex", gap: 12 }}>
