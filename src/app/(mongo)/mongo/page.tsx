@@ -12,6 +12,7 @@ import { safeParseJson, extractId } from "./utils/json";
 import CollectionStatsPanel from "./components/CollectionStatsPanel";
 import JsonPretty from "./components/JsonPretty";
 import EditDocDialog from "./components/EditDocDialog";
+import { API_BASE } from "./api";
 import type { MongoDocument, MongoCollectionInfo } from "./utils/types";
 
 const DB_NAME = "test"; // всегда используем test по требованию
@@ -137,6 +138,79 @@ export default function MongoPage() {
     }, 0);
   }, [handleFind, userCollectionName]);
 
+  const buildExportParams = useCallback(() => {
+    const qp = safeParseJson<Record<string, unknown>>(queryText);
+    if (!qp.ok) { toast.error(`Ошибка в JSON запроса: ${qp.error}`); return null; }
+    const sp = safeParseJson<Record<string, 1 | -1>>(sortText);
+    if (!sp.ok) { toast.error(`Ошибка в JSON сортировки: ${sp.error}`); return null; }
+    const pp = safeParseJson<Record<string, 0 | 1>>(projectionText);
+    if (!pp.ok) { toast.error(`Ошибка в JSON проекции: ${pp.error}`); return null; }
+
+    const baseQuery = qp.value || {};
+    const trimmed = searchText.trim();
+    const searchQuery = trimmed
+      ? { $or: [
+          { lastName: { $regex: trimmed, $options: 'i' } },
+          { firstName: { $regex: trimmed, $options: 'i' } },
+          { username: { $regex: trimmed, $options: 'i' } },
+        ] }
+      : null;
+    const finalQuery = searchQuery
+      ? (Object.keys(baseQuery).length ? { $and: [baseQuery, searchQuery] } : searchQuery)
+      : baseQuery;
+
+    const params = new URLSearchParams();
+    params.set('format', 'json');
+    if (finalQuery && Object.keys(finalQuery).length) params.set('query', JSON.stringify(finalQuery));
+    if (sp.value && Object.keys(sp.value).length) params.set('sort', JSON.stringify(sp.value));
+    if (pp.value && Object.keys(pp.value).length) params.set('projection', JSON.stringify(pp.value));
+    if (Number.isFinite(limit) && limit > 0) params.set('limit', String(limit));
+    return params;
+  }, [limit, projectionText, queryText, searchText, sortText]);
+
+  const triggerDownload = useCallback((href: string, suggestedName: string) => {
+    try {
+      const a = document.createElement('a');
+      a.href = href;
+      a.rel = 'noopener';
+      a.download = suggestedName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (e) {
+      window.open(href, '_blank');
+    }
+  }, []);
+
+  const handleExport = useCallback(async (fmt: 'json' | 'ndjson') => {
+    if (!selectedCollection) { toast.error('Выберите коллекцию'); return; }
+    const params = buildExportParams();
+    if (!params) return;
+    params.set('format', fmt);
+    const base = (API_BASE || '').replace(/\/+$/, '');
+    const url = `${base}/mongo/export/${encodeURIComponent(DB_NAME)}/${encodeURIComponent(selectedCollection)}?${params.toString()}`;
+    const ts = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const timestamp = `${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}-${pad(ts.getHours())}${pad(ts.getMinutes())}${pad(ts.getSeconds())}`;
+    const ext = fmt === 'json' ? 'json' : 'ndjson';
+    const filename = `${selectedCollection}-${timestamp}.${ext}`;
+    try {
+      const res = await fetch(url, { credentials: 'include' });
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        toast.error(`Экспорт не удался: ${res.status} ${res.statusText}${text ? ` — ${text}` : ''}`);
+        return;
+      }
+      const blob = await res.blob();
+      const href = URL.createObjectURL(blob);
+      triggerDownload(href, filename);
+      setTimeout(() => URL.revokeObjectURL(href), 10_000);
+    } catch (e) {
+      const msg = (e as Error).message;
+      toast.error(`Ошибка сети при экспорте: ${msg}`);
+    }
+  }, [API_BASE, buildExportParams, selectedCollection, triggerDownload]);
+
   const handleAskDelete = useCallback((id: string) => {
     setConfirmPayload({ mode: 'delete', id });
     setConfirmOpen(true);
@@ -255,6 +329,8 @@ export default function MongoPage() {
               <Button color="primary" onPress={handleFind} isDisabled={!canSearch || searching}>
                 Найти
               </Button>
+              <Button variant="flat" onPress={() => handleExport('json')} isDisabled={!canSearch}>Скачать JSON</Button>
+              <Button variant="flat" onPress={() => handleExport('ndjson')} isDisabled={!canSearch}>Скачать NDJSON</Button>
             </div>
           </div>
 
