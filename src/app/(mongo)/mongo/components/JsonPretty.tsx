@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useMemo, useState, useCallback } from "react";
-import { Button, Chip } from "@heroui/react";
+import React, { useMemo, useState } from "react";
 
 type Props = {
   value: unknown;
@@ -19,19 +18,94 @@ export default function JsonPretty({ value }: Props) {
 
   const lines = useMemo(() => text.split("\n"), [text]);
 
-  const handleCopy = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {}
-  }, [text]);
+  const highlightLine = (line: string) => {
+    const nodes: React.ReactNode[] = [];
+    const isDigit = (ch: string) => /[0-9]/.test(ch);
+    const isWhitespace = (ch: string) => ch === ' ' || ch === '\t' || ch === '\r' || ch === '\n';
+    let i = 0;
+    while (i < line.length) {
+      const ch = line[i];
+
+      // String (with escape support)
+      if (ch === '"') {
+        let j = i + 1;
+        let escaped = false;
+        while (j < line.length) {
+          const cj = line[j];
+          if (escaped) {
+            escaped = false;
+          } else if (cj === '\\') {
+            escaped = true;
+          } else if (cj === '"') {
+            break;
+          }
+          j++;
+        }
+        const token = line.slice(i, Math.min(j + 1, line.length));
+        // Determine if this string is a key (followed by optional spaces and ':')
+        let k = j + 1;
+        while (k < line.length && isWhitespace(line[k])) k++;
+        const isKey = k < line.length && line[k] === ':';
+        nodes.push(
+          <span key={i} style={{ color: isKey ? '#8b5cf6' : '#10b981' }}>{token}</span>
+        );
+        i = Math.min(j + 1, line.length);
+        continue;
+      }
+
+      // ObjectId('...') like tokens
+      if (line.startsWith('ObjectId', i)) {
+        let j = i + 'ObjectId'.length;
+        while (j < line.length && line[j] !== ')') j++;
+        if (j < line.length) j++;
+        const token = line.slice(i, j);
+        nodes.push(<span key={i} style={{ color: '#ef4444' }}>{token}</span>);
+        i = j;
+        continue;
+      }
+
+      // Numbers
+      if (ch === '-' || isDigit(ch)) {
+        const numMatch = line.slice(i).match(/^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/);
+        if (numMatch) {
+          const token = numMatch[0];
+          nodes.push(<span key={i} style={{ color: '#2563eb' }}>{token}</span>);
+          i += token.length;
+          continue;
+        }
+      }
+
+      // Booleans
+      if (line.startsWith('true', i) || line.startsWith('false', i)) {
+        const token = line.startsWith('true', i) ? 'true' : 'false';
+        nodes.push(<span key={i} style={{ color: '#f59e0b' }}>{token}</span>);
+        i += token.length;
+        continue;
+      }
+
+      // null
+      if (line.startsWith('null', i)) {
+        nodes.push(<span key={i} style={{ color: '#6b7280' }}>null</span>);
+        i += 4;
+        continue;
+      }
+
+      // Punctuation
+      if ('{}[]:,'.includes(ch)) {
+        nodes.push(<span key={i} style={{ color: '#111827' }}>{ch}</span>);
+        i++;
+        continue;
+      }
+
+      // Default char
+      nodes.push(<span key={i}>{ch}</span>);
+      i++;
+    }
+    return nodes;
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Chip variant="flat">{lines.length} lines</Chip>
-        <Button size="sm" variant="flat" onPress={() => setWrap((w) => !w)}>{wrap ? 'Без переноса' : 'Перенос строк'}</Button>
-        <Button size="sm" variant="flat" onPress={handleCopy}>Копировать</Button>
-      </div>
       <div style={{
         border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'auto',
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
@@ -57,7 +131,7 @@ export default function JsonPretty({ value }: Props) {
                   whiteSpace: wrap ? 'pre-wrap' : 'pre',
                   wordBreak: wrap ? 'break-word' : 'normal',
                 }}>
-                  {line}
+                  {highlightLine(line)}
                 </td>
               </tr>
             ))}
