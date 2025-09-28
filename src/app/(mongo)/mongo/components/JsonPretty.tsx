@@ -47,7 +47,7 @@ export default function JsonPretty({ value }: Props) {
         while (k < line.length && isWhitespace(line[k])) k++;
         const isKey = k < line.length && line[k] === ':';
         nodes.push(
-          <span key={i} style={{ color: isKey ? '#8b5cf6' : '#10b981' }}>{token}</span>
+          <span key={i} style={{ color: isKey ? '#6d28d9' : '#047857' }}>{token}</span>
         );
         i = Math.min(j + 1, line.length);
         continue;
@@ -59,7 +59,7 @@ export default function JsonPretty({ value }: Props) {
         while (j < line.length && line[j] !== ')') j++;
         if (j < line.length) j++;
         const token = line.slice(i, j);
-        nodes.push(<span key={i} style={{ color: '#ef4444' }}>{token}</span>);
+        nodes.push(<span key={i} style={{ color: '#b91c1c' }}>{token}</span>);
         i = j;
         continue;
       }
@@ -69,7 +69,7 @@ export default function JsonPretty({ value }: Props) {
         const numMatch = line.slice(i).match(/^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/);
         if (numMatch) {
           const token = numMatch[0];
-          nodes.push(<span key={i} style={{ color: '#2563eb' }}>{token}</span>);
+          nodes.push(<span key={i} style={{ color: '#1d4ed8' }}>{token}</span>);
           i += token.length;
           continue;
         }
@@ -78,14 +78,14 @@ export default function JsonPretty({ value }: Props) {
       // Booleans
       if (line.startsWith('true', i) || line.startsWith('false', i)) {
         const token = line.startsWith('true', i) ? 'true' : 'false';
-        nodes.push(<span key={i} style={{ color: '#f59e0b' }}>{token}</span>);
+        nodes.push(<span key={i} style={{ color: '#b45309' }}>{token}</span>);
         i += token.length;
         continue;
       }
 
       // null
       if (line.startsWith('null', i)) {
-        nodes.push(<span key={i} style={{ color: '#6b7280' }}>null</span>);
+        nodes.push(<span key={i} style={{ color: '#374151' }}>null</span>);
         i += 4;
         continue;
       }
@@ -121,7 +121,7 @@ export default function JsonPretty({ value }: Props) {
                   textAlign: 'right',
                   verticalAlign: 'top',
                   padding: '2px 8px',
-                  color: '#9ca3af',
+                  color: '#6b7280',
                   borderRight: '1px solid #e5e7eb',
                   width: 1,
                   whiteSpace: 'nowrap',
