@@ -9,9 +9,12 @@ type Props = {
   loading: boolean;
   selectedCollection: string;
   onSelect: (name: string) => void;
+  onExportJson?: () => void;
+  onExportNdjson?: () => void;
+  canExport?: boolean;
 };
 
-export default function CollectionsSidebar({ dbName, collections, loading, selectedCollection, onSelect }: Props) {
+export default function CollectionsSidebar({ dbName, collections, loading, selectedCollection, onSelect, onExportJson, onExportNdjson, canExport }: Props) {
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <h3 style={{ margin: 0 }}>Коллекции (DB: {dbName})</h3>
@@ -36,6 +39,16 @@ export default function CollectionsSidebar({ dbName, collections, loading, selec
           </div>
         )}
       </div>
+      {(onExportJson || onExportNdjson) && (
+        <div style={{ display: "flex", gap: 8, justifyContent: "space-between" }}>
+          {onExportJson && (
+            <Button variant="flat" onPress={onExportJson} isDisabled={canExport === false}>Скачать JSON</Button>
+          )}
+          {onExportNdjson && (
+            <Button variant="flat" onPress={onExportNdjson} isDisabled={canExport === false}>Скачать NDJSON</Button>
+          )}
+        </div>
+      )}
     </aside>
   );
 }

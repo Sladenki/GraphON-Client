@@ -1,19 +1,18 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Input, Textarea, Spinner, Chip } from "@heroui/react";
+import { Button, Input, Textarea, Spinner, Chip, Dropdown, DropdownMenu, DropdownItem, DropdownTrigger } from "@heroui/react";
 import { toast } from "sonner";
 import { useMongoCollections } from "./hooks/useMongoCollections";
 import { useMongoFind } from "./hooks/useMongoFind";
 import { useMongoDocOps } from "./hooks/useMongoDocOps";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { safeParseJson, extractId } from "./utils/json";
-import CollectionStatsPanel from "./components/CollectionStatsPanel";
 import JsonPretty from "./components/JsonPretty";
 import EditDocDialog from "./components/EditDocDialog";
 import { useMongoExport } from "./hooks/useMongoExport";
-import UserQuickQueries from "./components/UserQuickQueries";
 import { buildExportParams } from "./utils/export";
 import CollectionsSidebar from "./components/CollectionsSidebar";
+import { formatBytes, formatNumber } from "./utils/format";
 
 const DB_NAME = "test"; // всегда используем test по требованию
 const KGTU_GRAPH_ID = "67a499dd08ac3c0df94d6ab7";
@@ -37,6 +36,7 @@ export default function MongoPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [editDoc, setEditDoc] = useState<Record<string, unknown> | null>(null);
   const [editDocId, setEditDocId] = useState<string | null>(null);
+  const [showEditors, setShowEditors] = useState<boolean>(false);
 
   const canSearch = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
 
@@ -203,6 +203,15 @@ export default function MongoPage() {
         <h1 style={{ margin: 0 }}>Mongo</h1>
         {collectionsLoading && <Spinner size="sm" />}
         {collectionsError && <Chip color="danger" variant="flat">Ошибка загрузки коллекций</Chip>}
+        {selectedInfo && (
+          <>
+            {typeof selectedInfo.count === 'number' && <Chip variant="bordered">docs: {formatNumber(selectedInfo.count)}</Chip>}
+            {typeof selectedInfo.sizeBytes === 'number' && <Chip variant="bordered">data: {formatBytes(selectedInfo.sizeBytes)}</Chip>}
+            {typeof selectedInfo.storageBytes === 'number' && <Chip variant="bordered">storage: {formatBytes(selectedInfo.storageBytes)}</Chip>}
+            {typeof selectedInfo.totalIndexBytes === 'number' && <Chip variant="bordered">indexes: {formatBytes(selectedInfo.totalIndexBytes)}</Chip>}
+          </>
+        )}
+        {docs && <Chip color="success" variant="flat">результаты: {docs.length}</Chip>}
         {searching && <Chip color="primary" variant="flat">Выполняю запрос...</Chip>}
         {typeof durationMs === "number" && !searching && (
           <Chip variant="flat">{Math.round(durationMs)} ms</Chip>
@@ -221,26 +230,35 @@ export default function MongoPage() {
           loading={collectionsLoading}
           selectedCollection={selectedCollection}
           onSelect={setSelectedCollection}
+          onExportJson={() => handleExport('json')}
+          onExportNdjson={() => handleExport('ndjson')}
+          canExport={canSearch}
         />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={{ display: "flex", gap: 12 }}>
-            <Input
-              label="Поиск (lastName, firstName, username)"
-              value={searchText}
-              onValueChange={setSearchText}
-              placeholder="Введите строку для поиска"
-              onKeyDown={(e) => { if ((e as any).key === 'Enter') { e.preventDefault(); handleFind(); } }}
-            />
+          <div style={{ display: "flex", gap: 12, alignItems: "end" }}>
+            <div style={{ flex: 1 }}>
+              <Input
+                label="Поиск (lastName, firstName, username)"
+                value={searchText}
+                onValueChange={setSearchText}
+                placeholder="Введите строку для поиска"
+                onKeyDown={(e) => { if ((e as any).key === 'Enter') { e.preventDefault(); handleFind(); } }}
+              />
+            </div>
+            <Dropdown>
+              <DropdownTrigger>
+                <Button variant="flat">Быстрые запросы</Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Быстрые запросы">
+                <DropdownItem key="byUsername" onPress={() => runQuickUserQuery({ username: { $regex: searchText.trim(), $options: 'i' } })}>Пользователь: username ~</DropdownItem>
+                <DropdownItem key="byFio" onPress={() => runQuickUserQuery({ $or: [ { lastName: { $regex: searchText.trim(), $options: 'i' } }, { firstName: { $regex: searchText.trim(), $options: 'i' } } ] })}>Пользователь: ФИО ~</DropdownItem>
+                <DropdownItem key="byGraphKGTU" onPress={() => runQuickUserQuery({ graphSubs: { $elemMatch: { graphId: KGTU_GRAPH_ID } } })}>Подписчики КГТУ</DropdownItem>
+                <DropdownItem key="byGraphKBK" onPress={() => runQuickUserQuery({ graphSubs: { $elemMatch: { graphId: KBK_GRAPH_ID } } })}>Подписчики КБК</DropdownItem>
+                <DropdownItem key="recent" onPress={() => runQuickUserQuery({})}>Все пользователи</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
-
-          <UserQuickQueries
-            userCollectionName={userCollectionName}
-            searchText={searchText}
-            onRun={runQuickUserQuery}
-            KGTU_GRAPH_ID={KGTU_GRAPH_ID}
-            KBK_GRAPH_ID={KBK_GRAPH_ID}
-          />
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
             <Input
@@ -265,52 +283,43 @@ export default function MongoPage() {
               <Button color="primary" onPress={handleFind} isDisabled={!canSearch || searching}>
                 Найти
               </Button>
-              <Button variant="flat" onPress={() => handleExport('json')} isDisabled={!canSearch}>Скачать JSON</Button>
-              <Button variant="flat" onPress={() => handleExport('ndjson')} isDisabled={!canSearch}>Скачать NDJSON</Button>
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "end" }}>
+              <Button variant="flat" onPress={handlePrevPage} isDisabled={skip === 0 || searching}>Prev</Button>
+              <Button variant="flat" onPress={handleNextPage} isDisabled={searching}>Next</Button>
+              <Button variant="flat" onPress={() => setShowEditors((v) => !v)}>
+                {showEditors ? 'Скрыть JSON' : 'Показать JSON'}
+              </Button>
             </div>
           </div>
 
-          {selectedInfo && (
-            <CollectionStatsPanel info={selectedInfo} />
-          )}
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Textarea
-              label="Query JSON"
-              minRows={6}
-              value={queryText}
-              onValueChange={setQueryText}
-              placeholder='{"_id":"652f7f6a2c9f8d44f0c1a123"}'
-            />
+          {showEditors && (
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <Textarea
-                label="Sort JSON"
+                label="Query JSON"
                 minRows={6}
-                value={sortText}
-                onValueChange={setSortText}
-                placeholder='{"createdAt": -1}'
+                value={queryText}
+                onValueChange={setQueryText}
+                placeholder='{"_id":"652f7f6a2c9f8d44f0c1a123"}'
               />
-              <Textarea
-                label="Projection JSON"
-                minRows={6}
-                value={projectionText}
-                onValueChange={setProjectionText}
-                placeholder='{"password": 0}'
-              />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <Textarea
+                  label="Sort JSON"
+                  minRows={6}
+                  value={sortText}
+                  onValueChange={setSortText}
+                  placeholder='{"createdAt": -1}'
+                />
+                <Textarea
+                  label="Projection JSON"
+                  minRows={6}
+                  value={projectionText}
+                  onValueChange={setProjectionText}
+                  placeholder='{"password": 0}'
+                />
+              </div>
             </div>
-          </div>
-
-          <div style={{ display: "flex", gap: 8 }}>
-            <Button variant="flat" onPress={handlePrevPage} isDisabled={skip === 0 || searching}>Prev</Button>
-            <Button variant="flat" onPress={handleNextPage} isDisabled={searching}>Next</Button>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Chip variant="bordered">skip: {skip}</Chip>
-            <Chip variant="bordered">limit: {limit}</Chip>
-            {docs && <Chip color="success" variant="flat">docs: {docs.length}</Chip>}
-            {resultsError && <Chip color="danger" variant="flat">{resultsError}</Chip>}
-          </div>
+          )}
 
           <div style={{ border: "1px solid var(--border-color, #e5e7eb)", borderRadius: 8, padding: 12, minHeight: 160 }}>
             {searching ? (
@@ -318,7 +327,7 @@ export default function MongoPage() {
                 <Spinner size="sm" /> Загрузка...
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, maxHeight: 420, overflow: "auto" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, maxHeight: 475, overflow: "auto" }}>
                 {(docs ?? []).map((doc, i) => {
                   const id = extractId((doc as any)?._id) || String((doc as any)?._id || '');
                   return (
