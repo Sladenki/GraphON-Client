@@ -4,9 +4,10 @@ import React, { useMemo, useState } from "react";
 
 type Props = {
   value: unknown;
+  compact?: boolean; // если true, используем более плотное отображение
 };
 
-export default function JsonPretty({ value }: Props) {
+export default function JsonPretty({ value, compact = true }: Props) {
   const [wrap, setWrap] = useState<boolean>(false);
   const text = useMemo(() => {
     try {
@@ -104,13 +105,18 @@ export default function JsonPretty({ value }: Props) {
     return nodes;
   };
 
+  const fontSize = compact ? 11 : 12;
+  const lineHeight = compact ? 1.4 : 1.5;
+  const cellPad = compact ? '1px 6px' : '2px 8px';
+  const radius = compact ? 6 : 8;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: compact ? 6 : 8 }}>
       <div style={{
-        border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'auto',
+        border: '1px solid #e5e7eb', borderRadius: radius, overflow: 'auto',
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-        fontSize: 12,
-        lineHeight: 1.5,
+        fontSize,
+        lineHeight,
       }}>
         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
           <tbody>
@@ -120,14 +126,14 @@ export default function JsonPretty({ value }: Props) {
                   userSelect: 'none',
                   textAlign: 'right',
                   verticalAlign: 'top',
-                  padding: '2px 8px',
+                  padding: cellPad,
                   color: '#6b7280',
                   borderRight: '1px solid #e5e7eb',
                   width: 1,
                   whiteSpace: 'nowrap',
                 }}>{idx + 1}</td>
                 <td style={{
-                  padding: '2px 8px',
+                  padding: cellPad,
                   whiteSpace: wrap ? 'pre-wrap' : 'pre',
                   wordBreak: wrap ? 'break-word' : 'normal',
                 }}>
