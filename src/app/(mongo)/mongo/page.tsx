@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Input, Textarea, Spinner, Chip } from "@heroui/react";
 import { toast } from "sonner";
@@ -14,6 +12,7 @@ import JsonPretty from "./components/JsonPretty";
 import EditDocDialog from "./components/EditDocDialog";
 import { useMongoExport } from "./hooks/useMongoExport";
 import UserQuickQueries from "./components/UserQuickQueries";
+import { buildExportParams } from "./utils/export";
 
 const DB_NAME = "test"; // всегда используем test по требованию
 const KGTU_GRAPH_ID = "67a499dd08ac3c0df94d6ab7";
@@ -129,13 +128,19 @@ export default function MongoPage() {
     }, 0);
   }, [handleFind, userCollectionName]);
 
-  const buildExportParams = useCallback(() => {
+  
+
+  const { exportCollection } = useMongoExport(DB_NAME);
+
+  const handleExport = useCallback(async (fmt: 'json' | 'ndjson') => {
+    if (!selectedCollection) { toast.error('Выберите коллекцию'); return; }
+
     const qp = safeParseJson<Record<string, unknown>>(queryText);
-    if (!qp.ok) { toast.error(`Ошибка в JSON запроса: ${qp.error}`); return null; }
+    if (!qp.ok) { toast.error(`Ошибка в JSON запроса: ${qp.error}`); return; }
     const sp = safeParseJson<Record<string, 1 | -1>>(sortText);
-    if (!sp.ok) { toast.error(`Ошибка в JSON сортировки: ${sp.error}`); return null; }
+    if (!sp.ok) { toast.error(`Ошибка в JSON сортировки: ${sp.error}`); return; }
     const pp = safeParseJson<Record<string, 0 | 1>>(projectionText);
-    if (!pp.ok) { toast.error(`Ошибка в JSON проекции: ${pp.error}`); return null; }
+    if (!pp.ok) { toast.error(`Ошибка в JSON проекции: ${pp.error}`); return; }
 
     const baseQuery = qp.value || {};
     const trimmed = searchText.trim();
@@ -150,23 +155,15 @@ export default function MongoPage() {
       ? (Object.keys(baseQuery).length ? { $and: [baseQuery, searchQuery] } : searchQuery)
       : baseQuery;
 
-    const params = new URLSearchParams();
-    params.set('format', 'json');
-    if (finalQuery && Object.keys(finalQuery).length) params.set('query', JSON.stringify(finalQuery));
-    if (sp.value && Object.keys(sp.value).length) params.set('sort', JSON.stringify(sp.value));
-    if (pp.value && Object.keys(pp.value).length) params.set('projection', JSON.stringify(pp.value));
-    if (Number.isFinite(limit) && limit > 0) params.set('limit', String(limit));
-    return params;
-  }, [limit, projectionText, queryText, searchText, sortText]);
+    const params = buildExportParams({
+      query: finalQuery,
+      sort: sp.value || {},
+      projection: pp.value || {},
+      limit: Number.isFinite(limit) && limit > 0 ? limit : undefined,
+    });
 
-  const { exportCollection } = useMongoExport(DB_NAME);
-
-  const handleExport = useCallback(async (fmt: 'json' | 'ndjson') => {
-    if (!selectedCollection) { toast.error('Выберите коллекцию'); return; }
-    const params = buildExportParams();
-    if (!params) return;
     await exportCollection(selectedCollection, params, fmt);
-  }, [buildExportParams, exportCollection, selectedCollection]);
+  }, [exportCollection, selectedCollection, queryText, sortText, projectionText, searchText, limit]);
 
   const handleAskDelete = useCallback((id: string) => {
     setConfirmPayload({ mode: 'delete', id });
