@@ -17,7 +17,14 @@ export default function JsonPretty({ value, compact = true }: Props) {
     }
   }, [value]);
 
-  const lines = useMemo(() => text.split("\n"), [text]);
+  const lines = useMemo(() => {
+    const raw = text.split("\n");
+    if (raw.length >= 2 && raw[0].trim() === '{' && raw[raw.length - 1].trim() === '}') {
+      const inner = raw.slice(1, -1).map((l) => (l.startsWith('  ') ? l.slice(2) : l));
+      return inner;
+    }
+    return raw;
+  }, [text]);
 
   const highlightLine = (line: string) => {
     const nodes: React.ReactNode[] = [];
