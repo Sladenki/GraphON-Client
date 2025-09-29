@@ -14,7 +14,7 @@ import { buildExportParams } from "./utils/export";
 import CollectionsSidebar from "./components/CollectionsSidebar";
 import { formatBytes, formatNumber } from "./utils/format";
 
-const DB_NAME = "test"; // всегда используем test по требованию
+const DB_NAME = process.env.NEXT_PUBLIC_MONGO_DB_NAME || "test";
 const KGTU_GRAPH_ID = "67a499dd08ac3c0df94d6ab7";
 const KBK_GRAPH_ID = "6896447465255a1c4ed48eaf";
 
