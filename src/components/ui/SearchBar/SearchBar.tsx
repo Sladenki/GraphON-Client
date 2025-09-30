@@ -108,7 +108,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
       {/* Основная строка поиска */}
       <div className={styles.searchInputWrapper}>
         <div className={`${styles.searchInput} ${isFocused ? styles.focused : ''}`}>
-          <Search className={styles.searchIcon} size={20} />
+          <Search 
+            className={`${styles.searchIcon} ${isFocused ? styles.searchIconFocused : ''}`} 
+            size={20} 
+          />
           
           <input
             ref={searchInputRef}
