@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react'
+import Link from 'next/link'
 
 import styles from './Sidebar.module.scss'
 
@@ -15,7 +16,7 @@ import RenderMenuList from './RenderMenuList/RenderMenuList';
 const Sidebar: React.FC<{}> = ({}) => {
 
   const small = useMediaQuery('(max-width: 1000px)')
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   // Определяем доступ к управлению: если у пользователя есть непустой список managed_graph_id
   const hasManageAccess = (() => {
     if (!user) return false;
@@ -58,6 +59,24 @@ const Sidebar: React.FC<{}> = ({}) => {
         
       {/* @ts-expect-error типизация */}
       <RenderMenuList arrayItems={computedItems} small={small}  />
+
+      {/* Футер с кнопкой входа - только на ПК и для неавторизованных */}
+      {!small && !isLoggedIn && (
+        <div className={styles.footer}>
+          <Link href="/signIn" className={styles.signInLink}>
+            Войти в аккаунт
+          </Link>
+        </div>
+      )}
+
+      {/* Информация о пользователе - только на ПК и для авторизованных */}
+      {!small && isLoggedIn && (
+        <div className={styles.footer}>
+          <div className={styles.userInfo}>
+            Привет, {user?.username || 'пользователь'}!
+          </div>
+        </div>
+      )}
 
     </div>
   )

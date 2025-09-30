@@ -4,6 +4,27 @@
     margin-bottom: 25px;
     display: flex;
     flex-direction: column;
-    gap: 8px;        
-
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 300px); // Оставляем место для заголовка и футера
+    padding-right: 8px;
+    
+    // Стилизация скроллбара
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: rgba(var(--main-Color), 0.2);
+        border-radius: 3px;
+        
+        &:hover {
+            background: rgba(var(--main-Color), 0.3);
+        }
+    }
 }

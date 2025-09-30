@@ -3,6 +3,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: calc(100vh - 50px);
+    justify-content: space-between;
+    padding-bottom: 20px;
 }
 
 .projectTitle {
@@ -22,6 +25,7 @@
     margin-bottom: 30px;
     text-shadow: 0 2px 4px rgba(150, 130, 238, 0.2);
     animation: fadeInUp 0.6s ease-out;
+    flex-shrink: 0; // Предотвращаем сжатие заголовка
 }
 
 @keyframes fadeInUp {
@@ -105,6 +109,77 @@
                 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
         }
     }
+}
+
+// Футер для кнопки входа и информации о пользователе
+.footer {
+  width: 100%;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+  flex-shrink: 0; // Предотвращаем сжатие футера
+}
+
+.signInLink {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(var(--main-Color), 0.1);
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 12px;
+  text-decoration: none;
+  color: rgb(var(--main-Color));
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(var(--main-Color), 0.1);
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.userInfo {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--main-text);
+  text-align: center;
+  padding: 8px 12px;
+  background: rgba(var(--main-Color), 0.05);
+  border: 1px solid rgba(var(--main-Color), 0.1);
+  border-radius: 8px;
+  width: 100%;
+}
+
+// Темная тема для футера
+html[data-theme="dark"] {
+  .signInLink {
+    background: rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.3);
+    color: rgb(var(--main-Color));
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.2);
+    }
+  }
+
+  .userInfo {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.15);
+    color: var(--main-text);
+  }
 }
 
 

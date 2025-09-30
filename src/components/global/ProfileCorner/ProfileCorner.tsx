@@ -15,11 +15,7 @@ const ProfileCorner = () => {
 
     return (
         <>
-            {user ? (
-                <ProfileUser user={user} />
-            ) : (
-                <LoginButton />
-            )}
+            {user &&  <ProfileUser user={user} />}
         </>
     );
 };
