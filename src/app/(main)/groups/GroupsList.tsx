@@ -34,50 +34,26 @@ export default function GroupsList() {
     true
   )
 
-  // Статический список доступных тегов (из требований)
-  const staticTags: SearchTag[] = [
-    { _id: '1', name: 'Самоуправление' },
-    { _id: '2', name: 'Отряды' },
-    { _id: '3', name: 'Волонтерство' },
-    { _id: '4', name: 'Творчество' },
-    { _id: '5', name: 'Спорт' },
-    { _id: '6', name: 'Медиа' },
-    { _id: '7', name: 'Наука' },
-    { _id: '8', name: 'Литература' },
-    { _id: '9', name: 'Трудоустройство' },
-    { _id: '10', name: 'Военно-патриотизм' }
-  ]
-
   // Извлекаем доступные теги из данных групп (из parentGraphId.name)
-  const dataTags: SearchTag[] = React.useMemo(() => {
+  const availableTags: SearchTag[] = React.useMemo(() => {
     const tagMap = new Map<string, SearchTag>()
     
     allGraphs.forEach((graph: IGraphList) => {
       const parentGraph = (graph as any).parentGraphId
       if (parentGraph && typeof parentGraph === 'object' && parentGraph.name) {
-        // Используем _id родительского графа как ID тега
+        // Используем название как ключ для избежания дублирования
+        const tagKey = parentGraph.name.toLowerCase().trim()
         const tagId = parentGraph._id || parentGraph.name.toLowerCase().replace(/\s+/g, '_')
-        tagMap.set(tagId, { _id: tagId, name: parentGraph.name })
+        tagMap.set(tagKey, { _id: tagId, name: parentGraph.name })
       }
     })
     
     const tags = Array.from(tagMap.values()).sort((a, b) => a.name.localeCompare(b.name))
-    console.log('Extracted tags from data:', tags)
+    console.log('Available tags:', tags)
+    console.log('Total groups processed:', allGraphs.length)
+    console.log('Unique parentGraph names found:', tagMap.size)
     return tags
   }, [allGraphs])
-
-  // Объединяем статические теги с тегами из данных
-  const availableTags: SearchTag[] = React.useMemo(() => {
-    const tagMap = new Map<string, SearchTag>()
-    
-    // Добавляем статические теги
-    staticTags.forEach(tag => tagMap.set(tag._id, tag))
-    
-    // Добавляем теги из данных (перезаписывают статические если есть конфликт)
-    dataTags.forEach(tag => tagMap.set(tag._id, tag))
-    
-    return Array.from(tagMap.values()).sort((a, b) => a.name.localeCompare(b.name))
-  }, [dataTags])
 
   // Используем хук для поиска и фильтрации
   const {
