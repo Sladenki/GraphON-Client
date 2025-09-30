@@ -4,6 +4,10 @@ export interface IGraphList {
     isSubscribed: boolean
     imgPath: string
     about?: string
+    tags?: Array<{
+        _id: string
+        name: string
+    }>
 }
 
 export interface CreateGraphDto {

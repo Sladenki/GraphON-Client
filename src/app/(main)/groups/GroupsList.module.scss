@@ -6,6 +6,28 @@
   min-height: 200px;
 }
 
+.searchSection {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(var(--main-Color), 0.1);
+  margin-bottom: 20px;
+}
+
+.searchResults {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--main-text);
+  opacity: 0.7;
+  text-align: center;
+}
+
+.emptyStateWrapper {
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
 .loader {
   display: flex;
   justify-content: center;
@@ -78,6 +100,21 @@
 @media (max-width: 768px) {
   .container {
     padding: 0 12px;
+  }
+
+  .searchSection {
+    padding: 16px 0;
+    margin-bottom: 16px;
+  }
+
+  .searchResults {
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  .emptyStateWrapper {
+    padding: 20px;
+    min-height: 200px;
   }
 
   .grid {
