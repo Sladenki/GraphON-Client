@@ -1,0 +1,128 @@
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  min-height: 200px;
+}
+
+.adBanner {
+  margin-bottom: 16px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.eventCard {
+  width: 100%;
+  animation: fadeIn 0.4s ease-out forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  gap: 16px;
+}
+
+.errorIcon {
+  font-size: 48px;
+}
+
+.errorText {
+  font-size: 18px;
+  color: var(--main-text);
+  font-weight: 500;
+}
+
+.retryButton {
+  padding: 12px 24px;
+  background: rgb(var(--main-Color));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.9);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  .eventsList {
+    gap: 16px;
+    padding: 16px 0;
+  }
+
+  .adBanner {
+    margin-bottom: 12px;
+  }
+
+  .error {
+    padding: 20px;
+  }
+
+  .errorIcon {
+    font-size: 36px;
+  }
+
+  .errorText {
+    font-size: 16px;
+  }
+
+  .retryButton {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .eventsList {
+    gap: 12px;
+    padding: 12px 0;
+  }
+}
+
+// Отключение анимаций для пользователей с prefers-reduced-motion
+@media (prefers-reduced-motion: reduce) {
+  .eventCard {
+    animation: none;
+  }
+}
