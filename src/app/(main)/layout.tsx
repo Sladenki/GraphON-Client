@@ -3,6 +3,7 @@
 import Sidebar from "@/components/global/Sidebar/Sidebar";
 import styles from './layout.module.scss'
 import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
+import MobileDrawer from "@/components/global/MobileDrawer/MobileDrawer";
 import { AllProvers } from "@/providers/main";
 import type { Metadata } from 'next';
 import { inter, orbitron } from "@/app/fonts";
@@ -32,24 +33,34 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <div className={styles.wrapper}>
               <AllProvers>
 
-                
-                {/* Sidebar */}
-                <div className={styles.sidebar}>
-                  <Sidebar/>
-                </div>
-                
-                {/* Основная страница */}
-                <div className={styles.main}>
-                  <div className={styles.content}>
-                    {children}
-                  </div>
-                </div>
-                
-                {/* Ава в углу */}
-                {!small && (
-                  <div className={styles.profileCorner}>
-                    <ProfileCorner/>
-                  </div>
+                {/* Mobile Drawer - только для мобильных */}
+                {small ? (
+                  <MobileDrawer>
+                    <div className={styles.main}>
+                      <div className={styles.content}>
+                        {children}
+                      </div>
+                    </div>
+                  </MobileDrawer>
+                ) : (
+                  <>
+                    {/* Sidebar - только для десктопа */}
+                    <div className={styles.sidebar}>
+                      <Sidebar/>
+                    </div>
+                    
+                    {/* Основная страница */}
+                    <div className={styles.main}>
+                      <div className={styles.content}>
+                        {children}
+                      </div>
+                    </div>
+                    
+                    {/* Ава в углу */}
+                    <div className={styles.profileCorner}>
+                      <ProfileCorner/>
+                    </div>
+                  </>
                 )}
 
                 <div className={styles.BottomMenu}>

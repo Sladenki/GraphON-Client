@@ -79,6 +79,35 @@
 .sidebar{
   display: none;
 }
+
+// Стили для мобильного контента внутри MobileDrawer
+.main {
+  width: 100%;
+  min-height: 100vh;
+  
+  .content {
+    background-color: var(--block-color);
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    
+    // Стилизация скроллбара для мобильных
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(var(--main-Color), 0.2);
+      border-radius: 2px;
+    }
+  }
+}
 }
 
 

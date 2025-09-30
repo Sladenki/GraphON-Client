@@ -1,0 +1,414 @@
+// MobileDrawer стили
+.openButton {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 3001; // Выше drawer
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(var(--main-Color), 0.1);
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: rgb(var(--main-Color));
+  opacity: 1;
+  transform: scale(1);
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.15);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  // Скрываем на десктопе
+  @media (min-width: 1000px) {
+    display: none;
+  }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2999; // Ниже drawer, но выше BottomMenu
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &.animating {
+    opacity: 1;
+  }
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 85vw;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(var(--main-Color), 0.1);
+  z-index: 3000; // Увеличиваем z-index чтобы быть выше BottomMenu (2000)
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+
+  &.open {
+    transform: translateX(0);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid rgba(var(--main-Color), 0.1);
+  background: rgba(var(--main-Color), 0.02);
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  h2 {
+    font-family: var(--font-orbitron), 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgb(var(--main-Color));
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+}
+
+.beta {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: rgba(var(--main-Color), 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(var(--main-Color), 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.closeButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(var(--main-Color), 0.1);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: rgb(var(--main-Color));
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.15);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.menu {
+  flex: 1;
+  padding: 20px 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--main-Color), 0.3) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(var(--main-Color), 0.3);
+    border-radius: 2px;
+  }
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: var(--main-text);
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.05);
+    color: rgb(var(--main-Color));
+  }
+
+  &:active {
+    background: rgba(var(--main-Color), 0.1);
+  }
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(var(--main-Color), 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.menuTitle {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.footer {
+  padding: 20px;
+  border-top: 1px solid rgba(var(--main-Color), 0.1);
+  background: rgba(var(--main-Color), 0.02);
+}
+
+.userInfo {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--main-text);
+  margin: 0;
+  opacity: 0.8;
+}
+
+.signInLink {
+  display: block;
+  padding: 12px 16px;
+  background: rgba(var(--main-Color), 0.1);
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 8px;
+  text-decoration: none;
+  color: rgb(var(--main-Color));
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.15);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.content {
+  min-height: 100vh;
+}
+
+// Темная тема
+html[data-theme="dark"] {
+  .openButton {
+    background: rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.2);
+    }
+  }
+
+  .drawer {
+    background: rgba(40, 40, 40, 0.95);
+    border-right-color: rgba(var(--main-Color), 0.2);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .overlay {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .header {
+    background: rgba(var(--main-Color), 0.03);
+    border-bottom-color: rgba(var(--main-Color), 0.15);
+  }
+
+  .footer {
+    background: rgba(var(--main-Color), 0.03);
+    border-top-color: rgba(var(--main-Color), 0.15);
+  }
+
+  .menuItem {
+    color: var(--main-text);
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.08);
+      color: rgb(var(--main-Color));
+    }
+
+    &:active {
+      background: rgba(var(--main-Color), 0.12);
+    }
+  }
+
+  .iconWrapper {
+    background: rgba(var(--main-Color), 0.12);
+  }
+
+  .menuTitle {
+    color: var(--main-text);
+  }
+
+  .userInfo {
+    color: var(--main-text);
+  }
+
+  .signInLink {
+    background: rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.3);
+    color: rgb(var(--main-Color));
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.2);
+    }
+  }
+}
+
+// Альтернативная поддержка через prefers-color-scheme
+@media (prefers-color-scheme: dark) {
+  .openButton {
+    background: rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.2);
+    }
+  }
+
+  .drawer {
+    background: rgba(40, 40, 40, 0.95);
+    border-right-color: rgba(var(--main-Color), 0.2);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .overlay {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .header {
+    background: rgba(var(--main-Color), 0.03);
+    border-bottom-color: rgba(var(--main-Color), 0.15);
+  }
+
+  .footer {
+    background: rgba(var(--main-Color), 0.03);
+    border-top-color: rgba(var(--main-Color), 0.15);
+  }
+
+  .menuItem {
+    color: var(--main-text);
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.08);
+      color: rgb(var(--main-Color));
+    }
+
+    &:active {
+      background: rgba(var(--main-Color), 0.12);
+    }
+  }
+
+  .iconWrapper {
+    background: rgba(var(--main-Color), 0.12);
+  }
+
+  .menuTitle {
+    color: var(--main-text);
+  }
+
+  .userInfo {
+    color: var(--main-text);
+  }
+
+  .signInLink {
+    background: rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.3);
+    color: rgb(var(--main-Color));
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.2);
+    }
+  }
+}
+
+// Анимации для мобильных устройств
+@media (hover: none) {
+  .openButton {
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .closeButton {
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .menuItem {
+    &:hover {
+      background: none;
+    }
+
+    &:active {
+      background: rgba(var(--main-Color), 0.1);
+    }
+  }
+
+  .signInLink {
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
