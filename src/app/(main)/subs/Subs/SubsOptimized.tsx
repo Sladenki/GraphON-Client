@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/StateComponents';
 import { useSubsOptimized } from './useSubsOptimized';
 import { useAuth } from '@/providers/AuthProvider';
-import VirtualizedEventsList from '../EventsList/VirtualizedEventsList';
+import VirtualizedEventsList from '../../events/EventsList/VirtualizedEventsList';
 import { useSearchQuery } from '@/stores/useUIStore';
 import styles from './Subs.module.scss';
 
