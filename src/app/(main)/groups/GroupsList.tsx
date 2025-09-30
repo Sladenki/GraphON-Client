@@ -48,13 +48,23 @@ export default function GroupsList() {
     { _id: '10', name: 'Военно-патриотизм' }
   ]
 
-  // Извлекаем доступные теги из данных групп
-  const dataTags: SearchTag[] = extractTagsFromData(
-    allGraphs,
-    'tags',
-    '_id',
-    'name'
-  )
+  // Извлекаем доступные теги из данных групп (из parentGraphId.name)
+  const dataTags: SearchTag[] = React.useMemo(() => {
+    const tagMap = new Map<string, SearchTag>()
+    
+    allGraphs.forEach((graph: IGraphList) => {
+      const parentGraph = (graph as any).parentGraphId
+      if (parentGraph && typeof parentGraph === 'object' && parentGraph.name) {
+        // Используем _id родительского графа как ID тега
+        const tagId = parentGraph._id || parentGraph.name.toLowerCase().replace(/\s+/g, '_')
+        tagMap.set(tagId, { _id: tagId, name: parentGraph.name })
+      }
+    })
+    
+    const tags = Array.from(tagMap.values()).sort((a, b) => a.name.localeCompare(b.name))
+    console.log('Extracted tags from data:', tags)
+    return tags
+  }, [allGraphs])
 
   // Объединяем статические теги с тегами из данных
   const availableTags: SearchTag[] = React.useMemo(() => {
@@ -81,8 +91,9 @@ export default function GroupsList() {
   } = useSearchWithTags({
     data: allGraphs,
     searchFields: ['name', 'about'],
-    tagField: 'tags',
-    tagIdField: '_id'
+    tagField: 'parentGraphId',
+    tagIdField: '_id',
+    tagNameField: 'name'
   })
 
   // Обработчики PopUp

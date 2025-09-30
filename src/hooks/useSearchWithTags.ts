@@ -8,6 +8,7 @@ export interface UseSearchWithTagsOptions<T> {
   searchFields: (keyof T)[]
   tagField?: keyof T
   tagIdField?: keyof T
+  tagNameField?: keyof T
   initialQuery?: string
   initialSelectedTags?: string[]
 }
@@ -29,6 +30,7 @@ export function useSearchWithTags<T>({
   searchFields,
   tagField,
   tagIdField = '_id' as keyof T,
+  tagNameField = 'name' as keyof T,
   initialQuery = '',
   initialSelectedTags = []
 }: UseSearchWithTagsOptions<T>): UseSearchWithTagsReturn<T> {
@@ -68,6 +70,10 @@ export function useSearchWithTags<T>({
         } else if (typeof itemTags === 'string') {
           // Если тег - это строка (ID тега)
           return selectedTags.includes(itemTags)
+        } else if (typeof itemTags === 'object' && itemTags !== null) {
+          // Если тег - это объект (например, parentGraphId)
+          const tagId = (itemTags as any)[tagIdField as string]
+          return selectedTags.includes(tagId)
         }
         return false
       })
