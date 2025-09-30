@@ -8,8 +8,6 @@ import type { Metadata } from 'next';
 import { inter, orbitron } from "@/app/fonts";
 import '../../styles/globals.scss'
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import Script from "next/script";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
 import ProfileCorner from "@/components/global/ProfileCorner/ProfileCorner";
@@ -25,28 +23,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="ru" className={`${inter.variable} ${orbitron.variable}`}>
       <head>
         <title>GraphON</title>
-
-         {/* Подключаем Google Analytics только если есть ID */}
-         {/* {process.env.NEXT_PUBLIC_GA_ID && (
-          <>
-                          
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-
-                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
-                  page_path: window.location.pathname,
-                });
-              `}
-            </Script>
-          </>
-        )} */}
       </head>
       <body className={inter.className}>
         <Providers>
@@ -65,8 +41,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 {/* Основная страница */}
                 <div className={styles.main}>
                   <div className={styles.content}>
-                    {/* Добавляем компонент для отслеживания переходов */}
-                    {/* <GoogleAnalytics />  */}
                     {children}
                   </div>
                 </div>

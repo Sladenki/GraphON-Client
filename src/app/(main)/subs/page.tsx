@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useAuth } from '@/providers/AuthProvider';
 
-const Subs = dynamic(() => import('../(page)/Subs/SubsOptimized'), { ssr: false });
+const Subs = dynamic(() => import('./Subs/SubsOptimized'), { ssr: false });
 
 export default function SubsPage() {
   const { user } = useAuth();
