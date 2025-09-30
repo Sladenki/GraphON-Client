@@ -1,83 +1,86 @@
 // Больше 1000px
 @media only screen and (min-width: 1000px) {
-    .wrapper{
-      height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 4.5fr;
-      overflow: hidden;
-      
-      // Основной контент
-      .main {
-        display: flex;
-        flex-direction: row;
+  .wrapper{
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 4.5fr;
+    overflow: hidden;
+    
+    // Основной контент
+    .main {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      padding: 0 0 0 4%;
+      position: relative;
+
+      .content {
+        background-color: var(--block-color);
         width: 100%;
-        padding: 0 0 0 4%;
-        position: relative;
-  
-        .content {
-          background-color: var(--block-color);
-          width: 100%;
-          height: 100vh;
-          overflow-y: auto;
-          border-radius: 60px 0 0 60px;
-          box-shadow: -16px 0px 28px 0px rgba(var(--main-Color), 0.03);
-          display: flex;
-          flex-direction: column;
+        height: 100vh;
+        overflow-y: auto;
+        border-radius: 60px 0 0 60px;
+        box-shadow: -16px 0px 28px 0px rgba(var(--main-Color), 0.03);
+        display: flex;
+        flex-direction: column;
+        
+        // Стилизация скроллбара
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+          background: rgba(var(--main-Color), 0.1);
+          border-radius: 4px;
           
-          // Стилизация скроллбара
-          &::-webkit-scrollbar {
-            width: 8px;
-          }
-          
-          &::-webkit-scrollbar-track {
-            background: transparent;
-          }
-          
-          &::-webkit-scrollbar-thumb {
-            background: rgba(var(--main-Color), 0.1);
-            border-radius: 4px;
-            
-            &:hover {
-              background: rgba(var(--main-Color), 0.2);
-            }
+          &:hover {
+            background: rgba(var(--main-Color), 0.2);
           }
         }
       }
-  
-      .profileCorner{
-        margin: 10px;
-        margin-right: 15px;
-        position: absolute;
-        top: 0; 
-        right: 0; 
-      }
-  
-      .BottomMenu{
-        display: none;
-      }
     }
+
+    .profileCorner{
+      margin: 10px;
+      margin-right: 15px;
+      position: absolute;
+      top: 0; 
+      right: 0; 
+    }
+
+    .BottomMenu{
+      display: none;
+    }
+  }
 }
-  
+
 // Меньше 1000Px
 @media only screen and (max-width: 1000px) {
-  .wrapper {
-    padding-bottom: 80px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  .BottomMenu{
-    z-index: 2000; // Должно быть выше любых элементов графа/карточек
-    display: block;
-    position: fixed;
-    bottom: 0;
-    width: 100vw;
-    float: none;
-  }
+.wrapper {
+  padding-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-  
-  
-  
-  
-  
+
+.BottomMenu{
+  z-index: 2000; // Должно быть выше любых элементов графа/карточек
+  display: block;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  float: none;
+}
+
+.sidebar{
+  display: none;
+}
+}
+
+
+
+
