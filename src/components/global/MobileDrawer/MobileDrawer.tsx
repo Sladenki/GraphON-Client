@@ -6,6 +6,7 @@ import { useAuth } from '@/providers/AuthProvider'
 import { UserRole } from '@/types/user.interface'
 import { sidebarMobile } from '@/constants/sidebar'
 import { Settings } from 'lucide-react'
+import { useUIStore } from '@/stores/useUIStore'
 import Link from 'next/link'
 import styles from './MobileDrawer.module.scss'
 
@@ -23,6 +24,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
   const isDraggingRef = useRef<boolean>(false)
 
   const { user, isLoggedIn } = useAuth()
+  const { isMobileNavOpen, setMobileNavOpen } = useUIStore()
 
   // Определяем доступ к управлению
   const hasManageAccess = (() => {
@@ -89,6 +91,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
   const openDrawer = () => {
     setIsAnimating(true)
     setIsOpen(true)
+    setMobileNavOpen(true)
     
     // Блокируем скролл body
     document.body.style.overflow = 'hidden'
@@ -101,6 +104,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
   const closeDrawer = () => {
     setIsAnimating(true)
     setIsOpen(false)
+    setMobileNavOpen(false)
     
     // Разблокируем скролл body
     document.body.style.overflow = ''
@@ -129,6 +133,15 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen])
 
+  // Синхронизация с store
+  useEffect(() => {
+    if (isMobileNavOpen && !isOpen) {
+      openDrawer()
+    } else if (!isMobileNavOpen && isOpen) {
+      closeDrawer()
+    }
+  }, [isMobileNavOpen])
+
   // Очистка при размонтировании
   useEffect(() => {
     return () => {
@@ -138,17 +151,6 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
 
   return (
     <>
-      {/* Кнопка открытия - скрывается при открытой панели */}
-      {!isOpen && (
-        <button 
-          className={styles.openButton}
-          onClick={openDrawer}
-          aria-label="Открыть меню"
-        >
-          <Menu size={24} />
-        </button>
-      )}
-
       {/* Overlay */}
       {isOpen && (
         <div 

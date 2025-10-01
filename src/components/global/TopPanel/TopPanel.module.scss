@@ -1,0 +1,199 @@
+.topPanel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--card-background, #ffffff);
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none !important; // убираем нижнюю тень полностью
+
+  @media (max-width: 768px) {
+    padding: 0 16px;
+    height: 56px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 12px;
+    height: 52px;
+  }
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--background-secondary, #f8fafc);
+  border: 1px solid var(--border-light, #f1f5f9);
+  color: rgb(var(--main-Color)); // контрастная иконка, не белая
+  transition: background 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--background-hover, #f1f5f9);
+    transform: translateY(-1px);
+    box-shadow: none;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 480px) {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+}
+
+.logo { display: none; }
+
+.userSection {
+  display: flex;
+  align-items: center;
+}
+
+.userAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--background-secondary, #f8fafc);
+  border: 1px solid var(--border-light, #f1f5f9);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  overflow: hidden;
+
+  &:hover {
+    background: var(--background-hover, #f1f5f9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 480px) {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--background-secondary, #f8fafc);
+  color: var(--text-primary, #1e293b);
+}
+
+.signInButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: var(--primary-color-light, #e0e7ff);
+  color: var(--primary-color, #6366f1);
+  border: 1px solid var(--primary-color-border, #c7d2fe);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background: var(--primary-color, #6366f1);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 6px;
+  }
+}
+
+// Темная тема
+html[data-theme="dark"] {
+  .topPanel {
+    background: var(--card-background, #1e293b);
+    border-color: var(--border-color, #334155);
+  }
+
+  .menuButton {
+    background: var(--background-secondary, #334155);
+    border-color: var(--border-light, #475569);
+    color: rgb(var(--main-Color)); // сохраняем читаемость в темной теме
+
+    &:hover {
+      background: var(--background-hover, #475569);
+    }
+  }
+
+  .logo {
+    h1 {
+      color: var(--text-primary, #f8fafc);
+      background: linear-gradient(135deg, 
+        var(--primary-color, #818cf8) 0%,
+        var(--accent-color, #00ffff) 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .beta {
+      color: var(--text-secondary, #94a3b8);
+      background: var(--background-secondary, #334155);
+      border-color: var(--border-light, #475569);
+    }
+  }
+
+  .userAvatar {
+    background: var(--background-secondary, #334155);
+    border-color: var(--border-light, #475569);
+
+    &:hover {
+      background: var(--background-hover, #475569);
+    }
+  }
+
+  .signInButton {
+    background: var(--primary-color-light, #1e1b4b);
+    color: var(--primary-color, #818cf8);
+    border-color: var(--primary-color-border, #312e81);
+
+    &:hover {
+      background: var(--primary-color, #818cf8);
+      color: white;
+    }
+  }
+}

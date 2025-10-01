@@ -1,39 +1,4 @@
 // MobileDrawer стили
-.openButton {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 3001; // Выше drawer
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(var(--main-Color), 0.1);
-  border: 1px solid rgba(var(--main-Color), 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  color: rgb(var(--main-Color));
-  opacity: 1;
-  transform: scale(1);
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.15);
-    transform: scale(1.05);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  // Скрываем на десктопе
-  @media (min-width: 1000px) {
-    display: none;
-  }
-}
 
 .overlay {
   position: fixed;

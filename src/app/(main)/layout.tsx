@@ -4,6 +4,7 @@ import Sidebar from "@/components/global/Sidebar/Sidebar";
 import styles from './layout.module.scss'
 import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
 import MobileDrawer from "@/components/global/MobileDrawer/MobileDrawer";
+import TopPanel from "@/components/global/TopPanel/TopPanel";
 import { AllProvers } from "@/providers/main";
 import type { Metadata } from 'next';
 import { inter, orbitron } from "@/app/fonts";
@@ -32,6 +33,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
             <div className={styles.wrapper}>
               <AllProvers>
+                {/* Top Panel - только для мобильных */}
+                {small && <TopPanel />}
 
                 {/* Mobile Drawer - только для мобильных */}
                 {small ? (
