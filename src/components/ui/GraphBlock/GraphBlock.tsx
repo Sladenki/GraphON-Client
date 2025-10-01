@@ -150,7 +150,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
             aria-label="Показать информацию"
           >
             <Info size={16} />
-            <span>Инфо</span>
+            <span>Подробнее</span>
           </button>
 
         </footer>
