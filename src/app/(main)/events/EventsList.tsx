@@ -4,7 +4,6 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import EventCard from '@/components/ui/EventCard/EventCard'
-import { AdBanner } from '@/components/ads/banner'
 import { useQueryWithRetry } from '@/hooks/useQueryWithRetry'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useSearchQuery, useSelectedGraphId } from '@/stores/useUIStore'
@@ -108,11 +107,6 @@ export default function EventsList() {
 
   return (
     <div className={styles.container}>
-      {/* Реклама */}
-      <div className={styles.adBanner}>
-        <AdBanner />
-      </div>
-
       {/* Загрузка */}
       {isLoading && (
         <div className={styles.loader}>
