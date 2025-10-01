@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Calendar, Info, Heart, HeartCrack } from "lucide-react";
 import { notifyInfo, notifySuccess } from "@/lib/notifications";
 import { Card, Button } from "@heroui/react";
+import { useRouter } from "next/navigation";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -16,7 +17,6 @@ interface GraphBlockProps {
   imgPath?: string;
   about?: string;
   handleScheduleButtonClick: () => void;
-  handleInfoGraphButtonClick: () => void;
 }
 
 const GraphBlock: React.FC<GraphBlockProps> = ({ 
@@ -25,9 +25,9 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   isSubToGraph, 
   imgPath, 
   about,
-  handleScheduleButtonClick, 
-  handleInfoGraphButtonClick,
+  handleScheduleButtonClick,
 }) => {
+  const router = useRouter();
   const fullImageUrl = useMemo(() => 
     imgPath ? `${BASE_S3_URL}/${imgPath}` : "", 
     [imgPath]
@@ -56,8 +56,8 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
 
   const handleInfoClick = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
-    handleInfoGraphButtonClick();
-  }, [handleInfoGraphButtonClick]);
+    router.push(`/groups/${id}`);
+  }, [router, id]);
 
   const tiltRef = useRef<HTMLDivElement | null>(null);
 

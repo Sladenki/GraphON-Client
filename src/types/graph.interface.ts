@@ -26,12 +26,16 @@ export interface GraphInfo {
   directorName: string;
   directorVkLink?: string;
   vkLink: string;
-  ownerUserId: string;
+  ownerUserId: {
+    _id: string;
+    username?: string;
+  } | string;
   subsNum: number;
   childGraphNum: number;
   imgPath: string;
-  parentGraphId: ParentGraph;
+  parentGraphId?: ParentGraph;
   graphType: string;
   globalGraphId: string;
-  about: string;
+  about?: string;
+  isSubscribed?: boolean;
 }

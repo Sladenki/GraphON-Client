@@ -1,0 +1,257 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  gap: 20px;
+}
+
+.backButton {
+  margin-bottom: 20px;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+.graphCard {
+  background: var(--block-color);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.cardHeader {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.imageSection {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(var(--main-Color), 0.1), rgba(var(--main-Color), 0.05));
+
+  @media (max-width: 768px) {
+    height: 250px;
+  }
+}
+
+.graphImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholderImage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(var(--main-Color), 0.1), rgba(var(--main-Color), 0.05));
+}
+
+.placeholderIcon {
+  font-size: 4rem;
+  opacity: 0.3;
+}
+
+.headerContent {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.titleSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-family: var(--font-orbitron), 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: rgb(var(--main-Color));
+  margin: 0;
+  line-height: 1.2;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.parentChip {
+  width: fit-content;
+  background: rgba(var(--main-Color), 0.1);
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+.subscribeButton {
+  flex-shrink: 0;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-weight: 600;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.cardBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--main-text);
+  margin: 0;
+}
+
+.description {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--main-text);
+  opacity: 0.85;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.divider {
+  background: rgba(var(--main-Color), 0.1);
+  margin: 12px 0;
+}
+
+.infoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(var(--main-Color), 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(var(--main-Color), 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.15);
+  }
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+  }
+}
+
+.infoIcon {
+  color: rgb(var(--main-Color));
+  flex-shrink: 0;
+}
+
+.infoLabel {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--main-text);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.infoValue {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--main-text);
+  flex: 1;
+}
+
+// Темная тема
+html[data-theme="dark"] {
+  .graphCard {
+    background: rgba(30, 30, 30, 0.95);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  .infoItem {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.15);
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.12);
+      border-color: rgba(var(--main-Color), 0.2);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .graphCard {
+    background: rgba(30, 30, 30, 0.95);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  .infoItem {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.15);
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.12);
+      border-color: rgba(var(--main-Color), 0.2);
+    }
+  }
+}
+

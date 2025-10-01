@@ -5,7 +5,6 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import GraphBlock from '@/components/ui/GraphBlock/GraphBlock'
 import SchedulePopUp from '@/components/ui/SchedulePopUp/SchedulePopUp'
-import InfoGraphPopUp from '@/components/ui/InfoGraphPopUp/InfoGraphPopUp'
 import SearchBar, { SearchTag } from '@/components/ui/SearchBar/SearchBar'
 import { useFetchBunchData } from '@/hooks/useFetchBunchData'
 import { useSearchWithTags, extractTagsFromData } from '@/hooks/useSearchWithTags'
@@ -18,7 +17,6 @@ export default function GroupsList() {
   
   // Состояния для PopUp
   const [isScheduleOpen, setIsScheduleOpen] = useState(false)
-  const [isInfoOpen, setIsInfoOpen] = useState(false)
   const [popupGraphId, setPopupGraphId] = useState<string | null>(null)
 
   // Загрузка данных
@@ -78,13 +76,7 @@ export default function GroupsList() {
     setIsScheduleOpen(true)
   }, [])
 
-  const handleInfoClick = useCallback((id: string) => {
-    setPopupGraphId(id)
-    setIsInfoOpen(true)
-  }, [])
-
   const closeSchedule = useCallback(() => setIsScheduleOpen(false), [])
-  const closeInfo = useCallback(() => setIsInfoOpen(false), [])
 
   // Обработчики поиска
   const handleSearch = useCallback((searchQuery: string) => {
@@ -172,7 +164,6 @@ export default function GroupsList() {
                 imgPath={graph.imgPath}
                 about={graph.about}
                 handleScheduleButtonClick={() => handleScheduleClick(graph._id)}
-                handleInfoGraphButtonClick={() => handleInfoClick(graph._id)}
               />
             </div>
           ))}
@@ -185,14 +176,6 @@ export default function GroupsList() {
           graphId={popupGraphId} 
           isSchedulePopupOpen={isScheduleOpen} 
           closeSchedulePopup={closeSchedule} 
-        />
-      )}
-
-      {isInfoOpen && popupGraphId && (
-        <InfoGraphPopUp 
-          graphId={popupGraphId} 
-          isInfoGraphPopupOpen={isInfoOpen} 
-          closeInfoGraphPopup={closeInfo} 
         />
       )}
 
