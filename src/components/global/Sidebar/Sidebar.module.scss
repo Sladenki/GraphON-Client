@@ -1,11 +1,13 @@
 .sidebar{    
-    margin-top: 50px;
+    margin-top: 28px; // Подняли блок немного выше
     display: flex;
     flex-direction: column;
-    align-items: center;
-    min-height: calc(100vh - 50px);
-    justify-content: space-between;
-    padding-bottom: 20px;
+    align-items: center; // возвращаем выравнивание элементов по центру
+    height: calc(100vh - 28px); // строго по вьюпорту
+    padding-bottom: 16px;
+    overflow-y: hidden; // убираем вертикальный скролл
+    overflow-x: visible; // даем тени/капсуле выходить вправо
+    box-sizing: border-box;
 }
 
 .projectTitle {
