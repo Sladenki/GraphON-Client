@@ -88,7 +88,7 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
 
   return (
     <div className={styles.tiltWrap} ref={tiltRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-    <Card className={styles.graphBlock} isPressable>
+    <Card className={styles.graphBlock}>
       <div className={styles.contentWrapper}>
         <div className={styles.imageContainer}>
           {imgPath ? (
