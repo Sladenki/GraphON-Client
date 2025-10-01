@@ -37,6 +37,9 @@ export const sidebar = [
 // --- Для мобилок ---
 export const sidebarMobile = [
   createSidebarItem(1, <House color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Новости', false, '/'),
+  createSidebarItem(4, <Users color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Группы', false, '/groups/'),
+  createSidebarItem(5, <CalendarCheck color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'События', false, '/events/'),
+  createSidebarItem(6, <Heart color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Подписки', true, '/subs/'),
   createSidebarItem(2, <CalendarCheck color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Расписание', true, '/schedule/'),
   // Управление будет добавляться динамически в BottomMenu
   createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Создать', true, '/createPost/'),
