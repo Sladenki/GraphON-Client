@@ -38,6 +38,7 @@ import { useEventCardOptimization } from './useEventCardOptimization';
 import { useDeclensionWord } from "@/hooks/useDeclension";
 import DeleteConfirmPopUp from './DeleteConfirmPopUp/DeleteConfirmPopUp';
 import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
+import { useRouter } from 'next/navigation';
 import styles from './EventCard.module.scss';
 import { linkifyText } from '@/lib/linkify';
 
@@ -318,6 +319,7 @@ const EventCard: React.FC<EventProps> = React.memo(({
   onDelete,
   disableRegistration
 }) => {
+  const router = useRouter();
   const { isLoggedIn, user } = useAuth();
   const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
   const [isAttendeesOpen, setIsAttendeesOpen] = React.useState(false);
@@ -456,13 +458,33 @@ const EventCard: React.FC<EventProps> = React.memo(({
     </Button>
   ), [isLoggedIn, isRegistered, isLoading, handleRegistration, registerButtonStyles, disableRegistration]);
 
+  // Обработчик клика для навигации на страницу события
+  const handleCardClick = (e: React.MouseEvent) => {
+    
+    // Предотвращаем навигацию при клике на кнопки
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('[role="button"]')) {
+      console.log('Click prevented - button clicked');
+      return;
+    }
+    
+    console.log('Navigating to:', `/events/${event._id}`);
+    try {
+      router.push(`/events/${event._id}`);
+      console.log('Navigation successful');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
+  };
+
   // Early return для невалидных данных
   if (!event || !event._id) {
     return null;
   }
 
   return (
-    <Card className={styles.eventCard}>
+    <div className={styles.eventCardWrapper} onClick={handleCardClick}>
+      <Card className={styles.eventCard}>
       {/* Header */}
       <CardHeader className={styles.cardHeader}>
         <div className={styles.headerContent}>
@@ -553,6 +575,7 @@ const EventCard: React.FC<EventProps> = React.memo(({
         eventName={event.name}
       />
     </Card>
+    </div>
   );
 });
 

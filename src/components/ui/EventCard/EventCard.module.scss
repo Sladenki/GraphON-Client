@@ -50,6 +50,21 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 }
 
 // Component Styles - optimized
+.eventCardWrapper {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
 .eventCard {
   max-width: 800px;
   margin: 0 auto;
