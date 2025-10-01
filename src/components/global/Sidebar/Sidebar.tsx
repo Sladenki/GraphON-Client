@@ -69,15 +69,6 @@ const Sidebar: React.FC<{}> = ({}) => {
         </div>
       )}
 
-      {/* Информация о пользователе - только на ПК и для авторизованных */}
-      {!small && isLoggedIn && (
-        <div className={styles.footer}>
-          <div className={styles.userInfo}>
-            Привет, {user?.username || 'пользователь'}!
-          </div>
-        </div>
-      )}
-
     </div>
   )
 }

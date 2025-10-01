@@ -29,3 +29,16 @@
         }
     }
 }
+
+.group{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.divider{
+    height: 1px;
+    background: rgba(var(--main-Color), 0.08);
+    margin: 8px 4px;
+    border-radius: 1px;
+}
