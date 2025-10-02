@@ -130,6 +130,13 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   min-width: 0;
 }
 
+.headerActionsRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
 .graphAvatar {
   width: 48px;
   height: 48px;

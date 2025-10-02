@@ -24,6 +24,7 @@ import {
   UserPlus,
   UserX,
   LogIn,
+  Share2,
   CalendarClock,
   MapPinned,
   UsersRound,
@@ -41,6 +42,7 @@ import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
 import { useRouter } from 'next/navigation';
 import styles from './EventCard.module.scss';
 import { linkifyText } from '@/lib/linkify';
+import { notifyError, notifySuccess } from '@/lib/notifications';
 
 interface EventProps {
   event: {
@@ -458,6 +460,36 @@ const EventCard: React.FC<EventProps> = React.memo(({
     </Button>
   ), [isLoggedIn, isRegistered, isLoading, handleRegistration, registerButtonStyles, disableRegistration]);
 
+  const handleShare = React.useCallback(async () => {
+    try {
+      const shareUrl = `${window.location.origin}/events/${event._id}`;
+      const text = `${event.name} — ${formattedTime}${event.place ? `, ${event.place}` : ''}`;
+      const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
+
+      const win = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+      if (!win) {
+        // Попап заблокирован — пробуем навигацию текущим окном
+        window.location.href = telegramUrl;
+      }
+      notifySuccess('Откройте Telegram и выберите чат');
+    } catch (err) {
+      // Фолбек: системный share, затем буфер обмена
+      const fallbackUrl = `${window.location.origin}/events/${event._id}`;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: event.name, text: `${event.name}`, url: fallbackUrl } as any);
+          return;
+        }
+      } catch {}
+      try {
+        await navigator.clipboard.writeText(fallbackUrl);
+        notifySuccess('Ссылка скопирована в буфер обмена');
+      } catch {
+        notifyError('Не удалось открыть Telegram', 'Скопируйте ссылку вручную');
+      }
+    }
+  }, [event?._id, event?.name, formattedTime, event?.place]);
+
   // Обработчик клика для навигации на страницу события
   const handleCardClick = (e: React.MouseEvent) => {
     
@@ -517,7 +549,12 @@ const EventCard: React.FC<EventProps> = React.memo(({
           </div>
         </div>
         
-        {actionButtons}
+        <div className={styles.headerActionsRight}>
+          <Button isIconOnly variant="flat" className={styles.actionButton} onPress={handleShare} aria-label="Поделиться в Telegram">
+            <Share2 size={16} />
+          </Button>
+          {actionButtons}
+        </div>
       </CardHeader>
       
       {/* Body */}
