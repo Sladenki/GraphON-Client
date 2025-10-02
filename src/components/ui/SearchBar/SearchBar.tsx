@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useRef, useEffect, useId } from 'react'
 import { Search, X, Filter, Tag } from 'lucide-react'
 import { useDebounce } from '@/hooks/useDebounce'
 import styles from './SearchBar.module.scss'
@@ -35,6 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const [selectedTags, setSelectedTags] = useState<string[]>(initialSelectedTags)
   const [isTagFilterOpen, setIsTagFilterOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
+  const dropdownId = useId()
   
   const searchInputRef = useRef<HTMLInputElement>(null)
   const tagFilterRef = useRef<HTMLDivElement>(null)
@@ -100,13 +101,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
     }
   }, [isTagFilterOpen])
 
+  const handleSubmit = useCallback((e: React.FormEvent) => {
+    e.preventDefault()
+    onSearch(query)
+  }, [onSearch, query])
+
   const selectedTagsData = availableTags.filter(tag => selectedTags.includes(tag._id))
   const hasActiveFilters = query.trim() !== '' || selectedTags.length > 0
 
   return (
-    <div className={`${styles.searchBar} ${className}`}>
+    <div className={`${styles.searchBar} ${className}` } role="search">
       {/* Основная строка поиска */}
-      <div className={styles.searchInputWrapper}>
+      <form className={styles.searchInputWrapper} onSubmit={handleSubmit}>
         <div className={`${styles.searchInput} ${isFocused ? styles.focused : ''}`}>
           <Search 
             className={`${styles.searchIcon} ${isFocused ? styles.searchIconFocused : ''}`} 
@@ -123,6 +129,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             className={styles.input}
+            role="searchbox"
+            aria-label={placeholder}
+            autoComplete="off"
+            spellCheck={false}
           />
           
           {query && (
@@ -130,6 +140,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
               onClick={clearQuery}
               className={styles.clearButton}
               aria-label="Очистить поиск"
+              type="button"
             >
               <X size={16} />
             </button>
@@ -140,6 +151,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
               onClick={toggleTagFilter}
               className={`${styles.filterButton} ${selectedTags.length > 0 ? styles.active : ''}`}
               aria-label="Фильтр по тегам"
+              aria-haspopup="listbox"
+              aria-expanded={isTagFilterOpen}
+              aria-controls={dropdownId}
+              type="button"
             >
               <Filter size={18} />
               {selectedTags.length > 0 && (
@@ -151,7 +166,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
         {/* Индикатор активных фильтров */}
         {hasActiveFilters && (
-          <div className={styles.activeFilters}>
+          <div className={styles.activeFilters} aria-live="polite">
             {query && (
               <span className={styles.queryFilter}>
                 "{query}"
@@ -165,6 +180,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   onClick={() => handleTagToggle(tag._id)}
                   className={styles.removeTag}
                   aria-label={`Убрать тег ${tag.name}`}
+                  type="button"
                 >
                   <X size={12} />
                 </button>
@@ -177,22 +193,30 @@ const SearchBar: React.FC<SearchBarProps> = ({
               }}
               className={styles.clearAllButton}
               aria-label="Очистить все фильтры"
+              type="button"
             >
               Очистить все
             </button>
           </div>
         )}
-      </div>
+      </form>
 
       {/* Выпадающий список тегов */}
       {isTagFilterOpen && availableTags.length > 0 && (
-        <div ref={tagFilterRef} className={styles.tagFilterDropdown}>
+        <div
+          ref={tagFilterRef}
+          className={styles.tagFilterDropdown}
+          id={dropdownId}
+          role="listbox"
+          aria-multiselectable="true"
+        >
           <div className={styles.tagFilterHeader}>
             <span className={styles.tagFilterTitle}>Теги</span>
             {selectedTags.length > 0 && (
               <button
                 onClick={clearAllTags}
                 className={styles.clearTagsButton}
+                type="button"
               >
                 Очистить все
               </button>
@@ -205,6 +229,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 key={tag._id}
                 onClick={() => handleTagToggle(tag._id)}
                 className={`${styles.tagOption} ${selectedTags.includes(tag._id) ? styles.selected : ''}`}
+                role="option"
+                aria-selected={selectedTags.includes(tag._id)}
               >
                 <Tag size={14} />
                 <span>{tag.name}</span>
