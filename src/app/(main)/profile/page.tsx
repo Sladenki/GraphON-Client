@@ -15,7 +15,6 @@ import LogOut from './LogOut/LogOut';
 import NoImage from '../../../../public/noImage.png'
 import ThemeToggle from '@/components/global/ThemeToggle/ThemeToggle';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import MissingDataMessage from './MissingDataMessage/MissingDataMessage';
 import { GraphService } from '@/services/graph.service';
 import { UserService } from '@/services/user.service';
 import { IGraphList } from '@/types/graph.interface';
@@ -71,25 +70,6 @@ export default function Profile() {
     }
 
     const subsEvents = allEvents?.data;
-
-    // Определяем недостающие данные
-    const getMissingFields = (user: IUser) => {
-        const missingFields: string[] = [];
-        
-        if (!user.firstName || user.firstName.trim() === '') {
-            missingFields.push('firstName');
-        }
-        if (!user.lastName || user.lastName.trim() === '') {
-            missingFields.push('lastName');
-        }
-        if (!user.username || user.username.trim() === '') {
-            missingFields.push('username');
-        }
-        
-        return missingFields;
-    };
-
-    const missingFields = typedUser ? getMissingFields(typedUser) : [];
 
     // Формируем отображаемое имя
     const getDisplayName = (user: IUser) => {
@@ -245,11 +225,6 @@ export default function Profile() {
                         </div>
                     )}
 
-    
-
-                    {missingFields.length > 0 && (
-                        <MissingDataMessage missingFields={missingFields} />
-                    )}
 
                     {!small && <ThemeToggle size="md" />}   
                 
