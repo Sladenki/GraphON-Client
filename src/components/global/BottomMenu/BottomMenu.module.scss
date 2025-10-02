@@ -1,48 +1,85 @@
 .bottomSidebarWrapper {
-  background-color: var(--block-color);
-  border-radius: 20px 20px 0 0;
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
-  padding: 12px 0;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
-  box-shadow: 0px 0px 28px 15px rgba(var(--main-Color), 0.05);
-  position: relative;
-  z-index: 2100; // поверх контента
+  background-color: var(--block-color);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 10px 8px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0));
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  border-top: 1px solid rgba(var(--main-Color), 0.15);
+  z-index: 2100;
+
+  /* Glass subtlety on larger screens */
+  @media (min-width: 768px) {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Float centered on tablet/desktop */
+  @media (min-width: 768px) {
+    max-width: 560px;
+    margin: 0 auto;
+    border-radius: 16px;
+    border: 1px solid rgba(var(--main-Color), 0.12);
+    padding: 10px 12px;
+  }
 }
 
 .listMenu {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
   padding: 0;
   margin: 0;
   list-style: none;
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 .listItem {
-  flex-grow: 1;
+  flex: 1 1 0;
   display: flex;
   justify-content: center;
 }
 
 .link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   text-decoration: none;
-  padding: 8px 16px; // Увеличил отступы для овальной формы
-  border-radius: 20px; // Делаем обводку овальной
-  transition: all 0.3s ease;
+  color: var(--main-text);
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  transition: background-color .2s ease, border-color .2s ease, transform .15s ease;
+
+  &:hover {
+    background-color: rgba(var(--main-Color), 0.08);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: rgba(var(--main-Color), 0.35);
+    box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.18);
+  }
 }
 
 .icon {
-  font-size: 24px;
+  font-size: 22px;
   color: var(--main-text);
-  transition: color 0.3s, transform 0.3s;
+  transition: color .2s ease, transform .2s ease;
 }
 
 .iconWrapper {
   position: relative;
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .iconBadge {
@@ -52,27 +89,51 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ef4444; // red-500
+  background: rgb(var(--main-Color));
   box-shadow: 0 0 0 2px var(--block-color);
 }
 
-// Овальная обводка для активного элемента
+// Active state
 .active {
-  background-color: rgba(var(--main-Color), 0.2); // Лёгкий фон
-  // border: 2px solid var(--main-text);
-  padding: 8px 25px; // Делаем форму ещё более овальной
+  background-color: rgba(var(--main-Color), 0.14);
+  border-color: rgba(var(--main-Color), 0.25);
+  box-shadow: 0 6px 18px rgba(var(--main-Color), 0.18);
 
   .icon {
-    color: var(--main-text);
-    transform: scale(1.2);
+    transform: translateY(-1px) scale(1.12);
   }
 }
 
 // Удалён общий badge, используем точку на иконке профиля
 
-/* Адаптивность */
+/* Responsive tweaks */
 @media (max-width: 480px) {
-  .icon {
-    font-size: 22px;
+  .link { padding: 10px; }
+}
+
+@media (min-width: 1024px) {
+  .bottomSidebarWrapper {
+    max-width: 640px;
   }
+}
+
+/* Accessibility */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none !important;
+  }
+  .icon { transition: none !important; }
 }

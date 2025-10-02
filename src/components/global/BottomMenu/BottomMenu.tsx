@@ -28,21 +28,21 @@ const BottomMenu: React.FC = () => {
   }, [isLoggedIn, user]);
 
   return (
-    <nav className={styles.bottomSidebarWrapper}>
+    <nav className={styles.bottomSidebarWrapper} role="navigation" aria-label="Bottom navigation">
       <ul className={styles.listMenu}>
         {menuItems.map(({ id, icon, title, path }) => {
           const isActive = pathname === path;
 
           return (
             <li key={id} className={styles.listItem}>
-              <Link href={path} className={`${styles.link} ${isActive ? styles.active : ""}`}>
+              <Link href={path} className={`${styles.link} ${isActive ? styles.active : ""}`} aria-label={title} aria-current={isActive ? "page" : undefined} title={title}>
                 <span className={styles.iconWrapper}>
                   <span className={styles.icon}>{icon}</span>
                   {showProfileBadge && path === '/profile/' && (
                     <span className={styles.iconBadge} aria-hidden="true" />
                   )}
                 </span>
-                {/* <span className={styles.title}>{title}</span> */}
+                <span className={styles.srOnly}>{title}</span>
               </Link>
             </li>
           );
