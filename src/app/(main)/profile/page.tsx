@@ -8,7 +8,7 @@ import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButt
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { GraduationCap, Pencil } from 'lucide-react';
+import { GraduationCap, Pencil, Heart, CalendarCheck } from 'lucide-react';
 import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '@/components/ui/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
@@ -196,6 +196,24 @@ export default function Profile() {
                                 </div>
                             </div>
                         )}
+
+                        {/* Статистика подписок и участия в событиях */}
+                        <div className={styles.stats}>
+                            <div className={styles.statItem}>
+                                <span className={styles.statIcon}><Heart size={16} /></span>
+                                <div className={styles.statText}>
+                                    <span className={styles.statValue}>{typedUser.graphSubsNum ?? 0}</span>
+                                    <span className={styles.statLabel}>подписок</span>
+                                </div>
+                            </div>
+                            <div className={styles.statItem}>
+                                <span className={styles.statIcon}><CalendarCheck size={16} /></span>
+                                <div className={styles.statText}>
+                                    <span className={styles.statValue}>{typedUser.attentedEventsNum ?? 0}</span>
+                                    <span className={styles.statLabel}>мероприятий</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Блок выбора ВУЗа доступен всегда для роли create, иначе только при отсутствии selectedGraphId */}

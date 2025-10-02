@@ -24,7 +24,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   margin-bottom: 2rem;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   max-width: 600px;
   min-height: 370px;
@@ -73,6 +73,9 @@
   position: relative;
   z-index: 1;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .nameGroup {
@@ -82,12 +85,14 @@
   gap: 6px;
   position: relative;
   z-index: 1;
+  max-width: 100%;
 }
 
 @media (min-width: 600px) {
   .nameGroup {
     flex-direction: row;
     gap: 8px;
+    flex-wrap: wrap;
   }
 }
 
@@ -392,6 +397,7 @@
 .selectedUniversityText {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .selectedUniversityLabel {
@@ -405,7 +411,36 @@
 .selectedUniversityName {
   font-weight: 700;
   color: rgb(150, 130, 238);
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
+
+/* Статистика */
+.stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(var(--main-Color-rgb), 0.06);
+  border: 1px solid rgba(var(--main-Color-rgb), 0.15);
+}
+
+.statIcon { color: rgb(150,130,238); display: inline-flex; }
+
+.statText { display: flex; flex-direction: column; line-height: 1; }
+
+.statValue { font-weight: 700; color: var(--main-text); font-size: 14px; }
+
+.statLabel { font-size: 11px; color: var(--main-text); opacity: 0.7; }
 
 /* Поддержка уменьшенного движения */
 @media (prefers-reduced-motion: reduce) {
