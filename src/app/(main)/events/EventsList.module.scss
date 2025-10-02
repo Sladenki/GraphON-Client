@@ -6,6 +6,49 @@
   min-height: 200px;
 }
 
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0 0 0;
+}
+
+.filtersRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.dateInputs {
+  display: flex;
+  gap: 8px;
+}
+
+.dateField {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--main-text);
+  font-size: 14px;
+
+  input[type="date"] {
+    background: rgba(var(--main-Color), 0.06);
+    border: 1px solid rgba(var(--main-Color), 0.15);
+    color: var(--main-text);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+}
+
+.tbdToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--main-text);
+  font-size: 14px;
+}
+
 .adBanner {
   margin-bottom: 16px;
 }
@@ -84,6 +127,14 @@
 @media (max-width: 768px) {
   .container {
     padding: 0 12px;
+  }
+
+  .filters {
+    gap: 8px;
+  }
+
+  .filtersRow {
+    gap: 8px;
   }
 
   .eventsList {
