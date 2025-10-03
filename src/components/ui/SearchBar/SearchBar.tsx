@@ -16,6 +16,14 @@ export interface SearchBarProps {
   placeholder?: string
   availableTags?: SearchTag[]
   showTagFilter?: boolean
+  // Date filter (optional). When provided, date controls appear inside dropdown
+  showDateFilter?: boolean
+  dateFrom?: string
+  dateTo?: string
+  includeTbd?: boolean
+  onDateFromChange?: (value: string) => void
+  onDateToChange?: (value: string) => void
+  onIncludeTbdChange?: (value: boolean) => void
   initialQuery?: string
   initialSelectedTags?: string[]
   className?: string
@@ -27,6 +35,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Поиск...",
   availableTags = [],
   showTagFilter = true,
+  showDateFilter = false,
+  dateFrom,
+  dateTo,
+  includeTbd,
+  onDateFromChange,
+  onDateToChange,
+  onIncludeTbdChange,
   initialQuery = "",
   initialSelectedTags = [],
   className = ""
@@ -108,6 +123,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   const selectedTagsData = availableTags.filter(tag => selectedTags.includes(tag._id))
   const hasActiveFilters = query.trim() !== '' || selectedTags.length > 0
+    || Boolean(dateFrom) || Boolean(dateTo) || includeTbd === false
+
+  const supportsDateFilter = showDateFilter && typeof onDateFromChange === 'function' && typeof onDateToChange === 'function'
 
   return (
     <div className={`${styles.searchBar} ${className}` } role="search">
@@ -134,34 +152,38 @@ const SearchBar: React.FC<SearchBarProps> = ({
             autoComplete="off"
             spellCheck={false}
           />
-          
-          {query && (
-            <button
-              onClick={clearQuery}
-              className={styles.clearButton}
-              aria-label="Очистить поиск"
-              type="button"
-            >
-              <X size={16} />
-            </button>
-          )}
-          
-          {showTagFilter && availableTags.length > 0 && (
-            <button
-              onClick={toggleTagFilter}
-              className={`${styles.filterButton} ${selectedTags.length > 0 ? styles.active : ''}`}
-              aria-label="Фильтр по тегам"
-              aria-haspopup="listbox"
-              aria-expanded={isTagFilterOpen}
-              aria-controls={dropdownId}
-              type="button"
-            >
-              <Filter size={18} />
-              {selectedTags.length > 0 && (
-                <span className={styles.tagCount}>{selectedTags.length}</span>
-              )}
-            </button>
-          )}
+
+          <div className={styles.rightControls}>
+            <div className={styles.vertDivider} aria-hidden="true" />
+
+            {query && (
+              <button
+                onClick={clearQuery}
+                className={styles.clearButton}
+                aria-label="Очистить поиск"
+                type="button"
+              >
+                <X size={16} />
+              </button>
+            )}
+
+            {showTagFilter && availableTags.length > 0 && (
+              <button
+                onClick={toggleTagFilter}
+                className={`${styles.filterButton} ${selectedTags.length > 0 ? styles.active : ''}`}
+                aria-label="Фильтр по тегам"
+                aria-haspopup="listbox"
+                aria-expanded={isTagFilterOpen}
+                aria-controls={dropdownId}
+                type="button"
+              >
+                <Filter size={18} />
+                {selectedTags.length > 0 && (
+                  <span className={styles.tagCount}>{selectedTags.length}</span>
+                )}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Индикатор активных фильтров */}
@@ -202,7 +224,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       </form>
 
       {/* Выпадающий список тегов */}
-      {isTagFilterOpen && availableTags.length > 0 && (
+      {isTagFilterOpen && (availableTags.length > 0 || supportsDateFilter) && (
         <div
           ref={tagFilterRef}
           className={styles.tagFilterDropdown}
@@ -210,36 +232,71 @@ const SearchBar: React.FC<SearchBarProps> = ({
           role="listbox"
           aria-multiselectable="true"
         >
-          <div className={styles.tagFilterHeader}>
-            <span className={styles.tagFilterTitle}>Теги</span>
-            {selectedTags.length > 0 && (
-              <button
-                onClick={clearAllTags}
-                className={styles.clearTagsButton}
-                type="button"
-              >
-                Очистить все
-              </button>
-            )}
-          </div>
+          {(supportsDateFilter || availableTags.length > 0) && (
+            <div className={styles.tagFilterHeader}>
+              <span className={styles.tagFilterTitle}>Фильтры</span>
+              {(selectedTags.length > 0) && (
+                <button
+                  onClick={clearAllTags}
+                  className={styles.clearTagsButton}
+                  type="button"
+                >
+                  Очистить теги
+                </button>
+              )}
+            </div>
+          )}
+
+          {supportsDateFilter && (
+            <div className={styles.dateFilterSection} role="group" aria-label="Фильтр по датам">
+              <div className={styles.dateRow}>
+                <label className={styles.dateFieldInDropdown}>
+                  <span>От</span>
+                  <input
+                    type="date"
+                    value={dateFrom ?? ''}
+                    onChange={(e) => onDateFromChange?.(e.target.value)}
+                  />
+                </label>
+                <label className={styles.dateFieldInDropdown}>
+                  <span>До</span>
+                  <input
+                    type="date"
+                    value={dateTo ?? ''}
+                    onChange={(e) => onDateToChange?.(e.target.value)}
+                  />
+                </label>
+              </div>
+              <label className={styles.tbdToggleInline}>
+                <input
+                  type="checkbox"
+                  checked={includeTbd ?? true}
+                  onChange={(e) => onIncludeTbdChange?.(e.target.checked)}
+                />
+                <span>Показывать без даты</span>
+              </label>
+            </div>
+          )}
           
-          <div className={styles.tagList}>
-            {availableTags.map(tag => (
-              <button
-                key={tag._id}
-                onClick={() => handleTagToggle(tag._id)}
-                className={`${styles.tagOption} ${selectedTags.includes(tag._id) ? styles.selected : ''}`}
-                role="option"
-                aria-selected={selectedTags.includes(tag._id)}
-              >
-                <Tag size={14} />
-                <span>{tag.name}</span>
-                {selectedTags.includes(tag._id) && (
-                  <X size={14} className={styles.tagRemoveIcon} />
-                )}
-              </button>
-            ))}
-          </div>
+          {availableTags.length > 0 && (
+            <div className={styles.tagList}>
+              {availableTags.map(tag => (
+                <button
+                  key={tag._id}
+                  onClick={() => handleTagToggle(tag._id)}
+                  className={`${styles.tagOption} ${selectedTags.includes(tag._id) ? styles.selected : ''}`}
+                  role="option"
+                  aria-selected={selectedTags.includes(tag._id)}
+                >
+                  <Tag size={14} />
+                  <span>{tag.name}</span>
+                  {selectedTags.includes(tag._id) && (
+                    <X size={14} className={styles.tagRemoveIcon} />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
