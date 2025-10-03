@@ -1,9 +1,9 @@
 import { CircleUserRound, House, Pencil, CalendarCheck, Settings, Users, Heart, Network } from 'lucide-react'
-import { ReactNode } from 'react';
+import { JSX } from 'react';
 
 interface SidebarItem {
   id: number;
-  icon: ReactNode;
+  icon: JSX.Element;
   title: string;
   forAuthUsers: boolean;
   path: string;
@@ -11,7 +11,7 @@ interface SidebarItem {
 
 const createSidebarItem = (
   id: number,
-  icon: ReactNode,
+  icon: JSX.Element,
   title: string,
   forAuthUsers: boolean,
   path: string

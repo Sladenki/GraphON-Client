@@ -12,7 +12,6 @@ import '../../styles/globals.scss'
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
-import ProfileCorner from "@/components/global/ProfileCorner/ProfileCorner";
 import { Providers } from '../providers';
 
 // Fonts are configured in server file src/app/fonts.ts
@@ -57,11 +56,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                       <div className={styles.content}>
                         {children}
                       </div>
-                    </div>
-                    
-                    {/* Ава в углу */}
-                    <div className={styles.profileCorner}>
-                      <ProfileCorner/>
                     </div>
                   </>
                 )}

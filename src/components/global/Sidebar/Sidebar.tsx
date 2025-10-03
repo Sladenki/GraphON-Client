@@ -9,7 +9,7 @@ import styles from './Sidebar.module.scss'
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { sidebar } from '@/constants/sidebar';
 import { useAuth } from '@/providers/AuthProvider';
-import { Settings } from 'lucide-react';
+import { Settings, User } from 'lucide-react';
 
 import RenderMenuList from './RenderMenuList/RenderMenuList';
 
@@ -28,6 +28,19 @@ const Sidebar: React.FC<{}> = ({}) => {
 
   const computedItems = (() => {
     const items = [...sidebar];
+    
+    // Добавляем профиль для авторизованных пользователей
+    if (isLoggedIn) {
+      const profileItem = {
+        id: 99,
+        icon: <User color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />,
+        title: 'Профиль',
+        forAuthUsers: true,
+        path: '/profile'
+      };
+      items.push(profileItem);
+    }
+    
     if (hasManageAccess) {
       const manageItem = {
         id: 98,
