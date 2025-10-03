@@ -6,6 +6,8 @@
   --main-Color: 150, 130, 238;  /* Тёплый фиолетовый */
   --light-main: rgba(var(--main-Color), .2);
 
+  --sidebar-Color: 208,208,210;
+
   /* Font variables for Next.js Font optimization */
   --font-inter: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-orbitron: 'Orbitron', 'Space Grotesk', 'Trebuchet MS', monospace, sans-serif;
@@ -72,8 +74,10 @@
 }
 
 html[data-theme="light"] {
-  --background-color: #F4F7FF;  /* Светлее */
-  --block-color: #FFFFFF;
+  // --background-color: #F4F7FF;  /* Светлее */
+  // --block-color: #FFFFFF;
+  --background-color: #FFFFFF;  /* Светлее */
+  --block-color: #FAF9FE;
   --main-text: #333333;  /* Более тёмный текст */
 }
 

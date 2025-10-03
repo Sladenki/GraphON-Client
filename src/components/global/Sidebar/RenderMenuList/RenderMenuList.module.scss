@@ -1,33 +1,15 @@
 // Список вкладок
 .listMenu{
-    margin-left: 16px; // больше места слева
-    margin-right: 16px; // и справа для тени
-    margin-bottom: 12px;
+    // margin-left: 16px; // больше места слева
+    // margin-right: 16px; // и справа для тени
+    // margin-bottom: 12px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 5px;
     flex: 1 1 auto;
     overflow: hidden; // убираем внутренний скролл, высоту контролирует контейнер
     max-height: none;
-    padding-right: 8px;
-    
-    // Стилизация скроллбара
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
-    
-    &::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-        background: rgba(var(--main-Color), 0.2);
-        border-radius: 3px;
-        
-        &:hover {
-            background: rgba(var(--main-Color), 0.3);
-        }
-    }
+    // padding-right: 8px;
 }
 
 .group{

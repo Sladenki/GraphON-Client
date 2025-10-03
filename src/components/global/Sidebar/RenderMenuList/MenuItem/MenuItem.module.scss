@@ -8,14 +8,18 @@
 
 // Название + иконка - не нажатый
 .listLine{
-    margin-left:5px;
+
     text-align: center;
     height: 50px;
     display: flex;
     flex-direction: row;
-    gap: 15px;
+    gap: 20px;
     align-items: center;
     border-radius: 30px;
+
+    .icon{
+        padding-left: 15px;
+    }
 
     .icon{
         display: flex;
@@ -24,7 +28,6 @@
         justify-content: center;
         align-items: center;
         border-radius: 50%;
-        background-color: var(--light-main);
     }
 
 
@@ -37,9 +40,13 @@
 .listLineActive {
     @extend .listLine; 
 
-    .icon{
-        background-color: transparent;
+    .listLine{
+        &:hover{
+            background-color: rgba(var(--main-Color), .1);
+        }
     }
+
+   
 
     .text {
       color: rgb(var(--main-Color));

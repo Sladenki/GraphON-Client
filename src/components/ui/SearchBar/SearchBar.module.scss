@@ -15,33 +15,33 @@
   position: relative;
   display: flex;
   align-items: center;
-  background: var(--block-color);
-  border: 1px solid rgba(var(--main-Color), 0.18);
-  border-radius: 14px;
-  padding: 12px 14px;
-  transition: border-color .2s ease, box-shadow .2s ease, transform .15s ease;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 28px; // pill style
+  padding: 12px 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    border-color: rgba(var(--main-Color), 0.2);
   }
 
   &.focused {
-    border-color: rgba(var(--main-Color), 0.45);
-    box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.12), 0 8px 24px rgba(0, 0, 0, 0.1);
+    border-color: rgba(var(--main-Color), 0.3);
+    background: #ffffff;
   }
 }
 
 .searchIcon {
-  color: rgba(var(--main-Color), 0.8);
+  color: #6b7280; // Серый цвет
   margin-right: 12px;
   flex-shrink: 0;
   transition: color .2s ease, transform .2s ease;
 
   &.searchIconFocused {
-    color: rgb(var(--main-Color));
+    color: #4b5563; // Темнее серый при фокусе
     transform: scale(1.05);
   }
 }
@@ -52,25 +52,25 @@
   outline: none;
   background: transparent;
   font-size: 17px;
-  color: var(--main-text);
+  color: #6b7280; // Серый цвет для текста
   font-family: var(--font-inter), 'Inter', sans-serif;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.4;
   position: relative;
-  z-index: 1; // Обеспечиваем доступность input
+  z-index: 1;
 
   &::placeholder {
-    color: rgba(var(--main-text), 0.6);
+    color: #9ca3af; // Светло-серый для placeholder
     font-weight: 400;
     transition: color 0.3s ease;
   }
 
   &:focus {
-    color: var(--main-text);
+    color: #4b5563; // Темнее серый при фокусе
     
     &::placeholder {
-      color: rgba(var(--main-text), 0.4);
+      color: #9ca3af;
     }
   }
 }
@@ -82,25 +82,36 @@
   width: 32px;
   height: 32px;
   border: none;
-  background: rgba(var(--main-Color), 0.12);
+  background: rgba(var(--main-Color), 0.08);
   border-radius: 50%;
   color: rgb(var(--main-Color));
   cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-left: 12px;
-  box-shadow: 0 2px 8px rgba(var(--main-Color), 0.18);
   position: relative;
   z-index: 1;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.18);
-    transform: scale(1.06) rotate(90deg);
-    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.25);
+    background: rgba(var(--main-Color), 0.15);
+    transform: scale(1.05);
   }
 
   &:active {
-    transform: scale(0.95) rotate(90deg);
+    transform: scale(0.95);
   }
+}
+
+.rightControls{
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vertDivider{
+  width: 1px;
+  height: 28px;
+  background: rgba(0,0,0,0.08);
 }
 
 .filterButton {
@@ -108,32 +119,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border: none;
-  background: rgba(var(--main-Color), 0.1);
-  border-radius: 12px;
+  background: rgba(var(--main-Color), 0.05);
+  border-radius: 10px;
   color: rgb(var(--main-Color));
   cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
-  margin-left: 12px;
-  box-shadow: 0 2px 8px rgba(var(--main-Color), 0.16);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: 2px;
   z-index: 1;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.16);
-    transform: translateY(-1px) scale(1.05);
-    box-shadow: 0 4px 15px rgba(var(--main-Color), 0.22);
+    background: rgba(var(--main-Color), 0.12);
+    transform: translateY(-1px);
   }
 
   &.active {
-    background: rgba(var(--main-Color), 0.2);
-    transform: translateY(-1px) scale(1.05);
-    box-shadow: 0 4px 15px rgba(var(--main-Color), 0.28);
+    background: rgba(var(--main-Color), 0.15);
   }
 
   &:active {
-    transform: translateY(0) scale(0.95);
+    transform: scale(0.95);
   }
 }
 
@@ -152,8 +159,6 @@
   align-items: center;
   justify-content: center;
   padding: 0 4px;
-  box-shadow: 0 2px 8px rgba(var(--main-Color), 0.35), 0 0 0 2px rgba(255, 255, 255, 0.95);
-  animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
@@ -175,19 +180,17 @@
 }
 
 .queryFilter {
-  background: rgba(var(--main-Color), 0.12);
+  background: rgba(var(--main-Color), 0.08);
   color: rgb(var(--main-Color));
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
-  border: 1px solid rgba(var(--main-Color), 0.28);
-  box-shadow: 0 2px 8px rgba(var(--main-Color), 0.18);
-  transition: transform .2s ease, box-shadow .2s ease;
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.22);
+    background: rgba(var(--main-Color), 0.12);
   }
 }
 
@@ -195,19 +198,17 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(var(--main-Color), 0.12);
+  background: rgba(var(--main-Color), 0.08);
   color: rgb(var(--main-Color));
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
-  border: 1px solid rgba(var(--main-Color), 0.28);
-  box-shadow: 0 2px 8px rgba(var(--main-Color), 0.18);
-  transition: transform .2s ease, box-shadow .2s ease;
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.22);
+    background: rgba(var(--main-Color), 0.12);
   }
 }
 
@@ -218,49 +219,41 @@
   width: 18px;
   height: 18px;
   border: none;
-  background: rgba(var(--main-Color), 0.16);
+  background: rgba(var(--main-Color), 0.1);
   color: inherit;
   cursor: pointer;
   border-radius: 50%;
-  transition: transform .2s ease, background-color .2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-left: 4px;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.24);
-    transform: scale(1.12) rotate(90deg);
-    color: rgba(239, 68, 68, 0.8);
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    transform: scale(1.1);
   }
 
   &:active {
-    transform: scale(0.9) rotate(90deg);
+    transform: scale(0.9);
   }
 }
 
 .clearAllButton {
-  background: linear-gradient(135deg, 
-    rgba(239, 68, 68, 0.12) 0%, 
-    rgba(239, 68, 68, 0.18) 100%);
+  background: rgba(239, 68, 68, 0.08);
   color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.2);
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
-  box-shadow: 
-    0 2px 8px rgba(239, 68, 68, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  // backdrop-filter: blur(10px); // Убираем blur для лучшей доступности
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(239, 68, 68, 0.25) 100%);
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    background: rgba(239, 68, 68, 0.12);
   }
 
   &:active {
-    transform: translateY(0) scale(0.98);
+    transform: scale(0.98);
   }
 }
 
@@ -270,16 +263,53 @@
   left: 0;
   right: 0;
   background: var(--block-color);
-  border: 2px solid rgba(var(--main-Color), 0.2);
+  border: 1px solid rgba(var(--main-Color), 0.15);
   border-radius: 16px;
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.15),
-    0 4px 20px rgba(var(--main-Color), 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 1000;
   margin-top: 12px;
   overflow: hidden;
   animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dateFilterSection{
+  padding: 14px 16px 6px;
+  border-bottom: 1px solid rgba(var(--main-Color), 0.15);
+}
+
+.dateRow{
+  display: flex;
+  gap: 12px;
+}
+
+.dateFieldInDropdown{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(var(--main-Color), 0.05);
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--main-Color), 0.15);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--main-text);
+
+  input[type="date"]{
+    border: none;
+    background: transparent;
+    color: var(--main-text);
+    outline: none;
+  }
+}
+
+.tbdToggleInline{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--main-text);
 }
 
 @keyframes slideDown {

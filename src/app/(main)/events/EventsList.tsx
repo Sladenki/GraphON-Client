@@ -175,24 +175,14 @@ export default function EventsList() {
           onTagFilter={setSelectedTagIds}
           availableTags={availableTags}
           initialQuery={searchQuery}
+          showDateFilter
+          dateFrom={dateFrom}
+          dateTo={dateTo}
+          includeTbd={includeTbd}
+          onDateFromChange={setDateFrom}
+          onDateToChange={setDateTo}
+          onIncludeTbdChange={setIncludeTbd}
         />
-
-        <div className={styles.filtersRow}>
-          <div className={styles.dateInputs}>
-            <label className={styles.dateField}>
-              <span>От</span>
-              <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-            </label>
-            <label className={styles.dateField}>
-              <span>До</span>
-              <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
-            </label>
-          </div>
-          <label className={styles.tbdToggle}>
-            <input type="checkbox" checked={includeTbd} onChange={(e) => setIncludeTbd(e.target.checked)} />
-            <span>Показывать без даты</span>
-          </label>
-        </div>
       </div>
       {/* Загрузка */}
       {isLoading && (
