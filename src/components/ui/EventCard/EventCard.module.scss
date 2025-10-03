@@ -27,18 +27,13 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   @media (min-width: 768px) {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    box-shadow: 
-      0 4px 12px rgba(0, 0, 0, 0.08),
-      0 0 0 1px rgba(255, 255, 255, 0.05);
   }
 }
 
 @mixin neon-glow($color, $intensity: 0.2) {
   // Reduced glow for mobile
   @media (min-width: 768px) {
-    box-shadow: 
-      0 0 5px rgba($color, $intensity),
-      0 0 10px rgba($color, $intensity * 0.5);
+    // box-shadow removed
   }
 }
 
@@ -62,19 +57,16 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 .eventCard {
   max-width: 800px;
   margin: 0 auto;
-  // background: var(--block-color);
   background: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
-  transition: none; // Remove on mobile
-  // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: none;
   
   // Mobile performance optimizations
   @media (max-width: 768px) {
-    will-change: auto; // Disable will-change on mobile to save memory
-    transform: translateZ(0); // Enable hardware acceleration only when needed
+    will-change: auto;
+    transform: translateZ(0);
     
-    // Optimize for edit mode performance
     &:has(.editForm) {
       contain: layout style;
       isolation: isolate;
@@ -84,11 +76,10 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   @media (min-width: 768px) {
     backdrop-filter: blur(8px);
     transition: all 0.2s ease;
-    will-change: transform; // For GPU acceleration on desktop only
+    will-change: transform;
     
     &:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
     }
   }
 }
@@ -217,14 +208,12 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   height: 32px;
   border-radius: 8px;
   transition: background-color 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   
   @media (min-width: 768px) {
     transition: all 0.2s ease;
     
     &:hover {
       transform: translateY(-1px);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
     }
   }
   
@@ -468,10 +457,6 @@ $gradient-end: rgba(0, 255, 255, 0.05);
           background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(150, 130, 238, 0.12));
           border-color: rgba(150, 130, 238, 0.3);
           transform: translateX(2px);
-          
-          svg {
-            filter: drop-shadow(0 0 4px rgba(150, 130, 238, 0.4));
-          }
         }
       }
     }
@@ -493,10 +478,6 @@ $gradient-end: rgba(0, 255, 255, 0.05);
           background: linear-gradient(135deg, rgba(100, 210, 255, 0.2), rgba(100, 210, 255, 0.12));
           border-color: rgba(100, 210, 255, 0.3);
           transform: translateX(2px);
-          
-          svg {
-            filter: drop-shadow(0 0 4px rgba(100, 210, 255, 0.4));
-          }
         }
       }
     }
@@ -518,10 +499,6 @@ $gradient-end: rgba(0, 255, 255, 0.05);
           background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.12));
           border-color: rgba(34, 197, 94, 0.3);
           transform: translateX(2px);
-          
-          svg {
-            filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.4));
-          }
         }
       }
     }
@@ -563,7 +540,6 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   transition: background-color 0.2s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   
   @media (min-width: 768px) {
     transition: all 0.2s ease;
@@ -582,7 +558,6 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     
     &:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 
       &::before {
         opacity: 1;
@@ -598,7 +573,6 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     
     &:hover {
       transform: none;
-      box-shadow: none;
     }
   }
   
@@ -693,15 +667,12 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 // Mobile performance optimizations
 @media (max-width: 767px) {
   .eventCard {
-    // Disable expensive effects on mobile
     backdrop-filter: none !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
     transform: none !important;
     will-change: auto;
     
     &:hover {
       transform: none !important;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
     }
   }
   
@@ -723,7 +694,6 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     
     &:hover {
       transform: none !important;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
     }
   }
   
@@ -732,9 +702,18 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     
     &:hover {
       transform: none !important;
-      box-shadow: none !important;
     }
   }
+}
+
+// Remove all shadows globally for EventCard
+.eventCard,
+.eventCard *,
+.eventCard *::before,
+.eventCard *::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
 }
 
 // Reduce motion for users who prefer it
