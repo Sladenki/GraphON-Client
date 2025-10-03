@@ -35,13 +35,13 @@
 }
 
 .searchIcon {
-  color: rgba(var(--main-Color), 0.8);
+  color: #6b7280; // Серый цвет
   margin-right: 12px;
   flex-shrink: 0;
   transition: color .2s ease, transform .2s ease;
 
   &.searchIconFocused {
-    color: rgb(var(--main-Color));
+    color: #4b5563; // Темнее серый при фокусе
     transform: scale(1.05);
   }
 }
@@ -52,25 +52,25 @@
   outline: none;
   background: transparent;
   font-size: 17px;
-  color: var(--main-text);
+  color: #6b7280; // Серый цвет для текста
   font-family: var(--font-inter), 'Inter', sans-serif;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.4;
   position: relative;
-  z-index: 1; // Обеспечиваем доступность input
+  z-index: 1;
 
   &::placeholder {
-    color: rgba(var(--main-text), 0.6);
+    color: #9ca3af; // Светло-серый для placeholder
     font-weight: 400;
     transition: color 0.3s ease;
   }
 
   &:focus {
-    color: var(--main-text);
+    color: #4b5563; // Темнее серый при фокусе
     
     &::placeholder {
-      color: rgba(var(--main-text), 0.4);
+      color: #9ca3af;
     }
   }
 }
