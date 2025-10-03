@@ -59,7 +59,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   margin: 0 auto;
   background: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: 24px;
   transition: none;
   
   // Mobile performance optimizations
@@ -126,7 +126,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 .graphAvatar {
   width: 48px;
   height: 48px;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(150, 130, 238, 0.2);
   background: rgba(150, 130, 238, 0.05);
@@ -206,7 +206,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 .actionButton {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: 12px;
   transition: background-color 0.2s ease;
   
   @media (min-width: 768px) {
@@ -427,9 +427,9 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
+    gap: 8px;
+    padding: 0;
+    border-radius: 20px;
     transition: background-color 0.2s ease;
     
     @media (min-width: 768px) {
@@ -441,15 +441,21 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     }
     
     &:nth-child(1) {
-      background: rgba(150, 130, 238, 0.15);
-      border: 1px solid rgba(150, 130, 238, 0.2);
+      background: rgba(150, 130, 238, 0.08);
+      border: 1px solid rgba(150, 130, 238, 0.15);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
       
       @media (min-width: 768px) {
-        background: linear-gradient(135deg, rgba(150, 130, 238, 0.15), rgba(150, 130, 238, 0.08));
+        background: rgba(150, 130, 238, 0.1);
       }
       
       svg {
         color: rgb(150, 130, 238);
+        width: 16px;
+        height: 16px;
       }
       
       @media (min-width: 768px) {
@@ -462,15 +468,21 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     }
     
     &:nth-child(2) {
-      background: rgba(100, 210, 255, 0.15);
-      border: 1px solid rgba(100, 210, 255, 0.2);
+      background: rgba(100, 210, 255, 0.08);
+      border: 1px solid rgba(100, 210, 255, 0.15);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
       
       @media (min-width: 768px) {
-        background: linear-gradient(135deg, rgba(100, 210, 255, 0.15), rgba(100, 210, 255, 0.08));
+        background: rgba(100, 210, 255, 0.1);
       }
       
       svg {
         color: rgb(100, 210, 255);
+        width: 16px;
+        height: 16px;
       }
       
       @media (min-width: 768px) {
@@ -483,15 +495,21 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     }
 
     &:nth-child(3) {
-      background: rgba(34, 197, 94, 0.15);
-      border: 1px solid rgba(34, 197, 94, 0.2);
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.15);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
       
       @media (min-width: 768px) {
-        background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));
+        background: rgba(34, 197, 94, 0.1);
       }
       
       svg {
         color: rgb(34, 197, 94);
+        width: 16px;
+        height: 16px;
       }
 
       @media (min-width: 768px) {
@@ -505,9 +523,11 @@ $gradient-end: rgba(0, 255, 255, 0.05);
     
     .infoText {
       color: var(--heroui-default);
-      font-size: 0.95rem;
+      font-size: 14px;
+      font-weight: 500;
       transition: color 0.2s ease;
       white-space: pre-line;
+      margin: 0;
       
       @media (max-width: 640px) {
         font-size: 0.85rem;
@@ -536,7 +556,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
   height: 48px;
   font-weight: 600;
   font-size: 1rem;
-  border-radius: 12px;
+  border-radius: 16px;
   transition: background-color 0.2s ease;
   position: relative;
   overflow: hidden;
