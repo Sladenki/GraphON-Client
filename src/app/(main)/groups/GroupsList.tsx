@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from 'react'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
-import GraphBlock from '@/components/ui/GraphBlock/GraphBlock'
+
 import SchedulePopUp from '@/components/ui/SchedulePopUp/SchedulePopUp'
 import SearchBar, { SearchTag } from '@/components/ui/SearchBar/SearchBar'
 import { useFetchBunchData } from '@/hooks/useFetchBunchData'
@@ -11,6 +11,7 @@ import { useSearchWithTags, extractTagsFromData } from '@/hooks/useSearchWithTag
 import { useSelectedGraphId } from '@/stores/useUIStore'
 import { IGraphList } from '@/types/graph.interface'
 import styles from './GroupsList.module.scss'
+import GraphBlock from '@/components/ui/GraphBlock/GraphBlock'
 
 export default function GroupsList() {
   const selectedGraphId = useSelectedGraphId()
@@ -157,7 +158,7 @@ export default function GroupsList() {
         <div className={styles.grid}>
           {filteredGraphs.map((graph: IGraphList) => (
             <div key={graph._id} className={styles.graphItem}>
-              <GraphBlock 
+              <GraphBlock
                 id={graph._id}
                 name={graph.name}
                 isSubToGraph={graph.isSubscribed}

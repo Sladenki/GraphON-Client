@@ -1,16 +1,15 @@
-import React, { memo, useMemo, useCallback, useRef } from "react";
-import styles from "./GraphBlock.module.scss";
-import { useSubscription } from "@/hooks/useSubscriptionGraph";
-import { useAuth } from "@/providers/AuthProvider";
+import React, { memo } from "react";
 import Image from "next/image";
-import { Calendar, Info, Heart, HeartCrack } from "lucide-react";
-import { notifyInfo, notifySuccess } from "@/lib/notifications";
-import { Card, Button } from "@heroui/react";
+import { Heart, HeartCrack, Calendar, Info } from "lucide-react";
+import { notifySuccess, notifyInfo } from "@/lib/notifications";
+import styles from './GraphBlock.module.scss';
+import { useAuth } from "@/providers/AuthProvider";
+import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useRouter } from "next/navigation";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
-interface GraphBlockProps {
+interface GraphBlockSimpleProps {
   id: string;
   name: string;
   isSubToGraph: boolean;
@@ -19,7 +18,7 @@ interface GraphBlockProps {
   handleScheduleButtonClick: () => void;
 }
 
-const GraphBlock: React.FC<GraphBlockProps> = ({ 
+const GraphBlockSimple: React.FC<GraphBlockSimpleProps> = memo(({ 
   id, 
   name, 
   isSubToGraph, 
@@ -28,137 +27,97 @@ const GraphBlock: React.FC<GraphBlockProps> = ({
   handleScheduleButtonClick,
 }) => {
   const router = useRouter();
-  const fullImageUrl = useMemo(() => 
-    imgPath ? `${BASE_S3_URL}/${imgPath}` : "", 
-    [imgPath]
-  );
-
   const { isLoggedIn } = useAuth();
   const { isSubscribed, toggleSubscription, isLoading } = useSubscription(isSubToGraph, id);
 
-  const handleSubscription = useCallback(() => {
-    toggleSubscription();
+  const fullImageUrl = imgPath ? `${BASE_S3_URL}/${imgPath}` : "";
+  const displayName = name || "Без названия";
 
+  const handleSubscription = () => {
+    toggleSubscription();
     if (!isSubscribed) {
-      notifySuccess(
-        "Вы подписались на граф",
-        "Расписание этого графа будет отображаться в вашем расписании"
-      );
+      notifySuccess("Вы подписались на граф");
     } else {
       notifyInfo("Вы отписались от графа");
     }
-  }, [toggleSubscription, isSubscribed]);
+  };
 
-  const handleScheduleClick = useCallback((e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    handleScheduleButtonClick();
-  }, [handleScheduleButtonClick]);
-
-  const handleInfoClick = useCallback((e?: React.MouseEvent) => {
-    e?.stopPropagation();
+  const handleInfoClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     router.push(`/groups/${id}`);
-  }, [router, id]);
-
-  const tiltRef = useRef<HTMLDivElement | null>(null);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const el = tiltRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const px = x / rect.width; // 0..1
-    const py = y / rect.height; // 0..1
-    const rotateY = (px - 0.5) * 12; // deg
-    const rotateX = (0.5 - py) * 8; // deg
-    el.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
-    el.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
-    el.style.setProperty('--mx', `${(px * 100).toFixed(1)}%`);
-    el.style.setProperty('--my', `${(py * 100).toFixed(1)}%`);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    const el = tiltRef.current;
-    if (!el) return;
-    el.style.setProperty('--rx', '0deg');
-    el.style.setProperty('--ry', '0deg');
-    el.style.setProperty('--mx', '50%');
-    el.style.setProperty('--my', '50%');
-  }, []);
+  };
 
   return (
-    <div className={styles.tiltWrap} ref={tiltRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-    <Card className={styles.graphBlock}>
+    <div className={styles.card}>
       <div className={styles.contentWrapper}>
         <div className={styles.imageContainer}>
-          {imgPath ? (
+          {fullImageUrl ? (
             <Image
               src={fullImageUrl}
-              alt={`Фотография ${name}`}
+              alt={displayName}
               width={400}
-              height={300}
-              className={styles.graphImage}
-              priority={false}
-              sizes="(max-width: 480px) 100vw, 380px"
+              height={240}
+              className={styles.image}
               loading="lazy"
-              decoding="async"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R+hxZLjN8pbGkT7z8D2ElwSjL1eX5/lLn8YQFaRGhTK0j6/u0Vj/9k="
             />
           ) : (
-            <div className={styles.placeholderImage}>
-              <div className={styles.placeholderIcon}>📷</div>
+            <div className={styles.placeholder}>
+              <span className={styles.placeholderIcon}>📷</span>
             </div>
           )}
+          
+          {/* Кнопка подписки */}
           {isLoggedIn && (
             <button
               onClick={(e) => { e.stopPropagation(); handleSubscription(); }}
               disabled={isLoading}
-              className={`${styles.fabSubscribe} ${isSubscribed ? styles.fabActive : ''}`}
-              aria-label={isSubscribed ? "Отписаться" : "Подписаться"}
+              className={`${styles.subscribeBtn} ${isSubscribed ? styles.active : ''}`}
               title={isSubscribed ? "Отписаться" : "Подписаться"}
             >
               {isLoading ? (
-                <div className={styles.loader} />
+                <div className={styles.spinner} />
               ) : (
                 isSubscribed ? <HeartCrack size={16} /> : <Heart size={16} />
               )}
             </button>
           )}
+          
+          {/* Оверлей с заголовком */}
           <div className={styles.overlay}>
-            <h3 className={styles.title}>{name}</h3>
+            <h3 className={styles.title}>{displayName}</h3>
           </div>
         </div>
 
-        <div className={styles.infoSection}>
-          <p className={styles.about}>{about || "Описание отсутствует"}</p>
+        {/* Описание */}
+        <div className={styles.content}>
+          <p className={styles.description}>
+            {about || "Описание отсутствует"}
+          </p>
         </div>
 
-        <footer className={styles.footer}>
+        {/* Кнопки */}
+        <div className={styles.actions}>
           <button 
-            onClick={(e) => handleScheduleClick(e)}
-            className={`${styles.actionButton} ${styles.scheduleButton}`}
-            aria-label="Открыть расписание"
+            onClick={handleScheduleButtonClick}
+            className={`${styles.actionBtn} ${styles.scheduleButton}`}
           >
             <Calendar size={16} />
             <span>Расписание</span>
           </button>
           
           <button 
-            onClick={(e) => handleInfoClick(e)}
-            className={`${styles.actionButton} ${styles.infoButton}`}
-            aria-label="Показать информацию"
+            onClick={handleInfoClick}
+            className={`${styles.actionBtn} ${styles.infoButton}`}
           >
             <Info size={16} />
             <span>Подробнее</span>
           </button>
-
-        </footer>
-
+        </div>
       </div>
-    </Card>
     </div>
   );
-};
+});
 
-export default memo(GraphBlock);
+GraphBlockSimple.displayName = 'GraphBlockSimple';
+
+export default GraphBlockSimple;
