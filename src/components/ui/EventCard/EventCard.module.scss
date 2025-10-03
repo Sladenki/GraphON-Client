@@ -17,7 +17,7 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 @mixin glass-effect-light {
   background: $glass-bg;
   border: 1px solid $glass-border;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 @mixin glass-effect {
@@ -62,11 +62,12 @@ $gradient-end: rgba(0, 255, 255, 0.05);
 .eventCard {
   max-width: 800px;
   margin: 0 auto;
-  background: var(--block-color);
+  // background: var(--block-color);
+  background: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   transition: none; // Remove on mobile
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   
   // Mobile performance optimizations
   @media (max-width: 768px) {
