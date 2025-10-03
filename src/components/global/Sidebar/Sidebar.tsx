@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import styles from './Sidebar.module.scss'
 
@@ -50,15 +51,23 @@ const Sidebar: React.FC<{}> = ({}) => {
       {/* Название проекта - отображается только на ПК */}
       {!small && (
         <div className={styles.projectTitle}>
-          GraphON
-          <div className={styles.betaLabel}>
-            Альфа версия
-          </div>
+          <Link href="/">
+            <Image
+              src="/logo_lightMode.svg"
+              alt="Logo"
+              width={130}
+              height={20}
+              className={styles.brandLogo}
+              priority
+            />
+          </Link>
         </div>
       )}
         
-      {/* @ts-expect-error типизация */}
-      <RenderMenuList arrayItems={computedItems} small={small}  />
+      <div className={styles.RenderMenuList}>
+        <RenderMenuList arrayItems={computedItems} small={small}  />
+      </div>
+     
 
       {/* Футер с кнопкой входа - только на ПК и для неавторизованных */}
       {!small && !isLoggedIn && (
