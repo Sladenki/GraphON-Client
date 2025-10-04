@@ -9,7 +9,7 @@ import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButt
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { GraduationCap, Pencil, Heart, CalendarCheck } from 'lucide-react';
+import { GraduationCap, Pencil, Heart, CalendarCheck, User, MapPin } from 'lucide-react';
 import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '@/components/ui/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
@@ -262,252 +262,210 @@ export default function Profile() {
 
     return (
         <div className={styles.profileWrapper}>
-            {typedUser && (
-                <button 
-                    type="button"
-                    className={styles.editFloatingButton}
-                    aria-label="Редактировать профиль"
-                    onClick={() => setIsEditOpen(true)}
-                >
-                    <Pencil />
-                </button>
-            )}
             {typedUser ? (
-                <>
-                    <div className={`${styles.header} ${!typedUser.selectedGraphId ? styles.headerCompact : ''}`}>
+                <div className={styles.profileCard}>
+                    {/* Левая часть - аватарка */}
+                    <div className={styles.avatarSection}>
                         <Image 
                             src={typedUser.avaPath && typedUser.avaPath.startsWith('http') ? typedUser.avaPath : NoImage} 
                             className={styles.avatar} 
                             alt="Аватар" 
-                            width={160}
-                            height={160}
+                            width={120}
+                            height={120}
                             onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src = NoImage.src;
                             }}
-                            onLoad={() => console.log('Avatar loaded successfully')}
-                        />    
-                       
-                        <div className={styles.nameGroup}>
-                            <span className={styles.name}>
-                                {getDisplayName(typedUser)}
-                            </span>
-                            {typedUser.role !== 'user' && (
-                                <span className={styles.role}>
-                                    {RoleTitles[typedUser.role]}
-                                </span>
-                            )}
+                        />
+                        
+                        {/* Роль пользователя */}
+                        <div className={styles.role}>
+                            <User size={16} className={styles.roleIcon} />
+                            <span>{typedUser.role !== 'user' ? RoleTitles[typedUser.role] : 'Пользователь'}</span>
                         </div>
-
-                        {/* Отображение выбранного ВУЗа */}
-                        {!!typedUser.selectedGraphId && selectedGraphName && (
-                            <div className={styles.selectedUniversity}>
-                                <span className={styles.selectedUniversityIcon}>
-                                    <GraduationCap size={18} />
-                                </span>
-                                <div className={styles.selectedUniversityText}>
-                                    <span className={styles.selectedUniversityLabel}>Выбранный ВУЗ</span>
-                                    <span className={styles.selectedUniversityName}>{selectedGraphName}</span>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Статистика подписок и участия в событиях */}
-                        <div className={styles.stats}>
-                            <div 
-                                className={`${styles.statItem} ${styles.clickable}`}
-                                onClick={handleSubscriptionsClick}
-                            >
-                                <span className={styles.statIcon}><Heart size={16} /></span>
-                                <div className={styles.statText}>
-                                    <span className={styles.statValue}>{typedUser.graphSubsNum ?? 0}</span>
-                                    <span className={styles.statLabel}>подписок</span>
-                                </div>
-                            </div>
-                            <div 
-                                className={`${styles.statItem} ${styles.clickable}`}
-                                onClick={handleEventsClick}
-                            >
-                                <span className={styles.statIcon}><CalendarCheck size={16} /></span>
-                                <div className={styles.statText}>
-                                    <span className={styles.statValue}>{typedUser.attentedEventsNum ?? 0}</span>
-                                    <span className={styles.statLabel}>мероприятий</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Блок выбора ВУЗа доступен всегда для роли create, иначе только при отсутствии selectedGraphId */}
-                    {/* {(!typedUser.selectedGraphId || typedUser.role === UserRole.Create) && (
-                        <div className={styles.universityCard}>
-                            <h3 className={styles.universityTitle}>Выберите университет</h3>
-                            <div className={styles.universityRow}>
-                                <select
-                                    id="universitySelect"
-                                    onChange={handleUniversitySelect}
-                                    disabled={isLoadingUniversities}
-                                    className={styles.select}
-                                    value={selectValue}
-                                >
-                                    <option value="" disabled>{isLoadingUniversities ? 'Загрузка…' : '— Выберите ВУЗ —'}</option>
-                                    {(globalGraphsResp || []).map(g => (
-                                        <option key={g._id} value={g._id}>{g.name}</option>
-                                    ))}
-                                </select>
-                                <button 
-                                    type="button"
-                                    className={styles.applyBtn} 
-                                    disabled={isLoadingUniversities || !pendingUniversity || isApplyingUniversity}
-                                    onClick={handleApplyUniversity}
-                                >
-                                    {isApplyingUniversity ? 'Применение…' : 'Применить'}
-                                </button>
-                            </div>
-                        </div>
-                    )} */}
-
-                    {/* Отображение подписок */}
-                    {showSubscriptions && (
-                        <div className={styles.dataSection}>
-                            <h2 className={styles.sectionTitle}>Ваши подписки</h2>
-                            
-                            {/* Поиск и фильтры */}
-                            <div className={styles.searchSection}>
-                                <SearchBar
-                                    onSearch={setSubscriptionQuery}
-                                    onTagFilter={setSelectedSubscriptionTags}
-                                    placeholder="Поиск подписок..."
-                                    availableTags={availableSubscriptionTags}
-                                    showTagFilter={true}
-                                    initialQuery={subscriptionQuery}
-                                    initialSelectedTags={selectedSubscriptionTags}
-                                />
-                                
-                                {/* Информация о результатах */}
-                                {(subscriptionQuery.trim() !== '' || selectedSubscriptionTags.length > 0) && (
-                                    <div className={styles.searchResults}>
-                                        Найдено: {filteredSubscriptions.length} из {userSubscriptions?.data?.length || 0} подписок
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Состояния загрузки и контента */}
-                            {loadingSubscriptions ? (
-                                <div className={styles.loader}>
-                                    <SpinnerLoader />
-                                </div>
-                            ) : filteredSubscriptions.length > 0 ? (
-                                <div className={styles.subscriptionsGrid}>
-                                    {filteredSubscriptions.map((subscription: any) => (
-                                        <div key={subscription._id} className={styles.subscriptionItem}>
-                                            <GraphBlock
-                                                id={subscription._id}
-                                                name={subscription.name}
-                                                isSubToGraph={subscription.isSubscribed}
-                                                imgPath={subscription.imgPath}
-                                                about={subscription.about}
-                                                handleScheduleButtonClick={() => {}}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : userSubscriptions?.data && userSubscriptions.data.length > 0 ? (
-                                <div className={styles.emptyStateWrapper}>
-                                    <EmptyState
-                                        message="Ничего не найдено"
-                                        subMessage="Попробуйте изменить параметры поиска"
-                                        emoji="🔍"
-                                    />
-                                </div>
-                            ) : (
-                                <div className={styles.emptyStateWrapper}>
-                                    <EmptyState
-                                        message="У вас пока нет подписок"
-                                        subMessage="Подпишитесь на интересные группы, чтобы следить за их активностью"
-                                        emoji="💝"
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Отображение мероприятий */}
-                    {showEvents && (
-                        <div className={styles.dataSection}>
-                            <h2 className={styles.sectionTitle}>Все ваши мероприятия</h2>
-                            
-                            {/* Поиск и фильтры */}
-                            <div className={styles.searchSection}>
-                                <SearchBar
-                                    onSearch={setEventQuery}
-                                    onTagFilter={setSelectedEventTags}
-                                    placeholder="Поиск мероприятий..."
-                                    availableTags={availableEventTags}
-                                    showTagFilter={true}
-                                    initialQuery={eventQuery}
-                                    initialSelectedTags={selectedEventTags}
-                                />
-                                
-                                {/* Информация о результатах */}
-                                {(eventQuery.trim() !== '' || selectedEventTags.length > 0) && (
-                                    <div className={styles.searchResults}>
-                                        Найдено: {filteredEvents.length} из {allUserEvents?.data?.length || 0} мероприятий
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Состояния загрузки и контента */}
-                            {loadingAllEvents ? (
-                                <div className={styles.loader}>
-                                    <SpinnerLoader />
-                                </div>
-                            ) : filteredEvents.length > 0 ? (
-                                <div className={styles.eventsList}>
-                                    {filteredEvents.map((event: any, index: number) => (
-                                        <div 
-                                            key={event._id} 
-                                            className={styles.eventCard}
-                                            style={{ 
-                                                '--delay': `${Math.min(index * 0.05, 0.5)}s`
-                                            } as React.CSSProperties}
-                                        >
-                                            <EventCard 
-                                                event={event.eventId || event} 
-                                                isAttended={event.isAttended}
-                                                onDelete={handleDelete}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : allUserEvents?.data && allUserEvents.data.length > 0 ? (
-                                <div className={styles.emptyStateWrapper}>
-                                    <EmptyState
-                                        message="Ничего не найдено"
-                                        subMessage="Попробуйте изменить параметры поиска"
-                                        emoji="🔍"
-                                    />
-                                </div>
-                            ) : (
-                                <div className={styles.emptyStateWrapper}>
-                                    <EmptyState
-                                        message="У вас пока нет мероприятий"
-                                        subMessage="Зарегистрируйтесь на интересные события, чтобы не пропустить их"
-                                        emoji="📅"
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    )}
-                
-
-                    <div className={styles.logoutContainer}>
-                        <LogOut/>
                     </div>
                     
+                    {/* Центральная часть - основная информация */}
+                    <div className={styles.mainInfo}>
+                        <div className={styles.nameSection}>
+                            <h1 className={styles.userName}>
+                                {getDisplayName(typedUser)}
+                            </h1>
+                        </div>
+                        
+                        {/* Статистика в виде блоков */}
+                        <div className={styles.statsBlocks}>
+                            <div 
+                                className={`${styles.statBlock} ${showSubscriptions ? styles.active : ''}`}
+                                onClick={handleSubscriptionsClick}
+                            >
+                                <div className={styles.statBlockIcon}>
+                                    <Heart size={20} />
+                                </div>
+                                <div className={styles.statBlockContent}>
+                                    <div className={styles.statBlockNumber}>{typedUser.graphSubsNum ?? 0}</div>
+                                    <div className={styles.statBlockLabel}>Подписок</div>
+                                </div>
+                            </div>
+                            <div 
+                                className={`${styles.statBlock} ${showEvents ? styles.active : ''}`}
+                                onClick={handleEventsClick}
+                            >
+                                <div className={styles.statBlockIcon}>
+                                    <CalendarCheck size={20} />
+                                </div>
+                                <div className={styles.statBlockContent}>
+                                    <div className={styles.statBlockNumber}>{typedUser.attentedEventsNum ?? 0}</div>
+                                    <div className={styles.statBlockLabel}>Мероприятий</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    
+                    {/* Кнопка редактирования */}
+                    <button 
+                        className={styles.editButton}
+                        onClick={() => setIsEditOpen(true)}
+                    >
+                        <Pencil size={16} />
+                    </button>
+                    
                     <EditProfilePopUp isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
-                 
-                </>
+                </div>
             ) : <LoginButton/>}
+            
+            {/* Секции контента */}
+            {typedUser && showSubscriptions && (
+                <div className={styles.contentSection}>
+                    <h2 className={styles.sectionTitle}>Ваши подписки</h2>
+                    
+                    {/* Поиск и фильтры */}
+                    <div className={styles.searchSection}>
+                        <SearchBar
+                            onSearch={setSubscriptionQuery}
+                            onTagFilter={setSelectedSubscriptionTags}
+                            placeholder="Поиск подписок..."
+                            availableTags={availableSubscriptionTags}
+                            showTagFilter={true}
+                            initialQuery={subscriptionQuery}
+                            initialSelectedTags={selectedSubscriptionTags}
+                        />
+                        
+                        {/* Информация о результатах */}
+                        {(subscriptionQuery.trim() !== '' || selectedSubscriptionTags.length > 0) && (
+                            <div className={styles.searchResults}>
+                                Найдено: {filteredSubscriptions.length} из {userSubscriptions?.data?.length || 0} подписок
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Состояния загрузки и контента */}
+                    {loadingSubscriptions ? (
+                        <div className={styles.loader}>
+                            <SpinnerLoader />
+                        </div>
+                    ) : filteredSubscriptions.length > 0 ? (
+                        <div className={styles.subscriptionsGrid}>
+                            {filteredSubscriptions.map((subscription: any) => (
+                                <div key={subscription._id} className={styles.subscriptionItem}>
+                                    <GraphBlock
+                                        id={subscription._id}
+                                        name={subscription.name}
+                                        isSubToGraph={subscription.isSubscribed}
+                                        imgPath={subscription.imgPath}
+                                        about={subscription.about}
+                                        handleScheduleButtonClick={() => {}}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    ) : userSubscriptions?.data && userSubscriptions.data.length > 0 ? (
+                        <div className={styles.emptyStateWrapper}>
+                            <EmptyState
+                                message="Ничего не найдено"
+                                subMessage="Попробуйте изменить параметры поиска"
+                                emoji="🔍"
+                            />
+                        </div>
+                    ) : (
+                        <div className={styles.emptyStateWrapper}>
+                            <EmptyState
+                                message="У вас пока нет подписок"
+                                subMessage="Подпишитесь на интересные группы, чтобы следить за их активностью"
+                                emoji="💝"
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {typedUser && showEvents && (
+                <div className={styles.contentSection}>
+                    <h2 className={styles.sectionTitle}>Все ваши мероприятия</h2>
+                    
+                    {/* Поиск и фильтры */}
+                    <div className={styles.searchSection}>
+                        <SearchBar
+                            onSearch={setEventQuery}
+                            onTagFilter={setSelectedEventTags}
+                            placeholder="Поиск мероприятий..."
+                            availableTags={availableEventTags}
+                            showTagFilter={true}
+                            initialQuery={eventQuery}
+                            initialSelectedTags={selectedEventTags}
+                        />
+                        
+                        {/* Информация о результатах */}
+                        {(eventQuery.trim() !== '' || selectedEventTags.length > 0) && (
+                            <div className={styles.searchResults}>
+                                Найдено: {filteredEvents.length} из {allUserEvents?.data?.length || 0} мероприятий
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Состояния загрузки и контента */}
+                    {loadingAllEvents ? (
+                        <div className={styles.loader}>
+                            <SpinnerLoader />
+                        </div>
+                    ) : filteredEvents.length > 0 ? (
+                        <div className={styles.eventsList}>
+                            {filteredEvents.map((event: any, index: number) => (
+                                <div 
+                                    key={event._id} 
+                                    className={styles.eventCard}
+                                    style={{ 
+                                        '--delay': `${Math.min(index * 0.05, 0.5)}s`
+                                    } as React.CSSProperties}
+                                >
+                                    <EventCard 
+                                        event={event.eventId || event} 
+                                        isAttended={event.isAttended}
+                                        onDelete={handleDelete}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    ) : allUserEvents?.data && allUserEvents.data.length > 0 ? (
+                        <div className={styles.emptyStateWrapper}>
+                            <EmptyState
+                                message="Ничего не найдено"
+                                subMessage="Попробуйте изменить параметры поиска"
+                                emoji="🔍"
+                            />
+                        </div>
+                    ) : (
+                        <div className={styles.emptyStateWrapper}>
+                            <EmptyState
+                                message="У вас пока нет мероприятий"
+                                subMessage="Зарегистрируйтесь на интересные события, чтобы не пропустить их"
+                                emoji="📅"
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
