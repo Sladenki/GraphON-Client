@@ -12,6 +12,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { Settings, User } from 'lucide-react';
 
 import RenderMenuList from './RenderMenuList/RenderMenuList';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 
 
 const Sidebar: React.FC<{}> = ({}) => {
@@ -82,12 +83,17 @@ const Sidebar: React.FC<{}> = ({}) => {
       </div>
      
 
-      {/* Футер с кнопкой входа - только на ПК и для неавторизованных */}
-      {!small && !isLoggedIn && (
+      {/* Футер с кнопкой входа и переключателем темы - только на ПК */}
+      {!small && (
         <div className={styles.footer}>
-          <Link href="/signIn" className={styles.signInLink}>
-            Войти в аккаунт
-          </Link>
+          {!isLoggedIn && (
+            <Link href="/signIn" className={styles.signInLink}>
+              Войти в аккаунт
+            </Link>
+          )}
+          <div className={styles.themeToggleContainer}>
+            <ThemeToggle size="sm" />
+          </div>
         </div>
       )}
 

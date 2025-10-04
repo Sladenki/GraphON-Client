@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: column;
     align-items: center; // возвращаем выравнивание элементов по центру
-    height: calc(100vh - 28px); // строго по вьюпорту
+    height: 100vh; // строго по вьюпорту
     padding-bottom: 16px;
     overflow-y: hidden; // убираем вертикальный скролл
     overflow-x: visible; // даем тени/капсуле выходить вправо
@@ -18,6 +18,20 @@
 
 .RenderMenuList{
   margin-left: 15px;
+}
+
+// Футер для кнопки входа и информации о пользователе
+.footer {
+  width: calc(100% - 50px);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  flex-shrink: 0; // Предотвращаем сжатие футера
+  margin-left: 30px;
 }
 
 // .projectTitle {
@@ -129,16 +143,7 @@
     }
 }
 
-// Футер для кнопки входа и информации о пользователе
-.footer {
-  width: 100%;
-  padding: 16px 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: auto;
-  flex-shrink: 0; // Предотвращаем сжатие футера
-}
+
 
 .signInLink {
   display: block;
@@ -179,6 +184,14 @@
   border: 1px solid rgba(var(--main-Color), 0.1);
   border-radius: 8px;
   width: 100%;
+}
+
+.themeToggleContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
 }
 
 // Темная тема для футера

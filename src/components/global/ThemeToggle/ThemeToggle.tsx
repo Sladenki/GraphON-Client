@@ -43,13 +43,13 @@ const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({ className, size = 
     <div className={wrapperClassName}>
       <span className={styles.themeLabel}>
         {themeIcon}
+        <span>{theme === 'dark' ? 'Темная' : 'Светлая'}</span>
       </span>
       <label className={styles.themeSwitch}>
         <input 
           type="checkbox" 
           onChange={toggleTheme} 
           checked={theme === "light"} 
-          // Отключаем автофокус на мобильных для предотвращения виртуальной клавиатуры
           autoFocus={false}
         />
         <span className={styles.slider}></span>

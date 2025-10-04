@@ -224,9 +224,6 @@ export default function Profile() {
                             </div>
                         </div>
                     )}
-
-
-                    {!small && <ThemeToggle size="md" />}   
                 
                         
                     {
