@@ -67,7 +67,6 @@ const SignIn = () => {
             <div className={styles.spinner}></div>
           ) : (
             <>
-              <MessageCircle size={24} />
               <div className={styles.buttonContent}>
                 <span className={styles.buttonTitle}>Войти через Telegram</span>
                 <span className={styles.buttonSubtitle}>Быстро и безопасно</span>
