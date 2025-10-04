@@ -51,6 +51,19 @@
   color: #666;
 }
 
+.university {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.universityIcon {
+  color: #666;
+}
+
 /* Центральная часть - основная информация */
 .mainInfo {
   flex: 1;

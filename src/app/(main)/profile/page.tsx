@@ -283,6 +283,14 @@ export default function Profile() {
                             <User size={16} className={styles.roleIcon} />
                             <span>{typedUser.role !== 'user' ? RoleTitles[typedUser.role] : 'Пользователь'}</span>
                         </div>
+                        
+                        {/* Выбранный ВУЗ */}
+                        {selectedGraphName && (
+                            <div className={styles.university}>
+                                <GraduationCap size={16} className={styles.universityIcon} />
+                                <span>{selectedGraphName}</span>
+                            </div>
+                        )}
                     </div>
                     
                     {/* Центральная часть - основная информация */}
