@@ -5,7 +5,7 @@ import styles from './Profile.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { EmptyState } from '@/components/global/EmptyState/EmptyState';
 import { IUser, RoleTitles, UserRole } from '@/types/user.interface';
-import LoginButton from '@/components/global/ProfileCorner/LoginButton/LoginButton';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, useMemo, useCallback } from 'react';
@@ -30,6 +30,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 export default function Profile() {
     const { user, setUser, loading, error } = useAuth();
     const queryClient = useQueryClient();
+    const router = useRouter();
     const small = useMediaQuery('(max-width: 650px)')
     const setSelectedGraphId = useSetSelectedGraphId();
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
@@ -251,6 +252,13 @@ export default function Profile() {
     // Текущее значение select: выбранное пользователем или уже установленный ВУЗ (для роли create)
     const selectValue = pendingUniversity || (typeof typedUser?.selectedGraphId === 'string' ? typedUser.selectedGraphId : '');
 
+    // Редирект на страницу входа если пользователь не авторизован
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/signIn');
+        }
+    }, [loading, user, router]);
+
     // Условные возвраты после всех хуков
     if(loading || loadingEvents) {
         return <SpinnerLoader/>
@@ -341,7 +349,7 @@ export default function Profile() {
                     
                     <EditProfilePopUp isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
                 </div>
-            ) : <LoginButton/>}
+            ) : null}
             
             {/* Секции контента */}
             {typedUser && showSubscriptions && (
