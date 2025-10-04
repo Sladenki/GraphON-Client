@@ -16,6 +16,11 @@ export const GraphSubsService = {
     // Получение событий из подписанных графов
     async getSubsEvents() {
         return axiosAuth.get(`/graphSubs/getSubsEvents`)
+    },
+
+    // Получение всех групп, на которые подписан пользователь
+    async getUserSubscribedGraphs() {
+        return axiosAuth.get(`/graphSubs/getUserSubscribedGraphs`)
     }
 
 }

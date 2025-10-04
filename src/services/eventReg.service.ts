@@ -17,4 +17,9 @@ export const EventRegService = {
         return axiosAuth.get(`/eventRegs/getUsersByEventId/${eventId}`);
     },
 
+    // --- Получение всех мероприятий пользователя ---
+    async getAllUserEvents() {
+        return axiosAuth.get(`/eventRegs/getAllUserEvents`);
+    },
+
 }

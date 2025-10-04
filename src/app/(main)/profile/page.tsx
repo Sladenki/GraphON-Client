@@ -17,6 +17,7 @@ import ThemeToggle from '@/components/global/ThemeToggle/ThemeToggle';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { GraphService } from '@/services/graph.service';
 import { UserService } from '@/services/user.service';
+import { GraphSubsService } from '@/services/graphSubs.service';
 import { IGraphList } from '@/types/graph.interface';
 import { useSetSelectedGraphId } from '@/stores/useUIStore';
 import EditProfilePopUp from './EditProfilePopUp/EditProfilePopUp';
@@ -28,6 +29,8 @@ export default function Profile() {
     const small = useMediaQuery('(max-width: 650px)')
     const setSelectedGraphId = useSetSelectedGraphId();
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
+    const [showSubscriptions, setShowSubscriptions] = useState<boolean>(false);
+    const [showEvents, setShowEvents] = useState<boolean>(false);
     
     const { data: allEvents, isLoading: loadingEvents } = useQuery({
         queryKey: ['eventsList'],
@@ -42,6 +45,20 @@ export default function Profile() {
             const res = await GraphService.getGlobalGraphs();
             return res.data as IGraphList[];
         }
+    });
+
+    // Загружаем подписки пользователя
+    const { data: userSubscriptions, isLoading: loadingSubscriptions } = useQuery({
+        queryKey: ['userSubscriptions'],
+        queryFn: () => GraphSubsService.getUserSubscribedGraphs(),
+        enabled: !!user && showSubscriptions
+    });
+
+    // Загружаем все мероприятия пользователя
+    const { data: allUserEvents, isLoading: loadingAllEvents } = useQuery({
+        queryKey: ['allUserEvents'],
+        queryFn: () => EventRegService.getAllUserEvents(),
+        enabled: !!user && showEvents
     });
 
     // Локальный выбор ВУЗа (применяется по кнопке)
@@ -122,6 +139,17 @@ export default function Profile() {
         }
     };
 
+    // Обработчики для статистик
+    const handleSubscriptionsClick = () => {
+        setShowSubscriptions(!showSubscriptions);
+        setShowEvents(false);
+    };
+
+    const handleEventsClick = () => {
+        setShowEvents(!showEvents);
+        setShowSubscriptions(false);
+    };
+
     // Текущее значение select: выбранное пользователем или уже установленный ВУЗ (для роли create)
     const selectValue = pendingUniversity || (typeof typedUser?.selectedGraphId === 'string' ? typedUser.selectedGraphId : '');
 
@@ -179,14 +207,20 @@ export default function Profile() {
 
                         {/* Статистика подписок и участия в событиях */}
                         <div className={styles.stats}>
-                            <div className={styles.statItem}>
+                            <div 
+                                className={`${styles.statItem} ${styles.clickable}`}
+                                onClick={handleSubscriptionsClick}
+                            >
                                 <span className={styles.statIcon}><Heart size={16} /></span>
                                 <div className={styles.statText}>
                                     <span className={styles.statValue}>{typedUser.graphSubsNum ?? 0}</span>
                                     <span className={styles.statLabel}>подписок</span>
                                 </div>
                             </div>
-                            <div className={styles.statItem}>
+                            <div 
+                                className={`${styles.statItem} ${styles.clickable}`}
+                                onClick={handleEventsClick}
+                            >
                                 <span className={styles.statIcon}><CalendarCheck size={16} /></span>
                                 <div className={styles.statText}>
                                     <span className={styles.statValue}>{typedUser.attentedEventsNum ?? 0}</span>
@@ -222,6 +256,55 @@ export default function Profile() {
                                     {isApplyingUniversity ? 'Применение…' : 'Применить'}
                                 </button>
                             </div>
+                        </div>
+                    )}
+
+                    {/* Отображение подписок */}
+                    {showSubscriptions && (
+                        <div className={styles.dataSection}>
+                            <h2 className={styles.sectionTitle}>Ваши подписки</h2>
+                            {loadingSubscriptions ? (
+                                <div className={styles.loading}>Загрузка...</div>
+                            ) : userSubscriptions?.data && userSubscriptions.data.length > 0 ? (
+                                <div className={styles.subscriptionsGrid}>
+                                    {userSubscriptions.data.map((subscription: any) => (
+                                        <div key={subscription._id} className={styles.subscriptionCard}>
+                                            <div className={styles.subscriptionInfo}>
+                                                <h3 className={styles.subscriptionName}>{subscription.name}</h3>
+                                                {subscription.about && (
+                                                    <p className={styles.subscriptionAbout}>{subscription.about}</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className={styles.emptyMessage}>У вас пока нет подписок</div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Отображение мероприятий */}
+                    {showEvents && (
+                        <div className={styles.dataSection}>
+                            <h2 className={styles.sectionTitle}>Все ваши мероприятия</h2>
+                            {loadingAllEvents ? (
+                                <div className={styles.loading}>Загрузка...</div>
+                            ) : allUserEvents?.data && allUserEvents.data.length > 0 ? (
+                                <div className={styles.eventsGrid}>
+                                    {allUserEvents.data.map((event: any) => (
+                                        <div key={event._id} className={styles.eventCardWrapper}>
+                                            <EventCard 
+                                                event={event.eventId || event} 
+                                                isAttended={event.isAttended}
+                                                onDelete={handleDelete}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className={styles.emptyMessage}>У вас пока нет мероприятий</div>
+                            )}
                         </div>
                     )}
                 
