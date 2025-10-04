@@ -1,48 +1,43 @@
 .searchBar {
   position: relative;
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .searchInputWrapper {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .searchInput {
   position: relative;
   display: flex;
   align-items: center;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 28px; // pill style
+  background: var(--block-color);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
   padding: 12px 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
+  transition: border-color 0.2s ease;
+  
   &:hover {
-    border-color: rgba(var(--main-Color), 0.2);
+    border-color: rgba(var(--main-Color), 0.3);
   }
 
   &.focused {
-    border-color: rgba(var(--main-Color), 0.3);
-    background: #ffffff;
+    border-color: rgb(var(--main-Color));
   }
 }
 
 .searchIcon {
-  color: #6b7280; // Серый цвет
+  color: var(--secondary-text);
   margin-right: 12px;
   flex-shrink: 0;
-  transition: color .2s ease, transform .2s ease;
+  transition: color 0.2s ease;
 
   &.searchIconFocused {
-    color: #4b5563; // Темнее серый при фокусе
-    transform: scale(1.05);
+    color: rgb(var(--main-Color));
   }
 }
 
@@ -51,49 +46,51 @@
   border: none;
   outline: none;
   background: transparent;
-  font-size: 17px;
-  color: #6b7280; // Серый цвет для текста
+  font-size: 16px;
+  color: var(--main-text);
   font-family: var(--font-inter), 'Inter', sans-serif;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.4;
-  position: relative;
-  z-index: 1;
+  font-weight: 400;
+  line-height: 1.5;
 
   &::placeholder {
-    color: #9ca3af; // Светло-серый для placeholder
+    color: var(--secondary-text);
     font-weight: 400;
-    transition: color 0.3s ease;
   }
 
   &:focus {
-    color: #4b5563; // Темнее серый при фокусе
-    
-    &::placeholder {
-      color: #9ca3af;
-    }
+    color: var(--main-text);
   }
+}
+
+.rightControls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vertDivider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-color);
 }
 
 .clearButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border: none;
-  background: rgba(var(--main-Color), 0.08);
-  border-radius: 50%;
-  color: rgb(var(--main-Color));
+  background: transparent;
+  color: var(--secondary-text);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-left: 12px;
-  position: relative;
-  z-index: 1;
+  border-radius: 14px;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.15);
-    transform: scale(1.05);
+    background: rgba(var(--main-Color), 0.1);
+    color: rgb(var(--main-Color));
   }
 
   &:active {
@@ -101,42 +98,28 @@
   }
 }
 
-.rightControls{
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.vertDivider{
-  width: 1px;
-  height: 28px;
-  background: rgba(0,0,0,0.08);
-}
-
 .filterButton {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   border: none;
-  background: rgba(var(--main-Color), 0.05);
-  border-radius: 10px;
-  color: rgb(var(--main-Color));
+  background: transparent;
+  color: var(--secondary-text);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-left: 2px;
-  z-index: 1;
+  border-radius: 14px;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.12);
-    transform: translateY(-1px);
+    background: rgba(var(--main-Color), 0.1);
+    color: rgb(var(--main-Color));
   }
 
   &.active {
-    background: rgba(var(--main-Color), 0.15);
+    background: rgba(var(--main-Color), 0.1);
+    color: rgb(var(--main-Color));
   }
 
   &:active {
@@ -146,90 +129,69 @@
 
 .tagCount {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -6px;
+  right: -6px;
   background: rgb(var(--main-Color));
   color: white;
-  font-size: 11px;
-  font-weight: 700;
-  min-width: 18px;
-  height: 18px;
-  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 4px;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
 .activeFilters {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
   margin-top: 8px;
-  padding: 4px;
 }
 
 .queryFilter {
-  background: rgba(var(--main-Color), 0.08);
+  background: rgba(var(--main-Color), 0.1);
   color: rgb(var(--main-Color));
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
   border: 1px solid rgba(var(--main-Color), 0.2);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.12);
-  }
 }
 
 .tagFilter {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(var(--main-Color), 0.08);
+  gap: 4px;
+  background: rgba(var(--main-Color), 0.1);
   color: rgb(var(--main-Color));
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
   border: 1px solid rgba(var(--main-Color), 0.2);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.12);
-  }
 }
 
 .removeTag {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border: none;
-  background: rgba(var(--main-Color), 0.1);
+  background: transparent;
   color: inherit;
   cursor: pointer;
-  border-radius: 50%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-left: 4px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin-left: 2px;
 
   &:hover {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;
-    transform: scale(1.1);
   }
 
   &:active {
@@ -238,22 +200,22 @@
 }
 
 .clearAllButton {
-  background: rgba(239, 68, 68, 0.08);
+  background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.2);
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(239, 68, 68, 0.12);
+    background: rgba(239, 68, 68, 0.15);
   }
 
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.95);
   }
 }
 
@@ -263,252 +225,145 @@
   left: 0;
   right: 0;
   background: var(--block-color);
-  border: 1px solid rgba(var(--main-Color), 0.15);
-  border-radius: 16px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
   z-index: 1000;
-  margin-top: 12px;
+  margin-top: 8px;
   overflow: hidden;
-  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dateFilterSection{
-  padding: 14px 16px 6px;
-  border-bottom: 1px solid rgba(var(--main-Color), 0.15);
-}
-
-.dateRow{
-  display: flex;
-  gap: 12px;
-}
-
-.dateFieldInDropdown{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(var(--main-Color), 0.05);
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(var(--main-Color), 0.15);
-  font-family: var(--font-inter), 'Inter', sans-serif;
-  font-size: 14px;
-  color: var(--main-text);
-
-  input[type="date"]{
-    border: none;
-    background: transparent;
-    color: var(--main-text);
-    outline: none;
-  }
-}
-
-.tbdToggleInline{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--main-text);
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-16px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .tagFilterHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 20px 16px;
-  border-bottom: 1px solid rgba(var(--main-Color), 0.15);
-  background: var(--background-color);
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tagFilterTitle {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--main-text);
   font-family: var(--font-inter), 'Inter', sans-serif;
-  letter-spacing: -0.01em;
 }
 
 .clearTagsButton {
-  background: linear-gradient(135deg, 
-    rgba(var(--main-Color), 0.08) 0%, 
-    rgba(var(--main-Color), 0.12) 100%);
-  border: 1px solid rgba(var(--main-Color), 0.2);
-  color: rgba(var(--main-Color), 0.8);
-  font-size: 13px;
-  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--secondary-text);
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(var(--main-Color), 0.1);
+  padding: 4px 8px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: linear-gradient(135deg, 
-      rgba(var(--main-Color), 0.15) 0%, 
-      rgba(var(--main-Color), 0.2) 100%);
+    background: rgba(var(--main-Color), 0.1);
     color: rgb(var(--main-Color));
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.2);
+    border-color: rgba(var(--main-Color), 0.3);
   }
 
   &:active {
-    transform: translateY(0);
+    transform: scale(0.95);
   }
+}
+
+.dateFilterSection {
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dateRow {
+  display: flex;
+  gap: 8px;
+}
+
+.dateFieldInDropdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--background-color);
+  padding: 6px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--main-text);
+
+  input[type="date"] {
+    border: none;
+    background: transparent;
+    color: var(--main-text);
+    outline: none;
+    font-size: 12px;
+  }
+}
+
+.tbdToggleInline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--main-text);
 }
 
 .tagList {
   display: flex;
   flex-direction: column;
-  max-height: 240px;
+  max-height: 200px;
   overflow-y: auto;
-  padding: 12px;
+  padding: 8px;
 
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(var(--main-Color), 0.05);
-    border-radius: 4px;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, 
-      rgba(var(--main-Color), 0.3) 0%, 
-      rgba(var(--main-Color), 0.5) 100%);
-    border-radius: 4px;
-    transition: background 0.3s ease;
-
-    &:hover {
-      background: linear-gradient(135deg, 
-        rgba(var(--main-Color), 0.4) 0%, 
-        rgba(var(--main-Color), 0.6) 100%);
-    }
+    background: var(--border-color);
+    border-radius: 3px;
   }
 }
 
 .tagOption {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
-  padding: 12px 16px;
+  padding: 8px 12px;
   border: none;
   background: transparent;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   text-align: left;
   color: var(--main-text);
-  font-size: 15px;
-  font-weight: 500;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, 
-      rgba(var(--main-Color), 0.05) 0%, 
-      rgba(var(--main-Color), 0.08) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 12px;
-    pointer-events: none; // Важно: не блокируем взаимодействие с кнопкой
-    z-index: -1; // Размещаем под содержимым
-  }
+  font-size: 14px;
+  font-weight: 400;
 
   &:hover {
-    transform: translateX(4px);
-    
-    &::before {
-      opacity: 1;
-    }
+    background: rgba(var(--main-Color), 0.05);
   }
 
   &.selected {
-    background: linear-gradient(135deg, 
-      rgba(var(--main-Color), 0.15) 0%, 
-      rgba(var(--main-Color), 0.2) 100%);
+    background: rgba(var(--main-Color), 0.1);
     color: rgb(var(--main-Color));
-    font-weight: 600;
-    transform: translateX(6px);
-    box-shadow: 
-      0 4px 12px rgba(var(--main-Color), 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-
-    &::before {
-      opacity: 1;
-    }
+    font-weight: 500;
   }
 
   &:active {
-    transform: translateX(4px) scale(0.98);
+    transform: scale(0.98);
   }
 }
 
 .tagRemoveIcon {
   margin-left: auto;
-}
-
-// Темная тема
-html[data-theme="dark"] {
-  .searchInput {
-    background: linear-gradient(135deg, 
-      rgba(var(--main-Color), 0.03) 0%, 
-      rgba(var(--main-Color), 0.08) 100%);
-    border-color: rgba(var(--main-Color), 0.2);
-    box-shadow: 
-      0 4px 20px rgba(0, 0, 0, 0.2),
-      0 1px 3px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
-
-    &:hover {
-      border-color: rgba(var(--main-Color), 0.3);
-      box-shadow: 
-        0 8px 30px rgba(0, 0, 0, 0.25),
-        0 4px 12px rgba(var(--main-Color), 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    &.focused {
-      border-color: rgba(var(--main-Color), 0.5);
-      box-shadow: 
-        0 8px 35px rgba(0, 0, 0, 0.3),
-        0 4px 15px rgba(var(--main-Color), 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    }
-  }
-
-  .tagFilterDropdown {
-    background: var(--block-color);
-    border-color: rgba(var(--main-Color), 0.3);
-    box-shadow: 
-      0 12px 40px rgba(0, 0, 0, 0.3),
-      0 4px 20px rgba(var(--main-Color), 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  }
-
-  .tagFilterHeader {
-    background: var(--background-color);
-    border-bottom-color: rgba(var(--main-Color), 0.25);
-  }
 }
 
 // Адаптивность
@@ -519,155 +374,46 @@ html[data-theme="dark"] {
   }
 
   .searchInput {
-    padding: 14px 18px;
-    border-radius: 14px;
-    
-    &:hover {
-      transform: translateY(-1px);
-    }
-    
-    &.focused {
-      transform: translateY(-1px);
-    }
+    padding: 14px 16px;
+    border-radius: 20px;
   }
 
   .input {
-    font-size: 16px; // Предотвращает зум на iOS
-    font-weight: 500;
-  }
-
-  .searchIcon {
-    margin-right: 14px;
-  }
-
-  .clearButton {
-    width: 28px;
-    height: 28px;
-    margin-left: 10px;
-  }
-
-  .filterButton {
-    width: 36px;
-    height: 36px;
-    margin-left: 10px;
+    font-size: 16px;
   }
 
   .tagFilterDropdown {
-    max-height: 200px;
-    border-radius: 14px;
-    margin-top: 8px;
+    border-radius: 16px;
+    margin-top: 6px;
   }
 
   .tagFilterHeader {
-    padding: 16px 16px 12px;
-  }
-
-  .tagFilterTitle {
-    font-size: 15px;
+    padding: 12px 12px 8px;
   }
 
   .tagList {
-    padding: 8px;
-    max-height: 180px;
+    padding: 6px;
+    max-height: 160px;
   }
 
   .tagOption {
-    padding: 10px 14px;
+    padding: 10px 12px;
     font-size: 14px;
-    
-    &:hover {
-      transform: translateX(2px);
-    }
-    
-    &.selected {
-      transform: translateX(4px);
-    }
   }
 
   .activeFilters {
-    gap: 6px;
+    gap: 4px;
     margin-top: 6px;
   }
 
   .queryFilter,
   .tagFilter {
-    font-size: 12px;
-    padding: 5px 10px;
+    font-size: 11px;
+    padding: 3px 6px;
   }
 
   .clearAllButton {
-    font-size: 12px;
-    padding: 5px 10px;
-  }
-}
-
-// Анимации для мобильных устройств
-@media (hover: none) {
-  .searchInput {
-    &:hover {
-      transform: none;
-    }
-  }
-
-  .clearButton {
-    &:hover {
-      transform: none;
-    }
-
-    &:active {
-      transform: scale(0.9) rotate(90deg);
-    }
-  }
-
-  .filterButton {
-    &:hover {
-      transform: none;
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
-
-  .removeTag {
-    &:hover {
-      transform: none;
-    }
-
-    &:active {
-      transform: scale(0.8) rotate(90deg);
-    }
-  }
-
-  .clearAllButton,
-  .clearTagsButton {
-    &:hover {
-      transform: none;
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
-
-  .tagOption {
-    &:hover {
-      transform: none;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
-  }
-
-  .queryFilter,
-  .tagFilter {
-    &:hover {
-      transform: none;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
+    font-size: 11px;
+    padding: 3px 6px;
   }
 }
