@@ -21,7 +21,7 @@ const RenderMenuList: React.FC<{arrayItems: IArrayItem[], small: boolean}> = ({ 
       const order = ['/profile', '/schedule/', '/subs/'];
       return order.indexOf(a.path) - order.indexOf(b.path);
     });
-  const group3 = arrayItems.filter(({ path }) => ['/manage/', '/createPost/'].includes(path));
+  const group3 = arrayItems.filter(({ path }) => ['/manage/', '/admin/'].includes(path));
 
   const renderGroup = (items: IArrayItem[]) => (
     <div className={styles.group}>
@@ -29,7 +29,7 @@ const RenderMenuList: React.FC<{arrayItems: IArrayItem[], small: boolean}> = ({ 
         const isActive = pathname === path;
 
         let shouldRender = !forAuthUsers || (forAuthUsers && isLoggedIn);
-        if (path === '/createPost/' && user?.role === UserRole.User) shouldRender = false;
+        if (path === '/admin/' && user?.role === UserRole.User) shouldRender = false;
 
         return shouldRender ? (
           <MenuItem key={id} id={id} icon={icon} title={title} path={path} isActive={isActive} small={small} />

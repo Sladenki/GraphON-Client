@@ -50,7 +50,7 @@ const Sidebar: React.FC<{}> = ({}) => {
         forAuthUsers: true,
         path: '/manage/'
       };
-      const createIndex = items.findIndex((it) => it.path === '/createPost/');
+      const createIndex = items.findIndex((it) => it.path === '/admin/');
       if (createIndex !== -1) {
         items.splice(createIndex, 0, manageItem);
       } else {

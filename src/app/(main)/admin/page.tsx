@@ -3,7 +3,7 @@
 import { GraphService } from '@/services/graph.service';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react'
-import styles from './createPage.module.scss'
+import styles from './admin.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useAuth } from '@/providers/AuthProvider';
 import { UserRole, IUser } from '@/types/user.interface';
@@ -21,7 +21,7 @@ import { CreateTopicGraphForm } from '@/components/admin/CreateTopicGraphForm/Cr
 import { GetWeeklySchedule } from '@/components/admin/GetWeeklySchedule/GetWeeklySchedule';
 import { useSelectedGraphId } from '@/stores/useUIStore';
 
-const CreatePost = () => {
+const Admin = () => {
     const { user } = useAuth();
     const typedUser = user as IUser | null;
     const { canAccessCreate, canAccessEditor, canAccessSysAdmin, canAccessAdmin } = useRoleAccess(typedUser?.role);
@@ -145,6 +145,6 @@ const CreatePost = () => {
     );
 };
 
-export default CreatePost;
+export default Admin;
 
 

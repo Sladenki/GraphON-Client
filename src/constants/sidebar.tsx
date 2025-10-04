@@ -31,7 +31,7 @@ export const sidebar = [
   createSidebarItem(6, <Heart color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Подписки', true, '/subs/'),
   createSidebarItem(7, <Network color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Графы', false, '/graphs/'),
   createSidebarItem(2, <CalendarCheck color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Расписание', true, '/schedule/'),
-  createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Создать', true, '/createPost/'),
+  createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Админка', true, '/admin/'),
 ];
 
 // --- Для мобилок ---
@@ -42,5 +42,5 @@ export const sidebarMobile = [
   createSidebarItem(6, <Heart color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Подписки', true, '/subs/'),
   createSidebarItem(2, <CalendarCheck color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Расписание', true, '/schedule/'),
   // Управление будет добавляться динамически в BottomMenu
-  createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Создать', true, '/createPost/'),
+  createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Админка', true, '/admin/'),
 ];
