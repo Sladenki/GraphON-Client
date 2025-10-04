@@ -111,18 +111,17 @@
   background: var(--block-color);
   border: 1px solid #e9ecef;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 1.5rem 2rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  min-width: 120px;
+  gap: 1rem;
+  min-width: 200px;
   transition: all 0.2s ease;
   cursor: pointer;
   
   &:hover {
-    background: #f1f3f4;
+    background: rgba(var(--main-Color), 0.05);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
   &.active {
@@ -135,16 +134,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 24px;
+  height: 24px;
   color: #666;
   transition: all 0.2s ease;
   
   .statBlock.active & {
-    background: rgba(var(--main-Color), 0.1);
     color: rgb(var(--main-Color));
   }
 }
@@ -156,8 +151,8 @@
 }
 
 .statBlockNumber {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 600;
   color: #1a1a1a;
   line-height: 1;
   transition: color 0.2s ease;
@@ -168,11 +163,9 @@
 }
 
 .statBlockLabel {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: #666;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: 400;
   transition: color 0.2s ease;
   
   .statBlock.active & {
@@ -268,21 +261,21 @@
   }
 
   .statBlock {
-    min-width: 100px;
-    padding: 0.75rem;
+    min-width: 150px;
+    padding: 1rem 1.5rem;
   }
 
   .statBlockIcon {
-    width: 28px;
-    height: 28px;
+    width: 20px;
+    height: 20px;
   }
 
   .statBlockNumber {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 
   .statBlockLabel {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .statsSection {
