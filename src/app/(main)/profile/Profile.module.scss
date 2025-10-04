@@ -489,11 +489,44 @@
   font-style: italic;
 }
 
+/* Поиск и фильтры */
+.searchSection {
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.searchResults {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--main-text);
+  opacity: 0.7;
+  text-align: center;
+}
+
+.emptyStateWrapper {
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
 /* Сетка подписок */
 .subscriptionsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.subscriptionItem {
+  animation: fadeIn 0.3s ease-out;
 }
 
 .subscriptionCard {
@@ -522,11 +555,70 @@
   line-height: 1.4;
 }
 
-/* Сетка мероприятий */
-.eventsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1rem;
+/* Список мероприятий */
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.eventCard {
+  width: 100%;
+  animation: fadeIn 0.4s ease-out forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 768px) {
+  .searchSection {
+    padding: 16px 0;
+    margin-bottom: 16px;
+  }
+
+  .searchResults {
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  .emptyStateWrapper {
+    padding: 20px;
+    min-height: 200px;
+  }
+
+  .subscriptionsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px 0;
+  }
+
+  .eventsList {
+    gap: 16px;
+    padding: 16px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .subscriptionsGrid {
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .eventsList {
+    gap: 12px;
+    padding: 12px 0;
+  }
 }
 
 /* Поддержка уменьшенного движения */
@@ -549,6 +641,14 @@
     &:hover {
       transform: none;
     }
+  }
+
+  .subscriptionItem {
+    animation: none;
+  }
+
+  .eventCard {
+    animation: none;
   }
 }
 
