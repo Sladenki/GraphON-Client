@@ -35,7 +35,7 @@ export default function Profile() {
     const setSelectedGraphId = useSetSelectedGraphId();
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
     const [showSubscriptions, setShowSubscriptions] = useState<boolean>(false);
-    const [showEvents, setShowEvents] = useState<boolean>(false);
+    const [showEvents, setShowEvents] = useState<boolean>(true);
     
     // Состояния для поиска и фильтрации
     const [subscriptionQuery, setSubscriptionQuery] = useState<string>('');
@@ -286,19 +286,22 @@ export default function Profile() {
                             }}
                         />
                         
-                        {/* Роль пользователя */}
-                        <div className={styles.role}>
-                            <User size={16} className={styles.roleIcon} />
-                            <span>{typedUser.role !== 'user' ? RoleTitles[typedUser.role] : 'Пользователь'}</span>
-                        </div>
-                        
-                        {/* Выбранный ВУЗ */}
-                        {selectedGraphName && (
-                            <div className={styles.university}>
-                                <GraduationCap size={16} className={styles.universityIcon} />
-                                <span>{selectedGraphName}</span>
+                        {/* Информация о пользователе справа */}
+                        <div className={styles.userInfo}>
+                            {/* Роль пользователя */}
+                            <div className={styles.role}>
+                                <User size={16} className={styles.roleIcon} />
+                                <span>{typedUser.role !== 'user' ? RoleTitles[typedUser.role] : 'Пользователь'}</span>
                             </div>
-                        )}
+                            
+                            {/* Выбранный ВУЗ */}
+                            {selectedGraphName && (
+                                <div className={styles.university}>
+                                    <GraduationCap size={16} className={styles.universityIcon} />
+                                    <span>{selectedGraphName}</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
                     
                     {/* Центральная часть - основная информация */}
