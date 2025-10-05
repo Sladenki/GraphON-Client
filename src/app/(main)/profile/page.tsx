@@ -350,6 +350,15 @@ export default function Profile() {
                         <Pencil size={16} />
                     </button>
                     
+                    {/* Кнопка редактирования для мобильной версии */}
+                    <button 
+                        className={styles.editButtonMobile}
+                        onClick={() => setIsEditOpen(true)}
+                    >
+                        <Pencil size={16} />
+                        <span>Редактировать профиль</span>
+                    </button>
+                    
                     <EditProfilePopUp isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
                 </div>
             ) : null}

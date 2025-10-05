@@ -223,6 +223,35 @@
   }
 }
 
+/* Кнопка редактирования для мобильной версии */
+.editButtonMobile {
+  display: none;
+  width: 90%;
+  padding: 12px 16px;
+  background: rgba(var(--main-Color), 0.1);
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 12px;
+  color: rgb(var(--main-Color));
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  
+  &:hover {
+    background: rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.3);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
 
 /* Мобильная адаптивность */
 @media (max-width: 768px) {
@@ -305,10 +334,11 @@
   }
 
   .editButton {
-    position: static;
-    width: 36px;
-    height: 36px;
-    margin-top: 1rem;
+    display: none;
+  }
+  
+  .editButtonMobile {
+    display: flex;
   }
 }
 
