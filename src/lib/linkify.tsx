@@ -1,6 +1,6 @@
 import React from 'react';
 
-const URL_REGEX = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
+const URL_REGEX = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}\/[^\s]*)/gi;
 
 function normalizeUrl(possibleUrl: string): string {
   if (/^https?:\/\//i.test(possibleUrl)) return possibleUrl;
