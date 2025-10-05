@@ -177,6 +177,13 @@
   opacity: 0.8;
 }
 
+.themeToggleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 .signInLink {
   display: block;
   padding: 12px 16px;

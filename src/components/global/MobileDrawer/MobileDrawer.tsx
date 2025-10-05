@@ -10,6 +10,7 @@ import { useUIStore } from '@/stores/useUIStore'
 import Link from 'next/link'
 import Image from 'next/image'
 import LogoLightMode from '../../../../public/logo_lightMode.svg'
+import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import styles from './MobileDrawer.module.scss'
 
 interface MobileDrawerProps {
@@ -216,9 +217,9 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
         {/* Футер */}
         <div className={styles.footer}>
           {isLoggedIn ? (
-            <p className={styles.userInfo}>
-              Привет, {user?.username || 'пользователь'}!
-            </p>
+            <div className={styles.themeToggleContainer}>
+              <ThemeToggle size="sm" />
+            </div>
           ) : (
             <Link href="/signIn" className={styles.signInLink}>
               Войти в аккаунт
