@@ -394,7 +394,7 @@ const EventCard: React.FC<EventProps> = ({
             </span>
           </div>
           
-          {isEditing ? (
+        {isEditing ? (
             <div className={styles.editForm}>
               <div className={styles.checkboxContainer}>
                 <input
@@ -438,10 +438,10 @@ const EventCard: React.FC<EventProps> = ({
                 className={styles.placeInput}
                 placeholder="Место проведения"
               />
-            </div>
+          </div>
           ) : (
             registerButton
-          )}
+        )}
         </div>
       </div>
       
