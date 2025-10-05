@@ -4,8 +4,8 @@
   left: 0;
   right: 0;
   height: 60px;
-  background: var(--card-background, #ffffff);
   border-bottom: 1px solid var(--border-color, #e2e8f0);
+  background-color: var(--background-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -144,7 +144,6 @@
 // Темная тема
 html[data-theme="dark"] {
   .topPanel {
-    background: var(--card-background, #1e293b);
     border-color: var(--border-color, #334155);
   }
 
