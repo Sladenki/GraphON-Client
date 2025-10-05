@@ -10,8 +10,10 @@ import { useUIStore } from '@/stores/useUIStore'
 import Link from 'next/link'
 import Image from 'next/image'
 import LogoLightMode from '../../../../public/logo_lightMode.svg'
+import LogoDarkMode from '../../../../public/logo_darkMode.svg'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import styles from './MobileDrawer.module.scss'
+import { useTheme } from 'next-themes'
 
 interface MobileDrawerProps {
   children: React.ReactNode
@@ -25,6 +27,8 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
   const startXRef = useRef<number>(0)
   const currentXRef = useRef<number>(0)
   const isDraggingRef = useRef<boolean>(false)
+
+  const { theme } = useTheme();
 
   const { user, isLoggedIn } = useAuth()
   const { isMobileNavOpen, setMobileNavOpen } = useUIStore()
@@ -179,7 +183,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
         <div className={styles.header}>
           <div className={styles.title}>
             <Image 
-              src={LogoLightMode} 
+              src={theme === 'dark' ? LogoDarkMode : LogoLightMode} 
               alt="GraphON" 
               width={120}
               height={40}

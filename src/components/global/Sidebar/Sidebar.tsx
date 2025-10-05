@@ -10,6 +10,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { sidebar } from '@/constants/sidebar';
 import { useAuth } from '@/providers/AuthProvider';
 import { Settings, User } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 import RenderMenuList from './RenderMenuList/RenderMenuList';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
@@ -19,6 +20,7 @@ const Sidebar: React.FC<{}> = ({}) => {
 
   const small = useMediaQuery('(max-width: 1000px)')
   const { user, isLoggedIn } = useAuth();
+  const { theme } = useTheme();
   // Определяем доступ к управлению: если у пользователя есть непустой список managed_graph_id
   const hasManageAccess = (() => {
     if (!user) return false;
@@ -67,7 +69,7 @@ const Sidebar: React.FC<{}> = ({}) => {
         <div className={styles.projectTitle}>
           <Link href="/">
             <Image
-              src="/logo_lightMode.svg"
+              src={theme === 'dark' ? "/logo_darkMode.svg" : "/logo_lightMode.svg"}
               alt="Logo"
               width={130}
               height={20}
