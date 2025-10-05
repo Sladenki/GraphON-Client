@@ -499,17 +499,33 @@ const EventCard: React.FC<EventProps> = React.memo(({
 
   return (
     <div className={styles.eventCardWrapper}>
-      <Card className={styles.eventCard}>
-      {/* Header */}
-      <CardHeader className={styles.cardHeader}>
-        <div className={styles.headerContent}>
-          <div className={styles.graphAvatar}>
-            <LazyGraphAvatar
-              src={fullImageUrl}
-              alt={event.graphId.name}
-              fallback={event.graphId.name}
-            />
+      <div className={styles.eventCard}>
+        {/* Header - название и группа */}
+        <div className={styles.cardHeader}>
+          <div className={styles.headerTop}>
+            <div className={styles.groupInfo}>
+              <div className={styles.groupAvatar}>
+                <LazyGraphAvatar
+                  src={fullImageUrl}
+                  alt={event.graphId.name}
+                  fallback={event.graphId.name}
+                />
+              </div>
+              <span className={styles.groupName}>{event.graphId.name}</span>
+            </div>
+            
+            <div className={styles.headerActions}>
+              <button 
+                className={styles.shareButton}
+                onClick={handleShare}
+                aria-label="Поделиться"
+              >
+                <Share2 size={16} />
+              </button>
+              {actionButtons}
+            </div>
           </div>
+          
           <div className={styles.titleSection}>
             {isEditing ? (
               <TitleInput
@@ -517,66 +533,72 @@ const EventCard: React.FC<EventProps> = React.memo(({
                 onChange={(value) => updateEditedEvent('name', value)}
               />
             ) : (
-              <h3 className={styles.title}>
+              <h2 className={styles.eventTitle}>
                 {event.name}
-              </h3>
+              </h2>
             )}
-            
-            <Chip
-              variant="flat"
-              size="sm"
-              className={styles.graphChip}
-            >
-              {event.graphId.name}
-            </Chip>
           </div>
         </div>
-        
-        <div className={styles.headerActionsRight}>
-          <Button isIconOnly variant="flat" className={styles.actionButton} onPress={handleShare} aria-label="Поделиться в Telegram">
-            <Share2 size={16} />
-          </Button>
-          {actionButtons}
-        </div>
-      </CardHeader>
-      
-      {/* Body */}
-      <CardBody className={styles.cardBody}>
-        {isEditing ? (
-          <DescriptionTextarea
-            value={editedEvent.description}
-            onChange={(value) => updateEditedEvent('description', value)}
-          />
-        ) : (
-          <p className={styles.description}>
-            {linkifyText(event.description)}
-          </p>
-        )}
-      </CardBody>
 
-      <Divider className={styles.divider} />
-      
-      {/* Footer */}
-      <CardFooter className={styles.cardFooter}>
-        {isEditing ? (
-          <EditFormInputs 
-            editedEvent={editedEvent} 
-            updateEditedEvent={updateEditedEvent}
-          />
-        ) : (
-          <div className={styles.eventInfo}>
-            <EventInfo 
-              formattedTime={formattedTime}
-              place={event.place}
-              regedUsers={event.regedUsers}
-              canViewAttendees={canViewAttendees}
-              onParticipantsClick={() => setIsAttendeesOpen(true)}
+        {/* Description */}
+        <div className={styles.cardBody}>
+          {isEditing ? (
+            <DescriptionTextarea
+              value={editedEvent.description}
+              onChange={(value) => updateEditedEvent('description', value)}
             />
-            
-            {registerButton}
+          ) : (
+            <div className={styles.description}>
+              {linkifyText(event.description)}
+            </div>
+          )}
+        </div>
+
+        {/* Important Info - время и место */}
+        <div className={styles.importantInfo}>
+          <div className={styles.timeInfo}>
+            <CalendarClock size={20} />
+            <span className={styles.timeText}>{formattedTime}</span>
           </div>
-        )}
-      </CardFooter>
+          
+          <div className={styles.placeInfo}>
+            <MapPinned size={20} />
+            <span className={styles.placeText}>{event.place}</span>
+          </div>
+        </div>
+
+        {/* Footer - участники и кнопка регистрации */}
+        <div className={styles.cardFooter}>
+          <div className={styles.participantsInfo}>
+            <UsersRound size={18} />
+            <span 
+              className={`${styles.participantsText} ${canViewAttendees ? styles.clickable : ''}`}
+              onClick={canViewAttendees ? () => setIsAttendeesOpen(true) : undefined}
+              role={canViewAttendees ? 'button' : undefined}
+              tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
+              onKeyDown={canViewAttendees ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  if (canViewAttendees) {
+                    setIsAttendeesOpen(true);
+                  }
+                }
+              } : undefined}
+            >
+              {event.regedUsers} участников
+            </span>
+          </div>
+          
+          {isEditing ? (
+            <EditFormInputs 
+              editedEvent={editedEvent} 
+              updateEditedEvent={updateEditedEvent}
+            />
+          ) : (
+            registerButton
+          )}
+        </div>
+      </div>
       
       {/* PopUp подтверждения удаления */}
       <DeleteConfirmPopUp
@@ -594,7 +616,6 @@ const EventCard: React.FC<EventProps> = React.memo(({
         eventId={event._id}
         eventName={event.name}
       />
-    </Card>
     </div>
   );
 });
