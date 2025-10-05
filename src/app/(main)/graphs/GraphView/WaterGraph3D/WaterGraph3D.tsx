@@ -18,7 +18,7 @@ import { GraphService } from '@/services/graph.service';
 import SubgraphPopUp from './SubgraphPopUp/SubgraphPopUp';
 import styles from './WaterGraph3D.module.scss';
 import { LeftPanel } from './LeftPanel/LeftPanel';
-import { ThemeNode } from './ThemeNode/ThemeNode';
+import { PlanetNode } from './PlanetNode/PlanetNode';
 
 // Add interface for the API response data
 interface SubgraphData {
@@ -278,9 +278,9 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
               : (isMobile ? 0.22 : 1)} 
             />
 
-            {/* Theme nodes */}
+            {/* Planet nodes */}
             {themes.map((theme, i) => (
-              <ThemeNode
+              <PlanetNode
                 key={theme._id.$oid}
                 theme={theme}
                 index={i}
