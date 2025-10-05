@@ -8,6 +8,8 @@ import { sidebarMobile } from '@/constants/sidebar'
 import { Settings } from 'lucide-react'
 import { useUIStore } from '@/stores/useUIStore'
 import Link from 'next/link'
+import Image from 'next/image'
+import LogoLightMode from '../../../../public/logo_lightMode.svg'
 import styles from './MobileDrawer.module.scss'
 
 interface MobileDrawerProps {
@@ -171,8 +173,13 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
         {/* Заголовок */}
         <div className={styles.header}>
           <div className={styles.title}>
-            <h2>GraphON</h2>
-            <span className={styles.beta}>Альфа</span>
+            <Image 
+              src={LogoLightMode} 
+              alt="GraphON" 
+              width={120}
+              height={40}
+              className={styles.logo}
+            />
           </div>
           <button 
             className={styles.closeButton}

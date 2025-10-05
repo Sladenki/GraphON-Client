@@ -62,6 +62,12 @@
   }
 }
 
+.logo {
+  height: auto;
+  max-width: 120px;
+  object-fit: contain;
+}
+
 .beta {
   font-family: var(--font-inter), 'Inter', sans-serif;
   font-size: 0.6rem;
