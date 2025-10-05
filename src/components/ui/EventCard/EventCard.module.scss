@@ -286,26 +286,77 @@
   width: 100%;
 }
 
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+  }
+  
+  label {
+    font-size: 14px;
+    color: var(--text-color);
+    font-family: var(--font-inter);
+  }
+}
+
 .titleInput {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: var(--font-inter);
+  padding: 8px 12px;
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 8px;
+  background: var(--background-color);
+  color: var(--text-color);
+  width: 100%;
 }
 
 .descriptionInput {
   font-size: 15px;
   font-family: var(--font-inter);
+  padding: 8px 12px;
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 8px;
+  background: var(--background-color);
+  color: var(--text-color);
+  width: 100%;
+  resize: vertical;
+  min-height: 80px;
 }
 
 .dateInput,
 .timeInput,
 .placeInput {
   font-family: var(--font-inter);
+  padding: 8px 12px;
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 8px;
+  background: var(--background-color);
+  color: var(--text-color);
+  width: 100%;
 }
 
 .timeInputs {
   display: flex;
   gap: 12px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 // Dark theme

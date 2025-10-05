@@ -1,21 +1,6 @@
 'use client'
 
-import React, { useMemo } from "react";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Button,
-  Input,
-  Textarea,
-  Chip,
-  Tooltip,
-  Divider,
-  ButtonGroup,
-  Spinner,
-  Image as HeroImage
-} from "@heroui/react";
+import React, { useState, useCallback, useMemo } from "react";
 import { 
   Edit3, 
   Trash2, 
@@ -35,11 +20,9 @@ import { useEventRegistration } from "@/hooks/useEventRegistration";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { UserRole } from "@/types/user.interface";
-import { useEventCardOptimization } from './useEventCardOptimization';
 import { useDeclensionWord } from "@/hooks/useDeclension";
 import DeleteConfirmPopUp from './DeleteConfirmPopUp/DeleteConfirmPopUp';
 import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
-// import { useRouter } from 'next/navigation';
 import styles from './EventCard.module.scss';
 import { linkifyText } from '@/lib/linkify';
 import { notifyError, notifySuccess } from '@/lib/notifications';
@@ -69,52 +52,22 @@ interface EventProps {
   disableRegistration?: boolean;
 }
 
-// Lazy загружаемое изображение для графа
-const LazyGraphAvatar = React.memo<{ 
+// Простой компонент аватара группы
+const GroupAvatar: React.FC<{ 
   src: string; 
   alt: string; 
   fallback: string;
-}>(({ src, alt, fallback }) => {
-  const [isLoaded, setIsLoaded] = React.useState(false);
-  const [hasError, setHasError] = React.useState(false);
-  const imgRef = React.useRef<HTMLImageElement>(null);
-
-  React.useEffect(() => {
-    if (!src || hasError) {
-      setHasError(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && imgRef.current) {
-          const nativeImg = new window.Image();
-          nativeImg.onload = () => setIsLoaded(true);
-          nativeImg.onerror = () => setHasError(true);
-          nativeImg.src = src;
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (imgRef.current) {
-      observer.observe(imgRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [src, hasError]);
+}> = ({ src, alt, fallback }) => {
+  const [imageError, setImageError] = useState(false);
 
   return (
-    <div className={styles.graphAvatar} ref={imgRef}>
-      {isLoaded && !hasError ? (
-        <HeroImage
+    <div className={styles.groupAvatar}>
+      {src && !imageError ? (
+        <img
           src={src}
           alt={alt}
           className={styles.avatarImage}
-          width={48}
-          height={48}
-          loading="lazy"
+          onError={() => setImageError(true)}
         />
       ) : (
         <div className={styles.avatarFallback}>
@@ -123,344 +76,103 @@ const LazyGraphAvatar = React.memo<{
       )}
     </div>
   );
-});
-LazyGraphAvatar.displayName = 'LazyGraphAvatar';
+};
 
-// Оптимизированные компоненты для редактирования без лишних ререндеров
-const EditFormInputs = React.memo<{ 
-  editedEvent: any; 
-  updateEditedEvent: (key: string, value: string | boolean) => void;
-}>(({ editedEvent, updateEditedEvent }) => {
-  // Мемоизированные обработчики для предотвращения ререндеров
-  const handleDateChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    updateEditedEvent('eventDate', e.target.value);
-  }, [updateEditedEvent]);
-
-  const handleTimeFromChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    updateEditedEvent('timeFrom', e.target.value);
-  }, [updateEditedEvent]);
-
-  const handleTimeToChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    updateEditedEvent('timeTo', e.target.value);
-  }, [updateEditedEvent]);
-
-  const handlePlaceChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    updateEditedEvent('place', e.target.value);
-  }, [updateEditedEvent]);
-
-  const handleIsDateTbdChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    updateEditedEvent('isDateTbd', e.target.checked);
-  }, [updateEditedEvent]);
-
-  return (
-  <div className={styles.editForm}>
-    <div style={{ marginBottom: '1rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem' }}>
-        <input
-          type="checkbox"
-          id="editIsDateTbd"
-          checked={editedEvent.isDateTbd || false}
-          onChange={handleIsDateTbdChange}
-          style={{ width: '16px', height: '16px' }}
-        />
-        <label htmlFor="editIsDateTbd" style={{ fontSize: '14px', color: '#374151' }}>
-          Дата и время уточняется
-        </label>
-      </div>
-    </div>
-
-    {!editedEvent.isDateTbd && (
-      <>
-        <Input
-          type="date"
-          label="Дата мероприятия"
-          value={editedEvent.eventDate}
-          onChange={handleDateChange}
-          variant="bordered"
-          startContent={<Calendar size={16} />}
-          className={styles.dateInput}
-        />
-        <div className={styles.timeInputs}>
-          <Input
-            type="time"
-            label="Время начала"
-            value={editedEvent.timeFrom}
-            onChange={handleTimeFromChange}
-            variant="bordered"
-            startContent={<Clock size={16} />}
-            className={styles.timeInput}
-          />
-          <Input
-            type="time"
-            label="Время окончания"
-            value={editedEvent.timeTo}
-            onChange={handleTimeToChange}
-            variant="bordered"
-            startContent={<Clock size={16} />}
-            className={styles.timeInput}
-          />
-        </div>
-      </>
-    )}
-
-    <Input
-      label="Место проведения"
-      value={editedEvent.place}
-      onChange={handlePlaceChange}
-      variant="bordered"
-      startContent={<MapPinned size={16} />}
-      placeholder="Введите место проведения"
-      className={styles.placeInput}
-    />
-  </div>
-  );
-});
-
-EditFormInputs.displayName = 'EditFormInputs';
-
-// Оптимизированный компонент для редактирования названия
-const TitleInput = React.memo<{
-  value: string;
-  onChange: (value: string) => void;
-}>(({ value, onChange }) => {
-  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
-  }, [onChange]);
-
-  return (
-    <Input
-      value={value}
-      onChange={handleChange}
-      placeholder="Название мероприятия"
-      variant="bordered"
-      size="lg"
-      classNames={{
-        input: styles.titleInput
-      }}
-    />
-  );
-});
-TitleInput.displayName = 'TitleInput';
-
-// Оптимизированный компонент для редактирования описания
-const DescriptionTextarea = React.memo<{
-  value: string;
-  onChange: (value: string) => void;
-}>(({ value, onChange }) => {
-  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
-  }, [onChange]);
-
-  return (
-    <Textarea
-      value={value}
-      onChange={handleChange}
-      placeholder="Описание мероприятия"
-      variant="bordered"
-      minRows={3}
-      maxRows={6}
-      className={styles.descriptionInput}
-    />
-  );
-});
-DescriptionTextarea.displayName = 'DescriptionTextarea';
-
-const EventInfo = React.memo(({ 
-  formattedTime, 
-  place, 
-  regedUsers,
-  canViewAttendees,
-  onParticipantsClick
-}: { 
-  formattedTime: string, 
-  place: string, 
-  regedUsers: number,
-  canViewAttendees?: boolean,
-  onParticipantsClick?: () => void
-}) => {
-  const correctRegedUsers = useDeclensionWord(regedUsers, 'PARTICIPANT');
-  
-  return (
-    <div className={styles.infoSection}>
-      <div className={styles.infoItem}>
-        <CalendarClock size={18} />
-        <span className={styles.infoText}>{formattedTime}</span>
-      </div>
-      
-      <div className={styles.infoItem}>
-        <MapPinned size={18} />
-        <span className={styles.infoText}>{place}</span>
-      </div>
-      
-      <div
-        className={`${styles.infoItem} ${canViewAttendees ? styles.clickable : ''}`}
-        onClick={canViewAttendees ? onParticipantsClick : undefined}
-        role={canViewAttendees ? 'button' : undefined}
-        tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
-        onKeyDown={canViewAttendees ? (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            if (onParticipantsClick) {
-              onParticipantsClick();
-            }
-          }
-        } : undefined}
-      >
-        <UsersRound size={18} />
-        <span className={styles.infoText}>{regedUsers} {correctRegedUsers}</span>
-      </div>
-    </div>
-  );
-});
-
-EventInfo.displayName = 'EventInfo';
-
-const EventCard: React.FC<EventProps> = React.memo(({ 
-  event: initialEvent, 
+const EventCard: React.FC<EventProps> = ({ 
+  event, 
   isAttended, 
   onDelete,
   disableRegistration
 }) => {
-  // const router = useRouter();
   const { isLoggedIn, user } = useAuth();
   const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
-  const [isAttendeesOpen, setIsAttendeesOpen] = React.useState(false);
+  
+  // Состояния
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedEvent, setEditedEvent] = useState(event);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isAttendeesOpen, setIsAttendeesOpen] = useState(false);
+  
+  // Хуки
+  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
+    event._id, 
+    isAttended
+  );
+  
+  // Проверка прав на просмотр участников
   const canViewAttendees = Boolean(
     user && (
       user.role === UserRole.Create ||
-      (user._id && initialEvent.graphId?.ownerUserId && user._id === initialEvent.graphId.ownerUserId) ||
-      // @ts-ignore
-      (user.role === UserRole.Admin && !!user.selectedGraphId && user.selectedGraphId._id === initialEvent.globalGraphId)
+      (user._id && event.graphId?.ownerUserId && user._id === event.graphId.ownerUserId) ||
+      (user.role === UserRole.Admin && !!user.selectedGraphId && (user.selectedGraphId as any)._id === event.globalGraphId)
     )
   );
   
-  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
-    initialEvent?._id || '', 
-    isAttended
-  );
-
-  const {
-    event,
-    editedEvent,
-    isEditing,
-    fullImageUrl,
-    formattedTime,
-    registerButtonStyles,
-    showDeleteConfirm,
-    isDeleting,
-    handleRegistration,
-    handleDelete,
-    handleConfirmDelete,
-    handleCancelDelete,
-    handleEdit,
-    handleCancel,
-    handleStartEdit,
-    updateEditedEvent
-  } = useEventCardOptimization({
-    initialEvent,
-    isAttended,
-    onDelete,
-    isLoggedIn,
-    // @ts-expect-error 123
-    toggleRegistration,
-    isRegistered,
-    isLoading
-  });
-
-  // Мемоизированные элементы для предотвращения лишних рендеров
-  const actionButtons = useMemo(() => {
-    if (!canAccessEditor) return null;
-
-    return (
-      <ButtonGroup variant="flat" size="sm" className={styles.actionButtons}>
-        {isEditing ? (
-          <>
-            <Tooltip content="Сохранить изменения">
-              <Button
-                isIconOnly
-                color="success"
-                variant="flat"
-                onPress={handleEdit}
-                className={styles.actionButton}
-              >
-                <Save size={16} />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Отменить редактирование">
-              <Button
-                isIconOnly
-                color="default"
-                variant="flat"
-                onPress={handleCancel}
-                className={styles.actionButton}
-              >
-                <X size={16} />
-              </Button>
-            </Tooltip>
-          </>
-        ) : (
-          <>
-            <Tooltip content="Редактировать мероприятие">
-              <Button
-                isIconOnly
-                color="primary"
-                variant="flat"
-                isDisabled={!!disableRegistration}
-                onPress={handleStartEdit}
-                className={styles.actionButton}
-              >
-                <Edit3 size={16} />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Удалить мероприятие">
-              <Button
-                isIconOnly
-                color="danger"
-                variant="flat"
-                isDisabled={!!disableRegistration}
-                onPress={handleDelete}
-                className={styles.actionButton}
-              >
-                <Trash2 size={16} />
-              </Button>
-            </Tooltip>
-          </>
-        )}
-      </ButtonGroup>
-    );
-  }, [canAccessEditor, isEditing, handleEdit, handleCancel, handleStartEdit, handleDelete, disableRegistration]);
-
-  const registerButton = useMemo(() => (
-    <Button
-      color={isLoggedIn ? (isRegistered ? "danger" : "primary") : "default"}
-      variant={isRegistered ? "flat" : "solid"}
-      size="md"
-      onPress={handleRegistration}
-      isDisabled={isLoading || !!disableRegistration}
-      startContent={
-        isLoading ? (
-          <Spinner size="sm" />
-        ) : !isLoggedIn ? (
-          <LogIn size={16} />
-        ) : isRegistered ? (
-          <UserX size={16} />
-        ) : (
-          <UserPlus size={16} />
-        )
-      }
-      className={styles.registerButton}
-      style={registerButtonStyles}
-    >
-      {disableRegistration ? 'Регистрация недоступна' : isLoggedIn 
-        ? isRegistered 
-          ? 'Отменить регистрацию' 
-          : 'Зарегистрироваться' 
-        : 'Войдите, чтобы зарегистрироваться'
-      }
-    </Button>
-  ), [isLoggedIn, isRegistered, isLoading, handleRegistration, registerButtonStyles, disableRegistration]);
-
-  const handleShare = React.useCallback(async () => {
+  // Форматирование времени
+  const formattedTime = useMemo(() => {
+    if (event.isDateTbd) return "Дата и время уточняется";
+    
+    const date = new Date(event.eventDate);
+    const dateStr = date.toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    
+    return `${dateStr}, ${event.timeFrom} - ${event.timeTo}`;
+  }, [event.eventDate, event.timeFrom, event.timeTo, event.isDateTbd]);
+  
+  // URL изображения
+  const fullImageUrl = useMemo(() => {
+    if (!event.graphId.imgPath) return '';
+    const baseUrl = process.env.NEXT_PUBLIC_S3_URL;
+    return `${baseUrl}/${event.graphId.imgPath}`;
+  }, [event.graphId.imgPath]);
+  
+  // Обработчики
+  const handleRegistration = useCallback(async () => {
+    if (!isLoggedIn) return;
+    try {
+      await toggleRegistration();
+    } catch (error) {
+      console.error('Registration error:', error);
+    }
+  }, [isLoggedIn, toggleRegistration]);
+  
+  const handleEdit = useCallback(async () => {
+    // Здесь должна быть логика сохранения изменений
+    setIsEditing(false);
+  }, []);
+  
+  const handleCancel = useCallback(() => {
+    setEditedEvent(event);
+    setIsEditing(false);
+  }, [event]);
+  
+  const handleStartEdit = useCallback(() => {
+    setIsEditing(true);
+  }, []);
+  
+  const handleDelete = useCallback(() => {
+    setShowDeleteConfirm(true);
+  }, []);
+  
+  const handleConfirmDelete = useCallback(async () => {
+    if (onDelete) {
+      await onDelete(event._id);
+    }
+    setShowDeleteConfirm(false);
+  }, [event._id, onDelete]);
+  
+  const handleCancelDelete = useCallback(() => {
+    setShowDeleteConfirm(false);
+  }, []);
+  
+  const updateEditedEvent = useCallback((key: string, value: string | boolean) => {
+    setEditedEvent(prev => ({ ...prev, [key]: value }));
+  }, []);
+  
+  const handleShare = useCallback(async () => {
     try {
       const shareUrl = `${window.location.origin}/events/${event._id}`;
       const text = `${event.name} — ${formattedTime}${event.place ? `, ${event.place}` : ''}`;
@@ -468,12 +180,10 @@ const EventCard: React.FC<EventProps> = React.memo(({
 
       const win = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
       if (!win) {
-        // Попап заблокирован — пробуем навигацию текущим окном
         window.location.href = telegramUrl;
       }
       notifySuccess('Откройте Telegram и выберите чат');
     } catch (err) {
-      // Фолбек: системный share, затем буфер обмена
       const fallbackUrl = `${window.location.origin}/events/${event._id}`;
       try {
         if (navigator.share) {
@@ -488,11 +198,82 @@ const EventCard: React.FC<EventProps> = React.memo(({
         notifyError('Не удалось открыть Telegram', 'Скопируйте ссылку вручную');
       }
     }
-  }, [event?._id, event?.name, formattedTime, event?.place]);
+  }, [event._id, event.name, formattedTime, event.place]);
+  
+  // Кнопки действий
+  const actionButtons = useMemo(() => {
+    if (!canAccessEditor) return null;
 
-  // Навигация по клику отключена по требованию
+    return (
+      <div className={styles.actionButtons}>
+        {isEditing ? (
+          <>
+            <button
+              className={styles.actionButton}
+              onClick={handleEdit}
+              title="Сохранить изменения"
+            >
+              <Save size={16} />
+            </button>
+            <button
+              className={styles.actionButton}
+              onClick={handleCancel}
+              title="Отменить редактирование"
+            >
+              <X size={16} />
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className={styles.actionButton}
+              onClick={handleStartEdit}
+              disabled={!!disableRegistration}
+              title="Редактировать мероприятие"
+            >
+              <Edit3 size={16} />
+            </button>
+            <button
+              className={styles.actionButton}
+              onClick={handleDelete}
+              disabled={!!disableRegistration}
+              title="Удалить мероприятие"
+            >
+              <Trash2 size={16} />
+            </button>
+          </>
+        )}
+      </div>
+    );
+  }, [canAccessEditor, isEditing, handleEdit, handleCancel, handleStartEdit, handleDelete, disableRegistration]);
 
-  // Early return для невалидных данных
+  // Кнопка регистрации
+  const registerButton = useMemo(() => (
+    <button
+      className={styles.registerButton}
+      onClick={handleRegistration}
+      disabled={isLoading || !!disableRegistration}
+    >
+      {isLoading ? (
+        <div className={styles.spinner} />
+      ) : !isLoggedIn ? (
+        <LogIn size={16} />
+      ) : isRegistered ? (
+        <UserX size={16} />
+      ) : (
+        <UserPlus size={16} />
+      )}
+      <span>
+        {disableRegistration ? 'Регистрация недоступна' : isLoggedIn 
+          ? isRegistered 
+            ? 'Отменить регистрацию' 
+            : 'Зарегистрироваться' 
+          : 'Войдите, чтобы зарегистрироваться'
+        }
+      </span>
+    </button>
+  ), [isLoggedIn, isRegistered, isLoading, handleRegistration, disableRegistration]);
+
   if (!event || !event._id) {
     return null;
   }
@@ -504,13 +285,11 @@ const EventCard: React.FC<EventProps> = React.memo(({
         <div className={styles.cardHeader}>
           <div className={styles.headerTop}>
             <div className={styles.groupInfo}>
-              <div className={styles.groupAvatar}>
-                <LazyGraphAvatar
-                  src={fullImageUrl}
-                  alt={event.graphId.name}
-                  fallback={event.graphId.name}
-                />
-              </div>
+              <GroupAvatar
+              src={fullImageUrl}
+              alt={event.graphId.name}
+              fallback={event.graphId.name}
+            />
               <span className={styles.groupName}>{event.graphId.name}</span>
             </div>
             
@@ -528,9 +307,12 @@ const EventCard: React.FC<EventProps> = React.memo(({
           
           <div className={styles.titleSection}>
             {isEditing ? (
-              <TitleInput
+              <input
+                type="text"
                 value={editedEvent.name}
-                onChange={(value) => updateEditedEvent('name', value)}
+                onChange={(e) => updateEditedEvent('name', e.target.value)}
+                className={styles.titleInput}
+                placeholder="Название мероприятия"
               />
             ) : (
               <h2 className={styles.eventTitle}>
@@ -539,17 +321,20 @@ const EventCard: React.FC<EventProps> = React.memo(({
             )}
           </div>
         </div>
-
+        
         {/* Description */}
         <div className={styles.cardBody}>
-          {isEditing ? (
-            <DescriptionTextarea
-              value={editedEvent.description}
-              onChange={(value) => updateEditedEvent('description', value)}
-            />
-          ) : (
+        {isEditing ? (
+            <textarea
+            value={editedEvent.description}
+              onChange={(e) => updateEditedEvent('description', e.target.value)}
+              className={styles.descriptionInput}
+              placeholder="Описание мероприятия"
+              rows={3}
+          />
+        ) : (
             <div className={styles.description}>
-              {linkifyText(event.description)}
+            {linkifyText(event.description)}
             </div>
           )}
         </div>
@@ -589,14 +374,54 @@ const EventCard: React.FC<EventProps> = React.memo(({
             </span>
           </div>
           
-          {isEditing ? (
-            <EditFormInputs 
-              editedEvent={editedEvent} 
-              updateEditedEvent={updateEditedEvent}
-            />
+        {isEditing ? (
+            <div className={styles.editForm}>
+              <div className={styles.checkboxContainer}>
+                <input
+                  type="checkbox"
+                  id="editIsDateTbd"
+                  checked={editedEvent.isDateTbd || false}
+                  onChange={(e) => updateEditedEvent('isDateTbd', e.target.checked)}
+                />
+                <label htmlFor="editIsDateTbd">Дата и время уточняется</label>
+              </div>
+
+              {!editedEvent.isDateTbd && (
+                <>
+                  <input
+                    type="date"
+                    value={editedEvent.eventDate}
+                    onChange={(e) => updateEditedEvent('eventDate', e.target.value)}
+                    className={styles.dateInput}
+                  />
+                  <div className={styles.timeInputs}>
+                    <input
+                      type="time"
+                      value={editedEvent.timeFrom}
+                      onChange={(e) => updateEditedEvent('timeFrom', e.target.value)}
+                      className={styles.timeInput}
+                    />
+                    <input
+                      type="time"
+                      value={editedEvent.timeTo}
+                      onChange={(e) => updateEditedEvent('timeTo', e.target.value)}
+                      className={styles.timeInput}
+                    />
+                  </div>
+                </>
+              )}
+
+              <input
+                type="text"
+                value={editedEvent.place}
+                onChange={(e) => updateEditedEvent('place', e.target.value)}
+                className={styles.placeInput}
+                placeholder="Место проведения"
+              />
+          </div>
           ) : (
             registerButton
-          )}
+        )}
         </div>
       </div>
       
@@ -606,7 +431,7 @@ const EventCard: React.FC<EventProps> = React.memo(({
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         eventName={event.name}
-        isDeleting={isDeleting}
+        isDeleting={false}
       />
 
       {/* PopUp со списком участников */}
@@ -618,8 +443,6 @@ const EventCard: React.FC<EventProps> = React.memo(({
       />
     </div>
   );
-});
-
-EventCard.displayName = 'EventCard';
+};
 
 export default EventCard;
