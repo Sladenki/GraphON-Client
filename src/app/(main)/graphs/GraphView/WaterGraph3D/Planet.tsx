@@ -2,7 +2,7 @@
 
 import { useRef, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { MeshDistortMaterial, MeshWobbleMaterial, MeshReflectorMaterial } from '@react-three/drei';
+import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface PlanetProps {
@@ -12,7 +12,11 @@ interface PlanetProps {
 export function Planet({ scale = 1 }: PlanetProps) {
   const mesh = useRef<THREE.Mesh>(null);
   const atmosphere = useRef<THREE.Mesh>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
   const { viewport } = useThree();
+  
+  // Загружаем текстуру Земли
+  const earthTexture = useTexture('/earth-texture.jpg');
   
   // Определяем размер планеты в зависимости от устройства
   const planetRadius = useMemo(() => {
@@ -27,70 +31,88 @@ export function Planet({ scale = 1 }: PlanetProps) {
     }
     return 1.8; // Оригинальный размер для десктопа
   }, []);
+
+  // Создаем материал для планеты с текстурой Земли
+  const planetMaterial = useMemo(() => {
+    const material = new THREE.MeshPhongMaterial({
+      map: earthTexture,
+      shininess: 30,
+      specular: new THREE.Color(0x222222),
+      transparent: false,
+    });
+    
+    // Настраиваем повторение текстуры
+    earthTexture.wrapS = THREE.RepeatWrapping;
+    earthTexture.wrapT = THREE.RepeatWrapping;
+    
+    return material;
+  }, [earthTexture]);
+
+  // Создаем материал для атмосферы
+  const atmosphereMaterial = useMemo(() => {
+    return new THREE.MeshPhongMaterial({
+      color: new THREE.Color(0x4fc3f7),
+      transparent: true,
+      opacity: 0.15,
+      side: THREE.BackSide,
+      shininess: 100,
+    });
+  }, []);
+
+  // Создаем материал для свечения
+  const glowMaterial = useMemo(() => {
+    return new THREE.MeshBasicMaterial({
+      color: new THREE.Color(0x4fc3f7),
+      transparent: true,
+      opacity: 0.08,
+      side: THREE.BackSide,
+    });
+  }, []);
   
   useFrame((_, delta) => {
     if (mesh.current) {
-      mesh.current.rotation.y += delta * 0.08;
-      mesh.current.rotation.x += delta * 0.02;
+      // Медленное вращение планеты
+      mesh.current.rotation.y += delta * 0.05;
     }
     if (atmosphere.current) {
-      atmosphere.current.rotation.y += delta * 0.06;
-      atmosphere.current.rotation.x += delta * 0.01;
+      // Атмосфера вращается немного быстрее
+      atmosphere.current.rotation.y += delta * 0.08;
+    }
+    if (glowRef.current) {
+      // Свечение пульсирует
+      const time = Date.now() * 0.001;
+      glowRef.current.scale.setScalar(1 + Math.sin(time * 2) * 0.05);
     }
   });
 
   return (
     <group scale={[scale, scale, scale]}>
-      {/* Main planet sphere with distortion effect */}
+      {/* Основная планета с текстурой Земли */}
       <mesh ref={mesh} castShadow receiveShadow>
-        <sphereGeometry args={[planetRadius, 64, 64]} />
-        <MeshDistortMaterial
-          color="#3a1c6b"
-          roughness={0.4}
-          metalness={0.7}
-          emissive="#a04fff"
-          emissiveIntensity={0.3}
-          distort={0.15}
-          speed={1.5}
-        />
+        <sphereGeometry args={[planetRadius, 128, 64]} />
+        <primitive object={planetMaterial} />
       </mesh>
 
-      {/* Atmosphere layer */}
-      <mesh ref={atmosphere} scale={[1.22, 1.22, 1.22]}>
-        <sphereGeometry args={[planetRadius, 32, 32]} />
-        <MeshWobbleMaterial
-          color="#a04fff"
-          transparent
-          opacity={0.13}
-          side={THREE.BackSide}
-          factor={0.2}
-          speed={1}
-        />
+      {/* Атмосфера Земли */}
+      <mesh ref={atmosphere} scale={[1.15, 1.15, 1.15]}>
+        <sphereGeometry args={[planetRadius, 64, 32]} />
+        <primitive object={atmosphereMaterial} />
       </mesh>
 
-      {/* Glow effect */}
-      <mesh scale={[1.3, 1.3, 1.3]}>
-        <sphereGeometry args={[planetRadius, 32, 32]} />
+      {/* Свечение атмосферы */}
+      <mesh ref={glowRef} scale={[1.25, 1.25, 1.25]}>
+        <sphereGeometry args={[planetRadius, 32, 16]} />
+        <primitive object={glowMaterial} />
+      </mesh>
+
+      {/* Дополнительное свечение для эффекта */}
+      <mesh scale={[1.4, 1.4, 1.4]}>
+        <sphereGeometry args={[planetRadius, 16, 8]} />
         <meshBasicMaterial
-          color="#a04fff"
+          color="#4fc3f7"
           transparent
-          opacity={0.05}
+          opacity={0.03}
           side={THREE.BackSide}
-        />
-      </mesh>
-
-      {/* Surface details */}
-      <mesh scale={[1.01, 1.01, 1.01]}>
-        <sphereGeometry args={[planetRadius, 64, 64]} />
-        <MeshReflectorMaterial
-          color="#4a2c8b"
-          roughness={0.8}
-          metalness={0.2}
-          mirror={0.1}
-          blur={[400, 100]}
-          mixBlur={1}
-          mixStrength={0.5}
-          resolution={256}
         />
       </mesh>
     </group>

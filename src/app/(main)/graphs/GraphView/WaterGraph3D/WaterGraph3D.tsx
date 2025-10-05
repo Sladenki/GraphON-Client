@@ -209,13 +209,23 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           performance={{ min: deviceType.isIPhone ? 0.7 : 0.5 }}
         >
           {/* Scene setup */}
-          <color attach="background" args={['#1a1b3d']} />
-          <fog attach="fog" args={['#1a1b3d', isMobile ? 8 : 12, isMobile ? 20 : 25]} />
+          <color attach="background" args={['#0a0a1a']} />
+          <fog attach="fog" args={['#0a0a1a', isMobile ? 8 : 12, isMobile ? 20 : 25]} />
           
           {/* Lighting */}
-          <ambientLight intensity={isMobile ? 0.5 : 0.6} />
-          <directionalLight position={[5, 5, 5]} intensity={isMobile ? 0.8 : 1} />
-          <pointLight position={[-5, -5, -5]} intensity={0.4} color="#a04fff" />
+          <ambientLight intensity={isMobile ? 0.4 : 0.5} />
+          <directionalLight 
+            position={[10, 10, 5]} 
+            intensity={isMobile ? 1.2 : 1.5} 
+            color="#ffffff"
+            castShadow
+          />
+          <directionalLight 
+            position={[-5, -5, -5]} 
+            intensity={0.3} 
+            color="#4fc3f7"
+          />
+          <pointLight position={[0, 0, 10]} intensity={0.2} color="#ffffff" />
           
           {/* Effects */}
           {!isMobile && (
@@ -249,12 +259,13 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
 
           {/* Stars background */}
           <Stars 
-            radius={isMobile ? 80 : 100}
-            depth={isMobile ? 30 : 40}
-            count={isMobile ? 2000 : 3000}
-            factor={isMobile ? 1.5 : 1.8}
+            radius={isMobile ? 100 : 150}
+            depth={isMobile ? 50 : 80}
+            count={isMobile ? 3000 : 5000}
+            factor={isMobile ? 2 : 2.5}
             fade
-            speed={isMobile ? 0.5 : 0.6}
+            speed={isMobile ? 0.3 : 0.4}
+            saturation={0.8}
           />
 
           {/* Camera Controller */}
