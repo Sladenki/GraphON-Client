@@ -250,7 +250,7 @@ const EventCard: React.FC<EventProps> = ({
   // Кнопка регистрации
   const registerButton = useMemo(() => (
     <button
-      className={styles.registerButton}
+      className={`${styles.registerButton} ${isRegistered ? styles.cancelRegistration : ''}`}
       onClick={handleRegistration}
       disabled={isLoading || !!disableRegistration}
     >
@@ -339,7 +339,7 @@ const EventCard: React.FC<EventProps> = ({
           )}
         </div>
 
-        {/* Important Info - время и место */}
+        {/* Important Info - время, место и участники */}
         <div className={styles.importantInfo}>
           <div className={styles.timeInfo}>
             <CalendarClock size={20} />
@@ -350,9 +350,29 @@ const EventCard: React.FC<EventProps> = ({
             <MapPinned size={20} />
             <span className={styles.placeText}>{event.place}</span>
           </div>
+          
+          <div className={styles.participantsInfo}>
+            <UsersRound size={18} />
+            <span 
+              className={`${styles.participantsText} ${canViewAttendees ? styles.clickable : ''}`}
+              onClick={canViewAttendees ? () => setIsAttendeesOpen(true) : undefined}
+              role={canViewAttendees ? 'button' : undefined}
+              tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
+              onKeyDown={canViewAttendees ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  if (canViewAttendees) {
+                    setIsAttendeesOpen(true);
+                  }
+                }
+              } : undefined}
+            >
+              {event.regedUsers} участников
+            </span>
+          </div>
         </div>
 
-        {/* Footer - участники и кнопка регистрации */}
+        {/* Footer - участники и кнопка регистрации (десктоп) */}
         <div className={styles.cardFooter}>
           <div className={styles.participantsInfo}>
             <UsersRound size={18} />
@@ -374,7 +394,7 @@ const EventCard: React.FC<EventProps> = ({
             </span>
           </div>
           
-        {isEditing ? (
+          {isEditing ? (
             <div className={styles.editForm}>
               <div className={styles.checkboxContainer}>
                 <input
@@ -418,10 +438,10 @@ const EventCard: React.FC<EventProps> = ({
                 className={styles.placeInput}
                 placeholder="Место проведения"
               />
-          </div>
+            </div>
           ) : (
             registerButton
-        )}
+          )}
         </div>
       </div>
       

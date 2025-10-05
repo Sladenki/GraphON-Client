@@ -223,6 +223,13 @@
   align-items: center;
 }
 
+// Десктопная версия: участники в футере
+@media (min-width: 769px) {
+  .importantInfo .participantsInfo {
+    display: none;
+  }
+}
+
 .participantsInfo {
   display: flex;
   align-items: center;
@@ -264,6 +271,10 @@
   font-family: var(--font-inter);
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   
   &:hover {
     background: rgba(var(--main-Color), 0.9);
@@ -275,6 +286,23 @@
     color: rgba(var(--text-color), 0.5);
     cursor: not-allowed;
     transform: none;
+  }
+  
+  // Стили для кнопки отмены регистрации
+  &.cancelRegistration {
+    background: linear-gradient(135deg, #f87171, #ef4444);
+    color: white;
+    border: 1px solid rgba(248, 113, 113, 0.3);
+    
+    &:hover {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(248, 113, 113, 0.25);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
   }
 }
 
@@ -410,6 +438,18 @@
       }
     }
   }
+  
+  .registerButton {
+    &.cancelRegistration {
+      background: linear-gradient(135deg, #f87171, #ef4444);
+      border-color: rgba(248, 113, 113, 0.4);
+      
+      &:hover {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        box-shadow: 0 4px 12px rgba(248, 113, 113, 0.3);
+      }
+    }
+  }
 }
 
 // Mobile adaptations
@@ -442,14 +482,35 @@
     gap: 12px;
     align-items: stretch;
   }
-
-  .participantsInfo {
-    justify-content: center;
+  
+  // Мобильная версия: вертикальное расположение
+  .importantInfo {
+    flex-direction: column;
+    gap: 8px;
   }
-
+  
+  .timeInfo,
+  .placeInfo {
+    width: 100%;
+  }
+  
+  .participantsInfo {
+    background: rgba(168, 85, 247, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    margin-top: 4px;
+  }
+  
   .registerButton {
     width: 100%;
     padding: 12px 20px;
+    margin-top: 8px;
+  }
+  
+  // Скрыть участников в футере на мобильных
+  .cardFooter .participantsInfo {
+    display: none;
   }
   
   .eventTitle {
