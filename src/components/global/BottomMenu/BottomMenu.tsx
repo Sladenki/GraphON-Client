@@ -11,15 +11,30 @@ import { UserRole } from "@/types/user.interface";
 const BottomMenu: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
   const pathname = usePathname();
-  const showProfileBadge = isLoggedIn && !user?.selectedGraphId;
+
+  // Определяем доступ к управлению
+  const hasManageAccess = (() => {
+    if (!user) return false
+    const anyUser: any = user as any
+    const managedIds = anyUser?.managed_graph_id ?? anyUser?.managedGraphIds ?? []
+    return Array.isArray(managedIds) && managedIds.length > 0
+  })()
 
   const menuItems = useMemo(() => {
-    return sidebarMobile.filter(({ forAuthUsers, path }) => {
+    // Фильтруем только нужные элементы для мобильного меню
+    const allowedPaths = ['/events/', '/groups/', '/schedule/', '/admin/']
+    
+    return sidebarMobile.filter(({ forAuthUsers, path, title }) => {
       // Базовая проверка авторизации
       let shouldInclude = !forAuthUsers || isLoggedIn;
 
-      // 🔐 Дополнительное ограничение для "Создать"
-      if (path === '/createPost/' && user?.role === UserRole.User) {
+      // Показываем только нужные вкладки
+      if (!allowedPaths.includes(path)) {
+        shouldInclude = false;
+      }
+
+      // Для админки проверяем роль пользователя
+      if (path === '/admin/' && user?.role === UserRole.User) {
         shouldInclude = false;
       }
 
@@ -38,9 +53,6 @@ const BottomMenu: React.FC = () => {
               <Link href={path} className={`${styles.link} ${isActive ? styles.active : ""}`} aria-label={title} aria-current={isActive ? "page" : undefined} title={title}>
                 <span className={styles.iconWrapper}>
                   <span className={styles.icon}>{icon}</span>
-                  {showProfileBadge && path === '/profile/' && (
-                    <span className={styles.iconBadge} aria-hidden="true" />
-                  )}
                 </span>
                 <span className={styles.srOnly}>{title}</span>
               </Link>

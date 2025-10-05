@@ -39,7 +39,11 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
 
   // Создаем мобильное меню с учетом доступа к управлению
   const mobileMenuItems = (() => {
-    const items = [...sidebarMobile]
+    // Исключаем ненужные элементы из мобильного меню
+    const excludedPaths = ['/groups/', '/events/', '/schedule/', '/admin/']
+    
+    const items = sidebarMobile.filter(({ path }) => !excludedPaths.includes(path))
+    
     if (hasManageAccess) {
       const manageItem = {
         id: 98,
