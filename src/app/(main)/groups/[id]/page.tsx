@@ -4,9 +4,11 @@ import React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { GraphService } from '@/services/graph.service'
+import { EventService } from '@/services/event.service'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
-import { Button, Card, CardHeader, CardBody, Chip, Divider } from '@heroui/react'
+import EventCard from '@/components/ui/EventCard/EventCard'
+import { Button } from '@heroui/react'
 import { ArrowLeft, Calendar, Heart, HeartCrack, Users, MapPin } from 'lucide-react'
 import Image from 'next/image'
 import { useAuth } from '@/providers/AuthProvider'
@@ -27,6 +29,16 @@ export default function GraphPage() {
     queryKey: ['graph', graphId],
     queryFn: async () => {
       const response = await GraphService.getGraphById(graphId)
+      return response
+    },
+    enabled: !!graphId,
+  })
+
+  // Загрузка мероприятий группы
+  const { data: events, isLoading: isLoadingEvents, error: eventsError } = useQuery({
+    queryKey: ['events', graphId],
+    queryFn: async () => {
+      const response = await EventService.getEventsByGraphId(graphId)
       return response
     },
     enabled: !!graphId,
@@ -93,16 +105,16 @@ export default function GraphPage() {
       </Button>
 
       {/* Карточка графа */}
-      <Card className={styles.graphCard}>
+      <div className={styles.graphCard}>
         {/* Заголовок с изображением */}
-        <CardHeader className={styles.cardHeader}>
+        <div className={styles.cardHeader}>
           <div className={styles.imageSection}>
             {fullImageUrl ? (
               <Image
                 src={fullImageUrl}
                 alt={graph.name}
                 width={600}
-                height={400}
+                height={300}
                 className={styles.graphImage}
                 priority
               />
@@ -118,38 +130,53 @@ export default function GraphPage() {
               <h1 className={styles.title}>{graph.name}</h1>
               
               {graph.parentGraphId && (
-                <Chip
-                  variant="flat"
-                  size="sm"
-                  startContent={<Users size={14} />}
-                  className={styles.parentChip}
-                >
-                  {graph.parentGraphId.name}
-                </Chip>
+                <div className={styles.parentChip}>
+                  <div className={styles.parentIcon}>
+                    <Users size={16} />
+                  </div>
+                  <div className={styles.parentContent}>
+                    <span className={styles.parentName}>{graph.parentGraphId.name}</span>
+                  </div>
+                </div>
               )}
             </div>
 
-            {isLoggedIn && (
+            <div className={styles.actionButtons}>
               <Button
-                color={isSubscribed ? 'danger' : 'primary'}
-                variant={isSubscribed ? 'flat' : 'solid'}
-                startContent={
-                  isSubscribed ? <HeartCrack size={18} /> : <Heart size={18} />
-                }
-                onPress={handleSubscription}
-                isLoading={isSubscribing}
-                className={styles.subscribeButton}
+                size="sm"
+                variant="flat"
+                color="primary"
+                startContent={<Calendar size={18} />}
+                onPress={() => {
+                  router.push(`/schedule/?graphId=${graphId}`)
+                }}
+                className={styles.scheduleButton}
               >
-                {isSubscribed ? 'Отписаться' : 'Подписаться'}
+                Расписание
               </Button>
-            )}
+              
+              {isLoggedIn && (
+                <Button
+                  color={isSubscribed ? 'danger' : 'primary'}
+                  variant={isSubscribed ? 'flat' : 'solid'}
+                  startContent={
+                    isSubscribed ? <HeartCrack size={18} /> : <Heart size={18} />
+                  }
+                  onPress={handleSubscription}
+                  isLoading={isSubscribing}
+                  className={styles.subscribeButton}
+                >
+                  {isSubscribed ? 'Отписаться' : 'Подписаться'}
+                </Button>
+              )}
+            </div>
           </div>
-        </CardHeader>
+        </div>
 
-        <Divider />
+        <div className={styles.divider} />
 
         {/* Тело карточки */}
-        <CardBody className={styles.cardBody}>
+        <div className={styles.cardBody}>
           {/* Описание */}
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>О группе</h2>
@@ -158,52 +185,47 @@ export default function GraphPage() {
             </p>
           </div>
 
-          <Divider className={styles.divider} />
+        </div>
+      </div>
 
-          {/* Информация */}
-          <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Информация</h2>
-            
-            <div className={styles.infoGrid}>
-              {graph.ownerUserId && typeof graph.ownerUserId === 'object' && (
-                <div className={styles.infoItem}>
-                  <Users size={18} className={styles.infoIcon} />
-                  <span className={styles.infoLabel}>Владелец:</span>
-                  <span className={styles.infoValue}>
-                    {graph.ownerUserId.username || 'Не указан'}
-                  </span>
-                </div>
-              )}
-
-              {graph.parentGraphId && (
-                <div className={styles.infoItem}>
-                  <MapPin size={18} className={styles.infoIcon} />
-                  <span className={styles.infoLabel}>Родительская группа:</span>
-                  <span className={styles.infoValue}>
-                    {graph.parentGraphId.name}
-                  </span>
-                </div>
-              )}
-
-              <div className={styles.infoItem}>
-                <Calendar size={18} className={styles.infoIcon} />
-                <span className={styles.infoLabel}>Расписание:</span>
-                <Button
-                  size="sm"
-                  variant="flat"
-                  color="primary"
-                  onPress={() => {
-                    // Открываем расписание
-                    router.push(`/schedule/?graphId=${graphId}`)
-                  }}
-                >
-                  Посмотреть расписание
-                </Button>
-              </div>
+      {/* Секция мероприятий */}
+      {events?.data && events.data.length > 0 && (
+        <div className={styles.eventsSection}>
+          <h2 className={styles.eventsTitle}>Мероприятия группы</h2>
+          
+          {isLoadingEvents ? (
+            <div className={styles.loader}>
+              <SpinnerLoader />
             </div>
-          </div>
-        </CardBody>
-      </Card>
+          ) : events.data.length > 0 ? (
+            <div className={styles.eventsList}>
+              {events.data.map((event: any, index: number) => (
+                <div 
+                  key={event._id} 
+                  className={styles.eventCard}
+                  style={{ 
+                    '--delay': `${Math.min(index * 0.05, 0.5)}s`
+                  } as React.CSSProperties}
+                >
+                  <EventCard 
+                    event={event} 
+                    isAttended={false}
+                    onDelete={() => {}}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyStateWrapper}>
+              <EmptyState
+                message="У группы пока нет мероприятий"
+                subMessage="Мероприятия появятся здесь, когда будут созданы"
+                emoji="📅"
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
