@@ -34,13 +34,17 @@ export const sidebar = [
   createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Админка', true, '/admin/'),
 ];
 
-// --- Для мобилок ---
-export const sidebarMobile = [
-  createSidebarItem(1, <House color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Новости', false, '/'),
-  createSidebarItem(4, <Users color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Группы', false, '/groups/'),
+// --- Для BottomMenu (нижняя панель) ---
+export const bottomMenuItems = [
   createSidebarItem(5, <CalendarCheck color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Мероприятия', false, '/events/'),
-  createSidebarItem(6, <Heart color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Подписки', true, '/subs/'),
+  createSidebarItem(4, <Users color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Группы', false, '/groups/'),
   createSidebarItem(2, <CalendarCheck color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Расписание', true, '/schedule/'),
-  // Управление будет добавляться динамически в BottomMenu
   createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Админка', true, '/admin/'),
+];
+
+// --- Для MobileDrawer (боковое меню) ---
+export const mobileDrawerItems = [
+  createSidebarItem(1, <House color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Новости', false, '/'),
+  createSidebarItem(6, <Heart color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Подписки', true, '/subs/'),
+  createSidebarItem(7, <Network color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Графы', false, '/graphs/'),
 ];

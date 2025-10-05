@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { X, Menu } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { UserRole } from '@/types/user.interface'
-import { sidebarMobile } from '@/constants/sidebar'
+import { mobileDrawerItems } from '@/constants/sidebar'
 import { Settings } from 'lucide-react'
 import { useUIStore } from '@/stores/useUIStore'
 import Link from 'next/link'
@@ -43,10 +43,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
 
   // Создаем мобильное меню с учетом доступа к управлению
   const mobileMenuItems = (() => {
-    // Исключаем ненужные элементы из мобильного меню
-    const excludedPaths = ['/groups/', '/events/', '/schedule/', '/admin/']
-    
-    const items = sidebarMobile.filter(({ path }) => !excludedPaths.includes(path))
+    const items = [...mobileDrawerItems]
     
     if (hasManageAccess) {
       const manageItem = {
@@ -56,7 +53,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
         forAuthUsers: true,
         path: '/manage/'
       }
-      items.splice(2, 0, manageItem) // Вставляем перед "Создать"
+      items.splice(2, 0, manageItem) // Вставляем перед "Графы"
     }
     return items
   })()

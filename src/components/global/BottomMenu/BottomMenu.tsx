@@ -3,7 +3,7 @@
 import React, { useMemo } from "react";
 import styles from "./BottomMenu.module.scss";
 import Link from "next/link";
-import { sidebarMobile } from "@/constants/sidebar";
+import { bottomMenuItems } from "@/constants/sidebar";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { UserRole } from "@/types/user.interface";
@@ -21,17 +21,9 @@ const BottomMenu: React.FC = () => {
   })()
 
   const menuItems = useMemo(() => {
-    // Фильтруем только нужные элементы для мобильного меню
-    const allowedPaths = ['/events/', '/groups/', '/schedule/', '/admin/']
-    
-    return sidebarMobile.filter(({ forAuthUsers, path, title }) => {
+    return bottomMenuItems.filter(({ forAuthUsers, path }) => {
       // Базовая проверка авторизации
       let shouldInclude = !forAuthUsers || isLoggedIn;
-
-      // Показываем только нужные вкладки
-      if (!allowedPaths.includes(path)) {
-        shouldInclude = false;
-      }
 
       // Для админки проверяем роль пользователя
       if (path === '/admin/' && user?.role === UserRole.User) {
