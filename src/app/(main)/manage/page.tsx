@@ -10,6 +10,9 @@ import { EventItem } from '@/types/schedule.interface';
 import { useState } from 'react';
 import EventCard from '@/components/ui/EventCard/EventCard';
 import { useAuth } from '@/providers/AuthProvider';
+import Image from 'next/image';
+import { GraduationCap, Users } from 'lucide-react';
+import NoImage from '../../../../public/noImage.png';
 import styles from './Manage.module.scss';
 
 export default function ManagePage() {
@@ -70,16 +73,35 @@ export default function ManagePage() {
 
     return (
         <div className={styles.manageWrapper}>
-            <h1 className={styles.pageTitle}>Управление графом</h1>
             <div className={styles.headerCard}>
-                <div className={styles.headerRow}>
-                    <div>
-                        <div className={styles.headerLabel}>Название</div>
-                        <div className={styles.headerValue}>{data.name}</div>
+                <div className={styles.graphHeader}>
+                    <div className={styles.graphAvatar}>
+                        <Image 
+                            src={data.imgPath ? `${process.env.NEXT_PUBLIC_S3_URL}/${data.imgPath}` : NoImage} 
+                            alt={data.name} 
+                            width={80}
+                            height={80}
+                            className={styles.avatar}
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = NoImage.src;
+                            }}
+                        />
                     </div>
-                    <div>
-                        <div className={styles.headerLabel}>Подписки</div>
-                        <div className={styles.headerValue}>{data.subsNum}</div>
+                    <div className={styles.graphInfo}>
+                        <h2 className={styles.graphName}>{data.name}</h2>
+                        {data.parentGraphId && (
+                            <div className={styles.parentGraph}>
+                                <GraduationCap size={16} className={styles.parentIcon} />
+                                <span>{data.parentGraphId.name}</span>
+                            </div>
+                        )}
+                        <div className={styles.graphStats}>
+                            <div className={styles.statItem}>
+                                <Users size={16} className={styles.statIcon} />
+                                <span>{data.subsNum} подписок</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
