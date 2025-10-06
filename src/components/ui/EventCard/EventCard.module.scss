@@ -115,16 +115,55 @@
   border-radius: 8px;
   border: none;
   background: rgba(var(--main-Color), 0.05);
-  color: rgba(var(--main-Color), 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-    transition: all 0.2s ease;
-    
-    &:hover {
+  transition: all 0.2s ease;
+  color: rgba(var(--main-Color), 0.6);
+  
+  &:hover {
     background: rgba(var(--main-Color), 0.1);
-    color: rgb(var(--main-Color));
+  }
+}
+
+// Редактирование - зелёный
+.editButton {
+  color: rgba(34, 197, 94, 0.7);
+  
+  &:hover {
+    background: rgba(34, 197, 94, 0.1);
+    color: rgb(34, 197, 94);
+  }
+}
+
+// Удаление - красный
+.deleteButton {
+  color: rgba(239, 68, 68, 0.7);
+  
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: rgb(239, 68, 68);
+  }
+}
+
+// Сохранение - синий
+.saveButton {
+  color: rgba(59, 130, 246, 0.7);
+  
+  &:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: rgb(59, 130, 246);
+  }
+}
+
+// Отмена - серый
+.cancelButton {
+  color: rgba(107, 114, 128, 0.7);
+  
+  &:hover {
+    background: rgba(107, 114, 128, 0.1);
+    color: rgb(107, 114, 128);
   }
 }
 
@@ -412,14 +451,62 @@
     border-color: rgba(var(--main-Color), 0.3);
   }
   
-  .shareButton,
-  .actionButton {
+  .shareButton {
     background: rgba(var(--main-Color), 0.08);
     color: rgba(var(--main-Color), 0.5);
     
     &:hover {
       background: rgba(var(--main-Color), 0.15);
       color: rgb(var(--main-Color));
+    }
+  }
+  
+  .actionButton {
+    background: rgba(var(--main-Color), 0.05);
+    color: rgba(var(--main-Color), 0.5);
+    
+    &:hover {
+      background: rgba(var(--main-Color), 0.1);
+    }
+  }
+  
+  // Редактирование - зелёный (темная тема)
+  .editButton {
+    color: rgba(74, 222, 128, 0.8);
+    
+    &:hover {
+      background: rgba(34, 197, 94, 0.15);
+      color: rgb(74, 222, 128);
+    }
+  }
+  
+  // Удаление - красный (темная тема)
+  .deleteButton {
+    color: rgba(248, 113, 113, 0.8);
+    
+    &:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: rgb(248, 113, 113);
+    }
+  }
+  
+  // Сохранение - синий (темная тема)
+  .saveButton {
+    color: rgba(96, 165, 250, 0.8);
+    
+    &:hover {
+      background: rgba(59, 130, 246, 0.15);
+      color: rgb(96, 165, 250);
+    }
+  }
+  
+  // Отмена - серый (темная тема)
+  .cancelButton {
+    color: rgba(156, 163, 175, 0.8);
+    
+    &:hover {
+      background: rgba(107, 114, 128, 0.15);
+      color: rgb(156, 163, 175);
     }
   }
   

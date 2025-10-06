@@ -209,14 +209,14 @@ const EventCard: React.FC<EventProps> = ({
         {isEditing ? (
           <>
             <button
-              className={styles.actionButton}
+              className={`${styles.actionButton} ${styles.saveButton}`}
               onClick={handleEdit}
               title="Сохранить изменения"
             >
               <Save size={16} />
             </button>
             <button
-              className={styles.actionButton}
+              className={`${styles.actionButton} ${styles.cancelButton}`}
               onClick={handleCancel}
               title="Отменить редактирование"
             >
@@ -226,7 +226,7 @@ const EventCard: React.FC<EventProps> = ({
         ) : (
           <>
             <button
-              className={styles.actionButton}
+              className={`${styles.actionButton} ${styles.editButton}`}
               onClick={handleStartEdit}
               disabled={!!disableRegistration}
               title="Редактировать мероприятие"
@@ -234,7 +234,7 @@ const EventCard: React.FC<EventProps> = ({
               <Edit3 size={16} />
             </button>
             <button
-              className={styles.actionButton}
+              className={`${styles.actionButton} ${styles.deleteButton}`}
               onClick={handleDelete}
               disabled={!!disableRegistration}
               title="Удалить мероприятие"
