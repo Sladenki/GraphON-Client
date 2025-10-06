@@ -53,7 +53,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
         forAuthUsers: true,
         path: '/manage/'
       }
-      items.splice(2, 0, manageItem) // Вставляем перед "Графы"
+      items.splice(4, 0, manageItem) // Вставляем перед "Графы"
     }
     return items
   })()
