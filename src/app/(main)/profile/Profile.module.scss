@@ -9,10 +9,10 @@
 }
 
 .profileCard {
-  background: white;
+  background: var(--background-color);
   border-radius: 20px;
   padding: 2rem;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(var(--main-Color), 0.08);
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -35,33 +35,33 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #e5e5e5;
+  border: 3px solid rgba(var(--main-Color), 0.15);
 }
 
 .role {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #666;
+  color: rgba(var(--text-color), 0.7);
   font-size: 0.875rem;
   font-weight: 500;
 }
 
 .roleIcon {
-  color: #666;
+  color: rgba(var(--text-color), 0.7);
 }
 
 .university {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #666;
+  color: rgba(var(--text-color), 0.7);
   font-size: 0.875rem;
   font-weight: 500;
 }
 
 .universityIcon {
-  color: #666;
+  color: rgba(var(--text-color), 0.7);
 }
 
 /* Центральная часть - основная информация */
@@ -81,7 +81,7 @@
 .userName {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-color);
   margin: 0;
   line-height: 1.2;
 }
@@ -136,7 +136,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: #666;
+  color: rgba(var(--text-color), 0.6);
   transition: all 0.2s ease;
   
   .statBlock.active & {
@@ -153,7 +153,7 @@
 .statBlockNumber {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-color);
   line-height: 1;
   transition: color 0.2s ease;
   
@@ -164,7 +164,7 @@
 
 .statBlockLabel {
   font-size: 0.875rem;
-  color: #666;
+  color: rgba(var(--text-color), 0.6);
   font-weight: 400;
   transition: color 0.2s ease;
   
@@ -188,14 +188,14 @@
 .statNumber {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-color);
   line-height: 1;
   margin-bottom: 0.25rem;
 }
 
 .statLabel {
   font-size: 0.875rem;
-  color: #666;
+  color: rgba(var(--text-color), 0.6);
   font-weight: 500;
 }
 
@@ -207,9 +207,9 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #e5e5e5;
-  background: white;
-  color: #666;
+  border: 2px solid rgba(var(--main-Color), 0.15);
+  background: var(--background-color);
+  color: rgba(var(--text-color), 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,8 +217,8 @@
   transition: all 0.2s ease;
   
   &:hover {
-    border-color: #999;
-    color: #1a1a1a;
+    border-color: rgba(var(--main-Color), 0.3);
+    color: var(--text-color);
     transform: translateY(-1px);
   }
 }
@@ -344,10 +344,10 @@
 
 /* Секции контента */
 .contentSection {
-  background: white;
+  background: var(--background-color);
   border-radius: 16px;
   padding: 1.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(var(--main-Color), 0.08);
   max-width: 800px;
   width: 100%;
 }
@@ -355,7 +355,7 @@
 .sectionTitle {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--text-color);
   margin: 0 0 1.5rem 0;
 }
 
@@ -368,7 +368,7 @@
 .searchResults {
   margin-top: 12px;
   font-size: 14px;
-  color: #666;
+  color: rgba(var(--text-color), 0.6);
   opacity: 0.7;
   text-align: center;
 }
