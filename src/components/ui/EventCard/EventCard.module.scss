@@ -339,12 +339,13 @@
   
   // Стили для кнопки отмены регистрации
   &.cancelRegistration {
-    background: linear-gradient(135deg, #f87171, #ef4444);
-    color: white;
+    background: #fca5a5;
+    color: #7f1d1d;
     border: none;
     
     &:hover {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
+      background: #f87171;
+      color: #450a0a;
       transform: translateY(-2px);
     }
     
@@ -537,12 +538,13 @@
   
   .registerButton {
     &.cancelRegistration {
-      background: linear-gradient(135deg, #f87171, #ef4444);
-      border-color: rgba(248, 113, 113, 0.4);
+      background: #fca5a5;
+      color: #7f1d1d;
+      border: none;
       
       &:hover {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
-        box-shadow: 0 4px 12px rgba(248, 113, 113, 0.3);
+        background: #f87171;
+        color: #450a0a;
       }
     }
   }
