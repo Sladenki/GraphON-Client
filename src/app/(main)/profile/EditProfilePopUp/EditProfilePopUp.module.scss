@@ -79,13 +79,14 @@
 }
 
 .input:disabled {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
-  background: rgba(var(--block-color-rgb, 255,255,255), 0.6);
+  background: rgba(var(--text-color), 0.03);
 }
 
-.input:hover {
-  background: rgba(var(--block-color-rgb, 255,255,255), 0.9);
+.input:hover:not(:disabled) {
+  border-color: rgba(var(--main-Color), 0.3);
+  background: rgba(var(--main-Color), 0.02);
 }
 
 .input:focus {
