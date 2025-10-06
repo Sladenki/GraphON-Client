@@ -221,15 +221,9 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
 
         {/* Футер */}
         <div className={styles.footer}>
-          {isLoggedIn ? (
-            <div className={styles.themeToggleContainer}>
-              <ThemeToggle size="sm" />
-            </div>
-          ) : (
-            <Link href="/signIn" className={styles.signInLink}>
-              Войти в аккаунт
-            </Link>
-          )}
+          <div className={styles.themeToggleContainer}>
+            <ThemeToggle size="sm" />
+          </div>
         </div>
       </div>
 

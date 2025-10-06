@@ -111,33 +111,26 @@
 
 .signInButton {
   display: flex;
-  align-items: center;
+  flex-direction: row;
   gap: 8px;
-  padding: 8px 16px;
+  padding: 10px 16px;
+  background: rgba(var(--main-Color), 0.1);
+  border: 1px solid rgba(var(--main-Color), 0.2);
   border-radius: 12px;
-  background: var(--primary-color-light, #e0e7ff);
-  color: var(--primary-color, #6366f1);
-  border: 1px solid var(--primary-color-border, #c7d2fe);
-  text-decoration: none;
-  font-weight: 600;
+  color: rgb(var(--main-Color));
+  font-family: var(--font-inter), 'Inter', sans-serif;
   font-size: 14px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: var(--primary-color, #6366f1);
-    color: white;
+    background: rgba(var(--main-Color), 0.15);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
 
   &:active {
     transform: translateY(0);
-  }
-
-  @media (max-width: 480px) {
-    padding: 6px 12px;
-    font-size: 12px;
-    gap: 6px;
   }
 }
 
@@ -185,14 +178,4 @@ html[data-theme="dark"] {
     }
   }
 
-  .signInButton {
-    background: var(--primary-color-light, #1e1b4b);
-    color: var(--primary-color, #818cf8);
-    border-color: var(--primary-color-border, #312e81);
-
-    &:hover {
-      background: var(--primary-color, #818cf8);
-      color: white;
-    }
-  }
 }
