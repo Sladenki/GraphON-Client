@@ -4,15 +4,6 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { 
-  Card, 
-  CardBody, 
-  Button, 
-  Chip, 
-  Spinner,
-  Divider,
-  Image as HeroImage
-} from '@heroui/react';
-import { 
   ArrowLeft, 
   Calendar, 
   Clock, 
@@ -30,6 +21,8 @@ import { useEventRegistration } from '@/hooks/useEventRegistration';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import { UserRole } from '@/types/user.interface';
 import { linkifyText } from '@/lib/linkify';
+import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import { notifySuccess, notifyError } from '@/lib/notifications';
 import styles from './EventPage.module.scss';
 
 interface EventPageProps {
@@ -37,11 +30,8 @@ interface EventPageProps {
 }
 
 const EventPage: React.FC<EventPageProps> = ({ eventId }) => {
-  console.log('EventPage rendered with eventId:', eventId);
-  
   const router = useRouter();
   const { isLoggedIn, user } = useAuth();
-  const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
   
   const [isAttendeesOpen, setIsAttendeesOpen] = useState(false);
 
@@ -61,7 +51,7 @@ const EventPage: React.FC<EventPageProps> = ({ eventId }) => {
     user && (
       user.role === UserRole.Create ||
       (user._id && event?.data?.graphId?.ownerUserId && user._id === event?.data?.graphId?.ownerUserId) ||
-      (user.role === UserRole.Admin && !!user.selectedGraphId && user.selectedGraphId._id === event?.data?.globalGraphId)
+      (user.role === UserRole.Admin && !!user.selectedGraphId && (user.selectedGraphId as any)._id === event?.data?.globalGraphId)
     )
   );
 
@@ -75,6 +65,27 @@ const EventPage: React.FC<EventPageProps> = ({ eventId }) => {
       return;
     }
     await toggleRegistration();
+  };
+
+  const handleShare = async () => {
+    try {
+      const shareUrl = `${window.location.origin}/events/${eventId}`;
+      const text = `${event?.data?.name}`;
+      const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
+
+      const win = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+      if (!win) {
+        window.location.href = telegramUrl;
+      }
+      notifySuccess('Откройте Telegram и выберите чат');
+    } catch (err) {
+      try {
+        await navigator.clipboard.writeText(`${window.location.origin}/events/${eventId}`);
+        notifySuccess('Ссылка скопирована в буфер обмена');
+      } catch {
+        notifyError('Не удалось скопировать ссылку');
+      }
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -91,22 +102,10 @@ const EventPage: React.FC<EventPageProps> = ({ eventId }) => {
     return `${timeFrom} - ${timeTo}`;
   };
 
-  const getRegistrationButtonText = () => {
-    if (!isLoggedIn) return 'Войти для регистрации';
-    if (isRegistrationLoading) return 'Загрузка...';
-    return isRegistered ? 'Отменить регистрацию' : 'Зарегистрироваться';
-  };
-
-  const getRegistrationButtonIcon = () => {
-    if (isRegistrationLoading) return <Spinner size="sm" />;
-    return isRegistered ? <UserX size={16} /> : <UserPlus size={16} />;
-  };
-
   if (isLoading) {
     return (
       <div className={styles.loadingContainer}>
-        <Spinner size="lg" />
-        <p>Загрузка события...</p>
+        <SpinnerLoader />
       </div>
     );
   }
@@ -116,177 +115,125 @@ const EventPage: React.FC<EventPageProps> = ({ eventId }) => {
       <div className={styles.errorContainer}>
         <h2>Событие не найдено</h2>
         <p>Возможно, событие было удалено или ссылка неверна.</p>
-        <Button onClick={handleBack} color="primary">
+        <button onClick={handleBack} className={styles.backButtonError}>
           <ArrowLeft size={16} />
           Вернуться назад
-        </Button>
+        </button>
       </div>
     );
   }
 
   const eventData = event.data;
+  const fullImageUrl = eventData.graphId.imgPath 
+    ? `${process.env.NEXT_PUBLIC_S3_URL}/${eventData.graphId.imgPath}` 
+    : '';
 
   return (
     <div className={styles.eventPage}>
       {/* Header */}
       <div className={styles.header}>
-        <Button
-          variant="ghost"
-          onClick={handleBack}
-          className={styles.backButton}
-        >
+        <button onClick={handleBack} className={styles.backButton}>
           <ArrowLeft size={20} />
-          Назад
-        </Button>
+          <span>Назад</span>
+        </button>
         
-        <div className={styles.headerActions}>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={styles.shareButton}
-          >
-            <Share2 size={16} />
-            Поделиться
-          </Button>
-        </div>
+        <button onClick={handleShare} className={styles.shareButton}>
+          <Share2 size={18} />
+          <span>Поделиться</span>
+        </button>
       </div>
 
       {/* Main Content */}
       <div className={styles.content}>
-        {/* Event Card */}
-        <Card className={styles.eventCard}>
-          <CardBody className={styles.cardBody}>
-            {/* Event Header */}
-            <div className={styles.eventHeader}>
-              <div className={styles.graphInfo}>
-                <div className={styles.graphAvatar}>
-                  {eventData.graphId.imgPath ? (
-                    <HeroImage
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/${eventData.graphId.imgPath}`}
-                      alt={eventData.graphId.name}
-                      className={styles.avatarImage}
-                    />
-                  ) : (
-                    <div className={styles.avatarFallback}>
-                      {eventData.graphId.name.charAt(0)}
-                    </div>
-                  )}
+        {/* Event Info Card */}
+        <div className={styles.eventCard}>
+          {/* Group Info */}
+          <a href={`/groups/${eventData.graphId._id}`} className={styles.groupInfo}>
+            <div className={styles.groupAvatar}>
+              {fullImageUrl ? (
+                <img src={fullImageUrl} alt={eventData.graphId.name} className={styles.avatarImage} />
+              ) : (
+                <div className={styles.avatarFallback}>
+                  {eventData.graphId.name.charAt(0).toUpperCase()}
                 </div>
-                <div className={styles.graphDetails}>
-                  <Chip
-                    variant="flat"
-                    size="sm"
-                    className={styles.graphChip}
-                  >
-                    {eventData.graphId.name}
-                  </Chip>
-                </div>
+              )}
+            </div>
+            <span className={styles.groupName}>{eventData.graphId.name}</span>
+          </a>
+
+          {/* Event Title */}
+          <h1 className={styles.eventTitle}>
+            {eventData.name}
+          </h1>
+
+          {/* Description */}
+          <div className={styles.description}>
+            {linkifyText(eventData.description)}
+          </div>
+
+          {/* Event Details */}
+          <div className={styles.detailsGrid}>
+            <div className={styles.detailCard}>
+              <CalendarClock size={24} />
+              <div className={styles.detailInfo}>
+                <span className={styles.detailLabel}>Дата и время</span>
+                <span className={styles.detailValue}>
+                  {eventData.isDateTbd ? 'Дата уточняется' : `${formatDate(eventData.eventDate)}, ${formatTime(eventData.timeFrom, eventData.timeTo)}`}
+                </span>
               </div>
             </div>
 
-            {/* Event Title */}
-            <h1 className={styles.eventTitle}>
-              {eventData.name}
-            </h1>
-
-            {/* Event Details */}
-            <div className={styles.eventDetails}>
-              <div className={styles.detailItem}>
-                <Calendar className={styles.detailIcon} />
-                <div className={styles.detailContent}>
-                  <span className={styles.detailLabel}>Дата</span>
-                  <span className={styles.detailValue}>
-                    {formatDate(eventData.eventDate)}
-                  </span>
-                </div>
-              </div>
-
-              <div className={styles.detailItem}>
-                <Clock className={styles.detailIcon} />
-                <div className={styles.detailContent}>
-                  <span className={styles.detailLabel}>Время</span>
-                  <span className={styles.detailValue}>
-                    {formatTime(eventData.timeFrom, eventData.timeTo)}
-                  </span>
-                </div>
-              </div>
-
-              <div className={styles.detailItem}>
-                <MapPin className={styles.detailIcon} />
-                <div className={styles.detailContent}>
-                  <span className={styles.detailLabel}>Место</span>
-                  <span className={styles.detailValue}>
-                    {eventData.place}
-                  </span>
-                </div>
-              </div>
-
-              <div className={styles.detailItem}>
-                <Users className={styles.detailIcon} />
-                <div className={styles.detailContent}>
-                  <span className={styles.detailLabel}>Участники</span>
-                  <span className={styles.detailValue}>
-                    {eventData.regedUsers} человек
-                    {canViewAttendees && (
-                      <Button
-                        variant="light"
-                        size="sm"
-                        onClick={() => setIsAttendeesOpen(true)}
-                        className={styles.viewAttendeesButton}
-                      >
-                        <ExternalLink size={12} />
-                        Посмотреть
-                      </Button>
-                    )}
-                  </span>
-                </div>
+            <div className={styles.detailCard}>
+              <MapPin size={24} />
+              <div className={styles.detailInfo}>
+                <span className={styles.detailLabel}>Место проведения</span>
+                <span className={styles.detailValue}>{eventData.place}</span>
               </div>
             </div>
 
-            <Divider className={styles.divider} />
-
-            {/* Event Description */}
-            <div className={styles.descriptionSection}>
-              <h3 className={styles.descriptionTitle}>Описание</h3>
-              <div className={styles.description}>
-                {linkifyText(eventData.description)}
+            <div 
+              className={`${styles.detailCard} ${canViewAttendees ? styles.clickable : ''}`}
+              onClick={canViewAttendees ? () => setIsAttendeesOpen(true) : undefined}
+            >
+              <Users size={24} />
+              <div className={styles.detailInfo}>
+                <span className={styles.detailLabel}>Участники</span>
+                <span className={styles.detailValue}>
+                  {eventData.regedUsers} человек
+                </span>
               </div>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
-        {/* Registration Section */}
-        <Card className={styles.registrationCard}>
-          <CardBody className={styles.registrationBody}>
-            <div className={styles.registrationContent}>
-              <div className={styles.registrationInfo}>
-                <CalendarClock className={styles.registrationIcon} />
-                <div>
-                  <h3 className={styles.registrationTitle}>
-                    {isRegistered ? 'Вы зарегистрированы' : 'Регистрация на событие'}
-                  </h3>
-                  <p className={styles.registrationSubtitle}>
-                    {isRegistered 
-                      ? 'Вы успешно зарегистрированы на это событие'
-                      : 'Зарегистрируйтесь, чтобы принять участие в событии'
-                    }
-                  </p>
-                </div>
-              </div>
-              
-              <Button
-                color={isRegistered ? "danger" : "primary"}
-                size="lg"
-                onClick={handleRegistration}
-                disabled={isRegistrationLoading}
-                className={styles.registrationButton}
-              >
-                {getRegistrationButtonIcon()}
-                {getRegistrationButtonText()}
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
+        {/* Registration Button */}
+        <button
+          onClick={handleRegistration}
+          disabled={isRegistrationLoading}
+          className={`${styles.registrationButton} ${isRegistered ? styles.cancelRegistration : ''}`}
+        >
+          {isRegistrationLoading ? (
+            <>
+              <div className={styles.spinner}></div>
+              <span>Загрузка...</span>
+            </>
+          ) : !isLoggedIn ? (
+            <>
+              <UserPlus size={20} />
+              <span>Войти для регистрации</span>
+            </>
+          ) : isRegistered ? (
+            <>
+              <UserX size={20} />
+              <span>Отменить регистрацию</span>
+            </>
+          ) : (
+            <>
+              <UserPlus size={20} />
+              <span>Зарегистрироваться</span>
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
