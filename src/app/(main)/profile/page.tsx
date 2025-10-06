@@ -230,23 +230,25 @@ export default function Profile() {
 
     // Обработчики для статистик
     const handleSubscriptionsClick = () => {
-        setShowSubscriptions(!showSubscriptions);
+        // Если уже открыто - не закрываем, просто ничего не делаем
+        if (showSubscriptions) return;
+        
+        setShowSubscriptions(true);
         setShowEvents(false);
         // Сбрасываем поиск при переключении
-        if (!showSubscriptions) {
-            setSubscriptionQuery('');
-            setSelectedSubscriptionTags([]);
-        }
+        setSubscriptionQuery('');
+        setSelectedSubscriptionTags([]);
     };
 
     const handleEventsClick = () => {
-        setShowEvents(!showEvents);
+        // Если уже открыто - не закрываем, просто ничего не делаем
+        if (showEvents) return;
+        
+        setShowEvents(true);
         setShowSubscriptions(false);
         // Сбрасываем поиск при переключении
-        if (!showEvents) {
-            setEventQuery('');
-            setSelectedEventTags([]);
-        }
+        setEventQuery('');
+        setSelectedEventTags([]);
     };
 
     // Текущее значение select: выбранное пользователем или уже установленный ВУЗ (для роли create)
@@ -340,7 +342,6 @@ export default function Profile() {
                             </div>
                         </div>
                     </div>
-                
                     
                     {/* Кнопка редактирования */}
                     <button 
