@@ -3,8 +3,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
-import { EffectComposer, Bloom, Outline } from '@react-three/postprocessing';
-import { BlendFunction } from 'postprocessing';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { Object3D } from 'three';
 import { WaterGraph3DProps, GraphNode } from './types';
@@ -171,14 +170,6 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
 
   return (
     <div ref={containerRef} className={styles.container}>
-      {!isMobile && (
-        <LeftPanel 
-          data={combinedData}
-          onThemeSelect={handleThemeSelect}
-          selectedTheme={selectedTheme}
-          onSubgraphSelect={handleSubgraphSelect}
-        />
-      )}
       <div className={`${styles.graphContainer} ${isMobileNavOpen ? styles.navOpen : ''}`}>
         <Canvas
           camera={{ 
@@ -235,25 +226,6 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
                 luminanceSmoothing={0.9}
                 intensity={1.3}
               />
-              {activeNodeRef.current ? (
-                <Outline
-                  key={activeNodeRef.current.uuid}
-                  selection={[activeNodeRef.current]}
-                  edgeStrength={90}
-                  pulseSpeed={0.5}
-                  visibleEdgeColor={0x00ffff}
-                  hiddenEdgeColor={0x00ffff}
-                  blendFunction={BlendFunction.SCREEN}
-                />
-              ) : (
-                <Outline
-                  selection={[]}
-                  edgeStrength={0}
-                  visibleEdgeColor={0x000000}
-                  hiddenEdgeColor={0x000000}
-                  blendFunction={BlendFunction.SCREEN}
-                />
-              )}
             </EffectComposer>
           )}
 
@@ -271,12 +243,10 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
           {/* Camera Controller */}
           <CameraController activeNodeRef={activeNodeRef} isMobile={isMobile} />
    
-          {/* Planet */}
-
-            <Planet scale={activeThemeId 
-              ? (isMobile ? 0.15 : 0.4) 
-              : (isMobile ? 0.22 : 1)} 
-            />
+          {/* Planet - скрываем когда выбрана тематика */}
+            {!activeThemeId && (
+              <Planet scale={isMobile ? 0.22 : 1} />
+            )}
 
             {/* Planet nodes */}
             {themes.map((theme, i) => (
@@ -301,6 +271,17 @@ const WaterGraph3D = ({ data, searchQuery }: WaterGraph3DProps) => {
 
         </Canvas>
       </div>
+      
+      {/* Боковая панель внизу */}
+      {!isMobile && (
+        <LeftPanel 
+          data={combinedData}
+          onThemeSelect={handleThemeSelect}
+          selectedTheme={selectedTheme}
+          onSubgraphSelect={handleSubgraphSelect}
+        />
+      )}
+      
       {isMobile && (
         <ThemeCards 
           data={combinedData}

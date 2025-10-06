@@ -176,8 +176,8 @@ export function PlanetNode({
     }
     
     if (active) {
-      const activeSize = isIPhone ? 0.25 : 0.17;
-      return (isMobile ? activeSize : 0.3) * scale * baseScale;
+      const activeSize = isIPhone ? 0.4 : 0.3; // Увеличено для активной тематики
+      return (isMobile ? activeSize : 0.5) * scale * baseScale;
     }
     if (anyActive) {
       const anyActiveSize = isIPhone ? 0.18 : 0.13;
@@ -212,19 +212,35 @@ export function PlanetNode({
 
   // Вычисляем позицию узла
   const angle = (index / total) * Math.PI * 2;
-  const x = Math.cos(angle) * orbitRadius;
-  const y = Math.sin(angle) * orbitRadius;
-  const z = isMobile ? 0.15 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
+  let x, y, z;
+  
+  if (active) {
+    // Активная тематика в центре
+    x = 0;
+    y = 0;
+    z = 0;
+  } else if (anyActive) {
+    // Неактивные тематики скрываем или отодвигаем
+    x = Math.cos(angle) * (orbitRadius * 3);
+    y = Math.sin(angle) * (orbitRadius * 3);
+    z = isMobile ? 0.15 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
+  } else {
+    // Обычное позиционирование вокруг планеты
+    x = Math.cos(angle) * orbitRadius;
+    y = Math.sin(angle) * orbitRadius;
+    z = isMobile ? 0.15 * Math.sin(angle * 2) : 0.5 * Math.sin(angle * 2);
+  }
 
   // Получаем конфигурацию планеты
   const planetConfig = PLANET_CONFIG[theme.name] || PLANET_CONFIG["Наука"];
 
   // Анимации
+  // Анимации
   const { scale: springScale, glow, opacity, groupScale, rotation } = useSpring({
-    scale: active ? 1.3 : hovered ? 1.1 : 1,
-    glow: active ? (isMobile ? 2.0 : 2.5) : hovered ? 1.5 : 0.8,
-    opacity: active ? 1 : anyActive ? (isMobile ? 0.4 : 0.5) : 0.8,
-    groupScale: theme.name === 'КГТУ' && anyActive ? 0.4 : active ? 1 : anyActive ? 0.7 : 1,
+    scale: active ? 1.8 : hovered ? 1.1 : 1,
+    glow: active ? (isMobile ? 3.0 : 3.5) : hovered ? 1.5 : 0.8,
+    opacity: active ? 1 : anyActive ? (isMobile ? 0.1 : 0.2) : 0.8,
+    groupScale: active ? 1.5 : anyActive ? 0.3 : 1,
     rotation: [0, 0, 0] as [number, number, number],
     config: { 
       tension: 280, 

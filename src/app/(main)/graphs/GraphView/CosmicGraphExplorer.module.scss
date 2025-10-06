@@ -1,0 +1,648 @@
+.cosmicExplorer {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f0f23 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmicControlPanel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem 2rem;
+}
+
+.explorerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.starSystemTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+.systemStats {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-left: 0.5rem;
+}
+
+.explorationMode {
+  .modeButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    &.active {
+      background: rgba(74, 144, 226, 0.2);
+      border-color: rgba(74, 144, 226, 0.5);
+      color: #4A90E2;
+    }
+  }
+}
+
+.cosmicControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.searchSection {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.cosmicSearch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  
+  svg {
+    position: absolute;
+    left: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    z-index: 1;
+  }
+  
+  input {
+    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.875rem;
+    width: 250px;
+    transition: all 0.3s ease;
+    
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: rgba(74, 144, 226, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+    }
+  }
+}
+
+.cosmicFilters {
+  .planetTypeFilter {
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: rgba(74, 144, 226, 0.5);
+    }
+    
+    option {
+      background: #1a1a2e;
+      color: white;
+    }
+  }
+}
+
+.viewControls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.viewModeButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.viewButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  &.active {
+    background: rgba(74, 144, 226, 0.2);
+    border-color: rgba(74, 144, 226, 0.5);
+    color: #4A90E2;
+  }
+}
+
+.displayOptions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.optionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: white;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  &.active {
+    background: rgba(74, 144, 226, 0.2);
+    border-color: rgba(74, 144, 226, 0.5);
+    color: #4A90E2;
+  }
+}
+
+.cosmicSpace {
+  flex: 1;
+  position: relative;
+  margin-top: 120px; // Отступ для панели управления
+}
+
+.planetInfoPanel {
+  position: absolute;
+  top: 140px;
+  right: 2rem;
+  width: 350px;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  z-index: 50;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
+  h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  
+  button {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    
+    &:hover {
+      color: white;
+    }
+  }
+}
+
+.panelContent {
+  padding: 1.5rem;
+}
+
+.planetHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.planetIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+}
+
+.planetHeader h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.planetType {
+  margin: 0;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.planetSpecs {
+  margin-bottom: 1.5rem;
+}
+
+.spec {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.specLabel {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.specValue {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+}
+
+.planetStats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.planetActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.exploreButton,
+.colonizeButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.exploreButton {
+  background: rgba(74, 144, 226, 0.2);
+  border: 1px solid rgba(74, 144, 226, 0.5);
+  color: #4A90E2;
+  
+  &:hover {
+    background: rgba(74, 144, 226, 0.3);
+    border-color: rgba(74, 144, 226, 0.7);
+  }
+}
+
+.colonizeButton {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  color: #10B981;
+  
+  &:hover {
+    background: rgba(16, 185, 129, 0.3);
+    border-color: rgba(16, 185, 129, 0.7);
+  }
+}
+
+.planetsList {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  width: 300px;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  z-index: 50;
+  animation: slideInLeft 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.planetsList h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.planetsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+  }
+}
+
+.planetCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(4px);
+  }
+  
+  &.selected {
+    background: var(--planet-color, rgba(74, 144, 226, 0.2));
+    border-color: var(--planet-color, rgba(74, 144, 226, 0.5));
+  }
+}
+
+.planetCardIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.875rem;
+}
+
+.planetCardInfo {
+  flex: 1;
+  
+  h5 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: white;
+  }
+  
+  p {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: capitalize;
+  }
+}
+
+.planetCardStats {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  
+  span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    
+    &:before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+  }
+}
+
+.planetLabel {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  min-width: 120px;
+}
+
+.planetName {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 0.25rem;
+}
+
+.planetType {
+  display: block;
+  font-size: 0.625rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: capitalize;
+}
+
+// Мобильная адаптация
+@media (max-width: 768px) {
+  .cosmicControlPanel {
+    padding: 1rem;
+  }
+  
+  .cosmicControls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .searchSection {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .cosmicSearch input {
+    width: 100%;
+  }
+  
+  .viewControls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .viewModeButtons {
+    flex-wrap: wrap;
+  }
+  
+  .displayOptions {
+    justify-content: center;
+  }
+  
+  .cosmicSpace {
+    margin-top: 200px;
+  }
+  
+  .planetInfoPanel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100vw - 2rem);
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .planetsList {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    max-height: 200px;
+  }
+  
+  .planetsGrid {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    
+    .planetCard {
+      min-width: 200px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .cosmicControlPanel {
+    padding: 0.75rem;
+  }
+  
+  .explorerHeader {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  
+  .starSystemTitle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    
+    h2 {
+      font-size: 1.25rem;
+    }
+  }
+  
+  .systemStats {
+    margin-left: 0;
+  }
+  
+  .viewModeButtons {
+    flex-direction: column;
+    
+    .viewButton {
+      justify-content: center;
+    }
+  }
+  
+  .cosmicSpace {
+    margin-top: 250px;
+  }
+}

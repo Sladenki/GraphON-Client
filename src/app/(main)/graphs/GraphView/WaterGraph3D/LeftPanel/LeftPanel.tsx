@@ -34,27 +34,6 @@ export function LeftPanel({
   return (
     <div className={styles.leftPanel}>
       <div className={styles.panelContent}>
-        <h1 className={styles.title}>
-          Планета – {root.name}
-          <span className={styles.themeCount}>
-            {themeCount} {themeCount === 1 ? 'спутник' : themeCount < 5 ? 'спутника' : 'спутников'}
-          </span>
-        </h1>
-        
-        <h2 className={styles.subtitle}>
-          {selectedTheme ? (
-            <>
-              <span className={styles.emoji}>{THEME_CONFIG[selectedTheme.name] || '✨'}</span>
-              {selectedTheme.name}
-              <span className={styles.subgraphCount}>
-                {subgraphCount} {subgraphCount === 1 ? 'подспутник' : subgraphCount < 5 ? 'подспутника' : 'подспутников'}
-              </span>
-            </>
-          ) : (
-            'Изученные спутники'
-          )}
-        </h2>
-        
         {!selectedTheme ? (
           <div className={styles.themeBlocks}>
             {themes.map((theme) => (
@@ -67,14 +46,7 @@ export function LeftPanel({
                 onMouseLeave={() => setHoveredThemeId(null)}
               >
                 <span className={styles.emoji}>{THEME_CONFIG[theme.name] || '✨'}</span>
-                <div className={styles.themeInfo}>
-                  <span className={styles.themeName}>{theme.name}</span>
-                  {theme.childGraphNum > 0 && (
-                    <span className={styles.childCount}>
-                      {theme.childGraphNum} {theme.childGraphNum === 1 ? 'подспутник' : theme.childGraphNum < 5 ? 'подспутника' : 'подспутников'}
-                    </span>
-                  )}
-                </div>
+                <span className={styles.themeName}>{theme.name}</span>
               </div>
             ))}
           </div>
