@@ -162,7 +162,6 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             </div>
         ) : (
         <AdminForm
-            title="Создание нового мероприятия"
             onSubmit={handleSubmit}
             submitButtonText="Создать мероприятие"
             isSubmitting={isPending || isLoadingTopics}
@@ -170,41 +169,35 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
         >
             <FormInputGroup 
                 label="Название мероприятия"
-                description="Введите название мероприятия. Используйте понятное и информативное название, которое отражает суть события"
             >
                 <FormInput
                     name="name"
                     type="text"
                     value={eventData.name}
                     onChange={handleChange}
-                    placeholder="Введите название мероприятия"
                     required
                 />
             </FormInputGroup>
 
             <FormInputGroup 
                 label="Место проведения"
-                description="Укажите место проведения мероприятия"
             >
                 <FormInput
                     name="place"
                     type="text"
                     value={eventData.place}
                     onChange={handleChange}
-                    placeholder="Введите место проведения мероприятия"
                     required
                 />
             </FormInputGroup>
 
             <FormInputGroup 
                 label="Описание"
-                description={`Подробно опишите мероприятие. Укажите цель, программу, требования к участникам и другую важную информацию (максимум ${DESCRIPTION_MAX_LENGTH} символов)`}
             >
                 <FormTextarea
                     name="description"
                     value={eventData.description}
                     onChange={handleChange}
-                    placeholder="Введите описание мероприятия"
                     maxLength={DESCRIPTION_MAX_LENGTH}
                     required
                 />
@@ -215,7 +208,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
 
             <FormInputGroup 
                 label="Граф"
-                description="Выберите граф, к которому относится мероприятие. Это поможет участникам найти связанные материалы и контент"
+                description="Выберите граф, к которому относится мероприятие"
             >
                 <FormSelect
                     name="graphId"
@@ -235,9 +228,9 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
 
             <FormInputGroup 
                 label="Дата и время"
-                description="Укажите, уточнена ли дата и время мероприятия"
+                description="Вы можете уточнить дату и время мероприятия позже при редактировании"
             >
-                <div className={styles.checkboxRow}>
+                <label className={styles.checkboxRow}>
                     <input
                         type="checkbox"
                         id="isDateTbd"
@@ -247,12 +240,11 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                             ...prev,
                             isDateTbd: e.target.checked
                         }))}
-                        style={{ width: '16px', height: '16px' }}
                     />
-                    <label htmlFor="isDateTbd" className={styles.checkboxLabel}>
+                    <span className={styles.checkboxLabel}>
                         Дата и время уточняется
-                    </label>
-                </div>
+                    </span>
+                </label>
             </FormInputGroup>
 
             {!eventData.isDateTbd && (

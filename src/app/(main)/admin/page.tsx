@@ -112,7 +112,7 @@ const Admin = () => {
    
             {canAccessEditor && mainTopics && (
                 <AdminSection 
-                    title="Создание события (мероприятия)"
+                    title="Создание мероприятия"
                     emoji="📅"
                     role={UserRole.Editor}
                 >

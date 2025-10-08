@@ -299,4 +299,127 @@
         padding: 6px 10px;
         margin-bottom: 6px;
     }
+}
+
+// Modern Checkbox Styles
+.checkboxRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+
+    @media (max-width: 768px) {
+        padding: 12px 14px;
+        gap: 10px;
+        border-radius: 10px;
+    }
+
+    &:hover {
+        background: rgba(var(--main-Color), 0.05);
+        border-color: rgba(var(--main-Color), 0.2);
+    }
+
+    &:has(input:checked) {
+        background: rgba(var(--main-Color), 0.08);
+        border-color: rgba(var(--main-Color), 0.25);
+    }
+
+    input[type="checkbox"] {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-shrink: 0;
+
+
+        @media (max-width: 768px) {
+            width: 18px;
+            height: 18px;
+        }
+
+        &:hover {
+            border-color: rgba(var(--main-Color), 0.5);
+
+        }
+
+        &:checked {
+
+            border-color: rgb(var(--main-Color));
+
+            &::after {
+                content: '';
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%) rotate(45deg);
+                width: 5px;
+                height: 10px;
+                border: solid white;
+                border-width: 0 2px 2px 0;
+
+                @media (max-width: 768px) {
+                    width: 4px;
+                    height: 8px;
+                }
+            }
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(var(--main-Color), 0.1);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(var(--text-color), 0.05);
+        }
+    }
+}
+
+.checkboxLabel {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-color);
+    font-family: var(--font-inter);
+    cursor: pointer;
+    user-select: none;
+    letter-spacing: -0.01em;
+    flex: 1;
+
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
+}
+
+// Dark theme for checkbox
+@media (prefers-color-scheme: dark) {
+    .checkboxRow {
+        background: rgba(var(--main-Color), 0.05);
+        border-color: rgba(var(--main-Color), 0.15);
+
+        &:hover {
+            background: rgba(var(--main-Color), 0.08);
+            border-color: rgba(var(--main-Color), 0.25);
+        }
+
+        &:has(input:checked) {
+            background: rgba(var(--main-Color), 0.12);
+            border-color: rgba(var(--main-Color), 0.3);
+        }
+
+        input[type="checkbox"] {
+            border-color: rgba(var(--main-Color), 0.4);
+
+            &:hover {
+                border-color: rgba(var(--main-Color), 0.6);
+            }
+        }
+    }
 } 
