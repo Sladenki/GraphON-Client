@@ -7,10 +7,12 @@ import { bottomMenuItems } from "@/constants/sidebar";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { UserRole } from "@/types/user.interface";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const BottomMenu: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
   const pathname = usePathname();
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   // Определяем доступ к управлению
   const hasManageAccess = (() => {

@@ -201,6 +201,11 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
           {mobileMenuItems.map((item) => {
             const shouldRender = !item.forAuthUsers || (item.forAuthUsers && isLoggedIn)
             
+            // Скрываем "Мероприятия" для авторизованных пользователей (они видят их в BottomMenu)
+            if (item.path === '/events/' && isLoggedIn) {
+              return null
+            }
+            
             if (!shouldRender) return null
 
             return (
