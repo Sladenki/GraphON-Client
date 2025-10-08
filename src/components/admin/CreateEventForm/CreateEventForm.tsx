@@ -213,14 +213,12 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                 <FormSelect
                     name="graphId"
                     value={eventData.graphId}
-                    onChange={handleChange}
-                    options={[
-                        { value: '', label: isLoadingTopics ? 'Загрузка...' : 'Выберите граф' },
-                        ...mainTopics.map((graph: IGraphList) => ({
-                            value: graph._id,
-                            label: graph.name
-                        }))
-                    ]}
+                    onChange={(value) => setEventData(prev => ({ ...prev, graphId: value }))}
+                    placeholder={isLoadingTopics ? 'Загрузка...' : 'Выберите граф'}
+                    options={mainTopics.map((graph: IGraphList) => ({
+                        value: graph._id,
+                        label: graph.name
+                    }))}
                     required
                     disabled={isLoadingTopics}
                 />
