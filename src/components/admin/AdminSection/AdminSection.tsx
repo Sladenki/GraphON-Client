@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './AdminSection.module.scss';
 import { UserRole } from '@/types/user.interface';
+import { ChevronDown } from 'lucide-react';
 
 interface AdminSectionProps {
     title: string;
@@ -42,7 +43,12 @@ export const AdminSection: React.FC<AdminSectionProps> = ({ title, emoji, childr
                         </span>
                     )}
                 </h3>
-                <span className={`${styles.arrow} ${isOpen ? styles.open : ''}`}>▼</span>
+                <button 
+                    className={`${styles.arrow} ${isOpen ? styles.open : ''}`}
+                    aria-label={isOpen ? 'Свернуть' : 'Развернуть'}
+                >
+                    <ChevronDown size={18} strokeWidth={2} />
+                </button>
             </div>
             {isOpen && (
                 <div className={styles.content}>
