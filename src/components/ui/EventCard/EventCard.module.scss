@@ -282,24 +282,24 @@
   gap: 10px;
   
   svg {
-    color: rgba(var(--text-color), 0.5);
+    color: #6B7280;
     flex-shrink: 0;
   }
 }
 
 .participantsText {
   font-size: 14px;
-  color: var(--text-color);
+  color: #6B7280;
   font-weight: 500;
   font-family: var(--font-inter);
   
   &.clickable {
     cursor: pointer;
-    color: rgba(var(--text-color), 0.65);
+    color: #6B7280;
     transition: color 0.2s ease;
     
     &:hover {
-      color: var(--text-color);
+      color: #4B5563;
     }
   }
 }
@@ -520,18 +520,18 @@
     border-color: rgba(var(--main-Color), 0.08);
     
     svg {
-      color: rgba(var(--text-color), 0.5);
+      color: #9CA3AF;
     }
   }
   
   .participantsText {
-    color: var(--text-color);
+    color: #9CA3AF;
     
     &.clickable {
-      color: rgba(var(--text-color), 0.6);
+      color: #9CA3AF;
       
       &:hover {
-        color: var(--text-color);
+        color: #D1D5DB;
       }
     }
   }
@@ -601,6 +601,22 @@
     background: rgba(var(--main-Color), 0.025);
     border: 1.5px solid rgba(var(--main-Color), 0.06);
     margin-top: 0;
+    
+    svg {
+      color: rgba(var(--text-color), 0.5);
+    }
+  }
+  
+  .participantsText {
+    color: var(--text-color);
+    
+    &.clickable {
+      color: rgba(var(--text-color), 0.65);
+      
+      &:hover {
+        color: var(--text-color);
+      }
+    }
   }
   
   .registerButton {
