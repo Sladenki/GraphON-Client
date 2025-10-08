@@ -110,14 +110,12 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
                 <FormSelect
                     name="graphId"
                     value={formData.graphId}
-                    onChange={handleChange}
-                    options={[
-                        { value: '', label: isLoadingGraphs ? 'Загрузка...' : 'Выберите граф' },
-                        ...graphs.map((graph: IGraphList) => ({
-                            value: graph._id,
-                            label: graph.name
-                        }))
-                    ]}
+                    onChange={(value) => setFormData(prev => ({ ...prev, graphId: value }))}
+                    placeholder={isLoadingGraphs ? 'Загрузка...' : 'Выберите граф'}
+                    options={graphs.map((graph: IGraphList) => ({
+                        value: graph._id,
+                        label: graph.name
+                    }))}
                     required
                     disabled={isLoadingGraphs}
                 />
@@ -144,7 +142,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
                 <FormSelect
                     name="type"
                     value={formData.type}
-                    onChange={handleChange}
+                    onChange={(value) => setFormData(prev => ({ ...prev, type: value as ScheduleType }))}
                     options={SCHEDULE_TYPES}
                     required
                 />
@@ -171,8 +169,8 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             >
                 <FormSelect
                     name="dayOfWeek"
-                    value={formData.dayOfWeek}
-                    onChange={handleChange}
+                    value={formData.dayOfWeek.toString()}
+                    onChange={(value) => setFormData(prev => ({ ...prev, dayOfWeek: parseInt(value) || 0 }))}
                     options={DAYS_OF_WEEK.map((day, index) => ({
                         value: index.toString(),
                         label: day
