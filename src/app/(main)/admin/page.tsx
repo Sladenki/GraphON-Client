@@ -49,26 +49,6 @@ const Admin = () => {
                 </AdminSection>
             )}
 
-            {canAccessAdmin && (
-                <AdminSection 
-                    title="Изменить роль пользователя"
-                    emoji="👥"
-                    role={UserRole.Admin}
-                >
-                    <UserRoleManager />
-                </AdminSection>
-            )}
-
-            {canAccessAdmin && mainTopics && (
-                <AdminSection 
-                    title="Передача прав на граф"
-                    emoji="🔑"
-                    role={UserRole.Admin}
-                >
-                    <TransferGraphOwnershipForm graphs={mainTopics.data} />
-                </AdminSection>
-            )}
-
             {canAccessCreate && (
                 <AdminSection 
                     title="Создание глобального графа"
@@ -88,16 +68,6 @@ const Admin = () => {
                     <CreateTopicGraphForm />
                 </AdminSection>
             )}
-            
-            {(typedUser?.role === UserRole.SysAdmin || typedUser?.role === UserRole.Create) && (
-                <AdminSection 
-                    title="Статистика сервера"
-                    emoji="🖥️"
-                    role={UserRole.SysAdmin}
-                >
-                    <ServerStats />
-                </AdminSection>
-            )}
 
             {/* Вернуть на Admin */}
             {canAccessCreate && mainTopics && (
@@ -109,9 +79,37 @@ const Admin = () => {
                     <CreateGraphForm />
                 </AdminSection>
             )}
-            
 
-            
+            {(typedUser?.role === UserRole.SysAdmin || typedUser?.role === UserRole.Create) && (
+                <AdminSection 
+                    title="Статистика сервера"
+                    emoji="🖥️"
+                    role={UserRole.SysAdmin}
+                >
+                    <ServerStats />
+                </AdminSection>
+            )}
+
+            {canAccessAdmin && (
+                <AdminSection 
+                    title="Изменить роль пользователя"
+                    emoji="👥"
+                    role={UserRole.Admin}
+                >
+                    <UserRoleManager />
+                </AdminSection>
+            )}
+
+            {canAccessAdmin && mainTopics && (
+                <AdminSection 
+                    title="Передача прав на граф"
+                    emoji="🔑"
+                    role={UserRole.Admin}
+                >
+                    <TransferGraphOwnershipForm graphs={mainTopics.data} />
+                </AdminSection>
+            )}
+   
             {canAccessEditor && mainTopics && (
                 <AdminSection 
                     title="Создание события (мероприятия)"
