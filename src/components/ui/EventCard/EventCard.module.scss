@@ -21,7 +21,8 @@
 
 // Header
 .cardHeader {
-  padding: 24px 24px 20px 24px;
+  padding: 24px 24px 24px 24px;
+  background: linear-gradient(to bottom, rgba(var(--main-Color), 0.02), transparent);
   border-bottom: 1px solid rgba(var(--main-Color), 0.06);
 }
 
@@ -29,24 +30,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .groupInfo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  background: rgba(var(--main-Color), 0.04);
+  padding: 8px 12px 8px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--main-Color), 0.08);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(var(--main-Color), 0.06);
+    border-color: rgba(var(--main-Color), 0.12);
+  }
 }
 
 .groupAvatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   overflow: hidden;
   background: rgba(var(--main-Color), 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
   
 .avatarImage {
@@ -69,14 +81,10 @@
 
 .groupName {
   font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 400;
+  letter-spacing: -0.005em;
   color: rgb(var(--main-Color));
   font-family: var(--font-inter);
-  background: rgba(var(--main-Color), 0.06);
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(var(--main-Color), 0.12);
 }
 
 .headerActions {
@@ -168,16 +176,16 @@
 }
 
 .titleSection {
-  margin-top: 4px;
+  margin-top: 0;
 }
 
 .eventTitle {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: var(--text-color);
   font-family: var(--font-inter);
-  line-height: 1.35;
+  line-height: 1.3;
   margin: 0;
 }
 
@@ -447,9 +455,18 @@
     }
   }
   
-  .groupName {
-    background: rgba(var(--main-Color), 0.15);
-    border-color: rgba(var(--main-Color), 0.3);
+  .cardHeader {
+    background: linear-gradient(to bottom, rgba(var(--main-Color), 0.03), transparent);
+  }
+  
+  .groupInfo {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.15);
+    
+    &:hover {
+      background: rgba(var(--main-Color), 0.12);
+      border-color: rgba(var(--main-Color), 0.2);
+    }
   }
   
   .shareButton {
@@ -562,7 +579,26 @@
   }
   
   .cardHeader {
-    padding: 20px 18px 16px 18px;
+    padding: 20px 18px 20px 18px;
+  }
+  
+  .groupInfo {
+    padding: 6px 10px 6px 6px;
+    border-radius: 10px;
+  }
+  
+  .groupAvatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+  }
+  
+  .groupName {
+    font-size: 12px;
+  }
+  
+  .headerTop {
+    margin-bottom: 14px;
   }
   
   .cardBody {
@@ -631,12 +667,7 @@
   }
   
   .eventTitle {
-    font-size: 20px;
-  }
-  
-  .groupName {
-    font-size: 12px;
-    padding: 5px 10px;
+    font-size: 21px;
   }
   
   .timeText,
