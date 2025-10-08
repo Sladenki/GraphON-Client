@@ -104,8 +104,8 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             isSubmitDisabled={!isFormValid}
         >
             <FormInputGroup 
-                label="Граф"
-                description="Выберите граф, для которого создается расписание. Это может быть лекция или практика по данному графу."
+                label="1.Граф"
+                description="Выберите граф, для которого создается расписание."
             >
                 <FormSelect
                     name="graphId"
@@ -122,8 +122,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Название"
-                description="Введите название занятия. Например: 'Лекция по основам графов' или 'Практика по алгоритмам'"
+                label="2. Название"
             >
                 <FormInput
                     type="text"
@@ -136,8 +135,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Тип"
-                description="Выберите тип занятия: лекция - теоретическое занятие, практика - практическое занятие с заданиями"
+                label="3. Тип"
             >
                 <FormSelect
                     name="type"
@@ -149,8 +147,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Номер аудитории"
-                description="Укажите номер аудитории, где будет проходить занятие"
+                label="4. Номер аудитории"
             >
                 <FormInput
                     type="number"
@@ -164,8 +161,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             </FormInputGroup>
 
             <FormInputGroup 
-                label="День недели"
-                description="Выберите день недели, когда будет проходить занятие"
+                label="5. День недели"
             >
                 <FormSelect
                     name="dayOfWeek"
