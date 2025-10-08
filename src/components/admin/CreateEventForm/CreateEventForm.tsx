@@ -168,7 +168,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             isSubmitDisabled={!isFormValid}
         >
             <FormInputGroup 
-                label="Название мероприятия"
+                label="1. Название мероприятия"
             >
                 <FormInput
                     name="name"
@@ -180,7 +180,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Место проведения"
+                label="2. Место проведения"
             >
                 <FormInput
                     name="place"
@@ -192,7 +192,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Описание"
+                label="3. Описание"
             >
                 <FormTextarea
                     name="description"
@@ -207,7 +207,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Граф"
+                label="4. Граф"
                 description="Выберите граф, к которому относится мероприятие"
             >
                 <FormSelect
@@ -225,7 +225,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Дата и время"
+                label="5. Дата и время"
                 description="Вы можете уточнить дату и время мероприятия позже при редактировании"
             >
                 <label className={styles.checkboxRow}>
