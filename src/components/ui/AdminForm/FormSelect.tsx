@@ -53,7 +53,7 @@ export const FormSelect: React.FC<FormSelectProps> = ({
             classNames={{
                 base: "max-w-full",
                 trigger: "h-12 border-1.5",
-                value: "text-sm",
+                value: "text-sm font-normal",
                 label: "text-sm font-semibold",
                 errorMessage: "text-xs"
             }}

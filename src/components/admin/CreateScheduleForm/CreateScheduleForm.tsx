@@ -178,7 +178,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                 <FormInputGroup 
                     label="Время начала"
-                    description="Укажите время начала занятия в формате ЧЧ:ММ"
+                    description="В формате ЧЧ:ММ"
                 >
                     <FormInput
                         type="time"
@@ -191,7 +191,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
 
                 <FormInputGroup 
                     label="Время окончания"
-                    description="Укажите время окончания занятия в формате ЧЧ:ММ"
+                    description="В формате ЧЧ:ММ"
                 >
                     <FormInput
                         type="time"
