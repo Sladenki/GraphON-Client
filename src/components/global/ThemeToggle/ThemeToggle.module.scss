@@ -4,74 +4,44 @@
   justify-content: space-between;
   width: 100%;
   padding: 8px 0;
-  
-  &.sm {
-    .themeLabel {
-      font-size: 12px;
-    }
-    
-    .themeSwitch {
-      width: 36px;
-      height: 18px;
-      
-      .slider {
-        &::before {
-          width: 14px;
-          height: 14px;
-        }
-      }
-    }
-  }
-  
-  &.md {
-    .themeLabel {
-      font-size: 14px;
-    }
-    
-    .themeSwitch {
-      width: 40px;
-      height: 20px;
-      
-      .slider {
-        &::before {
-          width: 16px;
-          height: 16px;
-        }
-      }
-    }
-  }
-  
-  &.lg {
-    .themeLabel {
-      font-size: 16px;
-    }
-    
-    .themeSwitch {
-      width: 44px;
-      height: 22px;
-      
-      .slider {
-        &::before {
-          width: 18px;
-          height: 18px;
-        }
-      }
-    }
-  }
+}
+
+// Размеры через CSS переменные
+.sm {
+  --toggle-width: 36px;
+  --toggle-height: 18px;
+  --toggle-circle: 14px;
+  --toggle-offset: 18px;
+  --font-size: 12px;
+}
+
+.md {
+  --toggle-width: 40px;
+  --toggle-height: 20px;
+  --toggle-circle: 16px;
+  --toggle-offset: 20px;
+  --font-size: 14px;
+}
+
+.lg {
+  --toggle-width: 44px;
+  --toggle-height: 22px;
+  --toggle-circle: 18px;
+  --toggle-offset: 22px;
+  --font-size: 16px;
 }
 
 .themeLabel {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: var(--font-size, 14px);
   font-weight: 500;
   color: var(--main-text);
   transition: color 0.2s ease;
   
   svg {
-    width: 16px;
-    height: 16px;
+    flex-shrink: 0;
     transition: color 0.2s ease;
   }
 }
@@ -79,10 +49,12 @@
 .themeSwitch {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 20px;
+  width: var(--toggle-width, 40px);
+  height: var(--toggle-height, 20px);
+  flex-shrink: 0;
   
   input {
+    position: absolute;
     opacity: 0;
     width: 0;
     height: 0;
@@ -91,13 +63,12 @@
       background-color: rgb(var(--main-Color));
       
       &::before {
-        transform: translateX(20px);
-        background-color: #ffffff;
+        transform: translateX(var(--toggle-offset, 20px));
       }
     }
     
-    &:focus + .slider {
-      outline: 2px solid rgba(var(--main-Color), 0.3);
+    &:focus-visible + .slider {
+      outline: 2px solid rgba(var(--main-Color), 0.4);
       outline-offset: 2px;
     }
   }
@@ -105,20 +76,17 @@
 
 .slider {
   position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgb(var(--main-Color), 0.6);
+  inset: 0;
+  background-color: #4b5563;
   border-radius: 20px;
+  cursor: pointer;
   transition: background-color 0.2s ease;
   
   &::before {
-    position: absolute;
     content: "";
-    height: 16px;
-    width: 16px;
+    position: absolute;
+    width: var(--toggle-circle, 16px);
+    height: var(--toggle-circle, 16px);
     left: 2px;
     bottom: 2px;
     background-color: #ffffff;
@@ -131,10 +99,6 @@
 :global(.light-theme) {
   .slider {
     background-color: #e5e7eb;
-    
-    &::before {
-      background-color: #ffffff;
-    }
   }
   
   .themeLabel {
@@ -150,10 +114,6 @@
 :global(.dark-theme) {
   .slider {
     background-color: #4b5563;
-    
-    &::before {
-      background-color: #ffffff;
-    }
   }
   
   .themeLabel {
