@@ -1,114 +1,59 @@
-.popupOverlay {
+.overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background-color: var(--popup-bg);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  opacity: 0;
-  animation: fadeIn 0.2s ease-out forwards;
-  overflow: auto;
   padding: 1rem;
-  box-sizing: border-box;
-  
-  transition: opacity 0.2s ease-out;
-  
-  @media (max-width: 768px) {
-    animation: fadeInMobile 0.15s ease-out forwards;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease-out;
 }
 
-.popupContent {
+.content {
   background-color: var(--popup-content-bg);
-  padding: 0;
   border-radius: var(--popup-border-radius);
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 90vw;
-  position: relative;
-  margin: 0;
-  /* allow inner scrolling area to handle overflow */
-  overflow: hidden;
+  max-width: min(90vw, 900px);
   max-height: calc(100vh - 2rem);
-  transform: scale(0.8);
-  animation: scaleIn 0.2s ease-out forwards;
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  
-  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
-  
-  @media (max-width: 768px) {
-    animation: scaleInMobile 0.15s ease-out forwards;
-    transform: translateY(20px);
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    will-change: transform;
-  }
-  
-  @media (min-width: 768px) {
-    max-width: min(90vw, 900px);
-    max-height: calc(100vh - 4rem);
-  }
-  
-  @media (min-width: 1024px) {
-    max-width: min(80vw, 900px);
-    max-height: calc(100vh - 6rem);
-  }
+  animation: scaleIn 0.2s ease-out;
 }
 
 .closeButton {
   position: absolute; 
   top: 1rem;
   right: 1rem;
-  background: rgba(0, 0, 0, 0.1);
-  border: none;
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.1);
+  color: #666;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 15;
-  transition: all 0.2s ease-out;
-  color: #666;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
 
   &:hover {
     background: rgba(0, 0, 0, 0.15);
     transform: scale(1.1);
     color: #333;
   }
-  
-  @media (max-width: 768px) {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background: rgba(0, 0, 0, 0.15);
-    transition: background-color 0.15s ease-out;
-    
-    &:active {
-      background: rgba(0, 0, 0, 0.25);
-      transform: scale(0.95);
-    }
-  }
-  
-  @media (max-width: 640px) {
-    top: 0.75rem;
-    right: 0.75rem;
-    width: 36px;
-    height: 36px;
+
+  &:active {
+    transform: scale(0.95);
   }
 }
-  
+
+// Анимации
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -120,69 +65,79 @@
 
 @keyframes scaleIn {
   from {
-    transform: scale(0.8);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-
-@keyframes fadeInMobile {
-  from {
+    transform: scale(0.9);
     opacity: 0;
   }
   to {
+    transform: scale(1);
     opacity: 1;
   }
 }
 
-@keyframes scaleInMobile {
-  from {
-    transform: translateY(20px);
-    opacity: 0.8;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-  
-@media (max-width: 640px) {
-  .popupOverlay {
-    padding: 0.5rem;
+// Мобильная адаптация
+@media (max-width: 768px) {
+  .overlay {
     align-items: flex-start;
     padding-top: 2rem;
   }
-  
-  .popupContent {
-    max-width: 95vw;
+
+  .content {
+    animation: slideUp 0.2s ease-out;
     max-height: calc(100vh - 1rem);
-    width: 100%;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .overlay {
+    padding: 0.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .content {
+    max-width: 95vw;
+  }
+
+  .closeButton {
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 36px;
+    height: 36px;
   }
 }
 
 @media (max-width: 480px) {
-  .popupOverlay {
+  .overlay {
     padding: 0.25rem;
     padding-top: 1rem;
   }
-  
-  .popupContent {
+
+  .content {
     max-width: 98vw;
     border-radius: 16px;
-    /* keep header/footer visible, body should scroll */
-    display: flex;
-    flex-direction: column;
   }
 }
 
+// Отключение анимаций для accessibility
 @media (prefers-reduced-motion: reduce) {
-  .popupOverlay,
-  .popupContent,
+  .overlay,
+  .content,
   .closeButton {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
+    animation: none;
+    transition: none;
+  }
+
+  .closeButton:hover {
+    transform: none;
   }
 }
-  
