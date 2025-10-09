@@ -2,25 +2,22 @@
 
 import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-
 import styles from './Sidebar.module.scss'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { sidebar } from '@/constants/sidebar';
 import { useAuth } from '@/providers/AuthProvider';
 import { Settings, User } from 'lucide-react';
-import { useTheme } from 'next-themes';
 
 import RenderMenuList from './RenderMenuList/RenderMenuList';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import { Logo } from '../Logo';
 
 
 const Sidebar: React.FC<{}> = ({}) => {
 
   const small = useMediaQuery('(max-width: 1000px)')
   const { user, isLoggedIn } = useAuth();
-  const { theme } = useTheme();
   // Определяем доступ к управлению: если у пользователя есть непустой список managed_graph_id
   const hasManageAccess = (() => {
     if (!user) return false;
@@ -67,16 +64,7 @@ const Sidebar: React.FC<{}> = ({}) => {
       {/* Название проекта - отображается только на ПК */}
       {!small && (
         <div className={styles.projectTitle}>
-          <Link href="/">
-            <Image
-              src={theme === 'dark' ? "/logo_darkMode.svg" : "/logo_lightMode.svg"}
-              alt="Logo"
-              width={130}
-              height={20}
-              className={styles.brandLogo}
-              priority
-            />
-          </Link>
+          <Logo width={130} height={20} />
         </div>
       )}
         
