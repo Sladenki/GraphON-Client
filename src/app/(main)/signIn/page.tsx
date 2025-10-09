@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { MessageCircle, ArrowRight, Sparkles, Shield, Zap } from 'lucide-react'
+import { Shield, Zap, CheckCircle } from 'lucide-react'
 import styles from './signIn.module.scss'
+import { Logo } from '@/components/global/Logo'
 
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -29,32 +30,15 @@ const SignIn = () => {
   return (
     <div className={styles.signInPage}>
       <div className={styles.container}>
-        {/* Заголовок */}
+        {/* Заголовок с логотипом */}
         <div className={styles.header}>
-          <div className={styles.logo}>
-            <Sparkles size={32} />
-            <h1>GraphON</h1>
+          <div className={styles.logoWrapper}>
+            <Logo width={180} height={28} clickable={false} />
           </div>
+          <h1 className={styles.title}>Добро пожаловать!</h1>
           <p className={styles.subtitle}>
-            Добро пожаловать!<br/>
-            Войдите через Telegram для быстрого и безопасного доступа
+            Войдите через Telegram, чтобы продолжить
           </p>
-        </div>
-
-        {/* Преимущества входа через Telegram */}
-        <div className={styles.features}>
-          <div className={styles.feature}>
-            <Shield size={20} />
-            <span>Безопасно</span>
-          </div>
-          <div className={styles.feature}>
-            <Zap size={20} />
-            <span>Быстро</span>
-          </div>
-          <div className={styles.feature}>
-            <MessageCircle size={20} />
-            <span>Просто</span>
-          </div>
         </div>
 
         {/* Кнопка входа через Telegram */}
@@ -64,33 +48,51 @@ const SignIn = () => {
           disabled={isLoading}
         >
           {isLoading ? (
-            <div className={styles.spinner}></div>
+            <>
+              <div className={styles.spinner}></div>
+              <span>Подключение...</span>
+            </>
           ) : (
             <>
-              <div className={styles.buttonContent}>
-                <span className={styles.buttonTitle}>Войти через Telegram</span>
-                <span className={styles.buttonSubtitle}>Быстро и безопасно</span>
-              </div>
-              <ArrowRight size={20} />
+              <span className={styles.buttonText}>Войти через Telegram</span>
             </>
           )}
         </button>
 
-        {/* Дополнительные ссылки */}
+        {/* Преимущества */}
+        <div className={styles.features}>
+          <div className={styles.feature}>
+            <div className={styles.featureIcon}>
+              <Shield size={18} />
+            </div>
+            <span>Безопасная авторизация</span>
+          </div>
+          <div className={styles.feature}>
+            <div className={styles.featureIcon}>
+              <Zap size={18} />
+            </div>
+            <span>Вход за пару секунд</span>
+          </div>
+          <div className={styles.feature}>
+            <div className={styles.featureIcon}>
+              <CheckCircle size={18} />
+            </div>
+            <span>Никаких паролей</span>
+          </div>
+        </div>
+
+        {/* Футер */}
         <div className={styles.footer}>
-          <p>
-            <a href="/" className={styles.link}>
-              ← Вернуться на главную
-            </a>
-          </p>
+          <a href="/" className={styles.backLink}>
+            Вернуться на главную
+          </a>
         </div>
       </div>
 
       {/* Декоративные элементы */}
       <div className={styles.decorations}>
-        <div className={styles.circle1}></div>
-        <div className={styles.circle2}></div>
-        <div className={styles.circle3}></div>
+        <div className={styles.blob1}></div>
+        <div className={styles.blob2}></div>
       </div>
     </div>
   )
