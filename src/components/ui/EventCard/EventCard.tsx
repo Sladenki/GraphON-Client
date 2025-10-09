@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useCallback, useMemo } from "react";
+import { useRouter } from 'next/navigation';
 import { 
   Edit3, 
   Trash2, 
@@ -84,6 +85,7 @@ const EventCard: React.FC<EventProps> = ({
   onDelete,
   disableRegistration
 }) => {
+  const router = useRouter();
   const { isLoggedIn, user } = useAuth();
   const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
   
@@ -172,6 +174,15 @@ const EventCard: React.FC<EventProps> = ({
     setEditedEvent(prev => ({ ...prev, [key]: value }));
   }, []);
   
+  // Обработчик перехода на страницу группы
+  const handleGroupClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    const graphId = typeof event.graphId === 'object' ? event.graphId._id : event.graphId;
+    if (graphId) {
+      router.push(`/groups/${graphId}`);
+    }
+  }, [event.graphId, router]);
+
   const handleShare = useCallback(async () => {
     try {
       const shareUrl = `${window.location.origin}/events/${event._id}`;
@@ -284,7 +295,7 @@ const EventCard: React.FC<EventProps> = ({
         {/* Header - название и группа */}
         <div className={styles.cardHeader}>
           <div className={styles.headerTop}>
-            <div className={styles.groupInfo}>
+            <div className={styles.groupInfo} onClick={handleGroupClick}>
               <GroupAvatar
               src={fullImageUrl}
               alt={event.graphId.name}

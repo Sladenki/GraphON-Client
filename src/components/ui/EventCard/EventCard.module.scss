@@ -42,6 +42,7 @@
   border-radius: 12px;
   border: 1px solid rgba(var(--main-Color), 0.08);
   transition: all 0.2s ease;
+  cursor: pointer;
   
   &:hover {
     background: rgba(var(--main-Color), 0.06);

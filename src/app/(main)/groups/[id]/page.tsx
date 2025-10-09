@@ -101,7 +101,7 @@ export default function GraphPage() {
         onPress={() => router.back()}
         className={styles.backButton}
       >
-        Назад к группам
+        Назад
       </Button>
 
       {/* Карточка графа */}
