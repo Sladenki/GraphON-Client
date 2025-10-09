@@ -3,6 +3,7 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
+import { ErrorState } from '@/components/global/ErrorState/ErrorState'
 import EventCard from '@/components/ui/EventCard/EventCard'
 import { useQueryWithRetry } from '@/hooks/useQueryWithRetry'
 import { useDebounce } from '@/hooks/useDebounce'
@@ -132,16 +133,11 @@ export default function EventsList() {
   // Рендер состояний
   if (hasError) {
     return (
-      <div className={styles.error}>
-        <div className={styles.errorIcon}>⚠️</div>
-        <div className={styles.errorText}>Ошибка загрузки данных</div>
-        <button 
-          className={styles.retryButton} 
-          onClick={handleRetry}
-        >
-          Повторить
-        </button>
-      </div>
+      <ErrorState
+        message="Ошибка загрузки данных"
+        subMessage="Не удалось загрузить список мероприятий"
+        onRetry={handleRetry}
+      />
     )
   }
 

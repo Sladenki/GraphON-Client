@@ -55,46 +55,6 @@
   }
 }
 
-.error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  text-align: center;
-  gap: 16px;
-}
-
-.errorIcon {
-  font-size: 48px;
-}
-
-.errorText {
-  font-size: 18px;
-  color: var(--main-text);
-  font-weight: 500;
-}
-
-.retryButton {
-  padding: 12px 24px;
-  background: rgb(var(--main-Color));
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.9);
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
-
 // Мобильные оптимизации
 @media (max-width: 768px) {
   .container {
@@ -120,23 +80,6 @@
     grid-template-columns: 1fr;
     gap: 16px;
     padding: 16px 0;
-  }
-
-  .error {
-    padding: 20px;
-  }
-
-  .errorIcon {
-    font-size: 36px;
-  }
-
-  .errorText {
-    font-size: 16px;
-  }
-
-  .retryButton {
-    padding: 10px 20px;
-    font-size: 14px;
   }
 }
 

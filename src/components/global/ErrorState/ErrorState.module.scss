@@ -1,0 +1,137 @@
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  gap: 16px;
+  min-height: 300px;
+}
+
+.errorIcon {
+  font-size: 48px;
+  line-height: 1;
+  user-select: none;
+}
+
+.errorText {
+  font-size: 18px;
+  color: var(--main-text);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.errorSubText {
+  font-size: 14px;
+  color: var(--main-text);
+  opacity: 0.7;
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+.retryButton {
+  padding: 12px 24px;
+  background: rgb(var(--main-Color));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  margin-top: 8px;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(var(--main-Color), 0.3);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgb(var(--main-Color));
+    outline-offset: 2px;
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 768px) {
+  .error {
+    padding: 32px 20px;
+    min-height: 250px;
+  }
+
+  .errorIcon {
+    font-size: 36px;
+  }
+
+  .errorText {
+    font-size: 16px;
+  }
+
+  .errorSubText {
+    font-size: 13px;
+    max-width: 300px;
+  }
+
+  .retryButton {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .error {
+    padding: 24px 16px;
+    gap: 12px;
+  }
+
+  .errorIcon {
+    font-size: 32px;
+  }
+
+  .errorText {
+    font-size: 15px;
+  }
+}
+
+// Анимация появления
+@keyframes errorFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.error {
+  animation: errorFadeIn 0.3s ease-out;
+}
+
+// Отключение анимаций для пользователей с prefers-reduced-motion
+@media (prefers-reduced-motion: reduce) {
+  .error {
+    animation: none;
+  }
+
+  .retryButton {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: none;
+    }
+  }
+}
+

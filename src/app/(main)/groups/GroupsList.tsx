@@ -3,11 +3,12 @@
 import React, { useState, useCallback } from 'react'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
+import { ErrorState } from '@/components/global/ErrorState/ErrorState'
 
 import SchedulePopUp from '@/components/ui/SchedulePopUp/SchedulePopUp'
 import SearchBar, { SearchTag } from '@/components/ui/SearchBar/SearchBar'
 import { useFetchBunchData } from '@/hooks/useFetchBunchData'
-import { useSearchWithTags, extractTagsFromData } from '@/hooks/useSearchWithTags'
+import { useSearchWithTags } from '@/hooks/useSearchWithTags'
 import { useSelectedGraphId } from '@/stores/useUIStore'
 import { IGraphList } from '@/types/graph.interface'
 import styles from './GroupsList.module.scss'
@@ -97,16 +98,11 @@ export default function GroupsList() {
   // Рендер состояний
   if (hasError) {
     return (
-      <div className={styles.error}>
-        <div className={styles.errorIcon}>⚠️</div>
-        <div className={styles.errorText}>Ошибка загрузки данных</div>
-        <button 
-          className={styles.retryButton} 
-          onClick={() => window.location.reload()}
-        >
-          Повторить
-        </button>
-      </div>
+      <ErrorState
+        message="Ошибка загрузки данных"
+        subMessage="Не удалось загрузить список групп"
+        onRetry={() => window.location.reload()}
+      />
     )
   }
 
