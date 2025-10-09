@@ -3,54 +3,69 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 60px 24px;
   text-align: center;
-  gap: 16px;
-  min-height: 300px;
+  min-height: 400px;
 }
 
-.errorIcon {
-  font-size: 48px;
-  line-height: 1;
-  user-select: none;
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  margin-bottom: 24px;
 }
 
-.errorText {
-  font-size: 18px;
+.icon {
+  width: 40px;
+  height: 40px;
+  color: rgb(239, 68, 68);
+  stroke-width: 2;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
   color: var(--main-text);
-  font-weight: 500;
+  margin: 0 0 12px 0;
   line-height: 1.4;
 }
 
-.errorSubText {
-  font-size: 14px;
+.description {
+  font-size: 15px;
   color: var(--main-text);
   opacity: 0.7;
-  line-height: 1.5;
+  margin: 0 0 28px 0;
+  line-height: 1.6;
   max-width: 400px;
 }
 
 .retryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 12px 24px;
   background: rgb(var(--main-Color));
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 500;
+  font-size: 15px;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 14px;
-  margin-top: 8px;
 
   &:hover {
     background: rgba(var(--main-Color), 0.9);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(var(--main-Color), 0.25);
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(var(--main-Color), 0.3);
+    box-shadow: 0 4px 8px rgba(var(--main-Color), 0.25);
   }
 
   &:focus-visible {
@@ -59,44 +74,64 @@
   }
 }
 
-// Мобильные оптимизации
+.buttonIcon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.5;
+}
+
+// Мобильная адаптация
 @media (max-width: 768px) {
   .error {
-    padding: 32px 20px;
-    min-height: 250px;
+    padding: 48px 20px;
+    min-height: 300px;
   }
 
-  .errorIcon {
-    font-size: 36px;
+  .iconWrapper {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
   }
 
-  .errorText {
-    font-size: 16px;
+  .icon {
+    width: 32px;
+    height: 32px;
   }
 
-  .errorSubText {
-    font-size: 13px;
-    max-width: 300px;
+  .title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .description {
+    font-size: 14px;
+    margin-bottom: 24px;
+    max-width: 320px;
   }
 
   .retryButton {
     padding: 10px 20px;
     font-size: 14px;
   }
+
+  .buttonIcon {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 @media (max-width: 480px) {
   .error {
-    padding: 24px 16px;
-    gap: 12px;
+    padding: 40px 16px;
   }
 
-  .errorIcon {
-    font-size: 32px;
+  .title {
+    font-size: 17px;
   }
 
-  .errorText {
-    font-size: 15px;
+  .description {
+    font-size: 13px;
+    max-width: 280px;
   }
 }
 
@@ -104,19 +139,33 @@
 @keyframes errorFadeIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
 .error {
-  animation: errorFadeIn 0.3s ease-out;
+  animation: errorFadeIn 0.4s ease-out;
 }
 
-// Отключение анимаций для пользователей с prefers-reduced-motion
+// Анимация вращения иконки при наведении на кнопку
+.retryButton:hover .buttonIcon {
+  animation: rotate 0.6s ease-in-out;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Отключение анимаций
 @media (prefers-reduced-motion: reduce) {
   .error {
     animation: none;
@@ -133,5 +182,8 @@
       transform: none;
     }
   }
-}
 
+  .retryButton:hover .buttonIcon {
+    animation: none;
+  }
+}
