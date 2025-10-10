@@ -279,7 +279,7 @@ const EventCard: React.FC<EventProps> = ({
           ? isRegistered 
             ? 'Отменить регистрацию' 
             : 'Зарегистрироваться' 
-          : 'Войдите, чтобы зарегистрироваться'
+          : 'Необходимо войти'
         }
       </span>
     </button>
@@ -385,74 +385,75 @@ const EventCard: React.FC<EventProps> = ({
 
         {/* Footer - участники и кнопка регистрации (десктоп) */}
         <div className={styles.cardFooter}>
-          <div className={styles.participantsInfo}>
-            <UsersRound size={18} />
-            <span 
-              className={`${styles.participantsText} ${canViewAttendees ? styles.clickable : ''}`}
-              onClick={canViewAttendees ? () => setIsAttendeesOpen(true) : undefined}
-              role={canViewAttendees ? 'button' : undefined}
-              tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
-              onKeyDown={canViewAttendees ? (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  if (canViewAttendees) {
-                    setIsAttendeesOpen(true);
-                  }
-                }
-              } : undefined}
-            >
-              {event.regedUsers} участников
-            </span>
-          </div>
-          
-        {isEditing ? (
-            <div className={styles.editForm}>
-              <div className={styles.checkboxContainer}>
-                <input
-                  type="checkbox"
-                  id="editIsDateTbd"
-                  checked={editedEvent.isDateTbd || false}
-                  onChange={(e) => updateEditedEvent('isDateTbd', e.target.checked)}
-                />
-                <label htmlFor="editIsDateTbd">Дата и время уточняется</label>
-              </div>
 
-              {!editedEvent.isDateTbd && (
-                <>
+          {isEditing ? (
+              <div className={styles.editForm}>
+                <div className={styles.checkboxContainer}>
                   <input
-                    type="date"
-                    value={editedEvent.eventDate}
-                    onChange={(e) => updateEditedEvent('eventDate', e.target.value)}
-                    className={styles.dateInput}
+                    type="checkbox"
+                    id="editIsDateTbd"
+                    checked={editedEvent.isDateTbd || false}
+                    onChange={(e) => updateEditedEvent('isDateTbd', e.target.checked)}
                   />
-                  <div className={styles.timeInputs}>
-                    <input
-                      type="time"
-                      value={editedEvent.timeFrom}
-                      onChange={(e) => updateEditedEvent('timeFrom', e.target.value)}
-                      className={styles.timeInput}
-                    />
-                    <input
-                      type="time"
-                      value={editedEvent.timeTo}
-                      onChange={(e) => updateEditedEvent('timeTo', e.target.value)}
-                      className={styles.timeInput}
-                    />
-                  </div>
-                </>
-              )}
+                  <label htmlFor="editIsDateTbd">Дата и время уточняется</label>
+                </div>
 
-              <input
-                type="text"
-                value={editedEvent.place}
-                onChange={(e) => updateEditedEvent('place', e.target.value)}
-                className={styles.placeInput}
-                placeholder="Место проведения"
-              />
-          </div>
-          ) : (
-            registerButton
-        )}
+                {!editedEvent.isDateTbd && (
+                  <>
+                    <input
+                      type="date"
+                      value={editedEvent.eventDate}
+                      onChange={(e) => updateEditedEvent('eventDate', e.target.value)}
+                      className={styles.dateInput}
+                    />
+                    <div className={styles.timeInputs}>
+                      <input
+                        type="time"
+                        value={editedEvent.timeFrom}
+                        onChange={(e) => updateEditedEvent('timeFrom', e.target.value)}
+                        className={styles.timeInput}
+                      />
+                      <input
+                        type="time"
+                        value={editedEvent.timeTo}
+                        onChange={(e) => updateEditedEvent('timeTo', e.target.value)}
+                        className={styles.timeInput}
+                      />
+                    </div>
+                  </>
+                )}
+
+                <input
+                  type="text"
+                  value={editedEvent.place}
+                  onChange={(e) => updateEditedEvent('place', e.target.value)}
+                  className={styles.placeInput}
+                  placeholder="Место проведения"
+                />
+            </div>
+            ) : (
+              registerButton
+            )}
+
+            <div className={styles.participantsInfo}>
+              <UsersRound size={18} />
+              <span 
+                className={`${styles.participantsText} ${canViewAttendees ? styles.clickable : ''}`}
+                onClick={canViewAttendees ? () => setIsAttendeesOpen(true) : undefined}
+                role={canViewAttendees ? 'button' : undefined}
+                tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
+                onKeyDown={canViewAttendees ? (e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (canViewAttendees) {
+                      setIsAttendeesOpen(true);
+                    }
+                  }
+                } : undefined}
+              >
+                {event.regedUsers} участников
+              </span>
+            </div>
         </div>
       </div>
       
