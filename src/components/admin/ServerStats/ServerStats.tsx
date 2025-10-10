@@ -39,11 +39,6 @@ interface ServerStatsData {
         release: string;
         hostname: string;
     };
-    systemLoad: {
-        level: string;
-        description: string;
-        recommendations: string[];
-    };
 }
 
 export const ServerStats: React.FC = () => {
@@ -136,24 +131,6 @@ export const ServerStats: React.FC = () => {
                     <div className={styles.infoRow}>
                         <span>Аптайм:</span>
                         <span>{stats.uptime.formatted}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div className={`${styles.statCard} ${styles[stats.systemLoad.level]}`}>
-                <h4>Нагрузка системы</h4>
-                <div className={styles.loadInfo}>
-                    <div className={styles.infoRow}>
-                        <span>Уровень:</span>
-                        <span>{stats.systemLoad.description}</span>
-                    </div>
-                    <div className={styles.recommendations}>
-                        <h5>Рекомендации:</h5>
-                        <ul>
-                            {stats.systemLoad.recommendations.map((rec, index) => (
-                                <li key={index}>{rec}</li>
-                            ))}
-                        </ul>
                     </div>
                 </div>
             </div>
