@@ -4,8 +4,7 @@ import { EventRegService } from '@/services/eventReg.service';
 import PopUpWrapper from '../../../global/PopUpWrapper/PopUpWrapper';
 import { Spinner } from '@heroui/react';
 import styles from './AttendeesPopUp.module.scss';
-import AttendeeItem from './AttendeeItem';
-import { AttendeeUser } from './types';
+import AttendeeItem, { AttendeeUser } from '@/components/ui/AttendeeItem';
 
 interface AttendeesPopUpProps {
   isOpen: boolean;
@@ -33,7 +32,6 @@ const AttendeesPopUp: React.FC<AttendeesPopUpProps> = ({ isOpen, onClose, eventI
       onClose={onClose}
       width={520}
       height={600}
-      modalId={`attendees-popup-${eventId}`}
     >
       <div className={styles.container}>
         <div className={styles.header}>

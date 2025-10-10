@@ -1,7 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
-import styles from './AttendeesPopUp.module.scss';
-import { AttendeeUser } from './types';
+import styles from './AttendeeItem.module.scss';
+
+export interface AttendeeUser {
+  _id: string;
+  telegramId?: string;
+  avaPath?: string;
+  firstName?: string;
+  username?: string;
+  lastName?: string;
+}
 
 interface AttendeeItemProps {
   user: AttendeeUser;
@@ -42,5 +50,4 @@ const AttendeeItem: React.FC<AttendeeItemProps> = ({ user }) => {
 };
 
 export default AttendeeItem;
-
 

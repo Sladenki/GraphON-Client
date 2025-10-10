@@ -36,49 +36,24 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.fallback {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-}
-
-.name {
-  font-weight: 600;
-}
-
-.meta {
-  font-size: 12px;
-  opacity: 0.7;
+  
+  // Стилизация скроллбара
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(var(--main-Color), 0.2);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(var(--main-Color), 0.3);
+    }
+  }
 }
 
 
