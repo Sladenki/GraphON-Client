@@ -1,36 +1,59 @@
 .item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 10px;
+  gap: 14px;
+  padding: 12px 14px;
   border: 1px solid rgba(var(--main-Color), 0.08);
-  border-radius: 12px;
-  background: rgba(var(--main-Color), 0.02);
-  transition: all 0.2s ease;
+  border-radius: 16px;
+  background: var(--background-color);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  cursor: default;
   
   &:hover {
-    background: rgba(var(--main-Color), 0.04);
-    border-color: rgba(var(--main-Color), 0.12);
+    background: rgba(var(--main-Color), 0.03);
+    border-color: rgba(var(--main-Color), 0.15);
+    transform: translateX(4px);
+  }
+  
+  &.clickable {
+    cursor: pointer;
+    
+    &:active {
+      transform: translateX(2px) scale(0.98);
+    }
   }
 }
 
+// Аватар с обёрткой для badge
+.avatarWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   overflow: hidden;
-  background: rgba(var(--main-Color), 0.06);
+  background: rgba(var(--main-Color), 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  border: 2px solid rgba(var(--main-Color), 0.1);
+  border: 2.5px solid rgba(var(--main-Color), 0.12);
+  transition: all 0.25s ease;
   
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .item:hover & {
+    border-color: rgba(var(--main-Color), 0.2);
+    transform: scale(1.05);
   }
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .fallback {
@@ -40,52 +63,113 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 16px;
-  color: white;
+  font-size: 17px;
+  color: var(--main-text);
   font-family: var(--font-inter);
 }
 
+// Online badge
+.onlineBadge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  border: 2.5px solid var(--background-color);
+}
+
+// Информация
 .info {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   flex: 1;
   min-width: 0;
 }
 
 .name {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 1.4;
   color: var(--text-color);
   font-family: var(--font-inter);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
 .meta {
-  font-size: 12px;
-  color: rgba(var(--text-color), 0.6);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 13px;
+  color: rgba(var(--text-color), 0.55);
   font-family: var(--font-inter);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.at {
+  color: rgba(var(--main-Color), 0.6);
+  font-weight: 500;
+}
+
+.username {
+  color: rgba(var(--text-color), 0.65);
+}
+
+.noUsername {
+  font-style: italic;
+  color: rgba(var(--text-color), 0.4);
+  font-size: 12px;
+}
+
+// Стрелка для кликабельных элементов
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(var(--main-Color), 0.4);
+  transition: all 0.2s ease;
+  opacity: 0;
+  
+  .item:hover & {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+  
+  .clickable & {
+    opacity: 0.6;
+  }
+}
+
 // Dark theme
 @media (prefers-color-scheme: dark) {
   .item {
+    background: var(--block-color);
     border-color: rgba(var(--main-Color), 0.12);
-    background: rgba(var(--main-Color), 0.03);
     
     &:hover {
-      background: rgba(var(--main-Color), 0.06);
-      border-color: rgba(var(--main-Color), 0.18);
+      background: rgba(var(--main-Color), 0.05);
+      border-color: rgba(var(--main-Color), 0.2);
     }
   }
   
   .avatar {
-    background: rgba(var(--main-Color), 0.08);
-    border-color: rgba(var(--main-Color), 0.15);
+    background: rgba(var(--main-Color), 0.1);
+    border-color: rgba(var(--main-Color), 0.18);
+    
+    .item:hover & {
+      border-color: rgba(var(--main-Color), 0.25);
+    }
+  }
+  
+  .onlineBadge {
+    border-color: var(--block-color);
   }
 }
 
@@ -93,23 +177,49 @@
 @media (max-width: 768px) {
   .item {
     padding: 10px 12px;
+    gap: 12px;
+    border-radius: 14px;
+    
+    &:hover {
+      transform: translateX(2px);
+    }
   }
   
   .avatar {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
+    border-width: 2px;
   }
   
   .fallback {
-    font-size: 15px;
+    font-size: 16px;
+  }
+  
+  .onlineBadge {
+    width: 10px;
+    height: 10px;
+    border-width: 2px;
   }
   
   .name {
-    font-size: 13px;
+    font-size: 14px;
   }
   
   .meta {
-    font-size: 11px;
+    font-size: 12px;
+  }
+  
+  .arrow {
+    display: none;
+  }
+}
+
+// Reduce motion
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .avatar,
+  .arrow {
+    transition: none;
   }
 }
 
