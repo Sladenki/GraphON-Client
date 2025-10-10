@@ -70,9 +70,7 @@
 // Меньше 1000Px
 @media only screen and (max-width: 1000px) {
 .wrapper {
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!
-  padding-bottom: 80px;
-  padding-top: 40px; // учитываем высоту TopPanel на мобилках
+  padding-bottom: 40px; // отступ для BottomMenu
   display: flex;
   flex-direction: column;
   min-height: 100vh;
