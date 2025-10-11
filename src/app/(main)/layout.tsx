@@ -7,9 +7,6 @@ import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
 import MobileDrawer from "@/components/global/MobileDrawer/MobileDrawer";
 import TopPanel from "@/components/global/TopPanel/TopPanel";
 import { AllProvers } from "@/providers/main";
-import type { Metadata } from 'next';
-import { inter, orbitron } from "@/app/fonts";
-import '../../styles/globals.scss'
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
@@ -18,9 +15,7 @@ import { UniversitySelect } from '@/components/global/UniversitySelect/Universit
 import { useSelectedGraphId } from '@/stores/useUIStore';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 
-// Fonts are configured in server file src/app/fonts.ts
-
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
   const small = useMediaQuery('(max-width: 650px)')
   const selectedGraphId = useSelectedGraphId();
@@ -34,83 +29,69 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   // Показываем лоадер пока загружаются данные из localStorage
   if (!isHydrated) {
     return (
-      <html lang="ru" className={`${inter.variable} ${orbitron.variable}`}>
-        <head>
-          <title>GraphON</title>
-        </head>
-        <body className={inter.className}>
-          <Providers>
-            <div style={{ 
-              minHeight: '100vh', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              background: 'var(--background-color)'
-            }}>
-              <SpinnerLoader />
-            </div>
-          </Providers>
-        </body>
-      </html>
+      <Providers>
+        <div style={{ 
+          minHeight: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          background: 'var(--background-color)'
+        }}>
+          <SpinnerLoader />
+        </div>
+      </Providers>
     );
   }
 
   return (
-    <html lang="ru" className={`${inter.variable} ${orbitron.variable}`}>
-      <head>
-        <title>GraphON</title>
-      </head>
-      <body className={inter.className}>
-        <Providers>
-          <HeroUIProvider>
-            <Toaster position="top-right" richColors />
+    <Providers>
+      <HeroUIProvider>
+        <Toaster position="top-right" richColors />
 
-            {/* Если университет не выбран - показываем экран выбора */}
-            {!selectedGraphId ? (
-              <div className={styles.universitySelectWrapper}>
-                <UniversitySelect />
-              </div>
-            ) : (
-              <div className={styles.wrapper}>
-                <AllProvers>
-                  {/* Top Panel - только для мобильных */}
-                  {small && <TopPanel />}
+        {/* Если университет не выбран - показываем экран выбора */}
+        {!selectedGraphId ? (
+          <div className={styles.universitySelectWrapper}>
+            <UniversitySelect />
+          </div>
+        ) : (
+          <div className={styles.wrapper}>
+            <AllProvers>
+              {/* Top Panel - только для мобильных */}
+              {small && <TopPanel />}
 
-                  {/* Mobile Drawer - только для мобильных */}
-                  {small ? (
-                    <MobileDrawer>
-                      <div className={styles.main}>
-                        <div className={styles.content}>
-                          {children}
-                        </div>
-                      </div>
-                    </MobileDrawer>
-                  ) : (
-                    <>
-                      {/* Sidebar - только для десктопа */}
-                      <div className={styles.sidebar}>
-                        <Sidebar/>
-                      </div>
-                      
-                      {/* Основная страница */}
-                      <div className={styles.main}>
-                        <div className={styles.content}>
-                          {children}
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  <div className={styles.BottomMenu}>
-                    <BottomMenu/>
+              {/* Mobile Drawer - только для мобильных */}
+              {small ? (
+                <MobileDrawer>
+                  <div className={styles.main}>
+                    <div className={styles.content}>
+                      {children}
+                    </div>
                   </div>
-                    
-                </AllProvers>
+                </MobileDrawer>
+              ) : (
+                <>
+                  {/* Sidebar - только для десктопа */}
+                  <div className={styles.sidebar}>
+                    <Sidebar/>
+                  </div>
+                  
+                  {/* Основная страница */}
+                  <div className={styles.main}>
+                    <div className={styles.content}>
+                      {children}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div className={styles.BottomMenu}>
+                <BottomMenu/>
               </div>
-            )}
-          </HeroUIProvider>
-        </Providers>
-      </body>
-    </html>
+                
+            </AllProvers>
+          </div>
+        )}
+      </HeroUIProvider>
+    </Providers>
   );
 }

@@ -19,6 +19,9 @@ const nextConfig = {
 
   reactStrictMode: true, // Включает строгий режим React
 
+  // Отключаем source maps в продакшене для уменьшения размера билда
+  productionBrowserSourceMaps: false,
+
   // Оптимизация импортов: загружаем только используемые иконки
   modularizeImports: {
     'lucide-react': {
