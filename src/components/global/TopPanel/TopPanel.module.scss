@@ -33,7 +33,6 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: var(--background-secondary, #f8fafc);
   border: 1px solid var(--border-light, #f1f5f9);
   color: rgb(var(--main-Color)); // контрастная иконка, не белая
   transition: background 0.2s ease, transform 0.15s ease;
@@ -55,8 +54,6 @@
     border-radius: 10px;
   }
 }
-
-.logo { display: none; }
 
 .userSection {
   display: flex;
@@ -113,7 +110,7 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
-  padding: 10px 16px;
+  padding: 9px 16px;
   background: rgba(var(--main-Color), 0.1);
   border: 1px solid rgba(var(--main-Color), 0.2);
   border-radius: 12px;
@@ -143,29 +140,9 @@ html[data-theme="dark"] {
   .menuButton {
     background: var(--background-secondary, #334155);
     border-color: var(--border-light, #475569);
-    color: rgb(var(--main-Color)); // сохраняем читаемость в темной теме
 
     &:hover {
       background: var(--background-hover, #475569);
-    }
-  }
-
-  .logo {
-    h1 {
-      color: var(--text-primary, #f8fafc);
-      background: linear-gradient(135deg, 
-        var(--primary-color, #818cf8) 0%,
-        var(--accent-color, #00ffff) 100%
-      );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .beta {
-      color: var(--text-secondary, #94a3b8);
-      background: var(--background-secondary, #334155);
-      border-color: var(--border-light, #475569);
     }
   }
 
