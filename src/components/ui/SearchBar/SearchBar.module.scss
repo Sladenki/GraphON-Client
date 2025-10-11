@@ -370,16 +370,50 @@
 @media (max-width: 768px) {
   .searchBar {
     max-width: 100%;
-    padding: 0 8px;
+    padding: 0;
   }
 
   .searchInput {
-    padding: 14px 16px;
-    border-radius: 20px;
+    padding: 8px 12px;
+    border-radius: 16px;
+  }
+
+  .searchIcon {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
   }
 
   .input {
-    font-size: 16px;
+    font-size: 14px;
+  }
+  
+  .clearButton svg,
+  .filterButton svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .rightControls {
+    gap: 4px;
+  }
+
+  .vertDivider {
+    height: 16px;
+  }
+
+  .clearButton,
+  .filterButton {
+    width: 24px;
+    height: 24px;
+  }
+
+  .tagCount {
+    font-size: 9px;
+    min-width: 14px;
+    height: 14px;
+    top: -4px;
+    right: -4px;
   }
 
   .tagFilterDropdown {
@@ -388,7 +422,30 @@
   }
 
   .tagFilterHeader {
-    padding: 12px 12px 8px;
+    padding: 10px 12px 8px;
+  }
+
+  .tagFilterTitle {
+    font-size: 13px;
+  }
+
+  .clearTagsButton {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  .dateFilterSection {
+    padding: 10px 12px 8px;
+  }
+
+  .dateFieldInDropdown {
+    font-size: 11px;
+    padding: 5px 6px;
+  }
+
+  .tbdToggleInline {
+    font-size: 11px;
+    margin-top: 6px;
   }
 
   .tagList {
@@ -397,8 +454,9 @@
   }
 
   .tagOption {
-    padding: 10px 12px;
-    font-size: 14px;
+    padding: 8px 10px;
+    font-size: 13px;
+    gap: 6px;
   }
 
   .activeFilters {
@@ -410,10 +468,35 @@
   .tagFilter {
     font-size: 11px;
     padding: 3px 6px;
+    
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  .removeTag {
+    width: 14px;
+    height: 14px;
+    
+    svg {
+      width: 10px;
+      height: 10px;
+    }
   }
 
   .clearAllButton {
     font-size: 11px;
     padding: 3px 6px;
+  }
+
+  .tagOption svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .tagRemoveIcon {
+    width: 12px;
+    height: 12px;
   }
 }

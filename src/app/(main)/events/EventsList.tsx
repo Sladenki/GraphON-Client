@@ -180,6 +180,7 @@ export default function EventsList() {
           onIncludeTbdChange={setIncludeTbd}
         />
       </div>
+      
       {/* Загрузка */}
       {isLoading && (
         <div className={styles.loader}>

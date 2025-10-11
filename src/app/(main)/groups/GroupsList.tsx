@@ -106,29 +106,27 @@ export default function GroupsList() {
     )
   }
 
-  // Убираем ранний возврат для noSearchResults - поиск должен оставаться видимым
-
   return (
     <div className={styles.container}>
       {/* Поиск и фильтры - всегда видимый */}
       <div className={styles.searchSection}>
-          <SearchBar
-            onSearch={handleSearch}
-            onTagFilter={handleTagFilter}
-            placeholder="Поиск групп..."
-            availableTags={availableTags}
-            showTagFilter={true}
-            initialQuery={query}
-            initialSelectedTags={selectedTags}
-          />
-          
-          {/* Информация о результатах */}
-          {hasActiveFilters && (
-            <div className={styles.searchResults}>
-              Найдено: {filteredGraphs.length} из {allGraphs.length} групп
-            </div>
-          )}
-        </div>
+        <SearchBar
+          onSearch={handleSearch}
+          onTagFilter={handleTagFilter}
+          placeholder="Поиск групп..."
+          availableTags={availableTags}
+          showTagFilter={true}
+          initialQuery={query}
+          initialSelectedTags={selectedTags}
+        />
+        
+        {/* Информация о результатах */}
+        {hasActiveFilters && (
+          <div className={styles.searchResults}>
+            Найдено: {filteredGraphs.length} из {allGraphs.length} групп
+          </div>
+        )}
+      </div>
  
 
       {/* Состояния загрузки и контента */}
