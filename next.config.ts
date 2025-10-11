@@ -19,6 +19,13 @@ const nextConfig = {
 
   reactStrictMode: true, // Включает строгий режим React
 
+  // Оптимизация импортов: загружаем только используемые иконки
+  modularizeImports: {
+    'lucide-react': {
+      transform: 'lucide-react/dist/esm/icons/{{kebabCase member}}',
+    },
+  },
+
   experimental: {
     turbo: {
       enabled: true, // Включаем Turbopack

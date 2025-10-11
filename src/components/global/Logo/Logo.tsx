@@ -34,7 +34,7 @@ interface LogoProps {
 export const Logo: React.FC<LogoProps> = ({
   width = 130,
   height = 20,
-  href = '/',
+  href = '/events',
   clickable = true,
   priority = true,
   className = ''
