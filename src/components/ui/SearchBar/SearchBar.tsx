@@ -191,7 +191,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           <div className={styles.activeFilters} aria-live="polite">
             {query && (
               <span className={styles.queryFilter}>
-                "{query}"
+                &ldquo;{query}&rdquo;
               </span>
             )}
             {selectedTagsData.map(tag => (
