@@ -1,4 +1,4 @@
-import { axiosAuth } from "@/api/interceptors"
+import { axiosAuth, axiosClassic } from "@/api/interceptors"
 
 export const GraphSubsService = {
 
@@ -21,6 +21,11 @@ export const GraphSubsService = {
     // Получение всех групп, на которые подписан пользователь
     async getUserSubscribedGraphs() {
         return axiosAuth.get(`/graphSubs/getUserSubscribedGraphs`)
+    },
+
+    // --- Получение подписчиков графа ---
+    async getGraphSubscribers(graphId: string) {
+        return axiosAuth.get(`/graphSubs/getGraphSubscribers/${graphId}`)
     }
 
 }

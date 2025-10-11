@@ -71,10 +71,29 @@
   color: var(--main-text);
   font-size: 0.9rem;
   opacity: 0.8;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    opacity: 1;
+    background: rgba(var(--main-Color), 0.08);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
 }
 
 .statIcon {
   color: rgba(var(--main-Color), 0.6);
+  transition: color 0.2s ease;
+  
+  .statItem:hover & {
+    color: rgb(var(--main-Color));
+  }
 }
 
 .tabBar {

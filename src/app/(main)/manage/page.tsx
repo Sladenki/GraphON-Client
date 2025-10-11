@@ -13,6 +13,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import Image from 'next/image';
 import { GraduationCap, Users } from 'lucide-react';
 import NoImage from '../../../../public/noImage.png';
+import SubscribersPopUp from '@/components/ui/SubscribersPopUp';
 import styles from './Manage.module.scss';
 
 export default function ManagePage() {
@@ -23,6 +24,7 @@ export default function ManagePage() {
     const graphId = searchParams.get('id') || managedIds[0];
 
     const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
+    const [isSubscribersOpen, setIsSubscribersOpen] = useState(false);
 
     const { data, isLoading, isError, refetch } = useQuery<GraphInfo>({
         queryKey: ['manageGraph', graphId],
@@ -97,7 +99,12 @@ export default function ManagePage() {
                             </div>
                         )}
                         <div className={styles.graphStats}>
-                            <div className={styles.statItem}>
+                            <div 
+                                className={styles.statItem}
+                                onClick={() => setIsSubscribersOpen(true)}
+                                role="button"
+                                tabIndex={0}
+                            >
                                 <Users size={16} className={styles.statIcon} />
                                 <span>{data.subsNum} подписок</span>
                             </div>
@@ -136,6 +143,14 @@ export default function ManagePage() {
                     renderList(pastResp?.data as EventItem[] | undefined)
                 )
             )}
+
+            {/* PopUp со списком подписчиков */}
+            <SubscribersPopUp
+                isOpen={isSubscribersOpen}
+                onClose={() => setIsSubscribersOpen(false)}
+                graphId={graphId}
+                graphName={data.name}
+            />
         </div>
     );
 }

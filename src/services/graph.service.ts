@@ -43,4 +43,5 @@ export const GraphService = {
     async getTopicGraphsWithGlobal(globalGraphId: string) {
         return axiosClassic.get(`/graph/getTopicGraphsWithGlobal/${globalGraphId}`)
     }
+
 }
