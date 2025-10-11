@@ -120,9 +120,8 @@ export const CreateGraphForm = () => {
         }
     };
 
-    const handleGlobalGraphChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newGlobalGraphId = e.target.value;
-        setSelectedGlobalGraph(newGlobalGraphId);
+    const handleGlobalGraphChange = (value: string) => {
+        setSelectedGlobalGraph(value);
         // Сбрасываем выбор родительского графа при смене глобального графа
         setSelectedParentGraph('');
     };
@@ -166,7 +165,7 @@ export const CreateGraphForm = () => {
             <FormInputGroup label="Родительский граф (граф-тематика):">
                 <FormSelect
                     value={selectedParentGraph}
-                    onChange={(e) => setSelectedParentGraph(e.target.value)}
+                    onChange={setSelectedParentGraph}
                     options={[
                         { value: '', label: selectedGlobalGraph ? 'Выберите родительский граф' : 'Сначала выберите глобальный граф' },
                         ...(parentGraphs?.map((graph: IGraphList) => ({

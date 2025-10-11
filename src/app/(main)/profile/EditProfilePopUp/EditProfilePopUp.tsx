@@ -40,7 +40,6 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
             isOpen={isOpen}
             onClose={onClose}
             width={small ? '92vw' : 520}
-            modalId="edit-profile-popup"
         >
             <div className={styles.editFormWrapper}>
                 <div className={styles.formHeader}>

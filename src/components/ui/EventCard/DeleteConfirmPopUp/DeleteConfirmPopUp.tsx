@@ -25,7 +25,6 @@ const DeleteConfirmPopUp: React.FC<DeleteConfirmPopUpProps> = ({
       onClose={onClose} 
       width={400} 
       height="auto"
-      modalId="delete-confirm-popup"
     >
       <div className={styles.container}>
         <div className={styles.header}>

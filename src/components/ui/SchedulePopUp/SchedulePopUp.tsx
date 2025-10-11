@@ -43,7 +43,6 @@ const SchedulePopUp: FC<SchedulePopUpProps> = ({
       onClose={closeSchedulePopup} 
       width={1000} 
       height={900}
-      modalId="schedule-popup"
     >
             {data && (
                 <SchedulePage

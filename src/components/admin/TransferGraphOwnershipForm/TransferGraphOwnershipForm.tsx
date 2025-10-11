@@ -87,7 +87,6 @@ export const TransferGraphOwnershipForm = ({ graphs }: TransferGraphOwnershipFor
             }
         };
         if (graphs && graphs.length) fetchOwners();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [graphs]);
 
     // Без поисковых полей: используем исходные списки graphs и users
