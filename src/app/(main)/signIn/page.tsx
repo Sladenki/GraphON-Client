@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { Shield, Zap, CheckCircle } from 'lucide-react'
 import styles from './signIn.module.scss'
 import { Logo } from '@/components/global/Logo'
@@ -83,9 +84,9 @@ const SignIn = () => {
 
         {/* Футер */}
         <div className={styles.footer}>
-          <a href="/" className={styles.backLink}>
+          <Link href="/events" className={styles.backLink}>
             Вернуться на главную
-          </a>
+          </Link>
         </div>
       </div>
 
