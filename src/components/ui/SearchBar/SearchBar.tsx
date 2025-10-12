@@ -7,6 +7,8 @@ import styles from './SearchBar.module.scss'
 import { DatePicker } from '@heroui/react'
 import { parseDate } from '@internationalized/date'
 import { I18nProvider } from '@react-aria/i18n'
+import { format, parseISO } from 'date-fns'
+import { ru as ruLocale } from 'date-fns/locale'
 
 export interface SearchTag {
   _id: string
@@ -131,6 +133,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const supportsDateFilter = showDateFilter && typeof onDateFromChange === 'function' && typeof onDateToChange === 'function'
   const dateFromValue = useMemo(() => (dateFrom ? parseDate(dateFrom) : null), [dateFrom])
   const dateToValue = useMemo(() => (dateTo ? parseDate(dateTo) : null), [dateTo])
+  const formattedDateFrom = useMemo(() => {
+    if (!dateFrom) return ''
+    try { return format(parseISO(dateFrom), 'd MMMM yyyy', { locale: ruLocale }) } catch { return dateFrom }
+  }, [dateFrom])
+  const formattedDateTo = useMemo(() => {
+    if (!dateTo) return ''
+    try { return format(parseISO(dateTo), 'd MMMM yyyy', { locale: ruLocale }) } catch { return dateTo }
+  }, [dateTo])
 
   return (
     <div className={`${styles.searchBar} ${className}` } role="search">
@@ -197,6 +207,32 @@ const SearchBar: React.FC<SearchBarProps> = ({
             {query && (
               <span className={styles.queryFilter}>
                 &ldquo;{query}&rdquo;
+              </span>
+            )}
+            {supportsDateFilter && dateFrom && (
+              <span className={styles.tagFilter}>
+                <span>От {formattedDateFrom}</span>
+                <button
+                  onClick={() => onDateFromChange?.('')}
+                  className={styles.removeTag}
+                  aria-label={`Убрать фильтр От ${formattedDateFrom}`}
+                  type="button"
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            )}
+            {supportsDateFilter && dateTo && (
+              <span className={styles.tagFilter}>
+                <span>До {formattedDateTo}</span>
+                <button
+                  onClick={() => onDateToChange?.('')}
+                  className={styles.removeTag}
+                  aria-label={`Убрать фильтр До ${formattedDateTo}`}
+                  type="button"
+                >
+                  <X size={12} />
+                </button>
               </span>
             )}
             {selectedTagsData.map(tag => (
