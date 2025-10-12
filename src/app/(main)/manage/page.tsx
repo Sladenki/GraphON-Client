@@ -13,7 +13,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import Image from 'next/image';
 import { GraduationCap, Users } from 'lucide-react';
 import NoImage from '../../../../public/noImage.png';
-import SubscribersPopUp from '@/components/ui/SubscribersPopUp';
+import SubscribersPopUp from '@/app/(main)/manage/SubscribersPopUp';
 import styles from './Manage.module.scss';
 
 export default function ManagePage() {

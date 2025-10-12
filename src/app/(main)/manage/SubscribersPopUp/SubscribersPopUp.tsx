@@ -1,30 +1,31 @@
 import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { EventRegService } from '@/services/eventReg.service';
+import { GraphService } from '@/services/graph.service';
 import UsersListPopUp from '@/components/ui/UsersListPopUp';
-import styles from './AttendeesPopUp.module.scss';
+import styles from './SubscribersPopUp.module.scss';
 import AttendeeItem, { AttendeeUser } from '@/components/ui/AttendeeItem';
+import { GraphSubsService } from '@/services/graphSubs.service';
 
-interface AttendeesPopUpProps {
+interface SubscribersPopUpProps {
   isOpen: boolean;
   onClose: () => void;
-  eventId: string;
-  eventName: string;
+  graphId: string;
+  graphName: string;
 }
 
-const AttendeesPopUp: React.FC<AttendeesPopUpProps> = ({ 
+const SubscribersPopUp: React.FC<SubscribersPopUpProps> = ({ 
   isOpen, 
   onClose, 
-  eventId, 
-  eventName 
+  graphId, 
+  graphName 
 }) => {
-  const { data: attendees, isLoading, isError } = useQuery({
-    queryKey: ['eventRegUsers', eventId],
+  const { data: subscribers, isLoading, isError } = useQuery({
+    queryKey: ['graphSubscribers', graphId],
     queryFn: async () => {
-      const res = await EventRegService.getUsersByEventId(eventId);
+      const res = await GraphSubsService.getGraphSubscribers(graphId);
       return res.data as AttendeeUser[];
     },
-    enabled: isOpen && Boolean(eventId),
+    enabled: isOpen && Boolean(graphId),
     staleTime: 60_000,
   });
 
@@ -32,16 +33,16 @@ const AttendeesPopUp: React.FC<AttendeesPopUpProps> = ({
     <UsersListPopUp
       isOpen={isOpen}
       onClose={onClose}
-      title="Участники мероприятия"
-      subtitle={eventName}
+      title="Подписчики"
+      subtitle={graphName}
       isLoading={isLoading}
       isError={isError}
-      users={attendees as any}
+      users={subscribers as any}
       renderItem={(user) => <AttendeeItem user={user as any} />}
-      emptyTitle="Пока нет участников"
-      emptyHint="Станьте первым, кто зарегистрируется!"
-      loadingText="Загрузка участников..."
-      errorText="Не удалось загрузить список участников"
+      emptyTitle="Пока нет подписчиков"
+      emptyHint="Станьте первым, кто подпишется!"
+      loadingText="Загрузка подписчиков..."
+      errorText="Не удалось загрузить список подписчиков"
       errorHint="Попробуйте обновить страницу"
       width={540}
       height={620}
@@ -70,6 +71,5 @@ const AttendeesPopUp: React.FC<AttendeesPopUpProps> = ({
   );
 };
 
-export default AttendeesPopUp;
-
+export default SubscribersPopUp;
 
