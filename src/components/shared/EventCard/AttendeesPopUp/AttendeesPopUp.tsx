@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { EventRegService } from '@/services/eventReg.service';
-import UsersListPopUp from '@/components/ui/UsersListPopUp';
+import UsersListPopUp from '@/components/shared/UsersListPopUp';
 import styles from './AttendeesPopUp.module.scss';
-import AttendeeItem, { AttendeeUser } from '@/components/ui/AttendeeItem';
+import AttendeeItem, { AttendeeUser } from '@/components/shared/AttendeeItem';
 
 interface AttendeesPopUpProps {
   isOpen: boolean;

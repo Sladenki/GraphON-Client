@@ -8,7 +8,7 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { GraphInfo } from '@/types/graph.interface';
 import { EventItem } from '@/types/schedule.interface';
 import { useState } from 'react';
-import EventCard from '@/components/ui/EventCard/EventCard';
+import EventCard from '@/components/shared/EventCard/EventCard';
 import { useAuth } from '@/providers/AuthProvider';
 import Image from 'next/image';
 import { GraduationCap, Users } from 'lucide-react';

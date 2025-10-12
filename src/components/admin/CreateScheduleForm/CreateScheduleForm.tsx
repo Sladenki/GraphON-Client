@@ -4,7 +4,7 @@ import { GraphService } from '@/services/graph.service';
 import { IGraphList } from '@/types/graph.interface';
 import { useState } from 'react';
 import { ScheduleType } from '@/types/schedule.interface';
-import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/ui/AdminForm';
+import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/shared/AdminForm';
 
 interface CreateScheduleFormProps {
     globalGraphId: string;

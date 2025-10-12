@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
-import EventCard from '@/components/ui/EventCard/EventCard'
+import EventCard from '@/components/shared/EventCard/EventCard'
 import { useQueryWithRetry } from '@/hooks/useQueryWithRetry'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useSearchQuery } from '@/stores/useUIStore'

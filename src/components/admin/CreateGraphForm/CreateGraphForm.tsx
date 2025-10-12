@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminService } from '@/services/admin.service';
 import { IGraphList } from '@/types/graph.interface';
-import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
+import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/shared/AdminForm';
 import { GraphService } from '@/services/graph.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 

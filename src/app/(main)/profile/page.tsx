@@ -11,7 +11,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { GraduationCap, Pencil, Heart, CalendarCheck, User, MapPin } from 'lucide-react';
 import { EventRegService } from '@/services/eventReg.service';
-import EventCard from '@/components/ui/EventCard/EventCard';
+import EventCard from '@/components/shared/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
 import NoImage from '../../../../public/noImage.png'
 import ThemeToggle from '@/components/global/ThemeToggle/ThemeToggle';
@@ -22,8 +22,8 @@ import { GraphSubsService } from '@/services/graphSubs.service';
 import { IGraphList } from '@/types/graph.interface';
 import { useSetSelectedGraphId } from '@/stores/useUIStore';
 import EditProfilePopUp from './EditProfilePopUp/EditProfilePopUp';
-import SearchBar, { SearchTag } from '@/components/ui/SearchBar/SearchBar';
-import GraphBlock from '@/components/ui/GraphBlock/GraphBlock';
+import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar';
+import GraphBlock from '@/components/shared/GraphBlock/GraphBlock';
 import { useDebounce } from '@/hooks/useDebounce';
 
 

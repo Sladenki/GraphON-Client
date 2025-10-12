@@ -4,14 +4,14 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import { ErrorState } from '@/components/global/ErrorState/ErrorState'
-import EventCard from '@/components/ui/EventCard/EventCard'
+import EventCard from '@/components/shared/EventCard/EventCard'
 import { useQueryWithRetry } from '@/hooks/useQueryWithRetry'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useSearchQuery, useSelectedGraphId, useSetSearchQuery } from '@/stores/useUIStore'
 import { EventService } from '@/services/event.service'
 import { EventItem } from '@/types/schedule.interface'
 import styles from './EventsList.module.scss'
-import SearchBar, { SearchTag } from '@/components/ui/SearchBar/SearchBar'
+import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
 
 export default function EventsList() {
   const searchQuery = useSearchQuery()

@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
-import UsersListPopUp from '@/components/ui/UsersListPopUp';
+import UsersListPopUp from '@/components/shared/UsersListPopUp';
 import styles from './SubscribersPopUp.module.scss';
-import AttendeeItem, { AttendeeUser } from '@/components/ui/AttendeeItem';
+import AttendeeItem, { AttendeeUser } from '@/components/shared/AttendeeItem';
 import { GraphSubsService } from '@/services/graphSubs.service';
 
 interface SubscribersPopUpProps {

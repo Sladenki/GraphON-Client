@@ -3,7 +3,7 @@ import { UserService } from '@/services/user.service';
 import { IUser, RoleTitles } from '@/types/user.interface';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { AdminForm } from '@/components/ui/AdminForm';
+import { AdminForm } from '@/components/shared/AdminForm';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useSelectedGraphId as useSelectedGraphIdStore } from '@/stores/useUIStore';
 import { GraphService } from '@/services/graph.service';

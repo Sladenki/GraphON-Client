@@ -1,7 +1,7 @@
 import { AdminService } from '@/services/admin.service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
-import { AdminForm, FormInputGroup, FormInput } from '@/components/ui/AdminForm';
+import { AdminForm, FormInputGroup, FormInput } from '@/components/shared/AdminForm';
 
 export const CreateGlobalGraphForm = () => {
     const [name, setName] = useState('');

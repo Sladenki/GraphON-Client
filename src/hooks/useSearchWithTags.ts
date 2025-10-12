@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useMemo } from 'react'
-import { SearchTag } from '@/components/ui/SearchBar/SearchBar'
+import { SearchTag } from '@/components/shared/SearchBar/SearchBar'
 
 export interface UseSearchWithTagsOptions<T> {
   data: T[]

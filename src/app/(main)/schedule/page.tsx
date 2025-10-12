@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { notifyError } from "@/lib/notifications";
 import { AxiosError } from "axios";
 import { EmptyState } from "@/components/global/EmptyState/EmptyState";
-import SchedulePage from "../../../components/ui/Schedule/Schedule";
+import SchedulePage from "../../../components/shared/Schedule/Schedule";
 
 
 const Schedule = () => {

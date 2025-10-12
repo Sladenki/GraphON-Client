@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { ScheduleService } from '@/services/schedule.service';
 
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
-import SchedulePage from '@/components/ui/Schedule/Schedule';
+import SchedulePage from '@/components/shared/Schedule/Schedule';
 
 interface SubgraphPopUpProps {
   subgraph: GraphNode | null;

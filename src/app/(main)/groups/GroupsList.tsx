@@ -5,14 +5,14 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import { ErrorState } from '@/components/global/ErrorState/ErrorState'
 
-import SchedulePopUp from '@/components/ui/SchedulePopUp/SchedulePopUp'
-import SearchBar, { SearchTag } from '@/components/ui/SearchBar/SearchBar'
+import SchedulePopUp from '@/components/shared/SchedulePopUp/SchedulePopUp'
+import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
 import { useFetchBunchData } from '@/hooks/useFetchBunchData'
 import { useSearchWithTags } from '@/hooks/useSearchWithTags'
 import { useSelectedGraphId } from '@/stores/useUIStore'
 import { IGraphList } from '@/types/graph.interface'
 import styles from './GroupsList.module.scss'
-import GraphBlock from '@/components/ui/GraphBlock/GraphBlock'
+import GraphBlock from '@/components/shared/GraphBlock/GraphBlock'
 
 export default function GroupsList() {
   const selectedGraphId = useSelectedGraphId()
