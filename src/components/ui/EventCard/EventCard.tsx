@@ -27,6 +27,9 @@ import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
 import styles from './EventCard.module.scss';
 import { linkifyText } from '@/lib/linkify';
 import { notifyError, notifySuccess } from '@/lib/notifications';
+import { DatePicker, TimeInput } from '@heroui/react';
+import { parseDate } from '@internationalized/date';
+import { I18nProvider } from '@react-aria/i18n';
 
 interface EventProps {
   event: {
@@ -138,6 +141,9 @@ const EventCard: React.FC<EventProps> = ({
     const local = new Date(parsed.getTime() - tzOffset);
     return local.toISOString().slice(0, 10);
   }, [editedEvent?.eventDate]);
+  const datePickerValue = useMemo(() => {
+    return editedEvent?.eventDate ? parseDate(dateInputValue) : null;
+  }, [dateInputValue, editedEvent?.eventDate]);
   
   // URL изображения
   const fullImageUrl = useMemo(() => {
@@ -383,12 +389,17 @@ const EventCard: React.FC<EventProps> = ({
                 <>
                   <div className={styles.timeInfo}>
                     <CalendarClock size={20} />
-                    <input
-                      type="date"
-                      value={dateInputValue}
-                      onChange={(e) => updateEditedEvent('eventDate', e.target.value)}
-                      className={styles.dateInput}
-                    />
+                    <I18nProvider locale="ru-RU">
+                      <DatePicker
+                        label="Дата"
+                        aria-label="Дата"
+                        variant="bordered"
+                        size="sm"
+                        value={datePickerValue as any}
+                        onChange={(v: any) => updateEditedEvent('eventDate', v ? v.toString() : '')}
+                        className={styles.dateInput}
+                      />
+                    </I18nProvider>
                   </div>
                   <div className={styles.timeInfo}>
                     <Clock size={20} />

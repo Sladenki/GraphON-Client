@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { inter, orbitron } from './fonts';
 import '../styles/globals.scss';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: 'GraphON',
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${inter.variable} ${orbitron.variable}`}>
       <body className={inter.className}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

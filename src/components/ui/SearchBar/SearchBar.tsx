@@ -1,9 +1,12 @@
 'use client'
 
-import React, { useState, useCallback, useRef, useEffect, useId } from 'react'
+import React, { useState, useCallback, useRef, useEffect, useId, useMemo } from 'react'
 import { Search, X, Filter, Tag } from 'lucide-react'
 import { useDebounce } from '@/hooks/useDebounce'
 import styles from './SearchBar.module.scss'
+import { DatePicker } from '@heroui/react'
+import { parseDate } from '@internationalized/date'
+import { I18nProvider } from '@react-aria/i18n'
 
 export interface SearchTag {
   _id: string
@@ -126,6 +129,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
     || Boolean(dateFrom) || Boolean(dateTo) || includeTbd === false
 
   const supportsDateFilter = showDateFilter && typeof onDateFromChange === 'function' && typeof onDateToChange === 'function'
+  const dateFromValue = useMemo(() => (dateFrom ? parseDate(dateFrom) : null), [dateFrom])
+  const dateToValue = useMemo(() => (dateTo ? parseDate(dateTo) : null), [dateTo])
 
   return (
     <div className={`${styles.searchBar} ${className}` } role="search">
@@ -255,19 +260,29 @@ const SearchBar: React.FC<SearchBarProps> = ({
               <div className={styles.dateRow}>
                 <label className={styles.dateFieldInDropdown}>
                   <span>От</span>
-                  <input
-                    type="date"
-                    value={dateFrom ?? ''}
-                    onChange={(e) => onDateFromChange?.(e.target.value)}
-                  />
+                  <I18nProvider locale="ru-RU">
+                    <DatePicker
+                      aria-label="От даты"
+                      variant="bordered"
+                      size="sm"
+                      value={dateFromValue as any}
+                      onChange={(v: any) => onDateFromChange?.(v ? v.toString() : '')}
+                      className={styles.datePicker}
+                    />
+                  </I18nProvider>
                 </label>
                 <label className={styles.dateFieldInDropdown}>
                   <span>До</span>
-                  <input
-                    type="date"
-                    value={dateTo ?? ''}
-                    onChange={(e) => onDateToChange?.(e.target.value)}
-                  />
+                  <I18nProvider locale="ru-RU">
+                    <DatePicker
+                      aria-label="До даты"
+                      variant="bordered"
+                      size="sm"
+                      value={dateToValue as any}
+                      onChange={(v: any) => onDateToChange?.(v ? v.toString() : '')}
+                      className={styles.datePicker}
+                    />
+                  </I18nProvider>
                 </label>
               </div>
               <label className={styles.tbdToggleInline}>
