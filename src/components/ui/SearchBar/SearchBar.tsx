@@ -212,6 +212,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
               onClick={() => {
                 setQuery('')
                 clearAllTags()
+                onDateFromChange?.('')
+                onDateToChange?.('')
+                onIncludeTbdChange?.(true)
               }}
               className={styles.clearAllButton}
               aria-label="Очистить все фильтры"
