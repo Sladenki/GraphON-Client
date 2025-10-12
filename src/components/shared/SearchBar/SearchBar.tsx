@@ -4,9 +4,8 @@ import React, { useState, useCallback, useRef, useEffect, useId, useMemo } from 
 import { Search, X, Filter, Tag } from 'lucide-react'
 import { useDebounce } from '@/hooks/useDebounce'
 import styles from './SearchBar.module.scss'
-import { DatePicker } from '@heroui/react'
+import DateRangeFilter from '@/components/shared/SearchBar/DateRangeFilter/DateRangeFilter'
 import { parseDate } from '@internationalized/date'
-import { I18nProvider } from '@react-aria/i18n'
 import { format, parseISO } from 'date-fns'
 import { ru as ruLocale } from 'date-fns/locale'
 
@@ -292,44 +291,21 @@ const SearchBar: React.FC<SearchBarProps> = ({
           )}
 
           {supportsDateFilter && (
-            <div className={styles.dateFilterSection} role="group" aria-label="Фильтр по датам">
-              <div className={styles.dateRow}>
-                <label className={styles.dateFieldInDropdown}>
-                  <span>От</span>
-                  <I18nProvider locale="ru-RU">
-                    <DatePicker
-                      aria-label="От даты"
-                      variant="bordered"
-                      size="sm"
-                      value={dateFromValue as any}
-                      onChange={(v: any) => onDateFromChange?.(v ? v.toString() : '')}
-                      className={styles.datePicker}
-                    />
-                  </I18nProvider>
-                </label>
-                <label className={styles.dateFieldInDropdown}>
-                  <span>До</span>
-                  <I18nProvider locale="ru-RU">
-                    <DatePicker
-                      aria-label="До даты"
-                      variant="bordered"
-                      size="sm"
-                      value={dateToValue as any}
-                      onChange={(v: any) => onDateToChange?.(v ? v.toString() : '')}
-                      className={styles.datePicker}
-                    />
-                  </I18nProvider>
-                </label>
-              </div>
-              <label className={styles.tbdToggleInline}>
-                <input
-                  type="checkbox"
-                  checked={includeTbd ?? true}
-                  onChange={(e) => onIncludeTbdChange?.(e.target.checked)}
-                />
-                <span>Показывать без даты</span>
-              </label>
-            </div>
+            <DateRangeFilter
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              includeTbd={includeTbd}
+              onDateFromChange={onDateFromChange}
+              onDateToChange={onDateToChange}
+              onIncludeTbdChange={onIncludeTbdChange}
+              classNames={{
+                section: styles.dateFilterSection,
+                row: styles.dateRow,
+                field: styles.dateFieldInDropdown,
+                tbdToggle: styles.tbdToggleInline,
+                datePicker: styles.datePicker,
+              }}
+            />
           )}
           
           {availableTags.length > 0 && (
