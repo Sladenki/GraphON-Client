@@ -308,6 +308,49 @@
   margin-top: 8px;
   font-size: 12px;
   color: var(--main-text);
+
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border-color);
+    background: var(--background-color);
+    display: inline-grid;
+    place-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.05s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      border-color: rgba(var(--main-Color), 0.5);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.25);
+      border-color: rgb(var(--main-Color));
+    }
+
+    &:checked {
+      background: rgb(var(--main-Color));
+      border-color: rgb(var(--main-Color));
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 12.5L10 17.5L19 8.5' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 12px 12px;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
 }
 
 .tagList {
