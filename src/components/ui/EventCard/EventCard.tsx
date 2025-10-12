@@ -123,6 +123,21 @@ const EventCard: React.FC<EventProps> = ({
     
     return `${dateStr}, ${event.timeFrom} - ${event.timeTo}`;
   }, [event.eventDate, event.timeFrom, event.timeTo, event.isDateTbd]);
+
+  // Значение для HTML input[type="date"] в формате YYYY-MM-DD
+  const dateInputValue = useMemo(() => {
+    const value = editedEvent?.eventDate;
+    if (!value) return '';
+    const parsed = new Date(value);
+    if (isNaN(parsed.getTime())) {
+      // Если уже в нужном формате, отдадим как есть
+      return value;
+    }
+    // Нормализуем к локальной дате без смещения времени
+    const tzOffset = parsed.getTimezoneOffset() * 60000;
+    const local = new Date(parsed.getTime() - tzOffset);
+    return local.toISOString().slice(0, 10);
+  }, [editedEvent?.eventDate]);
   
   // URL изображения
   const fullImageUrl = useMemo(() => {
@@ -352,16 +367,74 @@ const EventCard: React.FC<EventProps> = ({
 
         {/* Important Info - время, место и участники */}
         <div className={styles.importantInfo}>
-          <div className={styles.timeInfo}>
-            <CalendarClock size={20} />
-            <span className={styles.timeText}>{formattedTime}</span>
-          </div>
-          
-          <div className={styles.placeInfo}>
-            <MapPinned size={20} />
-            <span className={styles.placeText}>{event.place}</span>
-          </div>
-          
+          {isEditing ? (
+            <>
+              <div className={styles.checkboxContainer}>
+                <input
+                  type="checkbox"
+                  id="editIsDateTbd"
+                  checked={editedEvent.isDateTbd || false}
+                  onChange={(e) => updateEditedEvent('isDateTbd', e.target.checked)}
+                />
+                <label htmlFor="editIsDateTbd">Дата и время уточняется</label>
+              </div>
+
+              {!editedEvent.isDateTbd && (
+                <>
+                  <div className={styles.timeInfo}>
+                    <CalendarClock size={20} />
+                    <input
+                      type="date"
+                      value={dateInputValue}
+                      onChange={(e) => updateEditedEvent('eventDate', e.target.value)}
+                      className={styles.dateInput}
+                    />
+                  </div>
+                  <div className={styles.timeInfo}>
+                    <Clock size={20} />
+                    <div className={styles.timeInputs}>
+                      <input
+                        type="time"
+                        value={editedEvent.timeFrom}
+                        onChange={(e) => updateEditedEvent('timeFrom', e.target.value)}
+                        className={styles.timeInput}
+                      />
+                      <input
+                        type="time"
+                        value={editedEvent.timeTo}
+                        onChange={(e) => updateEditedEvent('timeTo', e.target.value)}
+                        className={styles.timeInput}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div className={styles.placeInfo}>
+                <MapPinned size={20} />
+                <input
+                  type="text"
+                  value={editedEvent.place}
+                  onChange={(e) => updateEditedEvent('place', e.target.value)}
+                  className={styles.placeInput}
+                  placeholder="Место проведения"
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={styles.timeInfo}>
+                <CalendarClock size={20} />
+                <span className={styles.timeText}>{formattedTime}</span>
+              </div>
+              
+              <div className={styles.placeInfo}>
+                <MapPinned size={20} />
+                <span className={styles.placeText}>{event.place}</span>
+              </div>
+            </>
+          )}
+
           <div className={styles.participantsInfo}>
             <UsersRound size={18} />
             <span 
@@ -386,54 +459,7 @@ const EventCard: React.FC<EventProps> = ({
         {/* Footer - участники и кнопка регистрации (десктоп) */}
         <div className={styles.cardFooter}>
 
-          {isEditing ? (
-              <div className={styles.editForm}>
-                <div className={styles.checkboxContainer}>
-                  <input
-                    type="checkbox"
-                    id="editIsDateTbd"
-                    checked={editedEvent.isDateTbd || false}
-                    onChange={(e) => updateEditedEvent('isDateTbd', e.target.checked)}
-                  />
-                  <label htmlFor="editIsDateTbd">Дата и время уточняется</label>
-                </div>
-
-                {!editedEvent.isDateTbd && (
-                  <>
-                    <input
-                      type="date"
-                      value={editedEvent.eventDate}
-                      onChange={(e) => updateEditedEvent('eventDate', e.target.value)}
-                      className={styles.dateInput}
-                    />
-                    <div className={styles.timeInputs}>
-                      <input
-                        type="time"
-                        value={editedEvent.timeFrom}
-                        onChange={(e) => updateEditedEvent('timeFrom', e.target.value)}
-                        className={styles.timeInput}
-                      />
-                      <input
-                        type="time"
-                        value={editedEvent.timeTo}
-                        onChange={(e) => updateEditedEvent('timeTo', e.target.value)}
-                        className={styles.timeInput}
-                      />
-                    </div>
-                  </>
-                )}
-
-                <input
-                  type="text"
-                  value={editedEvent.place}
-                  onChange={(e) => updateEditedEvent('place', e.target.value)}
-                  className={styles.placeInput}
-                  placeholder="Место проведения"
-                />
-            </div>
-            ) : (
-              registerButton
-            )}
+          {isEditing ? null : registerButton}
 
             <div className={styles.participantsInfo}>
               <UsersRound size={18} />
