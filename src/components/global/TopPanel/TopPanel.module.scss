@@ -4,7 +4,9 @@
   left: 0;
   right: 0;
   height: 60px;
-  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  border-bottom: 1px solid rgba(var(--main-Color), 0.15);
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
   background-color: var(--background-color);
   display: flex;
   align-items: center;
@@ -33,15 +35,15 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  border: 1px solid var(--border-light, #f1f5f9);
-  color: rgb(var(--main-Color)); // контрастная иконка, не белая
-  transition: background 0.2s ease, transform 0.15s ease;
+  border: 1px solid rgb(var(--main-Color), 0.2);
+  color: rgb(var(--main-Color));
+  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
   cursor: pointer;
 
   &:hover {
-    background: var(--background-hover, #f1f5f9);
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.25);
     transform: translateY(-1px);
-    box-shadow: none;
   }
 
   &:active {
@@ -68,15 +70,12 @@
   height: 40px;
   border-radius: 12px;
   background: var(--background-secondary, #f8fafc);
-  border: 1px solid var(--border-light, #f1f5f9);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s ease, background 0.2s ease;
   cursor: pointer;
   overflow: hidden;
 
   &:hover {
-    background: var(--background-hover, #f1f5f9);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   &:active {
@@ -108,7 +107,6 @@
 
 .signInButton {
   display: flex;
-  flex-direction: row;
   gap: 8px;
   padding: 9px 16px;
   background: rgba(var(--main-Color), 0.1);
@@ -118,8 +116,7 @@
   font-family: var(--font-inter), 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  text-align: center;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, transform 0.15s ease;
 
   &:hover {
     background: rgba(var(--main-Color), 0.15);
@@ -131,28 +128,3 @@
   }
 }
 
-// Темная тема
-html[data-theme="dark"] {
-  .topPanel {
-    border-color: var(--border-color, #334155);
-  }
-
-  .menuButton {
-    background: var(--background-secondary, #334155);
-    border-color: var(--border-light, #475569);
-
-    &:hover {
-      background: var(--background-hover, #475569);
-    }
-  }
-
-  .userAvatar {
-    background: var(--background-secondary, #334155);
-    border-color: var(--border-light, #475569);
-
-    &:hover {
-      background: var(--background-hover, #475569);
-    }
-  }
-
-}
