@@ -6,6 +6,7 @@ import styles from './GraphBlock.module.scss';
 import { useAuth } from "@/providers/AuthProvider";
 import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useRouter } from "next/navigation";
+import ActionButton from "@/components/ui/ActionButton/ActionButton";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -97,21 +98,18 @@ const GraphBlockSimple: React.FC<GraphBlockSimpleProps> = memo(({
 
         {/* Кнопки */}
         <div className={styles.actions}>
-          <button 
+          <ActionButton
             onClick={handleScheduleButtonClick}
-            className={`${styles.actionBtn} ${styles.scheduleButton}`}
-          >
-            <Calendar size={16} />
-            <span>Расписание</span>
-          </button>
-          
-          <button 
+            variant="primary"
+            icon={<Calendar size={16} />}
+            label="Расписание"
+          />
+          <ActionButton
             onClick={handleInfoClick}
-            className={`${styles.actionBtn} ${styles.infoButton}`}
-          >
-            <Info size={16} />
-            <span>Подробнее</span>
-          </button>
+            variant="info"
+            icon={<Info size={16} />}
+            label="Подробнее"
+          />
         </div>
       </div>
     </div>

@@ -1,0 +1,67 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:disabled {
+    opacity: .6;
+    pointer-events: none;
+  }
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  line-height: 1;
+}
+
+// Primary — как registerButton
+.primary {
+  background: rgb(var(--main-Color));
+  color: #fff;
+  border-color: rgba(var(--main-Color), 0.45);
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.9);
+    border-color: rgba(var(--main-Color), 0.6);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Info — как кнопка "Подробнее" у GraphCard
+.info {
+  color: rgb(var(--main-Color));
+  background: rgba(var(--main-Color), 0.10);
+  border: 1px solid rgba(var(--main-Color), 0.30);
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.16);
+    border-color: rgba(var(--main-Color), 0.45);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+
