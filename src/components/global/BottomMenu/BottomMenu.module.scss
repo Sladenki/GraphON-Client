@@ -9,7 +9,7 @@
   border-top-right-radius: 20px;
   padding: 10px 8px;
   padding-bottom: calc(10px + env(safe-area-inset-bottom, 0));
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
   border-top: 1px solid rgba(var(--main-Color), 0.15);
   z-index: 2100;
 
@@ -65,7 +65,7 @@
   &:focus-visible {
     outline: none;
     border-color: rgba(var(--main-Color), 0.35);
-    box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.18);
+    box-shadow: none;
   }
 }
 
@@ -90,14 +90,14 @@
   height: 8px;
   border-radius: 50%;
   background: rgb(var(--main-Color));
-  box-shadow: 0 0 0 2px var(--block-color);
+  box-shadow: none;
 }
 
 // Active state
 .active {
   background-color: rgba(var(--main-Color), 0.14);
   border-color: rgba(var(--main-Color), 0.25);
-  box-shadow: 0 6px 18px rgba(var(--main-Color), 0.18);
+  box-shadow: none;
 
   .icon {
     transform: translateY(-1px) scale(1.12);
