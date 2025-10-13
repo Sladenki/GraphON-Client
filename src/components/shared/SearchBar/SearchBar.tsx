@@ -58,6 +58,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   
   const searchInputRef = useRef<HTMLInputElement>(null)
   const tagFilterRef = useRef<HTMLDivElement>(null)
+  const filterButtonRef = useRef<HTMLButtonElement>(null)
   
   const debouncedQuery = useDebounce(query, 300)
 
@@ -74,9 +75,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
   // Закрываем фильтр тегов при клике вне его
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (tagFilterRef.current && !tagFilterRef.current.contains(event.target as Node)) {
-        setIsTagFilterOpen(false)
-      }
+      const target = event.target as Node
+      const clickedInsideDropdown = tagFilterRef.current?.contains(target)
+      const clickedOnFilterButton = filterButtonRef.current?.contains(target)
+
+      if (clickedInsideDropdown || clickedOnFilterButton) return
+      setIsTagFilterOpen(false)
     }
 
     document.addEventListener('mousedown', handleClickOutside)
@@ -183,6 +187,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
             {showTagFilter && availableTags.length > 0 && (
               <button
+                ref={filterButtonRef}
                 onClick={toggleTagFilter}
                 className={`${styles.filterButton} ${selectedTags.length > 0 ? styles.active : ''}`}
                 aria-label="Фильтр по тегам"
