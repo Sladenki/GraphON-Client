@@ -9,6 +9,7 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import EventCard from '@/components/shared/EventCard/EventCard'
 import { Button } from '@heroui/react'
+import ActionButton from '@/components/ui/ActionButton/ActionButton'
 import { ArrowLeft, Calendar, Heart, HeartCrack, Users, MapPin } from 'lucide-react'
 import Image from 'next/image'
 import { useAuth } from '@/providers/AuthProvider'
@@ -142,32 +143,23 @@ export default function GraphPage() {
             </div>
 
             <div className={styles.actionButtons}>
-              <Button
-                size="sm"
-                variant="flat"
-                color="primary"
-                startContent={<Calendar size={18} />}
-                onPress={() => {
-                  router.push(`/schedule/?graphId=${graphId}`)
-                }}
+              <ActionButton
                 className={styles.scheduleButton}
-              >
-                Расписание
-              </Button>
-              
+                variant="primary"
+                icon={<Calendar size={18} />}
+                label="Расписание"
+                onClick={() => router.push(`/schedule/?graphId=${graphId}`)}
+              />
               {isLoggedIn && (
-                <Button
-                  color={isSubscribed ? 'danger' : 'primary'}
-                  variant={isSubscribed ? 'flat' : 'solid'}
-                  startContent={
-                    isSubscribed ? <HeartCrack size={18} /> : <Heart size={18} />
-                  }
-                  onPress={handleSubscription}
-                  isLoading={isSubscribing}
+                <ActionButton
                   className={styles.subscribeButton}
-                >
-                  {isSubscribed ? 'Отписаться' : 'Подписаться'}
-                </Button>
+                  variant={isSubscribed ? 'danger' : 'primary'}
+                  icon={isSubscribed ? <HeartCrack size={18} /> : <Heart size={18} />}
+                  label={isSubscribed ? 'Отписаться' : 'Подписаться'}
+                  onClick={handleSubscription}
+                  disabled={isSubscribing}
+                  data-color={isSubscribed ? 'danger' : undefined}
+                />
               )}
             </div>
           </div>
