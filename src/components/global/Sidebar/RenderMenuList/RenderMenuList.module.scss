@@ -1,15 +1,11 @@
 // Список вкладок
 .listMenu{
-    // margin-left: 16px; // больше места слева
-    // margin-right: 16px; // и справа для тени
-    // margin-bottom: 12px;
     display: flex;
     flex-direction: column;
     gap: 5px;
     flex: 1 1 auto;
     overflow: hidden; // убираем внутренний скролл, высоту контролирует контейнер
     max-height: none;
-    // padding-right: 8px;
 }
 
 .group{

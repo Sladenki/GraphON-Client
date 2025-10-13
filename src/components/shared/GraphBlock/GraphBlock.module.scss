@@ -7,7 +7,7 @@
   max-width: 380px;
   height: 420px;
   margin: 0 auto;
-  background: var(--block-color);
+  background: var(--background-color);
   border-radius: var(--card-radius);
   overflow: hidden;
   transition: all 0.25s ease;
@@ -49,7 +49,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--block-color);
+  background: var(--background-color);
 }
 
 .imageContainer {
@@ -165,7 +165,7 @@
 
 .content {
   padding: 16px 20px;
-  background: var(--block-color);
+  background: var(--background-color);
   border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.05));
   flex: 1;
   overflow-y: auto;
@@ -213,7 +213,7 @@
   display: flex;
   padding: 16px 20px;
   gap: 12px;
-  background: var(--block-color);
+  background: var(--background-color);
   margin-top: auto;
 }
 
@@ -324,7 +324,7 @@
 // Темная тема
 :global(.dark-theme) {
   .card {
-    background: var(--block-color);
+    background: var(--background-color);
     border-color: rgba(255, 255, 255, 0.1);
   }
   
