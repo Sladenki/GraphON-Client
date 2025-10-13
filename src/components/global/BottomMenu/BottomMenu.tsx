@@ -12,7 +12,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 const BottomMenu: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
   const pathname = usePathname();
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery('(max-width: 1000px)');
 
   // Определяем доступ к управлению
   const hasManageAccess = (() => {
@@ -35,6 +35,8 @@ const BottomMenu: React.FC = () => {
       return shouldInclude;
     });
   }, [isLoggedIn, user]);
+
+  if (isMobile && !isLoggedIn) return null;
 
   return (
     <nav className={styles.bottomSidebarWrapper} role="navigation" aria-label="Bottom navigation">
