@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import PopUpWrapper from '@/components/global/PopUpWrapper/PopUpWrapper';
 import styles from './EditProfilePopUp.module.scss';
 import { IUpdateUserDto, IUser } from '@/types/user.interface';
+import DatePickerField from '@/components/ui/DatePickerField/DatePickerField';
 import { UserService } from '@/services/user.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useAuth } from '@/providers/AuthProvider';
@@ -20,7 +21,7 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
     const small = useMediaQuery('(max-width: 650px)');
     const isUsernameLocked = Boolean(typedUser?.username && typedUser.username.trim() !== '');
 
-    const [formState, setFormState] = useState<IUpdateUserDto>({ firstName: '', lastName: '', username: '' });
+    const [formState, setFormState] = useState<IUpdateUserDto>({ firstName: '', lastName: '', username: '', gender: undefined, birthDate: '' });
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
@@ -31,7 +32,7 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                 username: typedUser.username || ''
             });
         } else {
-            setFormState({ firstName: '', lastName: '', username: '' });
+            setFormState({ firstName: '', lastName: '', username: '', gender: undefined, birthDate: '' });
         }
     }, [typedUser?.firstName, typedUser?.lastName, typedUser?.username, isOpen]);
 
@@ -56,6 +57,8 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                                 firstName: formState.firstName?.trim() || '',
                                 lastName: formState.lastName?.trim() || ''
                             };
+                            if (formState.gender) payload.gender = formState.gender;
+                            if (formState.birthDate) payload.birthDate = formState.birthDate;
                             if (!isUsernameLocked) {
                                 const rawUsername = (formState.username || '').trim();
                                 // Extract Telegram handle from various formats: @name, t.me/name, https://t.me/name
@@ -115,6 +118,32 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                             />
                             <span className={styles.fieldHint}>Необязательное поле</span>
                         </label>
+                        <div className={`${styles.inlineRow} ${styles.fullRow}`}>
+                            <label className={styles.inputGroup}>
+                                <span className={styles.fieldLabel}>Пол</span>
+                                <select
+                                    className={styles.input}
+                                    value={formState.gender || ''}
+                                    onChange={(e) => setFormState(v => ({ ...v, gender: (e.target.value as any) || undefined }))}
+                                >
+                                    <option value="">Не указан</option>
+                                    <option value="male">Мужской</option>
+                                    <option value="female">Женский</option>
+                                </select>
+                                <span className={styles.fieldHint}>Выберите пол</span>
+                            </label>
+                            <label className={styles.inputGroup}>
+                                <span className={styles.fieldLabel}>Дата рождения</span>
+                                <DatePickerField
+                                    value={formState.birthDate || ''}
+                                    onChange={(val) => setFormState(v => ({ ...v, birthDate: val }))}
+                                    ariaLabel="Дата рождения"
+                                    size="sm"
+                                    variant="bordered"
+                                  />
+                                <span className={styles.fieldHint}>Формат: ГГГГ-ММ-ДД</span>
+                            </label>
+                        </div>
                         <label className={styles.inputGroup}>
                             <span className={styles.fieldLabel}>Username</span>
                             <input 

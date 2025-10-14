@@ -33,8 +33,18 @@
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px 16px;
   padding: 0 16px;
+}
+
+.inlineRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 16px;
+}
+
+.fullRow {
+  grid-column: 1 / -1;
 }
 
 .divider {
@@ -47,7 +57,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  padding: 12px 16px 16px 16px;
+  padding: 16px 16px 16px 16px;
 }
 
 .inputGroup {
@@ -69,7 +79,7 @@
 }
 
 .input {
-  padding: 10px 12px;
+  padding: 11px 12px;
   border: 1px solid rgba(var(--main-Color), 0.25);
   border-radius: 10px;
   background: var(--block-color);
@@ -123,6 +133,9 @@
 
 @media (max-width: 700px) {
   .formGrid {
+    grid-template-columns: 1fr;
+  }
+  .inlineRow {
     grid-template-columns: 1fr;
   }
 }
