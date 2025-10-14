@@ -5,7 +5,7 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import { ErrorState } from '@/components/global/ErrorState/ErrorState'
 
-import SchedulePopUp from '@/components/shared/SchedulePopUp/SchedulePopUp'
+import SchedulePopUp from '@/app/(main)/groups/SchedulePopUp/SchedulePopUp'
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
 import { useFetchBunchData } from '@/hooks/useFetchBunchData'
 import { useSearchWithTags } from '@/hooks/useSearchWithTags'

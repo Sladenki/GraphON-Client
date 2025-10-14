@@ -2,9 +2,9 @@ import { ScheduleService } from '@/services/schedule.service';
 import { useMutation } from '@tanstack/react-query';
 import React, { FC, useEffect } from 'react'
 
-import { SpinnerLoader } from '../../global/SpinnerLoader/SpinnerLoader';
-import PopUpWrapper from '../../global/PopUpWrapper/PopUpWrapper';
-import SchedulePage from '../Schedule/Schedule';
+import { SpinnerLoader } from '../../../../components/global/SpinnerLoader/SpinnerLoader';
+import PopUpWrapper from '../../../../components/global/PopUpWrapper/PopUpWrapper';
+import SchedulePage from '../../../../components/shared/Schedule/Schedule';
 
 
 interface SchedulePopUpProps {
