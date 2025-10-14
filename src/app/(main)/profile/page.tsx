@@ -282,23 +282,6 @@ export default function Profile() {
                                 target.src = NoImage.src;
                             }}
                         />
-                        
-                        {/* Информация о пользователе справа */}
-                        <div className={styles.userInfo}>
-                            {/* Роль пользователя */}
-                            <div className={styles.role}>
-                                <User size={16} className={styles.roleIcon} />
-                                <span>{typedUser.role !== 'user' ? RoleTitles[typedUser.role] : 'Пользователь'}</span>
-                            </div>
-                            
-                            {/* Выбранный ВУЗ */}
-                            {selectedGraphName && (
-                                <div className={styles.university}>
-                                    <GraduationCap size={16} className={styles.universityIcon} />
-                                    <span>{selectedGraphName}</span>
-                                </div>
-                            )}
-                        </div>
                     </div>
                     
                     {/* Центральная часть - основная информация */}
@@ -307,6 +290,18 @@ export default function Profile() {
                             <h1 className={styles.userName}>
                                 {getDisplayName(typedUser)}
                             </h1>
+                            {/* Роль пользователя */}
+                            <div className={styles.role}>
+                                <User size={16} className={styles.roleIcon} />
+                                <span>{typedUser.role !== 'user' ? RoleTitles[typedUser.role] : 'Пользователь'}</span>
+                            </div>
+                            {/* Выбранный ВУЗ */}
+                            {selectedGraphName && (
+                                <div className={styles.university}>
+                                    <GraduationCap size={16} className={styles.universityIcon} />
+                                    <span>{selectedGraphName}</span>
+                                </div>
+                            )}
                         </div>
                         
                         {/* Статистика в виде блоков */}
