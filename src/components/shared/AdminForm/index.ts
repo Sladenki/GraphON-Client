@@ -2,4 +2,4 @@ export { AdminForm } from './AdminForm';
 export { FormInputGroup } from './FormInputGroup';
 export { FormInput } from './FormInput';
 export { FormTextarea } from './FormTextarea';
-export { FormSelect } from './FormSelect'; 
+export { default as DropdownSelect } from '@/components/ui/DropdownSelect/DropdownSelect';

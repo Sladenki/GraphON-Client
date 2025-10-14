@@ -5,6 +5,7 @@ import PopUpWrapper from '@/components/global/PopUpWrapper/PopUpWrapper';
 import styles from './EditProfilePopUp.module.scss';
 import { IUpdateUserDto, IUser } from '@/types/user.interface';
 import DatePickerField from '@/components/ui/DatePickerField/DatePickerField';
+import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 import { UserService } from '@/services/user.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useAuth } from '@/providers/AuthProvider';
@@ -121,15 +122,17 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                         <div className={`${styles.inlineRow} ${styles.fullRow}`}>
                             <label className={styles.inputGroup}>
                                 <span className={styles.fieldLabel}>Пол</span>
-                                <select
+                                <DropdownSelect
                                     className={styles.input}
                                     value={formState.gender || ''}
-                                    onChange={(e) => setFormState(v => ({ ...v, gender: (e.target.value as any) || undefined }))}
-                                >
-                                    <option value="">Не указан</option>
-                                    <option value="male">Мужской</option>
-                                    <option value="female">Женский</option>
-                                </select>
+                                    onChange={(val) => setFormState(v => ({ ...v, gender: (val as 'male' | 'female') || undefined }))}
+                                    options={[
+                                        { value: '', label: 'Не указан' },
+                                        { value: 'male', label: 'Мужской' },
+                                        { value: 'female', label: 'Женский' },
+                                    ]}
+                                    placeholder="Выберите пол"
+                                />
                                 <span className={styles.fieldHint}>Выберите пол</span>
                             </label>
                             <label className={styles.inputGroup}>

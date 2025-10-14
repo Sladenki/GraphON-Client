@@ -3,7 +3,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { EventService } from '@/services/event.service';
 import { GraphService } from '@/services/graph.service';
 import { IGraphList } from '@/types/graph.interface';
-import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/shared/AdminForm';
+import { AdminForm, FormInputGroup, FormInput, DropdownSelect, FormTextarea } from '@/components/shared/AdminForm';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useAuth } from '@/providers/AuthProvider';
 import styles from './CreateEventForm.module.scss';
@@ -210,7 +210,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                 label="4. Граф"
                 description="Выберите граф, к которому относится мероприятие"
             >
-                <FormSelect
+                <DropdownSelect
                     name="graphId"
                     value={eventData.graphId}
                     onChange={(value) => setEventData(prev => ({ ...prev, graphId: value }))}

@@ -2,7 +2,7 @@ import { AdminService } from '@/services/admin.service';
 import { GraphService } from '@/services/graph.service';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
-import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/shared/AdminForm';
+import { AdminForm, FormInputGroup, FormInput, DropdownSelect } from '@/components/shared/AdminForm';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { IGraphList } from '@/types/graph.interface';
 
@@ -92,7 +92,7 @@ export const CreateTopicGraphForm = () => {
             </FormInputGroup>
 
             <FormInputGroup label="Глобальный граф:">
-                <FormSelect
+                <DropdownSelect
                     value={parentGraphId}
                     onChange={setParentGraphId}
                     options={[

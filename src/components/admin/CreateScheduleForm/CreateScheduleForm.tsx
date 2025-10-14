@@ -4,7 +4,7 @@ import { GraphService } from '@/services/graph.service';
 import { IGraphList } from '@/types/graph.interface';
 import { useState } from 'react';
 import { ScheduleType } from '@/types/schedule.interface';
-import { AdminForm, FormInputGroup, FormInput, FormSelect } from '@/components/shared/AdminForm';
+import { AdminForm, FormInputGroup, FormInput, DropdownSelect } from '@/components/shared/AdminForm';
 
 interface CreateScheduleFormProps {
     globalGraphId: string;
@@ -107,7 +107,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
                 label="1.Граф"
                 description="Выберите граф, для которого создается расписание."
             >
-                <FormSelect
+                <DropdownSelect
                     name="graphId"
                     value={formData.graphId}
                     onChange={(value) => setFormData(prev => ({ ...prev, graphId: value }))}
@@ -137,7 +137,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             <FormInputGroup 
                 label="3. Тип"
             >
-                <FormSelect
+                <DropdownSelect
                     name="type"
                     value={formData.type}
                     onChange={(value) => setFormData(prev => ({ ...prev, type: value as ScheduleType }))}
@@ -163,7 +163,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             <FormInputGroup 
                 label="5. День недели"
             >
-                <FormSelect
+                <DropdownSelect
                     name="dayOfWeek"
                     value={formData.dayOfWeek.toString()}
                     onChange={(value) => setFormData(prev => ({ ...prev, dayOfWeek: parseInt(value) || 0 }))}
