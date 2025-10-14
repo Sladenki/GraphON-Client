@@ -7,10 +7,7 @@ export const EventRegService = {
         return axiosAuth.patch(`/eventRegs/${eventId}`);
     },
 
-    // --- Получение всех мероприятий пользователя ---
-    async getEventsByUserId() {
-        return axiosAuth.get(`/eventRegs/getEventsByUserId`);
-    },
+    
 
     // --- Получение пользователей на мероприятии ---
     async getUsersByEventId(eventId: string) {

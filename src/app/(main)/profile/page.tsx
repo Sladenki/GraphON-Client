@@ -46,11 +46,7 @@ export default function Profile() {
     const debouncedSubscriptionQuery = useDebounce(subscriptionQuery, 300);
     const debouncedEventQuery = useDebounce(eventQuery, 300);
     
-    const { data: allEvents, isLoading: loadingEvents } = useQuery({
-        queryKey: ['eventsList'],
-        queryFn: () => EventRegService.getEventsByUserId(),
-        enabled: !!user
-    });
+    
 
     // Загружаем список ВУЗов (глобальных графов)
     const { data: globalGraphsResp, isLoading: isLoadingUniversities } = useQuery<IGraphList[]>({
@@ -80,7 +76,6 @@ export default function Profile() {
     const [isApplyingUniversity, setIsApplyingUniversity] = useState<boolean>(false);
 
     const typedUser = user as IUser | null;
-    const subsEvents = allEvents?.data;
 
     // Обработчик удаления мероприятий
     const handleDelete = useCallback((eventId: string) => {
@@ -262,7 +257,7 @@ export default function Profile() {
     }, [loading, user, router]);
 
     // Условные возвраты после всех хуков
-    if(loading || loadingEvents) {
+    if(loading) {
         return <SpinnerLoader/>
     }
 
