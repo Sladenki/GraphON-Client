@@ -213,7 +213,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                 <DropdownSelect
                     name="graphId"
                     value={eventData.graphId}
-                    onChange={(value) => setEventData(prev => ({ ...prev, graphId: value }))}
+                    onChange={(value) => setEventData(prev => ({ ...prev, graphId: Array.isArray(value) ? (value[0] ?? '') : value }))}
                     placeholder={isLoadingTopics ? 'Загрузка...' : 'Выберите граф'}
                     options={mainTopics.map((graph: IGraphList) => ({
                         value: graph._id,

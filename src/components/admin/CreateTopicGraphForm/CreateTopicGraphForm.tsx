@@ -94,7 +94,7 @@ export const CreateTopicGraphForm = () => {
             <FormInputGroup label="Глобальный граф:">
                 <DropdownSelect
                     value={parentGraphId}
-                    onChange={setParentGraphId}
+                    onChange={(v) => setParentGraphId(Array.isArray(v) ? v[0] ?? '' : v)}
                     options={[
                         { value: '', label: 'Выберите глобальный граф' },
                         ...(globalGraphs?.data || []).map(graph => ({

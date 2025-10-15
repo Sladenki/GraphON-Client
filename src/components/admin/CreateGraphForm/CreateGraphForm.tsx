@@ -149,7 +149,7 @@ export const CreateGraphForm = () => {
             <FormInputGroup label="Глобальный граф:">
                 <DropdownSelect
                     value={selectedGlobalGraph}
-                    onChange={handleGlobalGraphChange}
+                    onChange={(v) => handleGlobalGraphChange(Array.isArray(v) ? v[0] ?? '' : v)}
                     options={[
                         { value: '', label: 'Выберите глобальный граф' },
                         ...(globalGraphs?.map((graph: IGraphList) => ({
@@ -165,7 +165,7 @@ export const CreateGraphForm = () => {
             <FormInputGroup label="Родительский граф (граф-тематика):">
                 <DropdownSelect
                     value={selectedParentGraph}
-                    onChange={setSelectedParentGraph}
+                    onChange={(v) => setSelectedParentGraph(Array.isArray(v) ? v[0] ?? '' : v)}
                     options={[
                         { value: '', label: selectedGlobalGraph ? 'Выберите родительский граф' : 'Сначала выберите глобальный граф' },
                         ...(parentGraphs?.map((graph: IGraphList) => ({
