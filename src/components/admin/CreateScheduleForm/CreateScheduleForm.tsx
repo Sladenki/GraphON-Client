@@ -33,11 +33,11 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             ? (rawGlobalId._id ?? rawGlobalId.$oid ?? '')
             : (rawGlobalId ?? '');
 
-    const [formData, setFormData] = useState<ICreateScheduleDto>({
+    const [formData, setFormData] = useState<Omit<ICreateScheduleDto, 'roomNumber'> & { roomNumber: number | '' }>({
         graphId: '',
         name: '',
         type: ScheduleType.LECTURE,
-        roomNumber: 0,
+        roomNumber: '',
         dayOfWeek: 0,
         timeFrom: '',
         timeTo: ''
@@ -55,14 +55,20 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
     });
 
     const { mutate: createSchedule, isPending } = useMutation({
-        mutationFn: () => ScheduleService.createSchedule(formData),
+        mutationFn: () => {
+            const payload = {
+                ...formData,
+                roomNumber: typeof formData.roomNumber === 'string' ? (parseInt(formData.roomNumber) || 0) : formData.roomNumber,
+            } as ICreateScheduleDto;
+            return ScheduleService.createSchedule(payload);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['schedules'] });
             setFormData({
                 graphId: '',
                 name: '',
                 type: ScheduleType.LECTURE,
-                roomNumber: 0,
+                roomNumber: '',
                 dayOfWeek: 0,
                 timeFrom: '',
                 timeTo: ''
@@ -84,14 +90,14 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: name === 'roomNumber' ? parseInt(value) || 0 : value
+            [name]: name === 'roomNumber' ? value : value
         }));
     };
 
     const isFormValid = formData.graphId && 
         formData.name && 
         formData.type && 
-        formData.roomNumber > 0 && 
+        ((typeof formData.roomNumber === 'string' ? parseInt(formData.roomNumber) : formData.roomNumber) > 0) && 
         formData.timeFrom && 
         formData.timeTo;
 
@@ -150,12 +156,11 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
                 label="4. Номер аудитории"
             >
                 <FormInput
-                    type="number"
+                    type="string"
                     name="roomNumber"
                     value={formData.roomNumber}
                     onChange={handleChange}
                     required
-                    min="0"
                     placeholder="Введите номер аудитории"
                 />
             </FormInputGroup>
