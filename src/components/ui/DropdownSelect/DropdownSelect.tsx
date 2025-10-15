@@ -12,12 +12,13 @@ export interface DropdownSelectProps {
   label?: string;
   description?: string;
   placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
+  value?: string | string[];
+  onChange?: (value: string | string[]) => void;
   required?: boolean;
   disabled?: boolean;
   className?: string;
   name?: string;
+  selectionMode?: 'single' | 'multiple';
 }
 
 const DropdownSelect: React.FC<DropdownSelectProps> = ({
@@ -32,7 +33,17 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({
   disabled,
   className,
   name,
+  selectionMode = 'single',
 }) => {
+  const selectedKeys = React.useMemo<Set<string> | string[]>(() => {
+    if (selectionMode === 'multiple') {
+      const arr = Array.isArray(value) ? value : value ? [value] : [];
+      return new Set(arr as string[]);
+    }
+    const v = Array.isArray(value) ? value[0] : value;
+    return v ? [v] : [];
+  }, [selectionMode, value]);
+
   return (
     <Select
       label={label}
@@ -42,11 +53,15 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({
       isInvalid={!!error}
       isRequired={required}
       isDisabled={disabled}
-      selectedKeys={value ? [value] : []}
+      selectedKeys={selectedKeys as any}
+      selectionMode={selectionMode as any}
       onSelectionChange={(keys) => {
-        const selected = Array.from(keys)[0];
-        if (onChange && selected) {
-          onChange(selected as string);
+        if (!onChange) return;
+        const list = Array.isArray(keys) ? keys : Array.from(keys as Set<any>).map(String);
+        if (selectionMode === 'multiple') {
+          onChange(list);
+        } else {
+          onChange(list[0] || '');
         }
       }}
       className={className}

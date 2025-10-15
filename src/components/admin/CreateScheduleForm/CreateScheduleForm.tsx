@@ -110,7 +110,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
                 <DropdownSelect
                     name="graphId"
                     value={formData.graphId}
-                    onChange={(value) => setFormData(prev => ({ ...prev, graphId: value }))}
+                    onChange={(value) => setFormData(prev => ({ ...prev, graphId: Array.isArray(value) ? (value[0] ?? '') : value }))}
                     placeholder={isLoadingGraphs ? 'Загрузка...' : 'Выберите граф'}
                     options={graphs.map((graph: IGraphList) => ({
                         value: graph._id,
@@ -164,14 +164,22 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
                 label="5. День недели"
             >
                 <DropdownSelect
-                    name="dayOfWeek"
-                    value={formData.dayOfWeek.toString()}
-                    onChange={(value) => setFormData(prev => ({ ...prev, dayOfWeek: parseInt(value) || 0 }))}
-                    options={DAYS_OF_WEEK.map((day, index) => ({
-                        value: index.toString(),
-                        label: day
-                    }))}
-                    required
+                  name="dayOfWeek"
+                  value={Array.isArray(formData.dayOfWeek) ? formData.dayOfWeek.map((n) => n.toString()) : formData.dayOfWeek.toString()}
+                  onChange={(value) => {
+                    const arr = Array.isArray(value) ? value : [value];
+                    const nums = arr.map(v => parseInt(v)).filter(v => !Number.isNaN(v));
+                    setFormData(prev => ({
+                      ...prev,
+                      dayOfWeek: (nums.length > 1 ? (nums as any) : (nums[0] ?? 0)) as any,
+                    }));
+                  }}
+                  options={DAYS_OF_WEEK.map((day, index) => ({
+                    value: index.toString(),
+                    label: day
+                  }))}
+                  selectionMode="multiple"
+                  required
                 />
             </FormInputGroup>
 
