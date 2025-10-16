@@ -25,6 +25,7 @@ import { useDeclensionWord } from "@/hooks/useDeclension";
 import DeleteConfirmPopUp from './DeleteConfirmPopUp/DeleteConfirmPopUp';
 import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
 import styles from './EventCard.module.scss';
+import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { linkifyText } from '@/lib/linkify';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { DatePicker, TimeInput } from '@heroui/react';
@@ -281,29 +282,27 @@ const EventCard: React.FC<EventProps> = ({
 
   // Кнопка регистрации
   const registerButton = useMemo(() => (
-    <button
-      className={`${styles.registerButton} ${isRegistered ? styles.cancelRegistration : ''}`}
+    <ActionButton
       onClick={handleRegistration}
       disabled={isLoading || !!disableRegistration}
-    >
-      {isLoading ? (
-        <div className={styles.spinner} />
-      ) : !isLoggedIn ? (
-        <LogIn size={16} />
-      ) : isRegistered ? (
-        <UserX size={16} />
-      ) : (
-        <UserPlus size={16} />
-      )}
-      <span>
-        {disableRegistration ? 'Регистрация недоступна' : isLoggedIn 
-          ? isRegistered 
-            ? 'Отменить регистрацию' 
-            : 'Зарегистрироваться' 
+      variant={isRegistered ? 'danger' : 'primary'}
+      icon={
+        isLoading ? (
+          <div className={styles.spinner} />
+        ) : !isLoggedIn ? (
+          <LogIn size={16} />
+        ) : isRegistered ? (
+          <UserX size={16} />
+        ) : (
+          <UserPlus size={16} />
+        )
+      }
+      label={
+        disableRegistration ? 'Регистрация недоступна' : isLoggedIn
+          ? (isRegistered ? 'Отменить регистрацию' : 'Зарегистрироваться')
           : 'Необходимо войти'
-        }
-      </span>
-    </button>
+      }
+    />
   ), [isLoggedIn, isRegistered, isLoading, handleRegistration, disableRegistration]);
 
   if (!event || !event._id) {
