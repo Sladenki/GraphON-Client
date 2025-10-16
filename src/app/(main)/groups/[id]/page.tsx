@@ -144,15 +144,13 @@ export default function GraphPage() {
 
             <div className={styles.actionButtons}>
               <ActionButton
-                className={styles.scheduleButton}
-                variant="primary"
+                variant="info"
                 icon={<Calendar size={18} />}
                 label="Расписание"
                 onClick={() => router.push(`/schedule/?graphId=${graphId}`)}
               />
               {isLoggedIn && (
                 <ActionButton
-                  className={styles.subscribeButton}
                   variant={isSubscribed ? 'danger' : 'primary'}
                   icon={isSubscribed ? <HeartCrack size={18} /> : <Heart size={18} />}
                   label={isSubscribed ? 'Отписаться' : 'Подписаться'}
