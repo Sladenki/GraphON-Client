@@ -49,6 +49,10 @@ export default function ManagePage() {
         staleTime: 30_000,
     });
 
+    // Склонение для количества подписок (используем 0 как fallback)
+    const subsWord = useDeclensionWord(data?.subsNum || 0, 'SUBSCRIPTION');
+
+    // Теперь условные return после всех хуков
     if (!isLoggedIn) return null;
     if (!graphId) return <div className={styles.manageWrapper}>Не найден доступный граф для управления</div>;
     if (isLoading) return <SpinnerLoader/>;
@@ -73,9 +77,6 @@ export default function ManagePage() {
             </div>
         );
     };
-
-    // Склонение для количества подписок (правило в хуке)
-    const subsWord = useDeclensionWord(data.subsNum, 'SUBSCRIPTION');
 
     return (
         <div className={styles.manageWrapper}>
