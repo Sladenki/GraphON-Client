@@ -5,10 +5,10 @@
   right: 0;
   width: 100%;
   background-color: var(--block-color);
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  padding: 10px 8px;
-  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0));
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  padding: 6px 6px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
   box-shadow: none;
   border-top: 1px solid rgba(var(--main-Color), 0.15);
   z-index: 2100;
@@ -25,7 +25,7 @@
     margin: 0 auto;
     border-radius: 16px;
     border: 1px solid rgba(var(--main-Color), 0.12);
-    padding: 10px 12px;
+    padding: 8px 10px;
   }
 }
 
@@ -33,7 +33,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -53,9 +53,9 @@
   gap: 8px;
   text-decoration: none;
   color: var(--main-text);
-  padding: 10px 14px;
-  border-radius: 14px;
-  border: 1px solid transparent;
+  padding: 8px 23px;
+  border-radius: 20px; // pill
+  border: none;
   transition: background-color .2s ease, border-color .2s ease, transform .15s ease;
 
   &:hover {
@@ -70,7 +70,7 @@
 }
 
 .icon {
-  font-size: 22px;
+  font-size: 18px;
   color: var(--main-text);
   transition: color .2s ease, transform .2s ease;
 }
@@ -95,12 +95,13 @@
 
 // Active state
 .active {
-  background-color: rgba(var(--main-Color), 0.14);
-  border-color: rgba(var(--main-Color), 0.25);
-  box-shadow: none;
+  background-color: rgba(var(--main-Color), 0.16);
+  border: none;
+  box-shadow: inset 0 0 0 1px rgba(var(--main-Color), 0.08);
 
   .icon {
-    transform: translateY(-1px) scale(1.12);
+    color: rgb(var(--main-Color));
+    transform: translateY(-1px) scale(1.1);
   }
 }
 
@@ -108,7 +109,7 @@
 
 /* Responsive tweaks */
 @media (max-width: 480px) {
-  .link { padding: 10px; }
+  .link { padding: 8px 23px; }
 }
 
 @media (min-width: 1024px) {
