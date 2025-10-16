@@ -108,6 +108,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
         return [...prev, tagId]
       }
     })
+    // Закрываем выпадающий список после выбора фильтра
+    setIsTagFilterOpen(false)
   }, [])
 
   const clearAllTags = useCallback(() => {
