@@ -1,24 +1,25 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
 import { EventService } from '@/services/event.service';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { GraphInfo } from '@/types/graph.interface';
 import { EventItem } from '@/types/schedule.interface';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useDeclensionWord } from '@/hooks/useDeclension';
 import EventCard from '@/components/shared/EventCard/EventCard';
 import { useAuth } from '@/providers/AuthProvider';
 import Image from 'next/image';
-import { GraduationCap, Users } from 'lucide-react';
+import { GraduationCap, Users, ChevronDown } from 'lucide-react';
 import NoImage from '../../../../public/noImage.png';
 import SubscribersPopUp from '@/app/(main)/manage/SubscribersPopUp';
 import styles from './Manage.module.scss';
 
 export default function ManagePage() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const { user, isLoggedIn } = useAuth();
     const anyUser: any = user as any;
     const managedIds: string[] = Array.isArray(anyUser?.managed_graph_id) ? anyUser.managed_graph_id : (Array.isArray(anyUser?.managedGraphIds) ? anyUser.managedGraphIds : []);
@@ -26,6 +27,20 @@ export default function ManagePage() {
 
     const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
     const [isSubscribersOpen, setIsSubscribersOpen] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    // Загрузка информации о всех управляемых графах
+    const { data: managedGraphs } = useQuery({
+        queryKey: ['managedGraphs', managedIds],
+        queryFn: async () => {
+            if (managedIds.length === 0) return [];
+            const promises = managedIds.map(id => GraphService.getGraphById(id));
+            const results = await Promise.all(promises);
+            return results;
+        },
+        enabled: managedIds.length > 0,
+        staleTime: 5 * 60_000,
+    });
 
     const { data, isLoading, isError, refetch } = useQuery<GraphInfo>({
         queryKey: ['manageGraph', graphId],
@@ -52,6 +67,12 @@ export default function ManagePage() {
     // Склонение для количества подписок (используем 0 как fallback)
     const subsWord = useDeclensionWord(data?.subsNum || 0, 'SUBSCRIPTION');
 
+    // Обработчик переключения графа
+    const handleGraphChange = (newGraphId: string) => {
+        router.push(`/manage?id=${newGraphId}`);
+        setIsDropdownOpen(false);
+    };
+
     // Теперь условные return после всех хуков
     if (!isLoggedIn) return null;
     if (!graphId) return <div className={styles.manageWrapper}>Не найден доступный граф для управления</div>;
@@ -62,6 +83,9 @@ export default function ManagePage() {
             <button onClick={() => refetch()} className={styles.refreshButton}>Повторить</button>
         </div>
     );
+
+    // Показывать дропдаун только если больше одного графа
+    const showDropdown = managedIds.length > 1;
 
     const renderList = (events: EventItem[] | undefined) => {
         if (!events || events.length === 0) {
@@ -96,7 +120,45 @@ export default function ManagePage() {
                         />
                     </div>
                     <div className={styles.graphInfo}>
-                        <h2 className={styles.graphName}>{data.name}</h2>
+                        {/* Дропдаун для переключения между графами */}
+                        {showDropdown ? (
+                            <div className={styles.graphSelector}>
+                                <button 
+                                    className={styles.graphSelectorButton}
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                >
+                                    <h2 className={styles.graphName}>{data.name}</h2>
+                                    <ChevronDown 
+                                        size={20} 
+                                        className={`${styles.chevron} ${isDropdownOpen ? styles.chevronOpen : ''}`}
+                                    />
+                                </button>
+                                {isDropdownOpen && (
+                                    <>
+                                        <div 
+                                            className={styles.dropdownOverlay}
+                                            onClick={() => setIsDropdownOpen(false)}
+                                        />
+                                        <div className={styles.dropdown}>
+                                            {managedGraphs?.map((graph) => (
+                                                <button
+                                                    key={graph._id}
+                                                    className={`${styles.dropdownItem} ${graph._id === graphId ? styles.dropdownItemActive : ''}`}
+                                                    onClick={() => handleGraphChange(graph._id)}
+                                                >
+                                                    <span className={styles.dropdownItemName}>{graph.name}</span>
+                                                    {graph._id === graphId && (
+                                                        <span className={styles.dropdownItemCheck}>✓</span>
+                                                    )}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        ) : (
+                            <h2 className={styles.graphName}>{data.name}</h2>
+                        )}
                         {data.parentGraphId && (
                             <div className={styles.parentGraph}>
                                 <GraduationCap size={16} className={styles.parentIcon} />
