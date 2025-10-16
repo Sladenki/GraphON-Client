@@ -671,6 +671,19 @@
   .placeText {
     font-size: 12px;
   }
+
+  .participantsInfo {
+    gap: 8px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .participantsText {
+    font-size: 12px;
+  }
 }
 
 
