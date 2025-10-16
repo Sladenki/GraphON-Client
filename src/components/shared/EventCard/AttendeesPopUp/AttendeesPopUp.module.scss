@@ -263,4 +263,67 @@
   }
 }
 
+// Extra small screens (<400px)
+@media (max-width: 400px) {
+  .header {
+    padding: 14px 16px;
+    gap: 10px;
+  }
 
+  .headerIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .title {
+    font-size: 15px;
+    line-height: 1.25;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .badge {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    font-size: 11px;
+    border-radius: 5px;
+  }
+
+  .list {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+
+  .center {
+    padding: 20px 16px;
+  }
+
+  .loadingText {
+    font-size: 13px;
+  }
+
+  .errorIcon,
+  .emptyIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .errorText,
+  .emptyText {
+    font-size: 14px;
+  }
+
+  .errorHint,
+  .emptyHint {
+    font-size: 12px;
+  }
+}
