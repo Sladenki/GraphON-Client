@@ -147,6 +147,47 @@
     }
 }
 
+// Узкие экраны (<400px)
+@media (max-width: 400px) {
+    .section {
+        margin-bottom: 12px;
+        border-radius: 14px;
+    }
+
+    .header {
+        padding: 14px 16px;
+
+        h3 {
+            font-size: 15px;
+            gap: 8px;
+            line-height: 1.25;
+            flex-wrap: wrap;
+            word-break: break-word;
+
+            .emoji {
+                font-size: 18px;
+            }
+
+            .roleLabel {
+                font-size: 9.5px;
+                padding: 3px 8px;
+                border-radius: 6px;
+                margin-top: 4px;
+            }
+        }
+    }
+
+    .arrow {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+    }
+
+    .content {
+        padding: 16px;
+    }
+}
+
 // Dark theme
 @media (prefers-color-scheme: dark) {
     .section {
