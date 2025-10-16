@@ -28,6 +28,28 @@
 
 .label {
   line-height: 1;
+  white-space: nowrap;
+}
+
+// Responsive text adjustments
+@media (max-width: 480px) {
+  .button {
+    padding: 10px 16px;
+    gap: 8px;
+  }
+  .label {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  .button {
+    padding: 9px 14px;
+    gap: 6px;
+  }
+  .label {
+    font-size: 12px;
+  }
 }
 
 // Primary — как registerButton

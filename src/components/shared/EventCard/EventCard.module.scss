@@ -328,54 +328,16 @@
   }
 }
 
-.registerButton {
-  background: rgb(var(--main-Color));
-  color: white;
-  border: none;
-  border-radius: 14px;
-  padding: 12px 24px;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  font-family: var(--font-inter);
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  
-  &:hover {
-    background: rgba(var(--main-Color), 0.9);
-    transform: translateY(-2px);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
-  
-  &:disabled {
-    background: rgba(var(--text-color), 0.15);
-    color: rgba(var(--text-color), 0.4);
-    cursor: not-allowed;
-    transform: none;
-  }
-  
-  // Стили для кнопки отмены регистрации
-  &.cancelRegistration {
-    background: #fca5a5;
-    color: #7f1d1d;
-    border: none;
-    
-    &:hover {
-      background: #f87171;
-      color: #450a0a;
-      transform: translateY(-2px);
-    }
-    
-    &:active {
-      transform: translateY(0);
-    }
+// Utility for wider ActionButton wrapper
+.registerWide {
+  width: 50%;
+  max-width: 420px;
+}
+
+@media (max-width: 480px) {
+  .registerWide {
+    width: 100%;
+    max-width: none;
   }
 }
 
@@ -583,19 +545,7 @@
       }
     }
   }
-  
-  .registerButton {
-    &.cancelRegistration {
-      background: #fca5a5;
-      color: #7f1d1d;
-      border: none;
-      
-      &:hover {
-        background: #f87171;
-        color: #450a0a;
-      }
-    }
-  }
+
 }
 
 // Mobile adaptations
@@ -691,13 +641,6 @@
         color: #4B5563;
       }
     }
-  }
-  
-  .registerButton {
-    flex: 1;
-    padding: 13px 18px;
-    font-size: 13px;
-    min-width: 0;
   }
   
   .eventTitle {

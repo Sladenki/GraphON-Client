@@ -283,6 +283,7 @@ const EventCard: React.FC<EventProps> = ({
   // Кнопка регистрации
   const registerButton = useMemo(() => (
     <ActionButton
+      className={styles.registerWide}
       onClick={handleRegistration}
       disabled={isLoading || !!disableRegistration}
       variant={isRegistered ? 'danger' : 'primary'}
@@ -299,7 +300,7 @@ const EventCard: React.FC<EventProps> = ({
       }
       label={
         disableRegistration ? 'Регистрация недоступна' : isLoggedIn
-          ? (isRegistered ? 'Отменить регистрацию' : 'Зарегистрироваться')
+          ? (isRegistered ? 'Отменить запись' : 'Записаться')
           : 'Необходимо войти'
       }
     />
