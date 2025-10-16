@@ -356,7 +356,7 @@ export default function Profile() {
             
             {/* Секции контента */}
             {typedUser && showSubscriptions && (
-                <div className={styles.contentSection}>
+                <div>
                     <h2 className={styles.sectionTitle}>Ваши подписки</h2>
                     
                     {/* Поиск и фильтры */}
@@ -420,7 +420,7 @@ export default function Profile() {
             )}
 
             {typedUser && showEvents && (
-                <div className={styles.contentSection}>
+                <div>
                     <h2 className={styles.sectionTitle}>Все ваши мероприятия</h2>
                     
                     {/* Поиск и фильтры */}
