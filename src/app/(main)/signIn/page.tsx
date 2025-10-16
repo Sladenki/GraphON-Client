@@ -9,19 +9,15 @@ import { Logo } from '@/components/global/Logo'
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
 
+  const ENV_CONFIG = {
+    TELEGRAM_BOT_URL: process.env.NEXT_PUBLIC_TELEGRAM_BOT_URL || 'https://t.me/Graph_ON_bot',
+  } as const; 
+
   const handleTelegramLogin = async () => {
     setIsLoading(true)
-    
     try {
-      // Здесь будет логика авторизации через Telegram
-      console.log('Telegram login initiated')
-      
-      // Симуляция загрузки
-      setTimeout(() => {
-        setIsLoading(false)
-        // После успешной авторизации можно перенаправить пользователя
-        // window.location.href = '/'
-      }, 2000)
+      const telegramBotUrl = `${ENV_CONFIG.TELEGRAM_BOT_URL}?start=auth`
+      window.location.href = telegramBotUrl
     } catch (error) {
       console.error('Telegram login error:', error)
       setIsLoading(false)
@@ -51,7 +47,7 @@ const SignIn = () => {
           {isLoading ? (
             <>
               <div className={styles.spinner}></div>
-              <span>Подключение...</span>
+              <span>Смена планеты...</span>
             </>
           ) : (
             <>
