@@ -166,7 +166,7 @@
 .content {
   padding: 16px 20px;
   background: var(--background-color);
-  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.05));
+  border-bottom: none;
   flex: 1;
   overflow-y: auto;
   background-image: radial-gradient(circle at 12px 12px, rgba(var(--main-Color), 0.06) 1px, transparent 1px);
