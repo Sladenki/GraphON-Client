@@ -715,6 +715,21 @@
   }
 }
 
+// Extra small phones
+@media (max-width: 400px) {
+  .timeInfo,
+  .placeInfo {
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  .timeText,
+  .placeText {
+    font-size: 12px;
+  }
+}
+
 
 
 
