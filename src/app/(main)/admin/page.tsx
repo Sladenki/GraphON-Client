@@ -1,8 +1,8 @@
 'use client'
 
 import { GraphService } from '@/services/graph.service';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useState } from 'react'
+import { useQuery } from '@tanstack/react-query';
+import React from 'react'
 import styles from './admin.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useAuth } from '@/providers/AuthProvider';
@@ -68,8 +68,7 @@ const Admin = () => {
                     <CreateTopicGraphForm />
                 </AdminSection>
             )}
-
-            {/* Вернуть на Admin */}
+            
             {canAccessCreate && mainTopics && (
                 <AdminSection 
                     title="Создание графа"

@@ -27,7 +27,6 @@ import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
 import styles from './EventCard.module.scss';
 import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { linkifyText } from '@/lib/linkify';
-import { notifyError, notifySuccess } from '@/lib/notifications';
 import { DatePicker, TimeInput } from '@heroui/react';
 import { parseDate } from '@internationalized/date';
 import { I18nProvider } from '@react-aria/i18n';
@@ -214,11 +213,18 @@ const EventCard: React.FC<EventProps> = ({
       const text = `${event.name} — ${formattedTime}${event.place ? `, ${event.place}` : ''}`;
       const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
 
-      const win = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
-      if (!win) {
-        window.location.href = telegramUrl;
+      const opened = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+      if (opened) {
+        return;
       }
-      notifySuccess('Откройте Telegram и выберите чат');
+
+      // Если всплывающее окно заблокировано
+      if (navigator.share) {
+        await navigator.share({ title: event.name, text: `${event.name}`, url: shareUrl } as any);
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareUrl);
     } catch (err) {
       const fallbackUrl = `${window.location.origin}/events/${event._id}`;
       try {
@@ -229,9 +235,8 @@ const EventCard: React.FC<EventProps> = ({
       } catch {}
       try {
         await navigator.clipboard.writeText(fallbackUrl);
-        notifySuccess('Ссылка скопирована в буфер обмена');
       } catch {
-        notifyError('Не удалось открыть Telegram', 'Скопируйте ссылку вручную');
+        // ignore
       }
     }
   }, [event._id, event.name, formattedTime, event.place]);
