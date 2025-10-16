@@ -91,6 +91,22 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
     }
   }
 
+  // Обработчики свайпа по основному контенту (для открытия с нуля)
+  const handleContentTouchStart = (e: React.TouchEvent) => {
+    if (isOpen) return
+    handleTouchStart(e)
+  }
+
+  const handleContentTouchMove = (e: React.TouchEvent) => {
+    if (isOpen) return
+    handleTouchMove(e)
+  }
+
+  const handleContentTouchEnd = () => {
+    if (isOpen) return
+    handleTouchEnd()
+  }
+
   const openDrawer = () => {
     setIsAnimating(true)
     setIsOpen(true)
@@ -227,7 +243,12 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
       </div>
 
       {/* Основной контент */}
-      <div className={styles.content}>
+      <div 
+        className={styles.content}
+        onTouchStart={handleContentTouchStart}
+        onTouchMove={handleContentTouchMove}
+        onTouchEnd={handleContentTouchEnd}
+      >
         {children}
       </div>
     </>
