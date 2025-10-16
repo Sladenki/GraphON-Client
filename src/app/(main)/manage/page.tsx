@@ -8,6 +8,7 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { GraphInfo } from '@/types/graph.interface';
 import { EventItem } from '@/types/schedule.interface';
 import { useState } from 'react';
+import { useDeclensionWord } from '@/hooks/useDeclension';
 import EventCard from '@/components/shared/EventCard/EventCard';
 import { useAuth } from '@/providers/AuthProvider';
 import Image from 'next/image';
@@ -73,6 +74,9 @@ export default function ManagePage() {
         );
     };
 
+    // Склонение для количества подписок (правило в хуке)
+    const subsWord = useDeclensionWord(data.subsNum, 'SUBSCRIPTION');
+
     return (
         <div className={styles.manageWrapper}>
             <div className={styles.headerCard}>
@@ -106,7 +110,7 @@ export default function ManagePage() {
                                 tabIndex={0}
                             >
                                 <Users size={16} className={styles.statIcon} />
-                                <span>{data.subsNum} подписок</span>
+                                <span>{data.subsNum} {subsWord}</span>
                             </div>
                         </div>
                     </div>

@@ -195,6 +195,9 @@ const EventCard: React.FC<EventProps> = ({
   const updateEditedEvent = useCallback((key: string, value: string | boolean) => {
     setEditedEvent(prev => ({ ...prev, [key]: value }));
   }, []);
+
+  // Правильное склонение для количества участников
+  const participantsWord = useDeclensionWord(event.regedUsers, 'PARTICIPANT');
   
   // Обработчик перехода на страницу группы
   const handleGroupClick = useCallback((e: React.MouseEvent) => {
@@ -462,7 +465,7 @@ const EventCard: React.FC<EventProps> = ({
                 }
               } : undefined}
             >
-              {event.regedUsers} участников
+              {event.regedUsers} {participantsWord}
             </span>
           </div>
         </div>
@@ -488,7 +491,7 @@ const EventCard: React.FC<EventProps> = ({
                   }
                 } : undefined}
               >
-                {event.regedUsers} участников
+                {event.regedUsers} {participantsWord}
               </span>
             </div>
         </div>

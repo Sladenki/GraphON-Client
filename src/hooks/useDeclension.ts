@@ -57,6 +57,12 @@ export const DECLENSION_RULES = {
     many: 'графов',
     other: 'графов'
   },
+  SUBSCRIPTION: {
+    one: 'подписка',
+    few: 'подписки',
+    many: 'подписок',
+    other: 'подписок'
+  },
   USER: {
     one: 'пользователь',
     few: 'пользователя',
