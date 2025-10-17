@@ -22,6 +22,16 @@ const nextConfig = {
   // Отключаем source maps в продакшене для уменьшения размера билда
   productionBrowserSourceMaps: false,
 
+  // Убираем X-Powered-By header для безопасности
+  poweredByHeader: false,
+
+  // Удаляем console.log в production (оставляем error и warn)
+  compiler: {
+    removeConsole: process.env.NEXT_CLIENT_STATUS === 'prod' ? {
+      exclude: ['error', 'warn']
+    } : false,
+  },
+
   // Оптимизация импортов: загружаем только используемые иконки
   modularizeImports: {
     'lucide-react': {
