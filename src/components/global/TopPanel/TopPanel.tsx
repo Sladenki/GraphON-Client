@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import { Menu, User } from 'lucide-react';
+import { TextAlignStart, User } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useUIStore } from '@/stores/useUIStore';
 import Link from 'next/link';
@@ -14,7 +14,6 @@ const TopPanel: React.FC = () => {
   const handleMenuClick = () => {
     setMobileNavOpen(true);
   };
-
   return (
     <div className={styles.topPanel}>
       {/* Левая часть - кнопка меню */}
@@ -23,7 +22,7 @@ const TopPanel: React.FC = () => {
         onClick={handleMenuClick}
         aria-label="Открыть меню"
       >
-        <Menu size={24} />
+        <TextAlignStart size={24} />
       </button>
 
       {/* Правая часть - аватарка пользователя */}
