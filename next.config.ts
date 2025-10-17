@@ -51,6 +51,9 @@ const nextConfig = {
     
     // Оптимизация памяти при сборке
     memoryBasedWorkersCount: true,
+
+    // Оптимизация CSS (минификация, удаление дубликатов)
+    optimizeCss: true,
     
     // Автоматическая оптимизация импортов из больших библиотек
     optimizePackageImports: [
