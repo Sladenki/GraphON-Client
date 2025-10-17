@@ -17,7 +17,7 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 
 export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
-  const small = useMediaQuery('(max-width: 650px)')
+  const small = useMediaQuery('(max-width: 1000px)')
   const selectedGraphId = useSelectedGraphId();
   const [isHydrated, setIsHydrated] = useState(false);
 
