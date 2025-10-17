@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Chip, Button } from '@heroui/react';
+import { CalendarX } from 'lucide-react';
 import { EmptyState } from '@/components/global/EmptyState/EmptyState';
 import { ScheduleItem, EventItem } from '@/types/schedule';
 import { useScheduleOptimization } from './useScheduleOptimization';
@@ -195,7 +196,7 @@ const EmptySchedule = React.memo(() => (
   <EmptyState
     message="Нет событий на этот день"
     subMessage="Выберите другой день или запишитесь на мероприятие"
-    emoji="📅"
+    icon={CalendarX}
   />
 ));
 EmptySchedule.displayName = 'EmptySchedule';
