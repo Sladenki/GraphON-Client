@@ -25,6 +25,7 @@ import EditProfilePopUp from './EditProfilePopUp/EditProfilePopUp';
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar';
 import GraphBlock from '@/components/shared/GraphBlock/GraphBlock';
 import { useDebounce } from '@/hooks/useDebounce';
+import { notifySuccess } from '@/lib/notifications';
 
 
 export default function Profile() {
@@ -216,6 +217,17 @@ export default function Profile() {
             }
             setSelectedGraphId(pendingUniversity);
             queryClient.invalidateQueries({ queryKey: ['eventsList'] });
+            
+            // Находим название выбранного университета
+            const selectedUni = globalGraphsResp?.find(g => g._id === pendingUniversity);
+            if (selectedUni) {
+                notifySuccess(`Университет изменен на ${selectedUni.name}`);
+            } else {
+                notifySuccess('Университет успешно изменен');
+            }
+            
+            // Сбрасываем pending значение
+            setPendingUniversity('');
         } catch (err) {
             console.error('Ошибка выбора ВУЗа:', err);
         } finally {
@@ -353,6 +365,45 @@ export default function Profile() {
                     <EditProfilePopUp isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
                 </div>
             ) : null}
+            
+            {/* Выбор ВУЗа - показываем всем пользователям */}
+            {typedUser && (
+                <div className={styles.universitySelector}>
+                    <h2 className={styles.sectionTitle}>Выбор университета</h2>
+                    <p className={styles.sectionDescription}>
+                        Выберите ваш университет для просмотра групп и мероприятий
+                    </p>
+                    <div className={styles.universitySelectorContent}>
+                        <select 
+                            className={styles.universitySelect}
+                            value={selectValue}
+                            onChange={handleUniversitySelect}
+                            disabled={isLoadingUniversities || isApplyingUniversity}
+                        >
+                            <option value="">Выберите университет</option>
+                            {globalGraphsResp?.map((graph) => (
+                                <option key={graph._id} value={graph._id}>
+                                    {graph.name}
+                                </option>
+                            ))}
+                        </select>
+                        <button 
+                            className={styles.applyButton}
+                            onClick={handleApplyUniversity}
+                            disabled={!pendingUniversity || isApplyingUniversity || isLoadingUniversities}
+                        >
+                            {isApplyingUniversity ? (
+                                <>
+                                    <div className={styles.buttonSpinner} />
+                                    <span>Применение...</span>
+                                </>
+                            ) : (
+                                'Применить'
+                            )}
+                        </button>
+                    </div>
+                </div>
+            )}
             
             {/* Секции контента */}
             {typedUser && showSubscriptions && (
