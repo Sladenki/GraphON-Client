@@ -154,13 +154,16 @@ const EventCard: React.FC<EventProps> = ({
   
   // Обработчики
   const handleRegistration = useCallback(async () => {
-    if (!isLoggedIn) return;
+    if (!isLoggedIn) {
+      router.push('/signIn');
+      return;
+    }
     try {
       await toggleRegistration();
     } catch (error) {
       console.error('Registration error:', error);
     }
-  }, [isLoggedIn, toggleRegistration]);
+  }, [isLoggedIn, router, toggleRegistration]);
   
   const handleEdit = useCallback(async () => {
     // Здесь должна быть логика сохранения изменений
