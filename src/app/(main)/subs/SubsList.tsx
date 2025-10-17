@@ -10,6 +10,7 @@ import { useSearchQuery } from '@/stores/useUIStore'
 import { GraphSubsService } from '@/services/graphSubs.service'
 import { EventItem } from '@/types/schedule.interface'
 import styles from './SubsList.module.scss'
+import { CalendarX, Search } from 'lucide-react'
 
 export default function SubsList() {
   const searchQuery = useSearchQuery()
@@ -83,7 +84,7 @@ export default function SubsList() {
       <EmptyState
         message="Нет подписанных мероприятий"
         subMessage="Подпишитесь на интересные группы, чтобы видеть их события здесь"
-        emoji="📅"
+        icon={CalendarX}
       />
     )
   }
@@ -93,7 +94,7 @@ export default function SubsList() {
       <EmptyState
         message="Ничего не найдено"
         subMessage="Попробуйте изменить параметры поиска"
-        emoji="🔍"
+        icon={Search}
       />
     )
   }

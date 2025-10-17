@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import { ErrorState } from '@/components/global/ErrorState/ErrorState'
+import { Search } from 'lucide-react'
 
 import SchedulePopUp from '@/app/(main)/groups/SchedulePopUp/SchedulePopUp'
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
@@ -142,7 +143,7 @@ export default function GroupsList() {
           <EmptyState
             message="Ничего не найдено"
             subMessage="Попробуйте изменить параметры поиска"
-            emoji="🔍"
+            icon={Search}
           />
         </div>
       )}

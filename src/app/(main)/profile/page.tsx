@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { GraduationCap, Pencil, Heart, CalendarCheck, User, MapPin } from 'lucide-react';
+import { GraduationCap, Pencil, Heart, CalendarCheck, User, MapPin, Search, CalendarX, HeartOff } from 'lucide-react';
 import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '@/components/shared/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
@@ -455,7 +455,7 @@ export default function Profile() {
                             <EmptyState
                                 message="Ничего не найдено"
                                 subMessage="Попробуйте изменить параметры поиска"
-                                emoji="🔍"
+                                icon={Search}
                             />
                         </div>
                     ) : (
@@ -463,7 +463,7 @@ export default function Profile() {
                             <EmptyState
                                 message="У вас пока нет подписок"
                                 subMessage="Подпишитесь на интересные группы, чтобы следить за их активностью"
-                                emoji="💝"
+                                icon={HeartOff}
                             />
                         </div>
                     )}
@@ -522,7 +522,7 @@ export default function Profile() {
                             <EmptyState
                                 message="Ничего не найдено"
                                 subMessage="Попробуйте изменить параметры поиска"
-                                emoji="🔍"
+                                icon={Search}
                             />
                         </div>
                     ) : (
@@ -530,7 +530,7 @@ export default function Profile() {
                             <EmptyState
                                 message="У вас пока нет мероприятий"
                                 subMessage="Зарегистрируйтесь на интересные события, чтобы не пропустить их"
-                                emoji="📅"
+                                icon={CalendarX}
                             />
                         </div>
                     )}

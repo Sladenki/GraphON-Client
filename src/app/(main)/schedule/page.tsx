@@ -3,6 +3,7 @@
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import { GraphSubsService } from "@/services/graphSubs.service";
 import { useQuery } from "@tanstack/react-query";
+import { CalendarX } from 'lucide-react';
 
 import styles from './Schedule.module.scss'
 import { useRouter } from "next/navigation";
@@ -43,6 +44,7 @@ const Schedule = () => {
         <EmptyState
           message="Тут пока пусто"
           subMessage="На этой неделе нет занятий или мероприятий"
+          icon={CalendarX}
         />
       ) : (
         <SchedulePage schedule={scheduleByDays.schedule} events={scheduleByDays.events} />

@@ -12,6 +12,7 @@ import { EventService } from '@/services/event.service'
 import { EventItem } from '@/types/schedule.interface'
 import styles from './EventsList.module.scss'
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
+import { CalendarX, Search } from 'lucide-react'
 
 export default function EventsList() {
   const searchQuery = useSearchQuery()
@@ -146,7 +147,7 @@ export default function EventsList() {
       <EmptyState
         message="Нет предстоящих мероприятий"
         subMessage="Следите за обновлениями, чтобы не пропустить новые события"
-        emoji="📅"
+        icon={CalendarX}
       />
     )
   }
@@ -156,7 +157,7 @@ export default function EventsList() {
       <EmptyState
         message="Ничего не найдено"
         subMessage="Измените текст, даты или теги"
-        emoji="🔍"
+        icon={Search}
       />
     )
   }

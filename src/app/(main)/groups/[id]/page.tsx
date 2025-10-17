@@ -10,7 +10,7 @@ import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import EventCard from '@/components/shared/EventCard/EventCard'
 import { Button } from '@heroui/react'
 import ActionButton from '@/components/ui/ActionButton/ActionButton'
-import { ArrowLeft, Calendar, Heart, HeartCrack, Users, MapPin } from 'lucide-react'
+import { ArrowLeft, Calendar, Heart, HeartCrack, Users, MapPin, CalendarX } from 'lucide-react'
 import Image from 'next/image'
 import { useAuth } from '@/providers/AuthProvider'
 import { useSubscription } from '@/hooks/useSubscriptionGraph'
@@ -77,7 +77,7 @@ export default function GraphPage() {
         <EmptyState
           message="Граф не найден"
           subMessage="Попробуйте вернуться назад и выбрать другой граф"
-          emoji="🔍"
+          icon={MapPin}
         />
         <Button
           color="primary"
@@ -210,7 +210,7 @@ export default function GraphPage() {
               <EmptyState
                 message="У группы пока нет мероприятий"
                 subMessage="Мероприятия появятся здесь, когда будут созданы"
-                emoji="📅"
+                icon={CalendarX}
               />
             </div>
           )}
