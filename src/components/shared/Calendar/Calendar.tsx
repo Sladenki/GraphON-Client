@@ -163,9 +163,27 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
     <div className={styles.calendarContainer}>
       {/* Календарь */}
       <div className={styles.calendar}>
-        {/* Название месяца */}
-        <div className={styles.monthTitle}>
-          {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
+        {/* Заголовок с навигацией */}
+        <div className={styles.calendarHeader}>
+          <button 
+            className={styles.navButton}
+            onClick={handlePrevMonth}
+            aria-label="Предыдущий месяц"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          
+          <div className={styles.monthTitle}>
+            {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
+          </div>
+          
+          <button 
+            className={styles.navButton}
+            onClick={handleNextMonth}
+            aria-label="Следующий месяц"
+          >
+            <ChevronRight size={24} />
+          </button>
         </div>
 
         {/* Дни недели */}
@@ -201,23 +219,6 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
               )}
             </button>
           ))}
-        </div>
-
-        {/* Навигация */}
-        <div className={styles.navigation}>
-          <button 
-            className={styles.navButton}
-            onClick={handlePrevMonth}
-          >
-            <ChevronLeft size={24} />
-          </button>
-          
-          <button 
-            className={styles.navButton}
-            onClick={handleNextMonth}
-          >
-            <ChevronRight size={24} />
-          </button>
         </div>
       </div>
 

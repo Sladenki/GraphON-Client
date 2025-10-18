@@ -19,18 +19,24 @@
   backdrop-filter: blur(10px);
 }
 
+/* Заголовок с навигацией */
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
 /* Название месяца */
 .monthTitle {
   font-size: 28px;
   font-weight: 800;
   color: var(--text-color);
   text-align: center;
-  margin-bottom: 24px;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, var(--text-color) 0%, rgba(var(--main-Color), 0.8) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  flex: 1;
+  margin: 0;
 }
 
 /* Дни недели */
@@ -206,36 +212,30 @@
   }
 }
 
-/* Навигация */
-.navigation {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
+/* Кнопки навигации */
 .navButton {
   background: rgba(var(--main-Color), 0.1);
   border: 1px solid rgba(var(--main-Color), 0.2);
   color: rgb(var(--main-Color));
   cursor: pointer;
-  padding: 12px;
-  border-radius: 16px;
+  padding: 10px;
+  border-radius: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
+  flex-shrink: 0;
 
   &:hover {
     background: rgba(var(--main-Color), 0.2);
     border-color: rgba(var(--main-Color), 0.4);
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(var(--main-Color), 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(var(--main-Color), 0.25);
   }
   
   &:active {
-    transform: translateY(-1px) scale(1.02);
+    transform: scale(1.05);
   }
 }
 
@@ -263,10 +263,6 @@
   margin: 0;
   text-align: center;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, var(--text-color) 0%, rgba(var(--main-Color), 0.8) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .noSelectionMessage {
@@ -429,9 +425,13 @@
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
   }
   
+  .calendarHeader {
+    margin-bottom: 32px;
+    gap: 24px;
+  }
+  
   .monthTitle {
     font-size: 36px;
-    margin-bottom: 32px;
   }
   
   .weekday {
@@ -475,13 +475,9 @@
     height: 20px;
   }
   
-  .navigation {
-    margin-bottom: 28px;
-  }
-  
   .navButton {
-    padding: 16px;
-    border-radius: 20px;
+    padding: 14px;
+    border-radius: 16px;
   }
   
   .eventsSection {
@@ -533,9 +529,13 @@
     border-radius: 20px;
   }
   
+  .calendarHeader {
+    margin-bottom: 28px;
+    gap: 20px;
+  }
+  
   .monthTitle {
     font-size: 32px;
-    margin-bottom: 28px;
   }
   
   .weekday {
@@ -579,13 +579,9 @@
     height: 19px;
   }
   
-  .navigation {
-    margin-bottom: 24px;
-  }
-  
   .navButton {
-    padding: 14px;
-    border-radius: 18px;
+    padding: 12px;
+    border-radius: 14px;
   }
   
   .eventsSection {
@@ -636,9 +632,13 @@
     border-radius: 16px;
   }
 
-  .monthTitle {
-    font-size: 24px;
+  .calendarHeader {
     margin-bottom: 20px;
+    gap: 12px;
+  }
+  
+  .monthTitle {
+    font-size: 22px;
   }
 
   .weekday {
@@ -682,13 +682,14 @@
     height: 16px;
   }
   
-  .navigation {
-    margin-bottom: 16px;
-  }
-  
   .navButton {
-    padding: 10px;
-    border-radius: 14px;
+    padding: 8px;
+    border-radius: 10px;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
   }
   
   .eventsSection {
