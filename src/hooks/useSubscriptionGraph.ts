@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { GraphSubsService } from '@/services/graphSubs.service';
 import { useAuth } from '@/providers/AuthProvider';
@@ -7,6 +7,11 @@ export const useSubscription = (initialIsSubscribed: boolean, graphId: string) =
   const [isSubscribed, setIsSubscribed] = useState(initialIsSubscribed);
   const queryClient = useQueryClient();
   const { refreshUser } = useAuth();
+
+  // Синхронизируем состояние подписки когда данные графа загружаются
+  useEffect(() => {
+    setIsSubscribed(initialIsSubscribed);
+  }, [initialIsSubscribed]);
 
   const mutation = useMutation({
     mutationFn: () => GraphSubsService.toggleGraphSub(graphId),
@@ -48,6 +53,11 @@ export const useSubscription = (initialIsSubscribed: boolean, graphId: string) =
         // Инвалидируем кеш всех графов для обновления состояния подписки
         queryClient.invalidateQueries({
             queryKey: ['graph'],
+        });
+        
+        // Инвалидируем кеш конкретного графа
+        queryClient.invalidateQueries({
+            queryKey: ['graph', graphId],
         });
         
         // Инвалидируем кеш событий пользователя

@@ -201,7 +201,7 @@ export default function GraphPage() {
                 >
                   <EventCard 
                     event={event} 
-                    isAttended={false}
+                    isAttended={event.isAttended}
                     onDelete={() => {}}
                   />
                 </div>
