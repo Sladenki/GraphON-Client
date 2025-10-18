@@ -58,14 +58,14 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
           />
         </label>
       </div>
-      <label className={classNames.tbdToggle}>
+      {/* <label className={classNames.tbdToggle}>
         <input
           type="checkbox"
           checked={includeTbd ?? true}
           onChange={(e) => onIncludeTbdChange?.(e.target.checked)}
         />
         <span>Показывать без даты</span>
-      </label>
+      </label> */}
     </div>
   )
 }
