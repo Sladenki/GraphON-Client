@@ -226,79 +226,43 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
       </div>
 
       {/* Мероприятия ниже календаря */}
-      <div className={styles.eventsSection}>
-        {selectedDate ? (
-          <div className={styles.selectedDayEvents}>
-            <h3 className={styles.eventsSectionTitle}>
-              {formatDate(selectedDate)}
-            </h3>
-            
-            {selectedDayEvents.schedule.length === 0 && selectedDayEvents.events.length === 0 ? (
-              <EmptyState
-                message="Нет событий на этот день"
-                subMessage="Выберите другой день или запишитесь на мероприятие"
-                icon={CalendarX}
-              />
-            ) : (
-              <div className={styles.eventsList}>
-                {/* Расписание */}
-                {selectedDayEvents.schedule.length > 0 && (
-                  <div className={styles.eventsGroup}>
-                    <h4 className={styles.eventsGroupTitle}>Занятия</h4>
-                    {selectedDayEvents.schedule.map(item => (
-                      <div key={item._id} className={styles.scheduleItem}>
-                        <div className={styles.scheduleTime}>
-                          {item.timeFrom} - {item.timeTo}
-                        </div>
-                        <div className={styles.scheduleTitle}>{item.name}</div>
-                        <div className={styles.scheduleLocation}>
-                          {(item as any).graphId?.name || 'Неизвестная группа'} • Аудитория {item.roomNumber}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                
-                {/* Мероприятия */}
-                {selectedDayEvents.events.length > 0 && (
-                  <div className={styles.eventsGroup}>
-                    <h4 className={styles.eventsGroupTitle}>Мероприятия</h4>
-                    <div className={styles.eventCards}>
-                      {selectedDayEvents.events.map(event => (
-                        <EventCard
-                          key={event._id}
-                          event={{
-                            _id: event._id,
-                            graphId: event.graphId || { _id: '', name: 'Неизвестная группа' },
-                            globalGraphId: event.graphId?._id || '',
-                            name: event.name,
-                            description: event.description,
-                            place: event.place,
-                            eventDate: event.eventDate,
-                            timeFrom: event.timeFrom,
-                            timeTo: event.timeTo,
-                            regedUsers: event.regedUsers,
-                            isAttended: event.isAttended
-                          }}
-                          isAttended={event.isAttended}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
+      {selectedDate && (selectedDayEvents.schedule.length > 0 || selectedDayEvents.events.length > 0) && (
+        <div className={styles.eventsSection}>
+          {/* Расписание */}
+          {selectedDayEvents.schedule.map(item => (
+            <div key={item._id} className={styles.scheduleItem}>
+              <div className={styles.scheduleTime}>
+                {item.timeFrom} - {item.timeTo}
               </div>
-            )}
-          </div>
-        ) : (
-          <div className={styles.noSelectionMessage}>
-            <EmptyState
-              message="Выберите день в календаре"
-              subMessage="Нажмите на любой день, чтобы увидеть события"
-              icon={CalendarX}
+              <div className={styles.scheduleTitle}>{item.name}</div>
+              <div className={styles.scheduleLocation}>
+                {(item as any).graphId?.name || 'Неизвестная группа'} • Аудитория {item.roomNumber}
+              </div>
+            </div>
+          ))}
+          
+          {/* Мероприятия */}
+          {selectedDayEvents.events.map(event => (
+            <EventCard
+              key={event._id}
+              event={{
+                _id: event._id,
+                graphId: event.graphId || { _id: '', name: 'Неизвестная группа' },
+                globalGraphId: event.graphId?._id || '',
+                name: event.name,
+                description: event.description,
+                place: event.place,
+                eventDate: event.eventDate,
+                timeFrom: event.timeFrom,
+                timeTo: event.timeTo,
+                regedUsers: event.regedUsers,
+                isAttended: event.isAttended
+              }}
+              isAttended={event.isAttended}
             />
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
