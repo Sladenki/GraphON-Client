@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { notifyError } from "@/lib/notifications";
 import { AxiosError } from "axios";
 import { EmptyState } from "@/components/global/EmptyState/EmptyState";
-import SchedulePage from "../../../components/shared/Schedule/Schedule";
+import Calendar from "../../../components/shared/Calendar/Calendar";
 
 
 const Schedule = () => {
@@ -47,7 +47,7 @@ const Schedule = () => {
           icon={CalendarX}
         />
       ) : (
-        <SchedulePage schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
+        <Calendar schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
       )}
     </div>
   );

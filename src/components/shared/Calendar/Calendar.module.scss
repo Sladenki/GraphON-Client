@@ -1,0 +1,287 @@
+.calendar {
+  max-width: 400px;
+  margin: 0 auto;
+  background: var(--background-color);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  width: 100%;
+}
+
+/* Название месяца */
+.monthTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-color);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* Дни недели */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 8px 4px;
+}
+
+/* Календарная сетка */
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.day {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+
+  &:hover {
+    background-color: var(--hover-color);
+  }
+}
+
+.dayNumber {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 4px;
+}
+
+.dayOtherMonth {
+  .dayNumber {
+    color: var(--text-secondary);
+    opacity: 0.5;
+  }
+}
+
+.dayToday {
+  .dayNumber {
+    color: rgb(var(--main-Color));
+    font-weight: 600;
+  }
+}
+
+.daySelected {
+  background-color: rgb(var(--main-Color));
+  
+  .dayNumber {
+    color: white;
+    font-weight: 600;
+  }
+  
+  .eventDot {
+    background-color: white;
+    
+    .eventCount {
+      color: rgb(var(--main-Color));
+    }
+  }
+}
+
+/* Индикатор событий */
+.eventDot {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background-color: rgb(var(--main-Color));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eventCount {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #FF3B30;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 8px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+/* Навигация */
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: var(--hover-color);
+  }
+}
+
+/* Детали дня */
+.dayDetails {
+  background: var(--block-color);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 16px;
+}
+
+.dayDetailsHeader {
+  margin-bottom: 12px;
+}
+
+.dayDetailsTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.dayDetailsContent {
+  min-height: 80px;
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eventsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eventsGroupTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.eventItem {
+  background: var(--background-color);
+  border-radius: 6px;
+  padding: 10px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--hover-color);
+  }
+}
+
+.eventTime {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgb(var(--main-Color));
+  margin-bottom: 3px;
+}
+
+.eventTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 3px;
+}
+
+.eventLocation {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .calendar {
+    max-width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .monthTitle {
+    font-size: 20px;
+  }
+
+  .day {
+    min-height: 36px;
+    padding: 6px 3px;
+  }
+
+  .dayNumber {
+    font-size: 13px;
+  }
+
+  .eventDot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .eventCount {
+    font-size: 8px;
+    min-width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar {
+    padding: 8px;
+  }
+
+  .monthTitle {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .day {
+    min-height: 32px;
+    padding: 4px 2px;
+  }
+
+  .dayNumber {
+    font-size: 12px;
+  }
+
+  .navigation {
+    margin-bottom: 12px;
+  }
+}
