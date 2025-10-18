@@ -15,7 +15,6 @@
   padding: 24px;
   border: 1px solid rgba(var(--main-Color), 0.1);
   width: 100%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(10px);
 }
 
@@ -54,13 +53,11 @@
   color: var(--text-secondary);
   padding: 12px 8px;
   border-radius: 12px;
-  transition: all 0.3s ease;
+  transition: color 0.2s ease;
   cursor: default;
   
   &:hover {
-    background-color: rgba(var(--main-Color), 0.08);
     color: rgb(var(--main-Color));
-    transform: translateY(-2px);
   }
 }
 
@@ -79,7 +76,7 @@
   cursor: pointer;
   padding: 12px 8px;
   border-radius: 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,13 +85,11 @@
   font-weight: 500;
 
   &:hover {
-    background-color: rgba(var(--main-Color), 0.1);
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(var(--main-Color), 0.15);
+    background-color: rgba(var(--main-Color), 0.08);
   }
   
   &:active {
-    transform: translateY(-1px) scale(1.02);
+    background-color: rgba(var(--main-Color), 0.12);
   }
 }
 
@@ -132,7 +127,6 @@
 .daySelected {
   background: linear-gradient(135deg, rgba(var(--main-Color), 0.15) 0%, rgba(var(--main-Color), 0.05) 100%);
   border: 2px solid rgba(var(--main-Color), 0.3);
-  box-shadow: 0 8px 25px rgba(var(--main-Color), 0.2);
   
   .dayNumber {
     color: rgb(var(--main-Color));
@@ -144,7 +138,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(var(--main-Color), 0.3);
+    box-shadow: 0 2px 8px rgba(var(--main-Color), 0.25);
     margin-bottom: 4px;
   }
   
@@ -164,52 +158,31 @@
   bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 8px;
-  height: 8px;
-  background: linear-gradient(135deg, rgb(var(--main-Color)) 0%, rgba(var(--main-Color), 0.8) 100%);
+  width: 6px;
+  height: 6px;
+  background: rgb(var(--main-Color));
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(var(--main-Color), 0.3);
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateX(-50%) scale(1.2);
-    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.5);
-  }
 }
 
 .eventCount {
   position: absolute;
   top: -4px;
   right: -4px;
-  background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+  background: #ff4757;
   color: white;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   border-radius: 50%;
-  min-width: 18px;
-  height: 18px;
+  min-width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 4px;
-  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
+  padding: 0 3px;
   border: 2px solid white;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 /* Кнопки навигации */
@@ -220,7 +193,7 @@
   cursor: pointer;
   padding: 10px;
   border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -230,12 +203,10 @@
   &:hover {
     background: rgba(var(--main-Color), 0.2);
     border-color: rgba(var(--main-Color), 0.4);
-    transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(var(--main-Color), 0.25);
   }
   
   &:active {
-    transform: scale(1.05);
+    background: rgba(var(--main-Color), 0.25);
   }
 }
 
@@ -246,7 +217,6 @@
   border-radius: 20px;
   padding: 24px;
   border: 1px solid rgba(var(--main-Color), 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(10px);
 }
 
@@ -316,14 +286,12 @@
   border-radius: 16px;
   padding: 20px;
   border: 1px solid rgba(var(--main-Color), 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
   &:hover {
     background-color: rgba(var(--main-Color), 0.05);
-    border-color: rgba(var(--main-Color), 0.3);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.2);
   }
 }
 
@@ -422,7 +390,6 @@
     max-width: 600px;
     padding: 32px;
     border-radius: 24px;
-    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
   }
   
   .calendarHeader {
@@ -483,7 +450,6 @@
   .eventsSection {
     padding: 40px;
     border-radius: 24px;
-    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
   }
   
   .eventsSectionTitle {

@@ -80,9 +80,12 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
     const days: DayData[] = [];
     
     // Добавляем дни предыдущего месяца
-    const prevMonth = new Date(year, month - 1, 0);
+    const prevMonthLastDay = new Date(year, month - 1, 0);
+    const daysInPrevMonth = prevMonthLastDay.getDate();
+    
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-      const date = new Date(year, month - 1, prevMonth.getDate() - i);
+      const dayNumber = daysInPrevMonth - i;
+      const date = new Date(year, month - 1, dayNumber);
       const dateKey = date.toDateString();
       const dayEvents = eventsByDate.get(dateKey);
       
