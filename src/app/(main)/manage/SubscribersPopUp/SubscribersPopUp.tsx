@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { GraphService } from '@/services/graph.service';
-import UsersListPopUp from '@/components/shared/UsersListPopUp';
+import UsersListPopUp from '@/components/shared/UsersListPopUp/UsersListPopUp';
 import styles from './SubscribersPopUp.module.scss';
-import AttendeeItem, { AttendeeUser } from '@/components/shared/AttendeeItem';
+import { AttendeeUser } from '@/components/shared/UsersListPopUp/AttendeeItem';
 import { GraphSubsService } from '@/services/graphSubs.service';
 
 interface SubscribersPopUpProps {
@@ -38,7 +38,6 @@ const SubscribersPopUp: React.FC<SubscribersPopUpProps> = ({
       isLoading={isLoading}
       isError={isError}
       users={subscribers as any}
-      renderItem={(user) => <AttendeeItem user={user as any} />}
       emptyTitle="Пока нет подписчиков"
       emptyHint="Станьте первым, кто подпишется!"
       loadingText="Загрузка подписчиков..."

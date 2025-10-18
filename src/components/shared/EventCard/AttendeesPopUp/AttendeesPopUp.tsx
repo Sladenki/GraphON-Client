@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { EventRegService } from '@/services/eventReg.service';
-import UsersListPopUp from '@/components/shared/UsersListPopUp';
+import UsersListPopUp from '@/components/shared/UsersListPopUp/UsersListPopUp';
 import styles from './AttendeesPopUp.module.scss';
-import AttendeeItem, { AttendeeUser } from '@/components/shared/AttendeeItem';
+import { AttendeeUser } from '@/components/shared/UsersListPopUp/AttendeeItem';
 
 interface AttendeesPopUpProps {
   isOpen: boolean;
@@ -37,7 +37,6 @@ const AttendeesPopUp: React.FC<AttendeesPopUpProps> = ({
       isLoading={isLoading}
       isError={isError}
       users={attendees as any}
-      renderItem={(user) => <AttendeeItem user={user as any} />}
       emptyTitle="Пока нет участников"
       emptyHint="Станьте первым, кто зарегистрируется!"
       loadingText="Загрузка участников..."

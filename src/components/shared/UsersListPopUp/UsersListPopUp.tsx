@@ -1,12 +1,18 @@
 import React from 'react';
-import PopUpWrapper from '../global/PopUpWrapper/PopUpWrapper';
+import PopUpWrapper from '../../global/PopUpWrapper/PopUpWrapper';
 import { Spinner } from '@heroui/react';
 import { Users, AlertCircle } from 'lucide-react';
+import AttendeeItem, { AttendeeUser } from './AttendeeItem';
 
 export interface UsersListItem {
   _id: string;
   name?: string;
   avatarUrl?: string;
+  telegramId?: string;
+  avaPath?: string;
+  firstName?: string;
+  username?: string;
+  lastName?: string;
 }
 
 interface UsersListPopUpProps {
@@ -17,7 +23,7 @@ interface UsersListPopUpProps {
   isLoading: boolean;
   isError: boolean;
   users: UsersListItem[] | undefined;
-  renderItem: (user: UsersListItem) => React.ReactNode;
+  renderItem?: (user: UsersListItem) => React.ReactNode;
   emptyTitle: string;
   emptyHint?: string;
   loadingText?: string;
@@ -68,6 +74,13 @@ const UsersListPopUp: React.FC<UsersListPopUpProps> = ({
 }) => {
   const count = users?.length || 0;
 
+  // Дефолтный рендерер использует AttendeeItem
+  const defaultRenderItem = (user: UsersListItem) => (
+    <AttendeeItem user={user as AttendeeUser} />
+  );
+
+  const itemRenderer = renderItem || defaultRenderItem;
+
   return (
     <PopUpWrapper isOpen={isOpen} onClose={onClose} width={width} height={height}>
       <div className={classNames.container}>
@@ -116,7 +129,7 @@ const UsersListPopUp: React.FC<UsersListPopUpProps> = ({
             ) : (
               <div className={classNames.list}>
                 {users?.map((user) => (
-                  <React.Fragment key={user._id}>{renderItem(user)}</React.Fragment>
+                  <React.Fragment key={user._id}>{itemRenderer(user)}</React.Fragment>
                 ))}
               </div>
             )}
