@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { GraphService } from '@/services/graph.service'
@@ -15,6 +15,7 @@ import Image from 'next/image'
 import { useAuth } from '@/providers/AuthProvider'
 import { useSubscription } from '@/hooks/useSubscriptionGraph'
 import { notifyInfo, notifySuccess } from '@/lib/notifications'
+import SchedulePopUp from '../SchedulePopUp/SchedulePopUp'
 import styles from './GraphPage.module.scss'
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL
@@ -24,6 +25,7 @@ export default function GraphPage() {
   const router = useRouter()
   const graphId = params.id as string
   const { isLoggedIn } = useAuth()
+  const [isSchedulePopupOpen, setIsSchedulePopupOpen] = useState(false)
 
   // Загрузка данных графа
   const { data: graph, isLoading, error } = useQuery({
@@ -147,7 +149,7 @@ export default function GraphPage() {
                 variant="info"
                 icon={<Calendar size={18} />}
                 label="Расписание"
-                onClick={() => router.push(`/schedule/?graphId=${graphId}`)}
+                onClick={() => setIsSchedulePopupOpen(true)}
               />
               {isLoggedIn && (
                 <ActionButton
@@ -216,6 +218,13 @@ export default function GraphPage() {
           )}
         </div>
       )}
+
+      {/* Попап расписания */}
+      <SchedulePopUp 
+        graphId={graphId}
+        isSchedulePopupOpen={isSchedulePopupOpen}
+        closeSchedulePopup={() => setIsSchedulePopupOpen(false)}
+      />
     </div>
   )
 }

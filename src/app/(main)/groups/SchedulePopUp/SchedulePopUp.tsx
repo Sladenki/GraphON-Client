@@ -4,7 +4,7 @@ import React, { FC, useEffect } from 'react'
 
 import { SpinnerLoader } from '../../../../components/global/SpinnerLoader/SpinnerLoader';
 import PopUpWrapper from '../../../../components/global/PopUpWrapper/PopUpWrapper';
-import SchedulePage from '../../../../components/shared/Schedule/Schedule';
+import Calendar from '@/components/shared/Calendar/Calendar';
 
 
 interface SchedulePopUpProps {
@@ -44,12 +44,16 @@ const SchedulePopUp: FC<SchedulePopUpProps> = ({
       width={1000} 
       height={900}
     >
-            {data && (
-                <SchedulePage
-                    schedule={data?.data?.schedule}
-                    events={data?.data?.events}
-                />
-            )}
+            <div style={{
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                maxHeight: '100%',
+                padding: '8px'
+            }}>
+                {data && (
+                    <Calendar schedule={data?.data?.schedule} events={data?.data?.events} />
+                )}
+            </div>
         </PopUpWrapper>
     )
 }
