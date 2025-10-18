@@ -23,7 +23,7 @@ import { IGraphList } from '@/types/graph.interface';
 import { useSetSelectedGraphId } from '@/stores/useUIStore';
 import EditProfilePopUp from './EditProfilePopUp/EditProfilePopUp';
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar';
-import GraphBlock from '@/components/shared/GraphBlock/GraphBlock';
+import GroupBlock from '@/components/shared/GroupBlock/GroupBlock';
 import { useDebounce } from '@/hooks/useDebounce';
 import { notifySuccess } from '@/lib/notifications';
 
@@ -439,7 +439,7 @@ export default function Profile() {
                         <div className={styles.subscriptionsGrid}>
                             {filteredSubscriptions.map((subscription: any) => (
                                 <div key={subscription._id} className={styles.subscriptionItem}>
-                                    <GraphBlock
+                                    <GroupBlock
                                         id={subscription._id}
                                         name={subscription.name}
                                         isSubToGraph={subscription.isSubscribed}

@@ -13,7 +13,7 @@ import { useSearchWithTags } from '@/hooks/useSearchWithTags'
 import { useSelectedGraphId } from '@/stores/useUIStore'
 import { IGraphList } from '@/types/graph.interface'
 import styles from './GroupsList.module.scss'
-import GraphBlock from '@/components/shared/GraphBlock/GraphBlock'
+import GroupBlock from '@/components/shared/GroupBlock/GroupBlock'
 
 export default function GroupsList() {
   const selectedGraphId = useSelectedGraphId()
@@ -153,7 +153,7 @@ export default function GroupsList() {
         <div className={styles.grid}>
           {filteredGraphs.map((graph: IGraphList) => (
             <div key={graph._id} className={styles.graphItem}>
-              <GraphBlock
+              <GroupBlock
                 id={graph._id}
                 name={graph.name}
                 isSubToGraph={graph.isSubscribed}

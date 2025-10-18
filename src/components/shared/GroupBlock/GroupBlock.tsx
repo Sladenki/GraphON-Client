@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import Image from "next/image";
 import { Heart, HeartCrack, Calendar, Info } from "lucide-react";
 import { notifySuccess, notifyInfo } from "@/lib/notifications";
-import styles from './GraphBlock.module.scss';
+import styles from './GroupBlock.module.scss';
 import { useAuth } from "@/providers/AuthProvider";
 import { useSubscription } from "@/hooks/useSubscriptionGraph";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ import ActionButton from "@/components/ui/ActionButton/ActionButton";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
-interface GraphBlockSimpleProps {
+interface GroupBlockProps {
   id: string;
   name: string;
   isSubToGraph: boolean;
@@ -19,7 +19,7 @@ interface GraphBlockSimpleProps {
   handleScheduleButtonClick: () => void;
 }
 
-const GraphBlockSimple: React.FC<GraphBlockSimpleProps> = memo(({ 
+const GroupBlock: React.FC<GroupBlockProps> = memo(({ 
   id, 
   name, 
   isSubToGraph, 
@@ -116,6 +116,6 @@ const GraphBlockSimple: React.FC<GraphBlockSimpleProps> = memo(({
   );
 });
 
-GraphBlockSimple.displayName = 'GraphBlockSimple';
+GroupBlock.displayName = 'GroupBlock';
 
-export default GraphBlockSimple;
+export default GroupBlock;
