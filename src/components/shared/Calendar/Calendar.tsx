@@ -263,7 +263,19 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
                       {selectedDayEvents.events.map(event => (
                         <EventCard
                           key={event._id}
-                          event={event}
+                          event={{
+                            _id: event._id,
+                            graphId: event.graphId || { _id: '', name: 'Неизвестная группа' },
+                            globalGraphId: event.graphId?._id || '',
+                            name: event.name,
+                            description: event.description,
+                            place: event.place,
+                            eventDate: event.eventDate,
+                            timeFrom: event.timeFrom,
+                            timeTo: event.timeTo,
+                            regedUsers: event.regedUsers,
+                            isAttended: event.isAttended
+                          }}
                           isAttended={event.isAttended}
                         />
                       ))}
