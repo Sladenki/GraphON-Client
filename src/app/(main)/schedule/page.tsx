@@ -40,7 +40,8 @@ const Schedule = () => {
 
   return (
     <div className={styles.ScheduleWrapper}>
-      {scheduleByDays.schedule == 0 && scheduleByDays.events == 0 ? (
+      <Calendar schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
+      {/* {scheduleByDays.schedule == 0 && scheduleByDays.events == 0 ? (
         <EmptyState
           message="Тут пока пусто"
           subMessage="На этой неделе нет занятий или мероприятий"
@@ -48,7 +49,7 @@ const Schedule = () => {
         />
       ) : (
         <Calendar schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
-      )}
+      )} */}
     </div>
   );
 }
