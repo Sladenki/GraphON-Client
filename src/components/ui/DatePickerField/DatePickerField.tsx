@@ -21,7 +21,7 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
   label,
   ariaLabel,
   size = 'sm',
-  variant = 'bordered',
+  variant = 'flat',
   className,
 }) => {
   const calendarValue = useMemo(() => (value ? parseDate(value) : null), [value])
@@ -31,7 +31,7 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
       <DatePicker
         label={label}
         aria-label={ariaLabel || label || 'Дата'}
-        variant={variant as any}
+        variant="flat"
         size={size as any}
         value={calendarValue as any}
         onChange={(v: any) => onChange?.(v ? v.toString() : '')}

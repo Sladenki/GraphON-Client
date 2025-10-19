@@ -39,7 +39,6 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
           <span>От</span>
           <DatePickerField
             ariaLabel="От даты"
-            variant="bordered"
             size="sm"
             value={dateFrom}
             onChange={(v) => onDateFromChange?.(v)}
@@ -50,7 +49,6 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
           <span>До</span>
           <DatePickerField
             ariaLabel="До даты"
-            variant="bordered"
             size="sm"
             value={dateTo}
             onChange={(v) => onDateToChange?.(v)}
