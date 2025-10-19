@@ -310,19 +310,30 @@ html[data-theme="dark"] {
   }
 
   .parentChip {
-    padding: 8px 10px;
-    gap: 8px;
-    border-radius: 10px;
+    padding: 6px 12px;
+    gap: 6px;
+    border-radius: 9999px; /* Оставляем pill-shaped как в десктоп версии */
   }
 
   .parentIcon {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .parentName {
+    font-size: 0.82rem;
   }
 
   .actionButtons {
+    flex-direction: row; /* Горизонтальное расположение */
     gap: 8px;
+    width: 100%;
   }
 
   .cardBody {
