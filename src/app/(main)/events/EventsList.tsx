@@ -152,16 +152,6 @@ export default function EventsList() {
     )
   }
 
-  if (noSearchResults) {
-    return (
-      <EmptyState
-        message="Ничего не найдено"
-        subMessage="Измените текст, даты или теги"
-        icon={Search}
-      />
-    )
-  }
-
   return (
     <div className={styles.container}>
       {/* Панель поиска и фильтров */}
@@ -189,8 +179,17 @@ export default function EventsList() {
         </div>
       )}
 
+      {/* Пустой результат поиска */}
+      {noSearchResults && !isLoading && (
+        <EmptyState
+          message="Ничего не найдено"
+          subMessage="Измените текст, даты или теги"
+          icon={Search}
+        />
+      )}
+
       {/* Список событий */}
-      {isSuccess && (
+      {isSuccess && !noSearchResults && (
         <div className={styles.eventsList}>
           {filteredEvents.map((event: EventItem, index: number) => (
             <div 
