@@ -50,7 +50,6 @@
     .groupAvatar {
       transform: scale(1.05);
       border-color: rgba(var(--main-Color), 0.2);
-      box-shadow: 0 4px 12px rgba(var(--main-Color), 0.15);
     }
 
     .groupName {
@@ -72,7 +71,6 @@
   justify-content: center;
   flex-shrink: 0;
   border: 2px solid rgba(var(--main-Color), 0.12);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: all 0.2s ease;
 }
   
@@ -446,7 +444,6 @@
       .groupAvatar {
         transform: scale(1.05);
         border-color: rgba(var(--main-Color), 0.25);
-        box-shadow: 0 4px 16px rgba(var(--main-Color), 0.2);
       }
 
       .groupName {
@@ -459,7 +456,6 @@
   
   .groupAvatar {
     border-color: rgba(var(--main-Color), 0.2);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
   
   .shareButton {

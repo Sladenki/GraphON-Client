@@ -329,10 +329,10 @@ const EventCard: React.FC<EventProps> = ({
           <div className={styles.headerTop}>
             <div className={styles.groupInfo} onClick={handleGroupClick}>
               <GroupAvatar
-              src={fullImageUrl}
-              alt={event.graphId.name}
-              fallback={event.graphId.name}
-            />
+                src={fullImageUrl}
+                alt={event.graphId.name}
+                fallback={event.graphId.name}
+              />
               <span className={styles.groupName}>{event.graphId.name}</span>
             </div>
             
