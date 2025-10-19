@@ -50,14 +50,16 @@
   text-align: center;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-color);
   padding: 12px 8px;
   border-radius: 12px;
-  transition: color 0.2s ease;
+  background: rgba(var(--main-Color), 0.05);
+  transition: all 0.2s ease;
   cursor: default;
   
   &:hover {
     color: rgb(var(--main-Color));
+    background: rgba(var(--main-Color), 0.1);
   }
 }
 
@@ -533,5 +535,26 @@
 
   .navigation {
     margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .navButton {
+    padding: 6px;
+    border-radius: 8px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  .monthTitle {
+    font-size: 16px;
+  }
+  
+  .weekday {
+    font-size: 11px;
+    padding: 8px 4px;
   }
 }
