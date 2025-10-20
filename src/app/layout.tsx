@@ -14,7 +14,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className={`${inter.variable} ${orbitron.variable}`}>
+    <html lang="ru" className={`${inter.variable} ${orbitron.variable}`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var storageKey = 'graphon-theme';
+                  var theme = localStorage.getItem(storageKey);
+                  var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  var appliedTheme = theme === 'system' || !theme ? systemTheme : theme;
+                  document.documentElement.setAttribute('data-theme', appliedTheme);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
         <Providers>
           {children}

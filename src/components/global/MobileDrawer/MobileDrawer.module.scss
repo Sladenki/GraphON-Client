@@ -23,7 +23,7 @@
   bottom: 0;
   width: 280px;
   max-width: 85vw;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--background-color);
   backdrop-filter: blur(20px);
   border-right: 1px solid rgba(var(--main-Color), 0.1);
   z-index: 3000; // Увеличиваем z-index чтобы быть выше BottomMenu (2000)
@@ -194,121 +194,8 @@
   min-height: 100vh;
 }
 
-// Темная тема
-html[data-theme="dark"] {
-  .openButton {
-    background: rgba(var(--main-Color), 0.15);
-    border-color: rgba(var(--main-Color), 0.3);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-
-    &:hover {
-      background: rgba(var(--main-Color), 0.2);
-    }
-  }
-
-  .drawer {
-    background: rgba(40, 40, 40, 0.95);
-    border-right-color: rgba(var(--main-Color), 0.2);
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
-  }
-
-  .overlay {
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  .header {
-    background: rgba(var(--main-Color), 0.03);
-    border-bottom-color: rgba(var(--main-Color), 0.15);
-  }
-
-  .footer {
-    background: rgba(var(--main-Color), 0.03);
-    border-top-color: rgba(var(--main-Color), 0.15);
-  }
-
-  .menuItem {
-    color: var(--main-text);
-
-    &:hover {
-      background: rgba(var(--main-Color), 0.08);
-      color: rgb(var(--main-Color));
-    }
-
-    &:active {
-      background: rgba(var(--main-Color), 0.12);
-    }
-  }
-
-  .iconWrapper {
-    background: rgba(var(--main-Color), 0.12);
-  }
-
-  .menuTitle {
-    color: var(--main-text);
-  }
-
-  .userInfo {
-    color: var(--main-text);
-  }
-}
-
-// Альтернативная поддержка через prefers-color-scheme
-@media (prefers-color-scheme: dark) {
-  .openButton {
-    background: rgba(var(--main-Color), 0.15);
-    border-color: rgba(var(--main-Color), 0.3);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-
-    &:hover {
-      background: rgba(var(--main-Color), 0.2);
-    }
-  }
-
-  .drawer {
-    background: rgba(40, 40, 40, 0.95);
-    border-right-color: rgba(var(--main-Color), 0.2);
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
-  }
-
-  .overlay {
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  .header {
-    background: rgba(var(--main-Color), 0.03);
-    border-bottom-color: rgba(var(--main-Color), 0.15);
-  }
-
-  .footer {
-    background: rgba(var(--main-Color), 0.03);
-    border-top-color: rgba(var(--main-Color), 0.15);
-  }
-
-  .menuItem {
-    color: var(--main-text);
-
-    &:hover {
-      background: rgba(var(--main-Color), 0.08);
-      color: rgb(var(--main-Color));
-    }
-
-    &:active {
-      background: rgba(var(--main-Color), 0.12);
-    }
-  }
-
-  .iconWrapper {
-    background: rgba(var(--main-Color), 0.12);
-  }
-
-  .menuTitle {
-    color: var(--main-text);
-  }
-
-  .userInfo {
-    color: var(--main-text);
-  }
-}
+// Темная тема - переменные меняются автоматически через html[data-theme="dark"]
+// Но можем добавить специфичные изменения если нужно
 
 // Анимации для мобильных устройств
 @media (hover: none) {
