@@ -6,11 +6,9 @@ import styles from './layout.module.scss'
 import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
 import MobileDrawer from "@/components/global/MobileDrawer/MobileDrawer";
 import TopPanel from "@/components/global/TopPanel/TopPanel";
-import { AllProvers } from "@/providers/main";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
-import { Providers } from '../providers';
 import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
 import { useSelectedGraphId } from '@/stores/useUIStore';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
@@ -29,69 +27,62 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
   // Показываем лоадер пока загружаются данные из localStorage
   if (!isHydrated) {
     return (
-      <Providers>
-        <div style={{ 
-          minHeight: '100vh', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          background: 'var(--background-color)'
-        }}>
-          <SpinnerLoader />
-        </div>
-      </Providers>
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        background: 'var(--background-color)'
+      }}>
+        <SpinnerLoader />
+      </div>
     );
   }
 
   return (
-    <Providers>
-      <HeroUIProvider>
-        <Toaster position="top-right" richColors />
+    <HeroUIProvider>
+      <Toaster position="top-right" richColors />
 
-        {/* Если университет не выбран - показываем экран выбора */}
-        {!selectedGraphId ? (
-          <div className={styles.universitySelectWrapper}>
-            <UniversitySelect />
-          </div>
-        ) : (
-          <div className={styles.wrapper}>
-            <AllProvers>
-              {/* Top Panel - только для мобильных */}
-              {small && <TopPanel />}
+      {/* Если университет не выбран - показываем экран выбора */}
+      {!selectedGraphId ? (
+        <div className={styles.universitySelectWrapper}>
+          <UniversitySelect />
+        </div>
+      ) : (
+        <div className={styles.wrapper}>
+          {/* Top Panel - только для мобильных */}
+          {small && <TopPanel />}
 
-              {/* Mobile Drawer - только для мобильных */}
-              {small ? (
-                <MobileDrawer>
-                  <div className={styles.main}>
-                    <div className={styles.content}>
-                      {children}
-                    </div>
-                  </div>
-                </MobileDrawer>
-              ) : (
-                <>
-                  {/* Sidebar - только для десктопа */}
-                  <div className={styles.sidebar}>
-                    <Sidebar/>
-                  </div>
-                  
-                  {/* Основная страница */}
-                  <div className={styles.main}>
-                    <div className={styles.content}>
-                      {children}
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <div className={styles.BottomMenu}>
-                <BottomMenu/>
+          {/* Mobile Drawer - только для мобильных */}
+          {small ? (
+            <MobileDrawer>
+              <div className={styles.main}>
+                <div className={styles.content}>
+                  {children}
+                </div>
               </div>
-                
-            </AllProvers>
+            </MobileDrawer>
+          ) : (
+            <>
+              {/* Sidebar - только для десктопа */}
+              <div className={styles.sidebar}>
+                <Sidebar/>
+              </div>
+              
+              {/* Основная страница */}
+              <div className={styles.main}>
+                <div className={styles.content}>
+                  {children}
+                </div>
+              </div>
+            </>
+          )}
+
+          <div className={styles.BottomMenu}>
+            <BottomMenu/>
           </div>
-        )}
-      </HeroUIProvider>
-    </Providers>
+        </div>
+      )}
+    </HeroUIProvider>
   );
 }

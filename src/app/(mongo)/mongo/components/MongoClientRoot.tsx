@@ -2,7 +2,7 @@
 
 import { HeroUIProvider } from '@heroui/react';
 import { Toaster } from 'sonner';
-import { Providers } from '@/app/providers';
+import { Providers } from '@/providers/main';
 import PasswordGate from './PasswordGate';
 
 type Props = {

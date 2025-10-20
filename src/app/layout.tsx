@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { inter, orbitron } from './fonts';
 import '../styles/globals.scss';
-import { Providers } from './providers';
+import { Providers } from '@/providers/main';
 
 export const metadata: Metadata = {
   title: 'GraphON',
