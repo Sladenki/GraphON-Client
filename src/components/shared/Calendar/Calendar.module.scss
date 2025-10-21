@@ -71,6 +71,10 @@
   margin-bottom: 20px;
 }
 
+.emptyDay {
+  min-height: 48px;
+}
+
 .day {
   position: relative;
   background: none;
@@ -101,13 +105,6 @@
   color: var(--text-color);
   margin-bottom: 4px;
   transition: all 0.3s ease;
-}
-
-.dayOtherMonth {
-  .dayNumber {
-    color: var(--text-secondary);
-    opacity: 0.5;
-  }
 }
 
 .dayToday {
@@ -251,6 +248,10 @@
     gap: 10px;
     margin-bottom: 20px;
   }
+
+  .emptyDay {
+    min-height: 54px;
+  }
   
   .day {
     min-height: 54px;
@@ -318,6 +319,10 @@
   .calendarGrid {
     gap: 10px;
     margin-bottom: 24px;
+  }
+
+  .emptyDay {
+    min-height: 56px;
   }
   
   .day {
@@ -388,6 +393,10 @@
     margin-bottom: 16px;
   }
 
+  .emptyDay {
+    min-height: 44px;
+  }
+
   .day {
     min-height: 44px;
     padding: 10px 6px;
@@ -438,6 +447,10 @@
   .monthTitle {
     font-size: 18px;
     margin-bottom: 12px;
+  }
+
+  .emptyDay {
+    min-height: 32px;
   }
 
   .day {

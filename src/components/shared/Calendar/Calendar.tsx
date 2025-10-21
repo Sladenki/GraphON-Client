@@ -78,26 +78,11 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
     const lastDayOfMonth = new Date(year, month + 1, 0);
     const firstDayOfWeek = (firstDayOfMonth.getDay() + 6) % 7; // Понедельник = 0
     
-    const days: DayData[] = [];
+    const days: (DayData | null)[] = [];
     
-    // Добавляем дни предыдущего месяца
-    const prevMonthLastDay = new Date(year, month - 1, 0);
-    const daysInPrevMonth = prevMonthLastDay.getDate();
-    
-    for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-      const dayNumber = daysInPrevMonth - i;
-      const date = new Date(year, month - 1, dayNumber);
-      const dateKey = date.toDateString();
-      const dayEvents = eventsByDate.get(dateKey);
-      
-      days.push({
-        date,
-        isCurrentMonth: false,
-        isToday: false,
-        isSelected: selectedDate?.toDateString() === dateKey,
-        hasEvents: !!dayEvents && (dayEvents.schedule.length > 0 || dayEvents.events.length > 0),
-        eventsCount: dayEvents ? dayEvents.schedule.length + dayEvents.events.length : 0
-      });
+    // Добавляем пустые ячейки для выравнивания начала месяца
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      days.push(null);
     }
     
     // Добавляем дни текущего месяца
@@ -111,23 +96,6 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
         date,
         isCurrentMonth: true,
         isToday: date.toDateString() === today.toDateString(),
-        isSelected: selectedDate?.toDateString() === dateKey,
-        hasEvents: !!dayEvents && (dayEvents.schedule.length > 0 || dayEvents.events.length > 0),
-        eventsCount: dayEvents ? dayEvents.schedule.length + dayEvents.events.length : 0
-      });
-    }
-    
-    // Добавляем дни следующего месяца для заполнения сетки
-    const remainingDays = 42 - days.length; // 6 недель * 7 дней
-    for (let day = 1; day <= remainingDays; day++) {
-      const date = new Date(year, month + 1, day);
-      const dateKey = date.toDateString();
-      const dayEvents = eventsByDate.get(dateKey);
-      
-      days.push({
-        date,
-        isCurrentMonth: false,
-        isToday: false,
         isSelected: selectedDate?.toDateString() === dateKey,
         hasEvents: !!dayEvents && (dayEvents.schedule.length > 0 || dayEvents.events.length > 0),
         eventsCount: dayEvents ? dayEvents.schedule.length + dayEvents.events.length : 0
@@ -201,28 +169,32 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
 
         {/* Календарная сетка */}
         <div className={styles.calendarGrid}>
-          {calendarDays.map((day, index) => (
-            <button
-              key={index}
-              className={`${styles.day} ${
-                !day.isCurrentMonth ? styles.dayOtherMonth : ''
-              } ${day.isToday ? styles.dayToday : ''} ${
-                day.isSelected ? styles.daySelected : ''
-              }`}
-              onClick={() => handleDayClick(day)}
-            >
-              <span className={styles.dayNumber}>
-                {day.date.getDate()}
-              </span>
-              {day.hasEvents && (
-                <div className={styles.eventDot}>
-                  {day.eventsCount > 1 && (
-                    <span className={styles.eventCount}>{day.eventsCount}</span>
-                  )}
-                </div>
-              )}
-            </button>
-          ))}
+          {calendarDays.map((day, index) => {
+            if (!day) {
+              return <div key={index} className={styles.emptyDay} />;
+            }
+            
+            return (
+              <button
+                key={index}
+                className={`${styles.day} ${
+                  day.isToday ? styles.dayToday : ''
+                } ${day.isSelected ? styles.daySelected : ''}`}
+                onClick={() => handleDayClick(day)}
+              >
+                <span className={styles.dayNumber}>
+                  {day.date.getDate()}
+                </span>
+                {day.hasEvents && (
+                  <div className={styles.eventDot}>
+                    {day.eventsCount > 1 && (
+                      <span className={styles.eventCount}>{day.eventsCount}</span>
+                    )}
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
