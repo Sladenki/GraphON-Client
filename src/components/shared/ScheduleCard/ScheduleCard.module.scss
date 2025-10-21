@@ -79,13 +79,27 @@
   font-weight: 500;
 }
 
+.groupLink {
+  color: rgba(var(--main-Color), 0.9);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: rgb(var(--main-Color));
+    text-decoration: underline;
+  }
+}
+
 .separator {
   color: var(--text-secondary);
   opacity: 0.5;
 }
 
 .roomNumber {
-  color: var(--text-secondary);
+  color: var(--text-color);
+  opacity: 0.7;
   font-weight: 400;
 }
 
