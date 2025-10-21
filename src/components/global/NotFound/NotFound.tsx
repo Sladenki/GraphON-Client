@@ -19,16 +19,10 @@ export default function NotFound() {
       </div>
       <div className={styles.buttonsContainer}>
         <Link
-          href="/"
+          href="/events"
           className={styles.backButton}
         >
           🏠 Вернуться на главную
-        </Link>
-        <Link
-          href="/graphs"
-          className={styles.sitemapButton}
-        >
-          🗺️ Карта сайта
         </Link>
       </div>
     </div>
