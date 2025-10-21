@@ -6,6 +6,7 @@ import { ScheduleItem, EventItem } from '@/types/schedule';
 import { EmptyState } from '@/components/global/EmptyState/EmptyState';
 import { CalendarX } from 'lucide-react';
 import EventCard from '@/components/shared/EventCard/EventCard';
+import ScheduleCard from '@/components/shared/ScheduleCard/ScheduleCard';
 import styles from './Calendar.module.scss';
 
 interface CalendarProps {
@@ -230,15 +231,11 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
         <div className={styles.eventsSection}>
           {/* Расписание */}
           {selectedDayEvents.schedule.map(item => (
-            <div key={item._id} className={styles.scheduleItem}>
-              <div className={styles.scheduleTime}>
-                {item.timeFrom} - {item.timeTo}
-              </div>
-              <div className={styles.scheduleTitle}>{item.name}</div>
-              <div className={styles.scheduleLocation}>
-                {(item as any).graphId?.name || 'Неизвестная группа'} • Аудитория {item.roomNumber}
-              </div>
-            </div>
+            <ScheduleCard
+              key={item._id}
+              item={item}
+              graphName={(item as any).graphId?.name}
+            />
           ))}
           
           {/* Мероприятия */}

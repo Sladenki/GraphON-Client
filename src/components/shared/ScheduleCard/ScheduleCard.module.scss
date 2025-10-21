@@ -1,0 +1,92 @@
+.scheduleCard {
+  background: none;
+  border: none;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(var(--main-Color), 0.1);
+  transition: all 0.2s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    padding-left: 8px;
+  }
+}
+
+.scheduleTime {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(var(--main-Color));
+  margin-bottom: 6px;
+}
+
+.scheduleTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 6px;
+}
+
+.scheduleLocation {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Стили для ПК версии */
+@media (min-width: 1024px) {
+  .scheduleCard {
+    padding: 16px 0;
+  }
+
+  .scheduleTime {
+    font-size: 15px;
+  }
+
+  .scheduleTitle {
+    font-size: 18px;
+  }
+
+  .scheduleLocation {
+    font-size: 15px;
+  }
+}
+
+/* Стили для планшетов */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .scheduleCard {
+    padding: 14px 0;
+  }
+
+  .scheduleTime {
+    font-size: 15px;
+  }
+
+  .scheduleTitle {
+    font-size: 19px;
+  }
+
+  .scheduleLocation {
+    font-size: 15px;
+  }
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+  .scheduleCard {
+    padding: 12px 0;
+  }
+
+  .scheduleTime {
+    font-size: 13px;
+  }
+
+  .scheduleTitle {
+    font-size: 16px;
+  }
+
+  .scheduleLocation {
+    font-size: 13px;
+  }
+}
+
