@@ -1,50 +1,120 @@
 .scheduleCard {
-  background: none;
-  border: none;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(var(--main-Color), 0.1);
-  transition: all 0.2s ease;
-
-  &:last-child {
-    border-bottom: none;
-  }
+  background: var(--background-color);
+  border-radius: 16px;
+  border: 1.5px solid rgba(var(--main-Color), 0.08);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto 24px auto;
 
   &:hover {
-    padding-left: 8px;
+    border-color: rgba(var(--main-Color), 0.15);
+    transform: translateY(-2px);
   }
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: transparent;
+  border-bottom: 1px solid rgba(var(--main-Color), 0.06);
+}
+
+.timeContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clockIcon {
+  color: rgba(var(--main-Color), 0.7);
+  flex-shrink: 0;
 }
 
 .scheduleTime {
   font-size: 14px;
   font-weight: 600;
   color: rgb(var(--main-Color));
-  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.typeBadge {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(var(--main-Color), 0.08);
+  color: rgb(var(--main-Color));
+  border: 1px solid rgba(var(--main-Color), 0.12);
+  transition: all 0.2s ease;
+}
+
+.cardBody {
+  padding: 20px;
+  background: transparent;
 }
 
 .scheduleTitle {
   font-size: 18px;
   font-weight: 600;
   color: var(--text-color);
-  margin-bottom: 6px;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
 }
 
 .scheduleLocation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
   font-size: 14px;
+}
+
+.groupName {
+  color: rgba(var(--main-Color), 0.9);
+  font-weight: 500;
+}
+
+.separator {
   color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.roomNumber {
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 /* Стили для ПК версии */
 @media (min-width: 1024px) {
   .scheduleCard {
-    padding: 16px 0;
+    border-radius: 18px;
+  }
+
+  .cardHeader {
+    padding: 18px 24px;
   }
 
   .scheduleTime {
     font-size: 15px;
   }
 
+  .typeBadge {
+    font-size: 13px;
+    padding: 5px 14px;
+  }
+
+  .cardBody {
+    padding: 24px;
+  }
+
   .scheduleTitle {
-    font-size: 18px;
+    font-size: 19px;
+    margin-bottom: 14px;
   }
 
   .scheduleLocation {
@@ -55,15 +125,29 @@
 /* Стили для планшетов */
 @media (min-width: 768px) and (max-width: 1023px) {
   .scheduleCard {
-    padding: 14px 0;
+    border-radius: 18px;
+  }
+
+  .cardHeader {
+    padding: 18px 22px;
   }
 
   .scheduleTime {
     font-size: 15px;
   }
 
+  .typeBadge {
+    font-size: 13px;
+    padding: 5px 14px;
+  }
+
+  .cardBody {
+    padding: 22px;
+  }
+
   .scheduleTitle {
     font-size: 19px;
+    margin-bottom: 14px;
   }
 
   .scheduleLocation {
@@ -74,19 +158,57 @@
 /* Адаптивность для мобильных */
 @media (max-width: 768px) {
   .scheduleCard {
-    padding: 12px 0;
+    border-radius: 14px;
+  }
+
+  .cardHeader {
+    padding: 14px 16px;
   }
 
   .scheduleTime {
     font-size: 13px;
   }
 
+  .clockIcon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .typeBadge {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .cardBody {
+    padding: 16px;
+  }
+
   .scheduleTitle {
     font-size: 16px;
+    margin-bottom: 10px;
   }
 
   .scheduleLocation {
     font-size: 13px;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardHeader {
+    padding: 12px 14px;
+  }
+
+  .cardBody {
+    padding: 14px;
+  }
+
+  .scheduleTitle {
+    font-size: 15px;
+  }
+
+  .scheduleLocation {
+    font-size: 12px;
   }
 }
 
