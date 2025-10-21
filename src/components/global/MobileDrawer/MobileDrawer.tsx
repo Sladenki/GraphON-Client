@@ -18,16 +18,9 @@ interface MobileDrawerProps {
 
 const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [isDragging, setIsDragging] = useState(false)
-  const drawerRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const startXRef = useRef<number>(0)
   const startYRef = useRef<number>(0)
-  const currentXRef = useRef<number>(0)
-  const currentYRef = useRef<number>(0)
-  const isDraggingRef = useRef<boolean>(false)
-  const isContentSwipeRef = useRef<boolean>(false)
 
   const { user, isLoggedIn } = useAuth()
   const { isMobileNavOpen, setMobileNavOpen } = useUIStore()
@@ -57,144 +50,45 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
     return items
   })()
 
-  // Обработчики касаний для drawer (когда drawer открыт)
-  const handleDrawerTouchStart = (e: React.TouchEvent) => {
-    if (isOpen && e.touches[0].clientX < 50) {
-      startXRef.current = e.touches[0].clientX
-      startYRef.current = e.touches[0].clientY
-      currentXRef.current = e.touches[0].clientX
-      currentYRef.current = e.touches[0].clientY
-      isDraggingRef.current = true
-      isContentSwipeRef.current = false
-    }
-  }
-
-  const handleDrawerTouchMove = (e: React.TouchEvent) => {
-    if (!isDraggingRef.current || !isOpen) return
-
-    currentXRef.current = e.touches[0].clientX
-    currentYRef.current = e.touches[0].clientY
-    const deltaX = currentXRef.current - startXRef.current
-
-    if (deltaX > 0 && deltaX < 300) {
-      if (drawerRef.current) {
-        drawerRef.current.style.transform = `translateX(${Math.min(deltaX - 300, 0)}px)`
-      }
-    }
-  }
-
-  const handleDrawerTouchEnd = () => {
-    if (!isDraggingRef.current || !isOpen) return
-
-    const deltaX = currentXRef.current - startXRef.current
-    isDraggingRef.current = false
-
-    if (drawerRef.current) {
-      drawerRef.current.style.transform = ''
-    }
-
-    if (deltaX > 100) {
-      openDrawer()
-    } else {
-      closeDrawer()
-    }
-  }
-
-  // Обработчики свайпа по основному контенту (для открытия с нуля)
+  // Упрощенные обработчики свайпа (только для открытия с края экрана)
   const handleContentTouchStart = (e: React.TouchEvent) => {
     if (isOpen) return
     
-    startXRef.current = e.touches[0].clientX
-    startYRef.current = e.touches[0].clientY
-    currentXRef.current = e.touches[0].clientX
-    currentYRef.current = e.touches[0].clientY
-    isContentSwipeRef.current = true
-  }
-
-  const handleContentTouchMove = (e: React.TouchEvent) => {
-    if (isOpen || !isContentSwipeRef.current) return
-
-    currentXRef.current = e.touches[0].clientX
-    currentYRef.current = e.touches[0].clientY
-    
-    const deltaX = currentXRef.current - startXRef.current
-    const deltaY = currentYRef.current - startYRef.current
-    
-    // Проверяем, что это горизонтальный свайп, а не вертикальный
-    if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      // Это вертикальный свайп, отменяем
-      isContentSwipeRef.current = false
-      return
-    }
-
-    // Если свайп слева направо и достаточно длинный
-    if (deltaX > 20 && !isDraggingRef.current) {
-      isDraggingRef.current = true
-      setIsDragging(true)
-      
-      // Визуальная обратная связь - показываем drawer частично
-      if (drawerRef.current && deltaX > 0 && deltaX < 300) {
-        drawerRef.current.style.transform = `translateX(${Math.min(deltaX - 300, 0)}px)`
-      }
-    } else if (isDraggingRef.current && drawerRef.current && deltaX > 0 && deltaX < 300) {
-      // Продолжаем обновлять позицию во время драга
-      drawerRef.current.style.transform = `translateX(${Math.min(deltaX - 300, 0)}px)`
+    const touch = e.touches[0]
+    // Только если свайп начался с левого края экрана (первые 30px)
+    if (touch.clientX < 30) {
+      startXRef.current = touch.clientX
+      startYRef.current = touch.clientY
     }
   }
 
-  const handleContentTouchEnd = () => {
+  const handleContentTouchEnd = (e: React.TouchEvent) => {
     if (isOpen) return
 
-    const deltaX = currentXRef.current - startXRef.current
-    const deltaY = currentYRef.current - startYRef.current
+    const touch = e.changedTouches[0]
+    const deltaX = touch.clientX - startXRef.current
+    const deltaY = touch.clientY - startYRef.current
     
-    setIsDragging(false)
-    
-    // Сбрасываем transform
-    if (drawerRef.current) {
-      drawerRef.current.style.transform = ''
-    }
-
-    // Проверяем, что это горизонтальный свайп
-    if (Math.abs(deltaY) > Math.abs(deltaX)) {
-      isDraggingRef.current = false
-      isContentSwipeRef.current = false
-      return
-    }
-
-    // Открываем drawer если свайп достаточно длинный (слева направо)
-    if (isDraggingRef.current && deltaX > 80) {
+    // Проверяем, что это горизонтальный свайп слева направо
+    if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 50) {
       openDrawer()
     }
     
-    isDraggingRef.current = false
-    isContentSwipeRef.current = false
+    // Сбрасываем значения
+    startXRef.current = 0
+    startYRef.current = 0
   }
 
   const openDrawer = () => {
-    setIsAnimating(true)
     setIsOpen(true)
     setMobileNavOpen(true)
-    
-    // Блокируем скролл body
     document.body.style.overflow = 'hidden'
-    
-    setTimeout(() => {
-      setIsAnimating(false)
-    }, 300)
   }
 
   const closeDrawer = () => {
-    setIsAnimating(true)
     setIsOpen(false)
     setMobileNavOpen(false)
-    
-    // Разблокируем скролл body
     document.body.style.overflow = ''
-    
-    setTimeout(() => {
-      setIsAnimating(false)
-    }, 300)
   }
 
   // Обработчик клика по overlay
@@ -238,19 +132,13 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
       {isOpen && (
         <div 
           ref={overlayRef}
-          className={`${styles.overlay} ${isAnimating ? styles.animating : ''}`}
+          className={styles.overlay}
           onClick={handleOverlayClick}
         />
       )}
 
       {/* Drawer */}
-      <div 
-        ref={drawerRef}
-        className={`${styles.drawer} ${isOpen ? styles.open : ''} ${isAnimating ? styles.animating : ''} ${isDragging ? styles.dragging : ''}`}
-        onTouchStart={handleDrawerTouchStart}
-        onTouchMove={handleDrawerTouchMove}
-        onTouchEnd={handleDrawerTouchEnd}
-      >
+      <div className={`${styles.drawer} ${isOpen ? styles.open : ''}`}>
         {/* Заголовок */}
         <div className={styles.header}>
           <div className={styles.title}>
@@ -310,7 +198,6 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
       <div 
         className={styles.content}
         onTouchStart={handleContentTouchStart}
-        onTouchMove={handleContentTouchMove}
         onTouchEnd={handleContentTouchEnd}
       >
         {children}
