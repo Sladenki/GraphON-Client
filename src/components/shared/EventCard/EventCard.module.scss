@@ -201,6 +201,8 @@
   font-family: var(--font-inter);
   line-height: 1.3;
   margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 // Body
@@ -214,11 +216,16 @@
   font-weight: 400;
   color: rgba(var(--text-color), 0.85);
   font-family: var(--font-inter);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
   
   a {
     color: rgb(var(--main-Color));
     text-decoration: none;
     font-weight: 500;
+    word-break: break-all;
 
     &:hover {
       text-decoration: underline;
@@ -273,6 +280,8 @@
   letter-spacing: -0.01em;
   color: var(--text-color);
   font-family: var(--font-inter);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .placeText {
@@ -281,6 +290,8 @@
   letter-spacing: -0.01em;
   color: var(--text-color);
   font-family: var(--font-inter);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 // Footer
@@ -366,7 +377,7 @@
 
 .titleInput {
   font-size: 20px;
-      font-weight: 500;
+  font-weight: 500;
   font-family: var(--font-inter);
   padding: 8px 12px;
   border: 1px solid rgba(var(--main-Color), 0.2);
@@ -374,6 +385,8 @@
   background: var(--background-color);
   color: var(--text-color);
   width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .descriptionInput {
@@ -387,6 +400,9 @@
   width: 100%;
   resize: vertical;
   min-height: 80px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .dateInput,
