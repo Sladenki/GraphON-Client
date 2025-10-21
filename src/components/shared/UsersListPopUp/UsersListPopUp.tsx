@@ -1,6 +1,6 @@
 import React from 'react';
 import PopUpWrapper from '../../global/PopUpWrapper/PopUpWrapper';
-import { Spinner } from '@heroui/react';
+import { SpinnerLoader } from '../../global/SpinnerLoader/SpinnerLoader';
 import { Users, AlertCircle } from 'lucide-react';
 import AttendeeItem, { AttendeeUser } from './AttendeeItem';
 
@@ -101,7 +101,7 @@ const UsersListPopUp: React.FC<UsersListPopUpProps> = ({
 
         {isLoading && (
           <div className={classNames.center}>
-            <Spinner size="lg" color="primary" />
+            <SpinnerLoader />
             <p className={classNames.loadingText}>{loadingText}</p>
           </div>
         )}
