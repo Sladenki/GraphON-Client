@@ -30,6 +30,8 @@ import { linkifyText } from '@/lib/linkify';
 import { DatePicker, TimeInput } from '@heroui/react';
 import { parseDate } from '@internationalized/date';
 import { I18nProvider } from '@react-aria/i18n';
+import { EventService } from '@/services/event.service';
+import { notifySuccess, notifyError } from '@/lib/notifications';
 
 interface EventProps {
   event: {
@@ -97,6 +99,7 @@ const EventCard: React.FC<EventProps> = ({
   const [editedEvent, setEditedEvent] = useState(event);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isAttendeesOpen, setIsAttendeesOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   
   // Хуки
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
@@ -166,9 +169,37 @@ const EventCard: React.FC<EventProps> = ({
   }, [isLoggedIn, router, toggleRegistration]);
   
   const handleEdit = useCallback(async () => {
-    // Здесь должна быть логика сохранения изменений
-    setIsEditing(false);
-  }, []);
+    if (isSaving) return;
+    
+    setIsSaving(true);
+    try {
+      const updateData = {
+        graphId: typeof event.graphId === 'object' ? event.graphId._id : event.graphId,
+        name: editedEvent.name,
+        description: editedEvent.description,
+        place: editedEvent.place,
+        isDateTbd: editedEvent.isDateTbd,
+        ...(editedEvent.isDateTbd ? {} : {
+          eventDate: editedEvent.eventDate,
+          timeFrom: editedEvent.timeFrom,
+          timeTo: editedEvent.timeTo,
+        })
+      };
+
+      await EventService.updateEvent(event._id, updateData);
+      
+      // Обновляем исходное событие после успешного сохранения
+      Object.assign(event, editedEvent);
+      
+      notifySuccess('Успешно сохранено', 'Изменения мероприятия сохранены');
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating event:', error);
+      notifyError('Ошибка сохранения', 'Не удалось сохранить изменения');
+    } finally {
+      setIsSaving(false);
+    }
+  }, [event, editedEvent, isSaving]);
   
   const handleCancel = useCallback(() => {
     setEditedEvent(event);
@@ -255,13 +286,15 @@ const EventCard: React.FC<EventProps> = ({
             <button
               className={`${styles.actionButton} ${styles.saveButton}`}
               onClick={handleEdit}
+              disabled={isSaving}
               title="Сохранить изменения"
             >
-              <Save size={16} />
+              {isSaving ? <div className={styles.spinner} /> : <Save size={16} />}
             </button>
             <button
               className={`${styles.actionButton} ${styles.cancelButton}`}
               onClick={handleCancel}
+              disabled={isSaving}
               title="Отменить редактирование"
             >
               <X size={16} />
@@ -289,7 +322,7 @@ const EventCard: React.FC<EventProps> = ({
         )}
       </div>
     );
-  }, [canAccessEditor, isEditing, handleEdit, handleCancel, handleStartEdit, handleDelete, disableRegistration]);
+  }, [canAccessEditor, isEditing, isSaving, handleEdit, handleCancel, handleStartEdit, handleDelete, disableRegistration]);
 
   // Кнопка регистрации
   const registerButton = useMemo(() => (

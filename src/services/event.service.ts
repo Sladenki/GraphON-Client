@@ -50,6 +50,7 @@ export const EventService = {
         graphId: string;
         name: string;
         description: string;
+        place: string;
         eventDate?: string;
         timeFrom?: string;
         timeTo?: string;
