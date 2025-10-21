@@ -25,28 +25,6 @@
   }
 }
 
-.backButton {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: rgba(var(--main-Color), 0.06);
-  border: 1.5px solid rgba(var(--main-Color), 0.12);
-  border-radius: 12px;
-  color: rgb(var(--main-Color));
-  font-family: var(--font-inter);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.1);
-    border-color: rgba(var(--main-Color), 0.2);
-    transform: translateX(-3px);
-  }
-}
-
 .content {
   display: flex;
   flex-direction: column;

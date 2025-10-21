@@ -1,0 +1,14 @@
+.backButton {
+  font-family: var(--font-inter);
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateX(-2px);
+  }
+
+  &:active {
+    transform: translateX(0);
+  }
+}
+

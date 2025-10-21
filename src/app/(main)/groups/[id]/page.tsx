@@ -7,10 +7,10 @@ import { GraphService } from '@/services/graph.service'
 import { EventService } from '@/services/event.service'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
+import ButtonBack from '@/components/global/ButtonBack/ButtonBack'
 import EventCard from '@/components/shared/EventCard/EventCard'
-import { Button } from '@heroui/react'
 import ActionButton from '@/components/ui/ActionButton/ActionButton'
-import { ArrowLeft, Calendar, Heart, HeartCrack, Users, MapPin, CalendarX } from 'lucide-react'
+import { Calendar, Heart, HeartCrack, Users, MapPin, CalendarX } from 'lucide-react'
 import Image from 'next/image'
 import { useAuth } from '@/providers/AuthProvider'
 import { useSubscription } from '@/hooks/useSubscriptionGraph'
@@ -81,15 +81,7 @@ export default function GraphPage() {
           subMessage="Попробуйте вернуться назад и выбрать другой граф"
           icon={MapPin}
         />
-        <Button
-          color="primary"
-          variant="flat"
-          startContent={<ArrowLeft size={18} />}
-          onPress={() => router.back()}
-          className={styles.backButton}
-        >
-          Назад
-        </Button>
+        <ButtonBack className={styles.backButton} />
       </div>
     )
   }
@@ -97,15 +89,11 @@ export default function GraphPage() {
   return (
     <div className={styles.container}>
       {/* Кнопка назад */}
-      <Button
-        color="default"
+      <ButtonBack 
         variant="light"
-        startContent={<ArrowLeft size={18} />}
-        onPress={() => router.back()}
+        color="default"
         className={styles.backButton}
-      >
-        Назад
-      </Button>
+      />
 
       {/* Карточка графа */}
       <div className={styles.graphCard}>

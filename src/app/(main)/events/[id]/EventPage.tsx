@@ -2,10 +2,9 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
 import { EventService } from '@/services/event.service';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import ButtonBack from '@/components/global/ButtonBack/ButtonBack';
 import EventCard from '@/components/shared/EventCard/EventCard';
 import styles from './EventPage.module.scss';
 
@@ -14,18 +13,12 @@ interface EventPageProps {
 }
 
 const EventPage: React.FC<EventPageProps> = ({ eventId }) => {
-  const router = useRouter();
-
   // Получение данных события
   const { data: event, isLoading, error } = useQuery({
     queryKey: ['event', eventId],
     queryFn: () => EventService.getEventById(eventId),
     enabled: !!eventId,
   });
-
-  const handleBack = () => {
-    router.push('/events');
-  };
 
   if (isLoading) {
     return (
@@ -40,10 +33,11 @@ const EventPage: React.FC<EventPageProps> = ({ eventId }) => {
       <div className={styles.errorContainer}>
         <h2>Событие не найдено</h2>
         <p>Возможно, событие было удалено или ссылка неверна.</p>
-        <button onClick={handleBack} className={styles.backButtonError}>
-          <ArrowLeft size={16} />
-          Вернуться назад
-        </button>
+        <ButtonBack 
+          href="/events" 
+          label="Вернуться назад"
+          className={styles.backButtonError}
+        />
       </div>
     );
   }
@@ -52,10 +46,11 @@ const EventPage: React.FC<EventPageProps> = ({ eventId }) => {
     <div className={styles.eventPage}>
       {/* Header */}
       <div className={styles.header}>
-        <button onClick={handleBack} className={styles.backButton}>
-          <ArrowLeft size={20} />
-          <span>Назад</span>
-        </button>
+        <ButtonBack 
+          href="/events"
+          variant="light"
+          color="default"
+        />
       </div>
 
       {/* Main Content - используем готовый EventCard */}
