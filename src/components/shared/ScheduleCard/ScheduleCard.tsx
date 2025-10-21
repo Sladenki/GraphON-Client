@@ -4,10 +4,9 @@ import styles from './ScheduleCard.module.scss';
 
 interface ScheduleCardProps {
   item: ScheduleItem;
-  graphName?: string;
 }
 
-const ScheduleCard: React.FC<ScheduleCardProps> = ({ item, graphName }) => {
+const ScheduleCard: React.FC<ScheduleCardProps> = ({ item }) => {
   return (
     <div className={styles.scheduleCard}>
       <div className={styles.scheduleTime}>
@@ -15,7 +14,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ item, graphName }) => {
       </div>
       <div className={styles.scheduleTitle}>{item.name}</div>
       <div className={styles.scheduleLocation}>
-        {graphName || 'Неизвестная группа'} • Аудитория {item.roomNumber}
+        {item.graphId?.name || 'Неизвестная группа'} • Аудитория {item.roomNumber}
       </div>
     </div>
   );

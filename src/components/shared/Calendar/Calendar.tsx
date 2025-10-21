@@ -234,7 +234,6 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
             <ScheduleCard
               key={item._id}
               item={item}
-              graphName={(item as any).graphId?.name}
             />
           ))}
           
