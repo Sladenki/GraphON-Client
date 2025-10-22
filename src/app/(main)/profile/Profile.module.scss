@@ -178,13 +178,8 @@
   width: 26px;
   height: 26px;
   color: rgb(var(--main-Color));
-  background: rgba(var(--main-Color), 0.08);
   border-radius: 8px;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  
-  .statBlock.active & {
-    background: rgba(var(--main-Color), 0.12);
-  }
 }
 
 .statBlockContent {
