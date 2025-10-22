@@ -118,7 +118,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
       </div>
 
       {/* Основной контент */}
-      <div className={styles.content}>
+      <div className={styles.content} data-swipe-enabled="true">
         {children}
       </div>
     </>
