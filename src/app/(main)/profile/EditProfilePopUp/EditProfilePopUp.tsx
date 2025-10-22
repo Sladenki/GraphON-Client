@@ -6,6 +6,7 @@ import styles from './EditProfilePopUp.module.scss';
 import { IUpdateUserDto, IUser } from '@/types/user.interface';
 import DatePickerField from '@/components/ui/DatePickerField/DatePickerField';
 import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
+import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { UserService } from '@/services/user.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useAuth } from '@/providers/AuthProvider';
@@ -104,7 +105,6 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                                 className={styles.input}
                                 autoComplete="given-name"
                             />
-                            <span className={styles.fieldHint}>Как к вам обращаться</span>
                         </label>
                         <label className={styles.inputGroup}>
                             <span className={styles.fieldLabel}>Фамилия</span>
@@ -117,24 +117,18 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                                 className={styles.input}
                                 autoComplete="family-name"
                             />
-                            <span className={styles.fieldHint}>Необязательное поле</span>
                         </label>
                         <div className={`${styles.inlineRow} ${styles.fullRow}`}>
-                            <label className={styles.inputGroup}>
-                                <span className={styles.fieldLabel}>Пол</span>
-                                <DropdownSelect
-                                    className={styles.input}
-                                    value={formState.gender || ''}
-                                    onChange={(val) => setFormState(v => ({ ...v, gender: (val as 'male' | 'female') || undefined }))}
-                                    options={[
-                                        { value: '', label: 'Не указан' },
-                                        { value: 'male', label: 'Мужской' },
-                                        { value: 'female', label: 'Женский' },
-                                    ]}
-                                    placeholder="Выберите пол"
-                                />
-                                <span className={styles.fieldHint}>Выберите пол</span>
-                            </label>
+                            <DropdownSelect
+                                value={formState.gender || ''}
+                                onChange={(val) => setFormState(v => ({ ...v, gender: (val as 'male' | 'female') || undefined }))}
+                                options={[
+                                    { value: '', label: 'Не указан' },
+                                    { value: 'male', label: 'Мужской' },
+                                    { value: 'female', label: 'Женский' },
+                                ]}
+                                placeholder="Выберите пол"
+                            />
                             <label className={styles.inputGroup}>
                                 <span className={styles.fieldLabel}>Дата рождения</span>
                                 <DatePickerField
@@ -144,7 +138,6 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                                     size="sm"
                                     variant="bordered"
                                   />
-                                <span className={styles.fieldHint}>Формат: ГГГГ-ММ-ДД</span>
                             </label>
                         </div>
                         <label className={styles.inputGroup}>
@@ -166,21 +159,19 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                     </div>
                     <div className={styles.divider} />
                     <div className={styles.actions}>
-                        <button 
-                            type="button" 
-                            className={styles.secondaryBtn}
+                        <ActionButton
+                            type="button"
+                            variant="info"
+                            label="Отмена"
                             onClick={onClose}
                             disabled={isSubmitting}
-                        >
-                            Отмена
-                        </button>
-                        <button 
-                            type="submit" 
-                            className={styles.submitBtn}
+                        />
+                        <ActionButton
+                            type="submit"
+                            variant="primary"
+                            label={isSubmitting ? 'Сохранение…' : 'Сохранить'}
                             disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Сохранение…' : 'Сохранить'}
-                        </button>
+                        />
                     </div>
                 </form>
             </div>
