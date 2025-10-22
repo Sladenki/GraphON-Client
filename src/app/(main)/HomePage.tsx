@@ -1,26 +1,14 @@
 'use client'
 
-import React from 'react'
-import Link from 'next/link'
-import { useAuth } from '@/providers/AuthProvider'
-import styles from './HomePage.module.scss'
-
-interface HomeBlockProps {
-  title: string
-  description: string
-  href: string
-  icon: string
-  color: string
-}
-
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function HomePage() {
-  const { user } = useAuth()
-  const isAuthenticated = !!user
+  const router = useRouter()
 
-  return (
-    <div className={styles.container}>
-      HomePage
-    </div>
-  )
+  useEffect(() => {
+    router.replace('/events')
+  }, [router])
+
+  return null
 }
