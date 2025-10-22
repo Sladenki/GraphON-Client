@@ -22,21 +22,17 @@ export const CreateGraphForm = () => {
     const ABOUT_MAX_LENGTH = 200;
 
     // Получение глобальных графов
-    const { data: globalGraphs, isLoading: isLoadingGlobalGraphs } = useQuery({
+    const { data: globalGraphs, isLoading: isLoadingGlobalGraphs } = useQuery<{ data: IGraphList[] }>({
         queryKey: ['graph/getGlobalGraphs'],
-        queryFn: async () => {
-            const response = await GraphService.getGlobalGraphs();
-            return response.data as IGraphList[];
-        },
+        queryFn: () => GraphService.getGlobalGraphs(),
     });
 
     // Получение родительских графов (графов-тематик) после выбора глобального графа
-    const { data: parentGraphs, isLoading: isLoadingParentGraphs } = useQuery({
+    const { data: parentGraphs, isLoading: isLoadingParentGraphs } = useQuery<{ data: IGraphList[] }>({
         queryKey: ['graph/getTopicGraphs', selectedGlobalGraph],
-        queryFn: async () => {
-            if (!selectedGlobalGraph) return [];
-            const response = await GraphService.getGraphsByTopic(selectedGlobalGraph);
-            return response.data as IGraphList[];
+        queryFn: () => {
+            if (!selectedGlobalGraph) return { data: [] };
+            return GraphService.getGraphsByTopic(selectedGlobalGraph);
         },
         enabled: !!selectedGlobalGraph, // Запрос выполняется только если выбран глобальный граф
     });
@@ -152,10 +148,10 @@ export const CreateGraphForm = () => {
                     onChange={(v) => handleGlobalGraphChange(Array.isArray(v) ? v[0] ?? '' : v)}
                     options={[
                         { value: '', label: 'Выберите глобальный граф' },
-                        ...(globalGraphs?.map((graph: IGraphList) => ({
+                        ...(globalGraphs?.data || []).map((graph: IGraphList) => ({
                             value: graph._id,
                             label: graph.name
-                        })) || [])
+                        }))
                     ]}
                     required
                     disabled={isLoadingGlobalGraphs}
@@ -168,10 +164,10 @@ export const CreateGraphForm = () => {
                     onChange={(v) => setSelectedParentGraph(Array.isArray(v) ? v[0] ?? '' : v)}
                     options={[
                         { value: '', label: selectedGlobalGraph ? 'Выберите родительский граф' : 'Сначала выберите глобальный граф' },
-                        ...(parentGraphs?.map((graph: IGraphList) => ({
+                        ...(parentGraphs?.data || []).map((graph: IGraphList) => ({
                             value: graph._id,
                             label: graph.name
-                        })) || [])
+                        }))
                     ]}
                     required
                     disabled={!selectedGlobalGraph || isLoadingParentGraphs}
