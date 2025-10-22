@@ -286,14 +286,28 @@
     font-size: 1.3rem;
   }
   
+  .parentGraph {
+    justify-content: center;
+  }
+  
   .graphStats {
+    justify-content: center;
+  }
+  
+  .graphSelector {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .graphSelectorButton {
     justify-content: center;
   }
   
   // Адаптация дропдауна для мобильных
   .dropdown {
     min-width: 240px;
-    max-width: 90vw;
+    max-width: calc(100vw - 50px);
     left: 50%;
     transform: translateX(-50%);
   }
@@ -309,6 +323,10 @@
 
 // Экраны <400px
 @media (max-width: 400px) {
+  .manageWrapper {
+    padding: 20px 16px;
+  }
+  
   .graphName {
     font-size: 1.25rem;
   }
@@ -320,6 +338,9 @@
   
   .dropdown {
     min-width: 200px;
+    max-width: calc(100vw - 32px);
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .dropdownItem {
@@ -332,5 +353,9 @@
   
   .dropdownItemCheck {
     font-size: 14px;
+  }
+  
+  .parentGraph {
+    font-size: 0.85rem;
   }
 }
