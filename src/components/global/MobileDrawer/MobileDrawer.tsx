@@ -1,15 +1,15 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
-import { X, Menu } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { X } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
-import { UserRole } from '@/types/user.interface'
 import { mobileDrawerItems } from '@/constants/sidebar'
 import { Settings } from 'lucide-react'
 import { useUIStore } from '@/stores/useUIStore'
 import Link from 'next/link'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import { Logo } from '../Logo'
+import { useMobileDrawerOptimization } from './useMobileDrawerOptimization'
 import styles from './MobileDrawer.module.scss'
 
 interface MobileDrawerProps {
@@ -18,12 +18,12 @@ interface MobileDrawerProps {
 
 const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const overlayRef = useRef<HTMLDivElement>(null)
-  const startXRef = useRef<number>(0)
-  const startYRef = useRef<number>(0)
-
   const { user, isLoggedIn } = useAuth()
   const { isMobileNavOpen, setMobileNavOpen } = useUIStore()
+
+  // Используем оптимизированный хук
+  const { handleOpenDrawer, handleCloseDrawer, handleBackdropClick } = 
+    useMobileDrawerOptimization({ isOpen, setIsOpen })
 
   // Определяем доступ к управлению
   const hasManageAccess = (() => {
@@ -50,90 +50,32 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
     return items
   })()
 
-  // Упрощенные обработчики свайпа (только для открытия с края экрана)
-  const handleContentTouchStart = (e: React.TouchEvent) => {
-    if (isOpen) return
-    
-    const touch = e.touches[0]
-    // Только если свайп начался с левого края экрана (первые 30px)
-    if (touch.clientX < 30) {
-      startXRef.current = touch.clientX
-      startYRef.current = touch.clientY
-    }
-  }
-
-  const handleContentTouchEnd = (e: React.TouchEvent) => {
-    if (isOpen) return
-
-    const touch = e.changedTouches[0]
-    const deltaX = touch.clientX - startXRef.current
-    const deltaY = touch.clientY - startYRef.current
-    
-    // Проверяем, что это горизонтальный свайп слева направо
-    if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 50) {
-      openDrawer()
-    }
-    
-    // Сбрасываем значения
-    startXRef.current = 0
-    startYRef.current = 0
-  }
-
-  const openDrawer = () => {
-    setIsOpen(true)
-    setMobileNavOpen(true)
-    document.body.style.overflow = 'hidden'
-  }
-
-  const closeDrawer = () => {
-    setIsOpen(false)
-    setMobileNavOpen(false)
-    document.body.style.overflow = ''
-  }
-
-  // Обработчик клика по overlay
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === overlayRef.current) {
-      closeDrawer()
-    }
-  }
-
-  // Обработчик клавиши Escape
+  // Синхронизация открытия/закрытия с setMobileNavOpen
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        closeDrawer()
-      }
+    if (isOpen) {
+      setMobileNavOpen(true)
+    } else {
+      setMobileNavOpen(false)
     }
+  }, [isOpen, setMobileNavOpen])
 
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [isOpen])
-
-  // Синхронизация с store
+  // Синхронизация с store (внешнее управление)
   useEffect(() => {
     if (isMobileNavOpen && !isOpen) {
-      openDrawer()
+      setIsOpen(true)
     } else if (!isMobileNavOpen && isOpen) {
-      closeDrawer()
+      setIsOpen(false)
     }
-  }, [isMobileNavOpen])
-
-  // Очистка при размонтировании
-  useEffect(() => {
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [])
+  }, [isMobileNavOpen, isOpen])
 
   return (
     <>
       {/* Overlay */}
       {isOpen && (
         <div 
-          ref={overlayRef}
           className={styles.overlay}
-          onClick={handleOverlayClick}
+          onClick={handleBackdropClick}
+          aria-hidden="true"
         />
       )}
 
@@ -151,7 +93,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
           </div>
           <button 
             className={styles.closeButton}
-            onClick={closeDrawer}
+            onClick={handleCloseDrawer}
             aria-label="Закрыть меню"
           >
             <X size={24} />
@@ -175,7 +117,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
                 key={item.id} 
                 href={item.path}
                 className={styles.menuItem}
-                onClick={closeDrawer}
+                onClick={handleCloseDrawer}
               >
                 <div className={styles.iconWrapper}>
                   {item.icon}
@@ -195,11 +137,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
       </div>
 
       {/* Основной контент */}
-      <div 
-        className={styles.content}
-        onTouchStart={handleContentTouchStart}
-        onTouchEnd={handleContentTouchEnd}
-      >
+      <div className={styles.content}>
         {children}
       </div>
     </>

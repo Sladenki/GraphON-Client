@@ -3,6 +3,13 @@ import { useEffect, useState } from 'react';
 let modalRefCount = 0;
 let modalContainer: HTMLElement | null = null;
 
+// Функция для проверки состояния модальных окон
+export const getModalState = () => {
+  return {
+    isAnyModalOpen: modalRefCount > 0
+  };
+};
+
 export const useModalManager = () => {
   const [container, setContainer] = useState<HTMLElement | null>(null);
 
