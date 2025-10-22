@@ -21,9 +21,9 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
   const { user, isLoggedIn } = useAuth()
   const { isMobileNavOpen, setMobileNavOpen } = useUIStore()
 
-  // Используем оптимизированный хук
+  // Используем оптимизированный хук с прямым обновлением store
   const { handleOpenDrawer, handleCloseDrawer, handleBackdropClick } = 
-    useMobileDrawerOptimization({ isOpen, setIsOpen })
+    useMobileDrawerOptimization({ isOpen, setIsOpen: setMobileNavOpen })
 
   // Определяем доступ к управлению
   const hasManageAccess = (() => {
@@ -50,23 +50,10 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
     return items
   })()
 
-  // Синхронизация открытия/закрытия с setMobileNavOpen
+  // Синхронизация store -> локальное состояние
   useEffect(() => {
-    if (isOpen) {
-      setMobileNavOpen(true)
-    } else {
-      setMobileNavOpen(false)
-    }
-  }, [isOpen, setMobileNavOpen])
-
-  // Синхронизация с store (внешнее управление)
-  useEffect(() => {
-    if (isMobileNavOpen && !isOpen) {
-      setIsOpen(true)
-    } else if (!isMobileNavOpen && isOpen) {
-      setIsOpen(false)
-    }
-  }, [isMobileNavOpen, isOpen])
+    setIsOpen(isMobileNavOpen)
+  }, [isMobileNavOpen])
 
   return (
     <>
