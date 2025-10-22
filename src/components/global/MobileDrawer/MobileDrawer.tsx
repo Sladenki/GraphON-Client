@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { X } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { mobileDrawerItems } from '@/constants/sidebar'
@@ -17,13 +17,12 @@ interface MobileDrawerProps {
 }
 
 const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false)
   const { user, isLoggedIn } = useAuth()
   const { isMobileNavOpen, setMobileNavOpen } = useUIStore()
 
-  // Используем оптимизированный хук с прямым обновлением store
+  // Используем оптимизированный хук с состоянием из store
   const { handleOpenDrawer, handleCloseDrawer, handleBackdropClick } = 
-    useMobileDrawerOptimization({ isOpen, setIsOpen: setMobileNavOpen })
+    useMobileDrawerOptimization({ isOpen: isMobileNavOpen, setIsOpen: setMobileNavOpen })
 
   // Определяем доступ к управлению
   const hasManageAccess = (() => {
@@ -50,15 +49,10 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
     return items
   })()
 
-  // Синхронизация store -> локальное состояние
-  useEffect(() => {
-    setIsOpen(isMobileNavOpen)
-  }, [isMobileNavOpen])
-
   return (
     <>
       {/* Overlay */}
-      {isOpen && (
+      {isMobileNavOpen && (
         <div 
           className={styles.overlay}
           onClick={handleBackdropClick}
@@ -67,7 +61,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
       )}
 
       {/* Drawer */}
-      <div className={`${styles.drawer} ${isOpen ? styles.open : ''}`}>
+      <div className={`${styles.drawer} ${isMobileNavOpen ? styles.open : ''}`}>
         {/* Заголовок */}
         <div className={styles.header}>
           <div className={styles.title}>

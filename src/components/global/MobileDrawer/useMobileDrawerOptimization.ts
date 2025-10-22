@@ -69,16 +69,22 @@ export const useMobileDrawerOptimization = ({
 
     // Проверяем, происходит ли событие внутри области карточек
     const target = event.target as HTMLElement;
-    const isInScrollableArea = target.closest('.themeScroll, .subgraphContent, [data-scrollable="true"]') || 
-                              target.classList.contains('themeScroll') ||
-                              target.classList.contains('subgraphContent') ||
-                              target.dataset.scrollable === 'true';
     
-    if (isInScrollableArea) {
-      // Не инициализируем свайп внутри скроллируемых областей
-      touchStartRef.current = null;
-      touchMoveRef.current = null;
-      return;
+    // Исключаем drawer из проверки скроллируемых областей
+    const isInsideDrawer = target.closest('[class*="drawer"]');
+    
+    if (!isInsideDrawer) {
+      const isInScrollableArea = target.closest('.themeScroll, .subgraphContent, [data-scrollable="true"]') || 
+                                target.classList.contains('themeScroll') ||
+                                target.classList.contains('subgraphContent') ||
+                                target.dataset.scrollable === 'true';
+      
+      if (isInScrollableArea) {
+        // Не инициализируем свайп внутри скроллируемых областей
+        touchStartRef.current = null;
+        touchMoveRef.current = null;
+        return;
+      }
     }
     
     const touch = event.touches[0];
@@ -99,14 +105,20 @@ export const useMobileDrawerOptimization = ({
     
     // Проверяем, происходит ли событие внутри области карточек или других скроллируемых контейнеров
     const target = event.target as HTMLElement;
-    const isInScrollableArea = target.closest('.themeScroll, .subgraphContent, [data-scrollable="true"]') || 
-                              target.classList.contains('themeScroll') ||
-                              target.classList.contains('subgraphContent') ||
-                              target.dataset.scrollable === 'true';
     
-    if (isInScrollableArea) {
-      // Разрешаем нативный скролл в областях карточек
-      return;
+    // Исключаем drawer из проверки скроллируемых областей
+    const isInsideDrawer = target.closest('[class*="drawer"]');
+    
+    if (!isInsideDrawer) {
+      const isInScrollableArea = target.closest('.themeScroll, .subgraphContent, [data-scrollable="true"]') || 
+                                target.classList.contains('themeScroll') ||
+                                target.classList.contains('subgraphContent') ||
+                                target.dataset.scrollable === 'true';
+      
+      if (isInScrollableArea) {
+        // Разрешаем нативный скролл в областях карточек
+        return;
+      }
     }
     
     const touch = event.touches[0];
