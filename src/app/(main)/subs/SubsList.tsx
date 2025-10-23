@@ -8,7 +8,9 @@ import { useQueryWithRetry } from '@/hooks/useQueryWithRetry'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useSearchQuery } from '@/stores/useUIStore'
 import { GraphSubsService } from '@/services/graphSubs.service'
+import { EventService } from '@/services/event.service'
 import { EventItem } from '@/types/schedule.interface'
+import { notifySuccess, notifyError } from '@/lib/notifications'
 import styles from './SubsList.module.scss'
 import { CalendarX, Search } from 'lucide-react'
 
@@ -47,16 +49,33 @@ export default function SubsList() {
   }, [events, debouncedSearchQuery])
 
   // Обработчик удаления
-  const handleDelete = useCallback((eventId: string) => {
-    handleOptimisticUpdate((old: any) => {
-      if (!old?.data) return old
+  const handleDelete = useCallback(async (eventId: string) => {
+    try {
+      // Оптимистичное обновление UI
+      handleOptimisticUpdate((old: any) => {
+        if (!old?.data) return old
+        
+        return {
+          ...old,
+          data: old.data.filter((event: EventItem) => event._id !== eventId)
+        }
+      })
+
+      // Отправка запроса на сервер
+      await EventService.deleteEvent(eventId)
       
-      return {
-        ...old,
-        data: old.data.filter((event: EventItem) => event._id !== eventId)
-      }
-    })
-  }, [handleOptimisticUpdate])
+      // Уведомление об успехе
+      notifySuccess('Мероприятие успешно удалено')
+    } catch (error) {
+      console.error('Ошибка при удалении мероприятия:', error)
+      
+      // Откат оптимистичного обновления при ошибке
+      handleRetry()
+      
+      // Уведомление об ошибке
+      notifyError('Не удалось удалить мероприятие. Попробуйте еще раз.')
+    }
+  }, [handleOptimisticUpdate, handleRetry])
 
   // Состояния
   const hasError = !!error

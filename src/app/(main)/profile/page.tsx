@@ -19,13 +19,14 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { GraphService } from '@/services/graph.service';
 import { UserService } from '@/services/user.service';
 import { GraphSubsService } from '@/services/graphSubs.service';
+import { EventService } from '@/services/event.service';
 import { IGraphList } from '@/types/graph.interface';
 import { useSetSelectedGraphId } from '@/stores/useUIStore';
 import EditProfilePopUp from './EditProfilePopUp/EditProfilePopUp';
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar';
 import GroupBlock from '@/components/shared/GroupBlock/GroupBlock';
 import { useDebounce } from '@/hooks/useDebounce';
-import { notifySuccess } from '@/lib/notifications';
+import { notifySuccess, notifyError } from '@/lib/notifications';
 
 
 export default function Profile() {
@@ -79,14 +80,31 @@ export default function Profile() {
     const typedUser = user as IUser | null;
 
     // Обработчик удаления мероприятий
-    const handleDelete = useCallback((eventId: string) => {
-        queryClient.setQueryData(['eventsList'], (old: any) => {
-            if (!old?.data) return old;
-            return {
-                ...old,
-                data: old.data.filter((event: any) => event.eventId?._id !== eventId)
-            };
-        });
+    const handleDelete = useCallback(async (eventId: string) => {
+        try {
+            // Оптимистичное обновление UI
+            queryClient.setQueryData(['eventsList'], (old: any) => {
+                if (!old?.data) return old;
+                return {
+                    ...old,
+                    data: old.data.filter((event: any) => event.eventId?._id !== eventId)
+                };
+            });
+
+            // Отправка запроса на сервер
+            await EventService.deleteEvent(eventId);
+            
+            // Уведомление об успехе
+            notifySuccess('Мероприятие успешно удалено');
+        } catch (error) {
+            console.error('Ошибка при удалении мероприятия:', error);
+            
+            // Уведомление об ошибке
+            notifyError('Не удалось удалить мероприятие. Попробуйте еще раз.');
+            
+            // Перезагрузка данных при ошибке
+            queryClient.invalidateQueries({ queryKey: ['eventsList'] });
+        }
     }, [queryClient]);
 
     // Фильтрация подписок
