@@ -130,6 +130,25 @@ const EventCard: React.FC<EventProps> = ({
     return `${dateStr}, ${event.timeFrom} - ${event.timeTo}`;
   }, [event.eventDate, event.timeFrom, event.timeTo, event.isDateTbd]);
 
+  // Проверка, прошло ли мероприятие
+  const isEventPast = useMemo(() => {
+    if (event.isDateTbd) return false;
+    
+    // Создаем дату события, используя дату и время окончания
+    const eventDate = new Date(event.eventDate);
+    const [hours, minutes] = event.timeTo.split(':').map(Number);
+    eventDate.setHours(hours, minutes, 0, 0);
+    
+    const now = new Date();
+    
+    // Отладочная информация (можно убрать после тестирования)
+    console.log('Event date:', eventDate);
+    console.log('Current date:', now);
+    console.log('Is past:', eventDate < now);
+    
+    return eventDate < now;
+  }, [event.eventDate, event.timeTo, event.isDateTbd]);
+
   // Значение для HTML input[type="date"] в формате YYYY-MM-DD
   const dateInputValue = useMemo(() => {
     const value = editedEvent?.eventDate;
@@ -329,11 +348,13 @@ const EventCard: React.FC<EventProps> = ({
     <ActionButton
       className={styles.registerWide}
       onClick={handleRegistration}
-      disabled={isLoading || !!disableRegistration}
-      variant={isRegistered ? 'danger' : 'primary'}
+      disabled={isLoading || !!disableRegistration || isEventPast}
+      variant={isEventPast ? 'info' : (isRegistered ? 'danger' : 'primary')}
       icon={
         isLoading ? (
           <div className={styles.spinner} />
+        ) : isEventPast ? (
+          <Clock size={16} />
         ) : !isLoggedIn ? (
           <LogIn size={16} />
         ) : isRegistered ? (
@@ -343,12 +364,12 @@ const EventCard: React.FC<EventProps> = ({
         )
       }
       label={
-        disableRegistration ? 'Регистрация недоступна' : isLoggedIn
+        isEventPast ? 'Запись закончена' : disableRegistration ? 'Регистрация недоступна' : isLoggedIn
           ? (isRegistered ? 'Отменить запись' : 'Записаться')
           : 'Необходимо войти'
       }
     />
-  ), [isLoggedIn, isRegistered, isLoading, handleRegistration, disableRegistration]);
+  ), [isLoggedIn, isRegistered, isLoading, handleRegistration, disableRegistration, isEventPast]);
 
   if (!event || !event._id) {
     return null;
