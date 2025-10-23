@@ -32,9 +32,9 @@ export const useMobileDrawerOptimization = ({
 
   // Конфигурация для свайпа
   const SWIPE_CONFIG = {
-    minDistance: 50, // Минимальное расстояние для свайпа (в пикселях)
-    maxTime: 300, // Максимальное время для свайпа (в мс)
-    maxVerticalDistance: 100, // Максимальное вертикальное отклонение
+    minDistance: 35, // Минимальное расстояние для свайпа (в пикселях)
+    maxTime: 600, // Максимальное время для свайпа (в мс)
+    maxVerticalDistance: 160, // Максимальное вертикальное отклонение
   };
 
   // Функция для проверки, можно ли использовать свайп
@@ -222,19 +222,19 @@ export const useMobileDrawerOptimization = ({
     touchMoveRef.current = null;
   }, [isOpen, setIsOpen, canUseSwipe]);
 
-  // Добавляем обработчики touch событий
+  // Добавляем обработчики touch событий (capture, чтобы не блокировались дочерними элементами)
   useEffect(() => {
-    const passiveOptions = { passive: true };
-    const activeOptions = { passive: false }; // Для touchmove нужен preventDefault
+    const passiveCapture = { passive: true, capture: true } as AddEventListenerOptions;
+    const activeCapture = { passive: false, capture: true } as AddEventListenerOptions; // Для touchmove нужен preventDefault
     
-    document.addEventListener('touchstart', handleTouchStart, passiveOptions);
-    document.addEventListener('touchmove', handleTouchMove, activeOptions);
-    document.addEventListener('touchend', handleTouchEnd, passiveOptions);
+    document.addEventListener('touchstart', handleTouchStart, passiveCapture);
+    document.addEventListener('touchmove', handleTouchMove, activeCapture);
+    document.addEventListener('touchend', handleTouchEnd, passiveCapture);
 
     return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('touchstart', handleTouchStart, passiveCapture);
+      document.removeEventListener('touchmove', handleTouchMove, activeCapture);
+      document.removeEventListener('touchend', handleTouchEnd, passiveCapture);
     };
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
