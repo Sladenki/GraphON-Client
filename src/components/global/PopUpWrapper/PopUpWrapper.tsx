@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "./PopUpWrapper.module.scss";
 import { X } from 'lucide-react';
-import { useModalManager } from "./useModalManager";
+import { useModalManager, incrementModalOpenCount, decrementModalOpenCount } from "./useModalManager";
 import { useScrollLock } from "./useScrollLock";
 
 
@@ -25,6 +25,15 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   
   // Блокируем скролл когда попап открыт
   useScrollLock(isOpen);
+
+  // Закрытие по Escape
+  useEffect(() => {
+    // Управляем счетчиком реально открытых модалок
+    if (isOpen) incrementModalOpenCount();
+    return () => {
+      if (isOpen) decrementModalOpenCount();
+    };
+  }, [isOpen]);
 
   // Закрытие по Escape
   useEffect(() => {

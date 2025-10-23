@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react';
 
-let modalRefCount = 0;
+let openModalCount = 0; // Количество реально открытых модалок
 let modalContainer: HTMLElement | null = null;
 
 // Функция для проверки состояния модальных окон
 export const getModalState = () => {
   return {
-    isAnyModalOpen: modalRefCount > 0
+    isAnyModalOpen: openModalCount > 0,
   };
+};
+
+// Управление счетчиком открытых модалок
+export const incrementModalOpenCount = () => {
+  openModalCount = Math.max(0, openModalCount) + 1;
+};
+
+export const decrementModalOpenCount = () => {
+  openModalCount = Math.max(0, openModalCount - 1);
 };
 
 export const useModalManager = () => {
@@ -23,18 +32,7 @@ export const useModalManager = () => {
       document.body.appendChild(modalContainer);
     }
     
-    modalRefCount++;
     setContainer(modalContainer);
-
-    return () => {
-      modalRefCount--;
-      
-      // Удаляем контейнер только когда он больше не используется
-      if (modalRefCount === 0 && modalContainer?.parentNode) {
-        document.body.removeChild(modalContainer);
-        modalContainer = null;
-      }
-    };
   }, []);
 
   return container;
