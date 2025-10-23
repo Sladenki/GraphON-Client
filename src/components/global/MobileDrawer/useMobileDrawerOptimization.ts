@@ -73,10 +73,22 @@ export const useMobileDrawerOptimization = ({
     // Проверяем, разрешен ли свайп в этом контейнере
     const isSwipeEnabled = target.closest('[data-swipe-enabled="true"]');
     
-    // Исключаем drawer и контейнеры с разрешенным свайпом из проверки скроллируемых областей
+    // Если свайп разрешен в контейнере, всегда инициализируем его
+    if (isSwipeEnabled) {
+      const touch = event.touches[0];
+      touchStartRef.current = {
+        x: touch.clientX,
+        y: touch.clientY,
+        time: Date.now(),
+      };
+      touchMoveRef.current = null;
+      return;
+    }
+    
+    // Исключаем drawer из проверки скроллируемых областей
     const isInsideDrawer = target.closest('[class*="drawer"]');
     
-    if (!isInsideDrawer && !isSwipeEnabled) {
+    if (!isInsideDrawer) {
       const isInScrollableArea = target.closest('.themeScroll, .subgraphContent, [data-scrollable="true"]') || 
                                 target.classList.contains('themeScroll') ||
                                 target.classList.contains('subgraphContent') ||
@@ -112,10 +124,33 @@ export const useMobileDrawerOptimization = ({
     // Проверяем, разрешен ли свайп в этом контейнере
     const isSwipeEnabled = target.closest('[data-swipe-enabled="true"]');
     
-    // Исключаем drawer и контейнеры с разрешенным свайпом из проверки скроллируемых областей
+    // Если свайп разрешен в контейнере, обрабатываем движение
+    if (isSwipeEnabled) {
+      const touch = event.touches[0];
+      const currentPoint = {
+        x: touch.clientX,
+        y: touch.clientY,
+        time: Date.now(),
+      };
+      
+      // Вычисляем направление движения для предотвращения конфликтов со скроллом
+      const deltaX = Math.abs(currentPoint.x - touchStartRef.current.x);
+      const deltaY = Math.abs(currentPoint.y - touchStartRef.current.y);
+      
+      // Если горизонтальное движение превышает вертикальное, это может быть свайп
+      if (deltaX > deltaY && deltaX > 10) {
+        // Предотвращаем скролл только для потенциальных свайпов
+        event.preventDefault();
+      }
+      
+      touchMoveRef.current = currentPoint;
+      return;
+    }
+    
+    // Исключаем drawer из проверки скроллируемых областей
     const isInsideDrawer = target.closest('[class*="drawer"]');
     
-    if (!isInsideDrawer && !isSwipeEnabled) {
+    if (!isInsideDrawer) {
       const isInScrollableArea = target.closest('.themeScroll, .subgraphContent, [data-scrollable="true"]') || 
                                 target.classList.contains('themeScroll') ||
                                 target.classList.contains('subgraphContent') ||

@@ -200,7 +200,7 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
 
       {/* Мероприятия ниже календаря */}
       {selectedDate && (selectedDayEvents.schedule.length > 0 || selectedDayEvents.events.length > 0) && (
-        <div className={styles.eventsSection}>
+        <div className={styles.eventsSection} data-swipe-enabled="true">
           {/* Расписание */}
           {selectedDayEvents.schedule.map(item => (
             <ScheduleCard
