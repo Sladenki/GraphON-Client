@@ -150,7 +150,7 @@ export default function GroupsList() {
       
       {/* Показываем сетку групп если есть данные и есть результаты */}
       {hasData && !noSearchResults && (
-        <div className={styles.grid}>
+        <div className={styles.grid} data-swipe-enabled="true">
           {filteredGraphs.map((graph: IGraphList) => (
             <div key={graph._id} className={styles.graphItem}>
               <GroupBlock

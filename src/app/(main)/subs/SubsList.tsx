@@ -129,7 +129,7 @@ export default function SubsList() {
 
       {/* Список событий */}
       {isSuccess && (
-        <div className={styles.eventsList}>
+        <div className={styles.eventsList} data-swipe-enabled="true">
           {filteredEvents.map((event: EventItem, index: number) => (
             <div 
               key={event._id} 

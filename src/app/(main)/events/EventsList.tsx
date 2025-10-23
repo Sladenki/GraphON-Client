@@ -208,7 +208,7 @@ export default function EventsList() {
 
       {/* Список событий */}
       {isSuccess && !noSearchResults && (
-        <div className={styles.eventsList}>
+        <div className={styles.eventsList} data-swipe-enabled="true">
           {filteredEvents.map((event: EventItem, index: number) => (
             <div 
               key={event._id} 

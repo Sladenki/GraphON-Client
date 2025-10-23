@@ -518,7 +518,7 @@ export default function Profile() {
                             <SpinnerLoader />
                         </div>
                     ) : filteredEvents.length > 0 ? (
-                        <div className={styles.eventsList}>
+                        <div className={styles.eventsList} data-swipe-enabled="true">
                             {filteredEvents.map((event: any, index: number) => (
                                 <div 
                                     key={event._id} 
