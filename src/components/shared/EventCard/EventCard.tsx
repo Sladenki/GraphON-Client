@@ -422,13 +422,19 @@ const EventCard: React.FC<EventProps> = ({
         {/* Description */}
         <div className={styles.cardBody}>
         {isEditing ? (
-            <textarea
-            value={editedEvent.description}
-              onChange={(e) => updateEditedEvent('description', e.target.value)}
-              className={styles.descriptionInput}
-              placeholder="Описание мероприятия"
-              rows={3}
-          />
+            <div>
+              <textarea
+                value={editedEvent.description}
+                onChange={(e) => updateEditedEvent('description', e.target.value)}
+                className={styles.descriptionInput}
+                placeholder="Описание мероприятия"
+                rows={3}
+                maxLength={300}
+              />
+              <div className={styles.characterCount}>
+                {editedEvent.description.length}/300
+              </div>
+            </div>
         ) : (
             <div className={styles.description}>
             {linkifyText(event.description)}
