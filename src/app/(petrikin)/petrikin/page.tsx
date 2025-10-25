@@ -14,6 +14,10 @@ import dele from "../photos/Dele.jpg";
 import rosMol from "../photos/rosMol.jpg";
 import battlSrc from "../photos/battl.jpg";
 import { CalendarDays, Network, Send } from "lucide-react";
+import g1 from "../photos/g_1.jpg";
+import g2 from "../photos/g_2.jpg";
+import g3 from "../photos/g_3.jpg";
+import g4 from "../photos/g_4.jpg";
 
 
 const fadeInUp = {
@@ -303,6 +307,35 @@ export default function PetrikinPage() {
             </motion.div>
           </section>
         </AwardTrigger>
+
+        {/* Немного про сам проект */}
+        <section className={styles.section}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ staggerChildren: 0.08 }}
+          >
+            <div className={styles.heading}>Немного про сам проект</div>
+            <p className={styles.textWide}>
+              Основная идея проекта — предоставить студентам и абитуриентам всю вузовскую информацию в интерактивном формате. В качестве графом мы взяли идею планетарной системы, чтобы представить направления в качестве планет.
+            </p>
+            <div className={styles.galleryGrid}>
+              <motion.div variants={fadeInUp} className={styles.galleryItem}>
+                <Image src={g1} alt="GraphON 1" placeholder="blur" style={{ width: "100%", height: "auto" }} />
+              </motion.div>
+              <motion.div variants={fadeInUp} className={styles.galleryItem}>
+                <Image src={g2} alt="GraphON 2" placeholder="blur" style={{ width: "100%", height: "auto" }} />
+              </motion.div>
+              <motion.div variants={fadeInUp} className={styles.galleryItem}>
+                <Image src={g3} alt="GraphON 3" placeholder="blur" style={{ width: "100%", height: "auto" }} />
+              </motion.div>
+              <motion.div variants={fadeInUp} className={styles.galleryItem}>
+                <Image src={g4} alt="GraphON 4" placeholder="blur" style={{ width: "100%", height: "auto" }} />
+              </motion.div>
+            </div>
+          </motion.div>
+        </section>
 
         {/* Завершение — действия */}
         <section className={styles.section}>
