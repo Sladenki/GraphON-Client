@@ -194,32 +194,28 @@
   gap: 12px;
 }
 
-/* Compact, pretty delta badge like +15.000₽ */
+/* Minimal delta pill: +15.000 ₽ */
 .sumDelta {
-  margin-top: 14px;
+  margin-top: 12px;
   display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 12px;
   border-radius: 9999px;
-  background: linear-gradient(135deg, rgba(91, 124, 250, 0.18), rgba(62, 207, 189, 0.18));
-  border: 1px solid rgba(92, 100, 170, 0.2);
-  box-shadow: 0 6px 18px rgba(91, 124, 250, 0.18);
+  border: 1px solid rgba(92, 100, 170, 0.28);
+  background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.6));
+  backdrop-filter: blur(4px);
   color: var(--text);
 }
 
-.sumDelta::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, var(--primary), var(--accent));
-  box-shadow: 0 0 0 4px rgba(91, 124, 250, 0.15);
+.sumDeltaPlus {
+  font-weight: 800;
+  color: var(--primary);
 }
 
 .sumDeltaValue {
   font-weight: 800;
-  font-size: clamp(16px, 2vw, 20px);
+  font-size: clamp(15px, 1.8vw, 19px);
   letter-spacing: 0.02em;
 }
 

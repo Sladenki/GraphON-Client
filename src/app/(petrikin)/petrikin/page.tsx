@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { motion, useInView, useMotionValue, useSpring, useTransform, useMotionValueEvent } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.scss";
 import { inter } from "@/app/fonts";
 import coding from "../photos/coding.jpg";
@@ -29,6 +29,45 @@ function AwardTrigger({ onVisible, children }: { onVisible?: () => void; childre
     <div ref={ref}>
       {children}
     </div>
+  );
+}
+
+function SumDelta({ value }: { value: number }) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const raw = useMotionValue(0);
+  const eased = useSpring(raw, { stiffness: 120, damping: 18, mass: 0.6 });
+  const formatted = useTransform(eased, (v) => new Intl.NumberFormat("ru-RU").format(Math.round(v)));
+  const [text, setText] = useState("0");
+
+  useMotionValueEvent(formatted, "change", (latest) => {
+    setText(latest);
+  });
+
+  useEffect(() => {
+    if (inView) raw.set(value);
+  }, [inView, value, raw]);
+
+  return (
+    <motion.div
+      ref={ref}
+      className={styles.sumDelta}
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.6 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <span className={styles.sumDeltaPlus}>+</span>
+      <motion.span
+        className={styles.sumDeltaValue}
+        initial={{ scale: 0.98 }}
+        whileInView={{ scale: 1 }}
+        viewport={{ once: true, amount: 0.8 }}
+        transition={{ type: "spring", stiffness: 220, damping: 18 }}
+      >
+        {text} ₽
+      </motion.span>
+    </motion.div>
   );
 }
 
@@ -143,7 +182,7 @@ export default function PetrikinPage() {
                 В декабре 2024г вместе с Кристиной Крисько, мы заняли 3 место в поколении Z с проектом GraphON.
                 {" "}
                 <Link href="#" className={styles.link}>Ссылка</Link>
-                <div className={styles.sumDelta}><span className={styles.sumDeltaValue}>+15 000 ₽</span></div>
+                <SumDelta value={15000} />
               </motion.div>
             </motion.div>
           </section>
@@ -186,7 +225,7 @@ export default function PetrikinPage() {
               <motion.div variants={fadeInUp} className={styles.text}>
                 <div className={styles.heading}>РосМолодёжь</div>
                 В июне 2025г я выиграл РосМолодёжь.Гранты, где получил 66 000₽ на разработку GraphON.
-                <div className={styles.sumDelta}><span className={styles.sumDeltaValue}>+66 321 ₽</span></div>
+                <SumDelta value={66321} />
               </motion.div>
             </motion.div>
           </section>
@@ -204,7 +243,7 @@ export default function PetrikinPage() {
               <motion.div variants={fadeInUp}>
                 <div className={styles.heading}>Студенческий стартап</div>
                 В сентябре 2025г я выиграл программу «Студенческий стартап», где получил 1 000 000₽ на разработку GraphON.
-                <div className={styles.sumDelta}><span className={styles.sumDeltaValue}>+1 000 000 ₽</span></div>
+                <SumDelta value={1000000} />
               </motion.div>
             </motion.div>
           </section>
@@ -222,7 +261,7 @@ export default function PetrikinPage() {
               <motion.div variants={fadeInUp} className={styles.text}>
                 <div className={styles.heading}>БизнесБаттл</div>
                 В сентябре 2025г с командой выиграли «БизнесБаттл 7 сезона», где получили 350 000₽ на рекламу в западной медиа-прессе.
-                <div className={styles.sumDelta}><span className={styles.sumDeltaValue}>+350 000 ₽</span></div>
+                <SumDelta value={350000} />
               </motion.div>
               <motion.div variants={fadeInUp} className={styles.imageWrap}>
                 <Image src={battlSrc} alt="БизнесБаттл" width={1200} height={800} style={{ width: "100%", height: "auto" }} />
