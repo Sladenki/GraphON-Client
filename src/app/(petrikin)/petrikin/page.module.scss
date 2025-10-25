@@ -76,6 +76,14 @@
   width: 100%;
 }
 
+.imageSm {
+  width: clamp(320px, 50vw, 680px);
+}
+
+@media (max-width: 880px) {
+  .imageSm { width: 100%; }
+}
+
 .text {
   font-size: clamp(20px, 2.4vw, 26px);
   line-height: 1.75;

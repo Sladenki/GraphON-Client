@@ -81,7 +81,7 @@ export default function PetrikinPage() {
               <div className={styles.heading}>Опыт работы</div>
               С сентября 2024г работаю в компании ООО "Альфа" — Frontend React разработчиком. Мы занимаемся разработкой CRM систем для малых бизнесов.
             </motion.div>
-            <motion.div variants={fadeInUp} className={styles.imageWrap}>
+            <motion.div variants={fadeInUp} className={`${styles.imageWrap} ${styles.imageSm}`}>
               <Image src={work} alt="Work" placeholder="blur" style={{ width: "100%", height: "auto" }} />
             </motion.div>
           </motion.div>
@@ -214,7 +214,7 @@ export default function PetrikinPage() {
         <AwardTrigger>
           <section className={`${styles.section} ${styles.award}`}>
             <motion.div
-              className={styles.split}
+              className={`${styles.split} ${styles.reverse}`}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
