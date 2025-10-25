@@ -13,6 +13,7 @@ import zGen from "../photos/Z.jpg";
 import dele from "../photos/Dele.jpg";
 import rosMol from "../photos/rosMol.jpg";
 import battlSrc from "../photos/battl.jpg";
+import { CalendarDays, Network, Send } from "lucide-react";
 
 
 const fadeInUp = {
@@ -233,16 +234,26 @@ export default function PetrikinPage() {
         {/* Завершение — действия */}
         <section className={styles.section}>
           <motion.div
-            className={styles.bigBlock}
+            className={`${styles.bigBlock} ${styles.cta}`}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeInUp}
           >
-            <p className={styles.text}>Вы можете перейти по ссылкам ниже и посмотреть, о чём проект.</p>
-            <div className={styles.actions}>
-              <Link href="/events" className={styles.btn}>Мероприятия</Link>
-              <Link href="/graphs" className={`${styles.btn} ${styles.secondary}`}>Граф визуализаций</Link>
+            <p className={`${styles.text} ${styles.ctaText}`}>Вы можете перейти по ссылкам ниже и посмотреть, о чём проект.</p>
+            <div className={styles.ctaActions}>
+              <Link href="/events" className={styles.ctaBtn}>
+                <CalendarDays className={styles.ctaBtnIcon} size={18} />
+                Мероприятия
+              </Link>
+              <Link href="/graphs" className={`${styles.ctaBtn} ${styles.ctaBtnSecondary}`}>
+                <Network className={styles.ctaBtnIcon} size={18} />
+                Граф визуализаций
+              </Link>
+              <Link href="https://t.me/graph_ON" className={`${styles.ctaBtn} ${styles.ctaBtnTg}`} target="_blank" rel="noopener noreferrer">
+                <Send className={styles.ctaBtnIcon} size={18} />
+                Telegram канал
+              </Link>
             </div>
           </motion.div>
         </section>
