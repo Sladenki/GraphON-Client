@@ -172,7 +172,7 @@ export default function PetrikinPage() {
               <div className={styles.heading}>Хакатон</div>
               В феврале 2025г мы с одногруппниками — Сысоёв Артём и Кристина Крисько заняли первое место в вузовском хакатоне.
               {" "}
-              <Link href="#" className={styles.link}>Ссылка на пост в Telegram</Link>
+              <Link href="https://t.me/klgtu_digital_channel/1654" className={styles.link}>Ссылка на пост в Telegram</Link>
             </motion.div>
           </motion.div>
         </section>
@@ -211,8 +211,8 @@ export default function PetrikinPage() {
                 <div className={styles.heading}>Поколение Z</div>
                 В декабре 2024г вместе с Кристиной Крисько, мы заняли 3 место в поколении Z с проектом GraphON.
                 {" "}
-                <Link href="#" className={styles.link}>Ссылка</Link>
-                <SumDelta value={15000} />
+                <Link href="https://t.me/klgtu_digital_channel/1483" className={styles.link}>Ссылка</Link>
+                <div className={styles.sumDeltaWrap}><SumDelta value={15000} /></div>
               </motion.div>
             </motion.div>
           </section>
@@ -255,7 +255,7 @@ export default function PetrikinPage() {
               <motion.div variants={fadeInUp} className={styles.text}>
                 <div className={styles.heading}>РосМолодёжь</div>
                 В июне 2025г я выиграл РосМолодёжь.Гранты, где получил 66 000₽ на разработку GraphON.
-                <SumDelta value={66321} />
+                <div className={styles.sumDeltaWrap}><SumDelta value={66321} /></div>
               </motion.div>
             </motion.div>
           </section>
@@ -273,7 +273,7 @@ export default function PetrikinPage() {
               <motion.div variants={fadeInUp}>
                 <div className={styles.heading}>Студенческий стартап</div>
                 В сентябре 2025г я выиграл программу «Студенческий стартап», где получил 1 000 000₽ на разработку GraphON.
-                <SumDelta value={1000000} />
+                <div className={styles.sumDeltaWrap}><SumDelta value={1000000} /></div>
               </motion.div>
             </motion.div>
           </section>
@@ -291,7 +291,7 @@ export default function PetrikinPage() {
               <motion.div variants={fadeInUp} className={styles.text}>
                 <div className={styles.heading}>БизнесБаттл</div>
                 В сентябре 2025г с командой выиграли «БизнесБаттл 7 сезона», где получили 350 000₽ на рекламу в западной медиа-прессе.
-                <SumDelta value={350000} />
+                <div className={styles.sumDeltaWrap}><SumDelta value={350000} /></div>
               </motion.div>
               <motion.div variants={fadeInUp} className={styles.imageWrap}>
                 <Image src={battlSrc} alt="БизнесБаттл" width={1200} height={800} style={{ width: "100%", height: "auto" }} />
