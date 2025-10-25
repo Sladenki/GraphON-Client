@@ -206,7 +206,7 @@ export default function PetrikinPage() {
           >
             <motion.div variants={fadeInUp} className={styles.text}>
               <div className={styles.heading}>Опыт работы</div>
-              С сентября 2024г работаю в компании ООО "Альфа" — Frontend React разработчиком. Мы занимаемся разработкой CRM систем для малых бизнесов.
+              С сентября 2024г работаю в компании ООО &quot;Альфа&quot; — Frontend React разработчиком. Мы занимаемся разработкой CRM систем для малых бизнесов.
             </motion.div>
             <motion.div variants={fadeInUp} className={`${styles.imageWrap} ${styles.imageSm}`}>
               <Image src={work} alt="Work" placeholder="blur" style={{ width: "100%", height: "auto" }} />
