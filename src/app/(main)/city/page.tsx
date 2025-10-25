@@ -189,30 +189,49 @@ export default function CityPage() {
         </div>
       </div>
 
-      <div className={styles.mapWrap}>
-        <MapContainer center={[KalCenter.lat, KalCenter.lng]} zoom={13} className={styles.map} preferCanvas>
-          <TileLayer url={url} />
+      <div className={styles.content}>
+        <div className={styles.mapWrap}>
+          <MapContainer center={[KalCenter.lat, KalCenter.lng]} zoom={13} className={styles.map} preferCanvas>
+            <TileLayer url={url} />
+            {filtered.map(ev => (
+              <Marker
+                key={ev.id}
+                position={[ev.lat, ev.lng]}
+                icon={buildGlowIcon(ev.category, hoverId === ev.id)}
+                eventHandlers={{
+                  mouseover: () => setHoverId(ev.id),
+                  mouseout: () => setHoverId(curr => (curr === ev.id ? null : curr)),
+                }}
+              >
+                <Popup>
+                  <strong>{ev.name}</strong>
+                  <div>{ev.place}</div>
+                  <div>
+                    {ev.isDateTbd ? "Дата уточняется" : ev.eventDate}
+                    {ev.timeFrom ? ` • ${ev.timeFrom}${ev.timeTo ? "–" + ev.timeTo : ""}` : ""}
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
+        <aside className={styles.sidebar}>
           {filtered.map(ev => (
-            <Marker
-              key={ev.id}
-              position={[ev.lat, ev.lng]}
-              icon={buildGlowIcon(ev.category, hoverId === ev.id)}
-              eventHandlers={{
-                mouseover: () => setHoverId(ev.id),
-                mouseout: () => setHoverId(curr => (curr === ev.id ? null : curr)),
-              }}
-            >
-              <Popup>
-                <strong>{ev.name}</strong>
-                <div>{ev.place}</div>
-                <div>
-                  {ev.isDateTbd ? "Дата уточняется" : ev.eventDate}
-                  {ev.timeFrom ? ` • ${ev.timeFrom}${ev.timeTo ? "–" + ev.timeTo : ""}` : ""}
-                </div>
-              </Popup>
-            </Marker>
+            <div key={ev.id} className={styles.card} onClick={() => {
+              // Fly to event position
+              // Find an existing Leaflet map instance (first one on the page)
+              const maps = (L as any)?.map?.instances || [];
+              const map = maps?.[0];
+              if (map) {
+                map.flyTo([ev.lat, ev.lng], 15, { duration: 0.8 });
+              }
+            }}>
+              <div className={styles.cardTitle}>{ev.name}</div>
+              <div className={styles.cardMeta}>{ev.place}</div>
+              <div className={styles.cardMeta}>{ev.isDateTbd ? "Дата уточняется" : ev.eventDate} {ev.timeFrom ? `• ${ev.timeFrom}${ev.timeTo ? "–" + ev.timeTo : ""}` : ""}</div>
+            </div>
           ))}
-        </MapContainer>
+        </aside>
       </div>
     </section>
   );

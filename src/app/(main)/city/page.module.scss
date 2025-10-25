@@ -50,6 +50,16 @@
   position: relative;
 }
 
+.content {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 12px;
+}
+
+@media (max-width: 980px) {
+  .content { grid-template-columns: 1fr; }
+}
+
 .map {
   height: 100%;
   min-height: 480px;
@@ -105,5 +115,27 @@
 .markerHover {
   transform: translate(-50%, -56%) scale(1.15);
 }
+
+.sidebar {
+  display: grid;
+  gap: 10px;
+  padding: 10px 12px;
+  border-left: 1px solid rgba(90,100,170,.15);
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.82));
+}
+
+.card {
+  border: 1px solid rgba(90,100,170,.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(20,25,55,.08);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(20,25,55,.12); }
+.cardTitle { font-weight: 800; margin-bottom: 4px; }
+.cardMeta { font-size: 12px; opacity: .8; }
 
 
