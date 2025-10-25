@@ -1,0 +1,109 @@
+.page {
+  height: calc(100svh - 0px);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--background-color);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(90,100,170,.15);
+  background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.75));
+}
+
+.title {
+  font-weight: 800;
+  font-size: 18px;
+  margin-right: auto;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(90,100,170,.25);
+  background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.7));
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  transition: transform .15s ease, box-shadow .15s ease, filter .2s ease;
+}
+
+.chip[data-active="true"] {
+  border-color: rgba(91,124,250,.6);
+  box-shadow: 0 6px 18px rgba(91,124,250,.25);
+}
+
+.mapWrap {
+  position: relative;
+}
+
+.map {
+  height: 100%;
+  min-height: 480px;
+}
+
+.glowMarker {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  position: relative;
+  transform: translate(-50%, -50%);
+  transition: transform .15s ease;
+}
+
+.glowMarker::before,
+.glowMarker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.glowMarker::before {
+  box-shadow: 0 0 0 6px currentColor;
+  opacity: .25;
+}
+
+.glowMarker::after {
+  background: currentColor;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 currentColor; opacity: .35; }
+  70% { box-shadow: 0 0 0 16px rgba(0,0,0,0); opacity: 0; }
+  100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); opacity: 0; }
+}
+
+.pulseRing {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  animation: pulse 2.2s ease-out infinite;
+  pointer-events: none;
+}
+
+/* Category colors */
+.c_concert { color: #ff4d6d; }
+.c_exhibit { color: #00c2ff; }
+.c_lecture { color: #7a5bfa; }
+.c_festival { color: #3ecfbd; }
+.c_meetup { color: #ffb020; }
+
+.markerHover {
+  transform: translate(-50%, -56%) scale(1.15);
+}
+
+
