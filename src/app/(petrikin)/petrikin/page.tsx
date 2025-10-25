@@ -75,6 +75,40 @@ function SumDelta({ value }: { value: number }) {
   );
 }
 
+function TypewriterText() {
+  const full = "Вы сказали, что у меня есть возможность зачесть освоение материала в формате индивидуального проекта вместо выполнения цикла лабораторных работ. В качестве проекта мною было принято решение о разработке веб-сайта-портфолио. Данный проект позволит мне на практике продемонстрировать приобретенные навыки, а его содержание будет отражать ключевые направления моей учебной и профессиональной деятельности.";
+  const [idx, setIdx] = useState(0);
+  const [text, setText] = useState("");
+  const started = useRef(false);
+
+  const ref = useRef<HTMLDivElement | null>(null);
+  const inView = useInView(ref, { once: true, amount: 0.4 });
+
+  useEffect(() => {
+    if (!inView || started.current) return;
+    started.current = true;
+    let i = 0;
+    const step = () => {
+      i += 1;
+      setIdx(i);
+      setText(full.slice(0, i));
+      if (i < full.length) {
+        const delay = full[i - 1] === "," ? 50 : full[i - 1] === "." ? 120 : 22;
+        timer = window.setTimeout(step, delay);
+      }
+    };
+    let timer = window.setTimeout(step, 160);
+    return () => window.clearTimeout(timer);
+  }, [inView, full]);
+
+  return (
+    <div ref={ref} className={styles.typeText} aria-live="polite">
+      {text}
+      <span className={styles.caret}>▋</span>
+    </div>
+  );
+}
+
 export default function PetrikinPage() {
   return (
     <main className={`${styles.page} ${inter.variable}`}>
@@ -91,8 +125,21 @@ export default function PetrikinPage() {
           variants={fadeInUp}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          Здравствуйте, Виктор Анатольевич
+          Здравствуйте, Виктор Анатольевич!
         </motion.h1>
+      </section>
+
+      {/* Typewriter note */}
+      <section className={styles.section}>
+        <motion.div
+          className={styles.typeBlock}
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <TypewriterText />
+        </motion.div>
       </section>
 
       <div className={styles.container}>
