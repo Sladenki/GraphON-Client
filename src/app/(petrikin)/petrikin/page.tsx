@@ -117,7 +117,7 @@ export default function PetrikinPage() {
             variants={fadeInUp}
             transition={{ duration: 0.6 }}
           >
-            <div className={styles.heading}>Стартап GraphON</div>
+            <div className={`${styles.heading} ${styles.bigTitle}`}>Стартап GraphON</div>
             <p className={styles.textWide}>
               На данный момент я занимаюсь развитием своего стартапа. Проект называется GraphON — это платформа, которая помогает студентам КГТУ находить и участвовать во внеучебных мероприятиях с помощью визуализации в системе графов.
             </p>
@@ -138,7 +138,7 @@ export default function PetrikinPage() {
                 <Image src={zGen} alt="Generation Z" placeholder="blur" style={{ width: "100%", height: "auto" }} />
               </motion.div>
               <motion.div variants={fadeInUp} className={styles.text}>
-                <div className={styles.heading}>Generation Z</div>
+                <div className={styles.heading}>Поколение Z</div>
                 В декабре 2024г вместе с Кристиной Крисько, мы заняли 3 место в поколении Z с проектом GraphON.
                 {" "}
                 <Link href="#" className={styles.link}>Ссылка</Link>
