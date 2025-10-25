@@ -102,6 +102,21 @@
   }
 }
 
+/* Mobile adjustments */
+@media (max-width: 560px) {
+  .section { padding: 40px 0; padding-inline: 12px; }
+  .hero { min-height: 70svh; }
+  .heading { font-size: 22px; margin-bottom: 10px; }
+  .text { font-size: 16px; line-height: 1.65; max-width: none; }
+  .textWide { font-size: 16px; line-height: 1.65; }
+  .imageWrap { box-shadow: 0 8px 20px rgba(15,18,34,.10); border-radius: 12px; }
+  .bigBlock { padding: 22px; border-radius: 16px; }
+  .sumDelta { padding: 8px 12px; }
+  .btn, .ctaBtn { padding: 12px 14px; border-radius: 12px; }
+  .ctaActions { gap: 10px; }
+  .galleryGrid { gap: 10px; }
+}
+
 .imageWrap {
   border-radius: 16px;
   overflow: hidden;

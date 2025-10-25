@@ -13,7 +13,7 @@ import zGen from "../photos/Z.jpg";
 import dele from "../photos/Dele.jpg";
 import rosMol from "../photos/rosMol.jpg";
 import battlSrc from "../photos/battl.jpg";
-import { CalendarDays, Network, Send } from "lucide-react";
+import { Globe, Network, Send } from "lucide-react";
 import g1 from "../photos/g_1.jpg";
 import g2 from "../photos/g_2.jpg";
 import g3 from "../photos/g_3.jpg";
@@ -365,7 +365,7 @@ export default function PetrikinPage() {
           >
             <div className={styles.heading}>Немного про сам проект</div>
             <p className={styles.textWide}>
-              Основная идея проекта — предоставить студентам и абитуриентам всю вузовскую информацию в интерактивном формате. В качестве графом мы взяли идею планетарной системы, чтобы представить направления в качестве планет.
+              Основная идея проекта — предоставить студентам и абитуриентам всю вузовскую информацию в интерактивном формате. В качестве графов мы взяли идею планетарной системы, чтобы представить направления в качестве планет.
             </p>
             <div className={styles.galleryGrid}>
               <motion.div variants={fadeInUp} className={styles.galleryItem}>
@@ -395,17 +395,17 @@ export default function PetrikinPage() {
           >
             <p className={`${styles.text} ${styles.ctaText}`}>Вы можете перейти по ссылкам ниже и посмотреть, о чём проект.</p>
             <div className={styles.ctaActions}>
-              <Link href="/events" className={styles.ctaBtn} target="_blank" rel="noopener noreferrer">
-                <CalendarDays className={styles.ctaBtnIcon} size={18} />
-                Мероприятия
+              <Link href="/" className={styles.ctaBtn} target="_blank" rel="noopener noreferrer">
+                <Globe className={styles.ctaBtnIcon} size={18} />
+                Сайт проекта GraphON
               </Link>
               <Link href="/graphs" className={`${styles.ctaBtn} ${styles.ctaBtnSecondary}`} target="_blank" rel="noopener noreferrer">
                 <Network className={styles.ctaBtnIcon} size={18} />
-                Граф визуализаций
+                Система графов
               </Link>
               <Link href="https://t.me/graph_ON" className={`${styles.ctaBtn} ${styles.ctaBtnTg}`} target="_blank" rel="noopener noreferrer">
                 <Send className={styles.ctaBtnIcon} size={18} />
-                Telegram канал
+                Telegram канал проекта GraphON
               </Link>
             </div>
           </motion.div>
