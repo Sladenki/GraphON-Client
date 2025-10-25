@@ -8,6 +8,16 @@
 
   background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
   color: var(--text);
+  position: relative;
+}
+
+.progress {
+  position: fixed;
+  left: 0; top: 0;
+  height: 3px; width: 100%;
+  background: linear-gradient(90deg, #5b7cfa, #3ecfbd);
+  transform-origin: 0 0;
+  z-index: 1000;
 }
 
 .container {

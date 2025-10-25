@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView, useMotionValue, useSpring, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, useInView, useMotionValue, useSpring, useTransform, useMotionValueEvent, useScroll } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.scss";
 import { inter } from "@/app/fonts";
@@ -110,8 +110,11 @@ function TypewriterText() {
 }
 
 export default function PetrikinPage() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 20, mass: 0.4 });
   return (
     <main className={`${styles.page} ${inter.variable}`}>
+      <motion.div className={styles.progress} style={{ scaleX }} />
       {/* 1 — Приветствие */}
       <section className={styles.hero}>
         <div className={styles.heroDecor}>
