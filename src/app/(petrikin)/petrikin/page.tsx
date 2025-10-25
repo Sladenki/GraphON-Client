@@ -172,7 +172,7 @@ export default function PetrikinPage() {
               <div className={styles.heading}>Хакатон</div>
               В феврале 2025г мы с одногруппниками — Сысоёв Артём и Кристина Крисько заняли первое место в вузовском хакатоне.
               {" "}
-              <Link href="https://t.me/klgtu_digital_channel/1654" className={styles.link}>Ссылка на пост в Telegram</Link>
+              <Link href="https://t.me/klgtu_digital_channel/1654" className={styles.link} target="_blank" rel="noopener noreferrer">Ссылка на пост в Telegram</Link>
             </motion.div>
           </motion.div>
         </section>
@@ -211,7 +211,7 @@ export default function PetrikinPage() {
                 <div className={styles.heading}>Поколение Z</div>
                 В декабре 2024г вместе с Кристиной Крисько, мы заняли 3 место в поколении Z с проектом GraphON.
                 {" "}
-                <Link href="https://t.me/klgtu_digital_channel/1483" className={styles.link}>Ссылка</Link>
+                <Link href="https://t.me/klgtu_digital_channel/1483" className={styles.link} target="_blank" rel="noopener noreferrer">Ссылка</Link>
                 <div className={styles.sumDeltaWrap}><SumDelta value={15000} /></div>
               </motion.div>
             </motion.div>
@@ -254,7 +254,7 @@ export default function PetrikinPage() {
               </motion.div>
               <motion.div variants={fadeInUp} className={styles.text}>
                 <div className={styles.heading}>РосМолодёжь</div>
-                В июне 2025г я выиграл РосМолодёжь.Гранты, где получил 66 000₽ на разработку GraphON.
+                В июне 2025г я выиграл РосМолодёжь.Гранты, где получил 66 321₽ на разработку GraphON.
                 <div className={styles.sumDeltaWrap}><SumDelta value={66321} /></div>
               </motion.div>
             </motion.div>
@@ -311,11 +311,11 @@ export default function PetrikinPage() {
           >
             <p className={`${styles.text} ${styles.ctaText}`}>Вы можете перейти по ссылкам ниже и посмотреть, о чём проект.</p>
             <div className={styles.ctaActions}>
-              <Link href="/events" className={styles.ctaBtn}>
+              <Link href="/events" className={styles.ctaBtn} target="_blank" rel="noopener noreferrer">
                 <CalendarDays className={styles.ctaBtnIcon} size={18} />
                 Мероприятия
               </Link>
-              <Link href="/graphs" className={`${styles.ctaBtn} ${styles.ctaBtnSecondary}`}>
+              <Link href="/graphs" className={`${styles.ctaBtn} ${styles.ctaBtnSecondary}`} target="_blank" rel="noopener noreferrer">
                 <Network className={styles.ctaBtnIcon} size={18} />
                 Граф визуализаций
               </Link>
