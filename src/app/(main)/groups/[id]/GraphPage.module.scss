@@ -1,0 +1,363 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  gap: 20px;
+}
+
+.backButton {
+  margin-bottom: 20px;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+.graphCard {
+  background: var(--block-color);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(var(--main-Color), 0.1);
+  transition: border-color 0.2s ease;
+  width: 100%;
+  max-width: 100%;
+
+  &:hover {
+    border-color: rgba(var(--main-Color), 0.2);
+  }
+}
+
+.cardHeader {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.imageSection {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: rgba(var(--main-Color), 0.03);
+
+  @media (max-width: 768px) {
+    height: 200px;
+  }
+}
+
+.graphImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholderImage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--main-Color), 0.05);
+}
+
+.placeholderIcon {
+  font-size: 3rem;
+  opacity: 0.4;
+  color: rgba(var(--main-Color), 0.6);
+}
+
+.headerContent {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.titleSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--main-text);
+  margin: 0;
+  line-height: 1.2;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.parentChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: rgba(var(--main-Color), 0.08);
+  border: 1px solid rgba(var(--main-Color), 0.18);
+  border-radius: 9999px; /* pill */
+  width: fit-content;
+  transition: background .2s ease, border-color .2s ease, transform .15s ease;
+  align-self: flex-start;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.12);
+    border-color: rgba(var(--main-Color), 0.28);
+    transform: translateY(-1px);
+  }
+}
+
+.parentIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(var(--main-Color), 0.12);
+  border-radius: 50%;
+  color: rgb(var(--main-Color));
+  flex-shrink: 0;
+  border: 2px solid rgba(var(--main-Color), 0.12);
+}
+
+.parentContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.parentLabel {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(var(--main-Color), 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.parentName {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--main-text);
+  line-height: 1.1;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+}
+
+.cardBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--main-text);
+  margin: 0;
+}
+
+.description {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--main-text);
+  opacity: 0.85;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.divider {
+  background: rgba(var(--main-Color), 0.1);
+  margin: 12px 0;
+}
+
+// Секция мероприятий
+.eventsSection {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.eventsTitle {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--main-text);
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(var(--main-Color), 0.1);
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.eventCard {
+  animation: fadeInUp 0.6s ease-out forwards;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+  transform: translateY(20px);
+  width: 100%;
+  max-width: 100%;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.emptyStateWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+
+// Темная тема
+html[data-theme="dark"] {
+  .graphCard {
+    background: var(--block-color);
+    border-color: rgba(var(--main-Color), 0.15);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .graphCard {
+    background: var(--block-color);
+    border-color: rgba(var(--main-Color), 0.15);
+  }
+}
+
+/* Extra-small phones */
+@media (max-width: 400px) {
+  .container {
+    padding: 12px;
+    overflow-x: hidden;
+  }
+
+  .imageSection {
+    height: 160px;
+  }
+
+  .headerContent {
+    padding: 16px;
+    gap: 12px;
+    box-sizing: border-box;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    line-height: 1.15;
+  }
+
+  .parentChip {
+    padding: 6px 12px;
+    gap: 6px;
+    border-radius: 9999px; /* Оставляем pill-shaped как в десктоп версии */
+  }
+
+  .parentIcon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .parentName {
+    font-size: 0.82rem;
+  }
+
+  .actionButtons {
+    flex-direction: row; /* Горизонтальное расположение */
+    gap: 8px;
+    width: 100%;
+  }
+
+  .cardBody {
+    padding: 16px;
+    gap: 16px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+
+  .description {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .eventsTitle {
+    font-size: 1.25rem;
+  }
+
+  .eventsList {
+    overflow-x: hidden;
+  }
+}
+

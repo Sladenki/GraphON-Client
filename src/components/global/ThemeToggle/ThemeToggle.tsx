@@ -1,63 +1,48 @@
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 import { Moon, Sun } from 'lucide-react';
-
-import styles from './ThemeToggle.module.scss';
 import { useTheme } from 'next-themes';
-
+import styles from './ThemeToggle.module.scss';
 
 interface ThemeToggleProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
 }
 
-const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({ className, size = 'md' }) => {
+const ICON_SIZES = {
+  sm: 16,
+  md: 20,
+  lg: 24
+} as const;
+
+const ThemeToggle: React.FC<ThemeToggleProps> = ({ className, size = 'md' }) => {
   const { theme, setTheme } = useTheme();
+  
+  const toggleTheme = () => {
+    // Используем функциональный апдейт - не зависит от текущего theme
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
-  // Мемоизируем функцию переключения темы
-  const toggleTheme = useCallback(() => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  }, [theme, setTheme]);
-
-  // Мемоизируем размер иконки в зависимости от размера компонента
-  const iconSize = useMemo(() => {
-    switch (size) {
-      case 'sm': return 16;
-      case 'lg': return 24;
-      default: return 20;
-    }
-  }, [size]);
-
-  // Мемоизируем класснейм
-  const wrapperClassName = useMemo(() => 
-    `${styles.themeSwitchWrapper} ${styles[size]} ${className || ''}`,
-    [size, className]
-  );
-
-  // Мемоизируем иконку
-  const themeIcon = useMemo(() => 
-    theme === 'dark' ? <Moon size={iconSize} /> : <Sun size={iconSize} />,
-    [theme, iconSize]
-  );
+  const iconSize = ICON_SIZES[size];
+  const isDark = theme === 'dark';
 
   return (
-    <div className={wrapperClassName}>
+    <div className={`${styles.themeSwitchWrapper} ${styles[size]} ${className || ''}`}>
       <span className={styles.themeLabel}>
-        {themeIcon}
+        {isDark ? <Moon size={iconSize} /> : <Sun size={iconSize} />}
+        <span>{isDark ? 'Темная' : 'Светлая'}</span>
       </span>
+      
       <label className={styles.themeSwitch}>
         <input 
           type="checkbox" 
           onChange={toggleTheme} 
-          checked={theme === "light"} 
-          // Отключаем автофокус на мобильных для предотвращения виртуальной клавиатуры
-          autoFocus={false}
+          checked={!isDark}
+          aria-label="Переключить тему"
         />
-        <span className={styles.slider}></span>
+        <span className={styles.slider} />
       </label>
     </div>
   );
-});
+};
 
-ThemeToggle.displayName = 'ThemeToggle';
-
-export default ThemeToggle; 
+export default ThemeToggle;

@@ -40,10 +40,14 @@ export interface IUser {
     attentedEventsNum: number;
     selectedGraphId: string | null;
     managedGraphIds?: Array<{ _id: string; name: string }>; 
+    gender?: 'male' | 'female';
+    birthDate?: string; // ISO date string YYYY-MM-DD
 }
 
 export interface IUpdateUserDto {
     firstName?: string;
     lastName?: string;
     username?: string;
+    gender?: 'male' | 'female';
+    birthDate?: string; // ISO date string YYYY-MM-DD
 }

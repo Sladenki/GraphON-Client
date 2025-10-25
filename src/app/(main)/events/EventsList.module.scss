@@ -1,0 +1,122 @@
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  min-height: 200px;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0 0 0;
+}
+
+.filtersRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.dateInputs {
+  display: flex;
+  gap: 8px;
+}
+
+.dateField {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--main-text);
+  font-size: 14px;
+
+  input[type="date"] {
+    background: rgba(var(--main-Color), 0.06);
+    border: 1px solid rgba(var(--main-Color), 0.15);
+    color: var(--main-text);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+}
+
+.tbdToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--main-text);
+  font-size: 14px;
+}
+
+.adBanner {
+  margin-bottom: 16px;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 0;
+}
+
+.eventCard {
+  width: 100%;
+  animation: fadeIn 0.4s ease-out forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  .filters {
+    gap: 8px;
+  }
+
+  .filtersRow {
+    gap: 8px;
+  }
+
+  .eventsList {
+    gap: 16px;
+    padding: 16px 0;
+  }
+
+  .adBanner {
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .eventsList {
+    gap: 12px;
+    padding: 12px 0;
+  }
+}
+
+// Отключение анимаций для пользователей с prefers-reduced-motion
+@media (prefers-reduced-motion: reduce) {
+  .eventCard {
+    animation: none;
+  }
+}

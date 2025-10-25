@@ -1,0 +1,273 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 24px;
+  padding: 20px;
+  position: relative;
+  background: linear-gradient(135deg, 
+    rgba(var(--main-Color), 0.02) 0%, 
+    rgba(var(--main-Color), 0.05) 50%, 
+    rgba(var(--main-Color), 0.02) 100%);
+  overflow: hidden;
+
+  // Анимированные звезды на фоне
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, rgba(var(--main-Color), 0.3), transparent),
+      radial-gradient(2px 2px at 40px 70px, rgba(var(--main-Color), 0.2), transparent),
+      radial-gradient(1px 1px at 90px 40px, rgba(var(--main-Color), 0.4), transparent),
+      radial-gradient(1px 1px at 130px 80px, rgba(var(--main-Color), 0.3), transparent),
+      radial-gradient(2px 2px at 160px 30px, rgba(var(--main-Color), 0.2), transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: twinkle 4s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.8; }
+}
+
+.errorCode {
+  font-size: 120px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: rgb(var(--main-Color));
+  position: relative;
+  animation: float 3s ease-in-out infinite;
+
+  // Добавляем эффект "потерянной планеты"
+  &::after {
+    content: '🪐';
+    position: absolute;
+    top: -20px;
+    right: -40px;
+    font-size: 40px;
+    animation: orbit 6s linear infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+}
+
+.errorMessage {
+  font-size: 20px;
+  color: var(--main-text);
+  opacity: 0.9;
+  max-width: 500px;
+  line-height: 1.6;
+  position: relative;
+  animation: fadeInUp 1s ease-out 0.5s both;
+
+  // Добавляем мемный эффект "поиска среди звезд"
+  &::before {
+    content: '🔍';
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    animation: search 2s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+}
+
+@keyframes search {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  50% { transform: translateX(-50%) rotate(10deg); }
+}
+
+.buttonsContainer {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  animation: fadeInUp 1s ease-out 1s both;
+}
+
+.backButton, .sitemapButton {
+  padding: 14px 24px;
+  border-radius: 16px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+}
+
+.backButton {
+  background: linear-gradient(135deg, 
+    rgba(var(--main-Color), 0.15) 0%, 
+    rgba(var(--main-Color), 0.25) 100%);
+  border-color: rgba(var(--main-Color), 0.4);
+  color: rgb(var(--main-Color));
+
+  &:hover {
+    background: linear-gradient(135deg, 
+      rgba(var(--main-Color), 0.25) 0%, 
+      rgba(var(--main-Color), 0.35) 100%);
+    border-color: rgba(var(--main-Color), 0.6);
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+}
+
+.sitemapButton {
+  background: linear-gradient(135deg, 
+    rgba(var(--main-text), 0.08) 0%, 
+    rgba(var(--main-text), 0.15) 100%);
+  border-color: rgba(var(--main-text), 0.2);
+  color: var(--main-text);
+
+  &:hover {
+    background: linear-gradient(135deg, 
+      rgba(var(--main-text), 0.15) 0%, 
+      rgba(var(--main-text), 0.25) 100%);
+    border-color: rgba(var(--main-text), 0.3);
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 768px) {
+  .container {
+    gap: 20px;
+    padding: 16px;
+  }
+
+  .errorCode {
+    font-size: 80px;
+
+    &::after {
+      font-size: 30px;
+      top: -15px;
+      right: -30px;
+    }
+  }
+
+  .errorMessage {
+    font-size: 18px;
+    padding: 0 20px;
+
+    &::before {
+      font-size: 20px;
+      top: -25px;
+    }
+  }
+
+  .buttonsContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .backButton, .sitemapButton {
+    padding: 12px 20px;
+    font-size: 15px;
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .errorCode {
+    font-size: 64px;
+
+    &::after {
+      font-size: 24px;
+      top: -12px;
+      right: -24px;
+    }
+  }
+
+  .errorMessage {
+    font-size: 16px;
+    padding: 0 16px;
+
+    &::before {
+      font-size: 18px;
+      top: -20px;
+    }
+  }
+
+  .backButton, .sitemapButton {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+// Отключение анимаций для пользователей с prefers-reduced-motion
+@media (prefers-reduced-motion: reduce) {
+  .errorCode,
+  .errorMessage,
+  .buttonsContainer {
+    animation: none;
+  }
+
+  .errorCode::after,
+  .errorMessage::before {
+    animation: none;
+  }
+
+  .container::before {
+    animation: none;
+  }
+}

@@ -4,6 +4,10 @@ export interface IGraphList {
     isSubscribed: boolean
     imgPath: string
     about?: string
+    tags?: Array<{
+        _id: string
+        name: string
+    }>
 }
 
 export interface CreateGraphDto {
@@ -22,12 +26,16 @@ export interface GraphInfo {
   directorName: string;
   directorVkLink?: string;
   vkLink: string;
-  ownerUserId: string;
+  ownerUserId: {
+    _id: string;
+    username?: string;
+  } | string;
   subsNum: number;
   childGraphNum: number;
   imgPath: string;
-  parentGraphId: ParentGraph;
+  parentGraphId?: ParentGraph;
   graphType: string;
   globalGraphId: string;
-  about: string;
+  about?: string;
+  isSubscribed?: boolean;
 }

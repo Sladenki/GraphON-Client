@@ -1,0 +1,709 @@
+// Новый минималистичный дизайн EventCard
+
+.eventCardWrapper {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto 24px auto;
+}
+
+.eventCard {
+  background: var(--background-color);
+  border-radius: 24px;
+  border: 1.5px solid rgba(var(--main-Color), 0.08);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+  &:hover {
+    border-color: rgba(var(--main-Color), 0.15);
+    transform: translateY(-4px);
+  }
+}
+
+// Header
+.cardHeader {
+  padding: 24px 24px 24px 24px;
+  background: linear-gradient(to bottom, rgba(var(--main-Color), 0.02), transparent);
+  border-bottom: 1px solid rgba(var(--main-Color), 0.06);
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.groupInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background: transparent;
+    
+    .groupAvatar {
+      transform: scale(1.05);
+      border-color: rgba(var(--main-Color), 0.2);
+    }
+
+    .groupName {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: rgba(var(--main-Color), 0.6);
+    }
+  }
+}
+
+.groupAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(var(--main-Color), 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid rgba(var(--main-Color), 0.12);
+  transition: all 0.2s ease;
+}
+  
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(var(--main-Color), 0.15), rgba(var(--main-Color), 0.08));
+  color: rgb(var(--main-Color));
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.groupName {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: rgb(var(--main-Color));
+  font-family: var(--font-inter);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shareButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(var(--main-Color), 0.05);
+  color: rgba(var(--main-Color), 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(var(--main-Color), 0.1);
+    color: rgb(var(--main-Color));
+  }
+}
+
+.actionButtons {
+  display: flex;
+  gap: 4px;
+}
+
+.actionButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(var(--main-Color), 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: rgba(var(--main-Color), 0.6);
+  
+  &:hover {
+    background: rgba(var(--main-Color), 0.1);
+  }
+}
+
+// Редактирование - зелёный
+.editButton {
+  color: rgba(34, 197, 94, 0.7);
+  
+  &:hover {
+    background: rgba(34, 197, 94, 0.1);
+    color: rgb(34, 197, 94);
+  }
+}
+
+// Удаление - красный
+.deleteButton {
+  color: rgba(239, 68, 68, 0.7);
+  
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: rgb(239, 68, 68);
+  }
+}
+
+// Сохранение - синий
+.saveButton {
+  color: rgba(59, 130, 246, 0.7);
+  
+  &:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: rgb(59, 130, 246);
+  }
+}
+
+// Отмена - серый
+.cancelButton {
+  color: rgba(107, 114, 128, 0.7);
+  
+  &:hover {
+    background: rgba(107, 114, 128, 0.1);
+    color: rgb(107, 114, 128);
+  }
+}
+
+.titleSection {
+  margin-top: 0;
+}
+
+.eventTitle {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--text-color);
+  font-family: var(--font-inter);
+  line-height: 1.3;
+  margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+// Body
+.cardBody {
+  padding: 20px 24px;
+}
+
+.description {
+  font-size: 15px;
+  line-height: 1.65;
+  font-weight: 400;
+  color: rgba(var(--text-color), 0.85);
+  font-family: var(--font-inter);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+  
+  a {
+    color: rgb(var(--main-Color));
+    text-decoration: none;
+    font-weight: 500;
+    word-break: break-all;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Important Info - время и место (выделены)
+.importantInfo {
+  padding: 20px 24px;
+  background: rgba(var(--main-Color), 0.025);
+  border-top: 1px solid rgba(var(--main-Color), 0.06);
+  border-bottom: 1px solid rgba(var(--main-Color), 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.timeInfo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(34, 197, 94, 0.04));
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(34, 197, 94, 0.15);
+  
+  svg {
+    color: rgb(34, 197, 94);
+    flex-shrink: 0;
+  }
+}
+
+.placeInfo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.04));
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(59, 130, 246, 0.15);
+  
+  svg {
+    color: rgb(59, 130, 246);
+    flex-shrink: 0;
+  }
+}
+
+.timeText {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--text-color);
+  font-family: var(--font-inter);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.placeText {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--text-color);
+  font-family: var(--font-inter);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+// Footer
+.cardFooter {
+  padding: 20px 24px 24px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// Десктопная версия: участники в футере
+@media (min-width: 769px) {
+  .importantInfo .participantsInfo {
+    display: none;
+  }
+}
+
+.participantsInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  svg {
+    color: #6B7280;
+    flex-shrink: 0;
+  }
+}
+
+.participantsText {
+  font-size: 14px;
+  color: #6B7280;
+  font-weight: 500;
+  font-family: var(--font-inter);
+  
+  &.clickable {
+    cursor: pointer;
+    color: #6B7280;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: #4B5563;
+    }
+  }
+}
+
+// Utility for wider ActionButton wrapper
+.registerWide {
+  width: 50%;
+  max-width: 420px;
+}
+
+@media (max-width: 480px) {
+  .registerWide {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+// Edit form styles
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  
+  input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+      }
+      
+  label {
+    font-size: 14px;
+    color: var(--text-color);
+    font-family: var(--font-inter);
+  }
+}
+
+.titleInput {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: var(--font-inter);
+  padding: 8px 12px;
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 8px;
+  background: var(--background-color);
+  color: var(--text-color);
+  width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.descriptionInput {
+  font-size: 15px;
+  font-family: var(--font-inter);
+  padding: 8px 12px;
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 8px;
+  background: var(--background-color);
+  color: var(--text-color);
+  width: 100%;
+  resize: vertical;
+  min-height: 80px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.characterCount {
+  font-size: 12px;
+  color: rgba(var(--text-color), 0.6);
+  text-align: right;
+  margin-top: 4px;
+  font-family: var(--font-inter);
+}
+
+.dateInput,
+.timeInput,
+.placeInput {
+  font-family: var(--font-inter);
+  padding: 8px 12px;
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 8px;
+  background: var(--background-color);
+  color: var(--text-color);
+  width: 100%;
+}
+
+.timeInputs {
+  display: flex;
+  gap: 12px;
+}
+
+.spinner {
+        width: 16px;
+        height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Dark theme
+@media (prefers-color-scheme: dark) {
+  .eventCard {
+    background: var(--block-color);
+    border-color: rgba(var(--main-Color), 0.15);
+    
+    &:hover {
+      border-color: rgba(var(--main-Color), 0.25);
+    }
+  }
+  
+  .cardHeader {
+    background: linear-gradient(to bottom, rgba(var(--main-Color), 0.03), transparent);
+  }
+  
+  .groupInfo {
+    background: transparent;
+
+    &:hover {
+      background: transparent;
+
+      .groupAvatar {
+        transform: scale(1.05);
+        border-color: rgba(var(--main-Color), 0.25);
+      }
+
+      .groupName {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        text-decoration-color: rgba(var(--main-Color), 0.65);
+      }
+    }
+  }
+  
+  .groupAvatar {
+    border-color: rgba(var(--main-Color), 0.2);
+  }
+  
+  .shareButton {
+    background: rgba(var(--main-Color), 0.08);
+    color: rgba(var(--main-Color), 0.5);
+    
+    &:hover {
+      background: rgba(var(--main-Color), 0.15);
+      color: rgb(var(--main-Color));
+    }
+  }
+  
+  .actionButton {
+    background: rgba(var(--main-Color), 0.05);
+    color: rgba(var(--main-Color), 0.5);
+    
+    &:hover {
+      background: rgba(var(--main-Color), 0.1);
+    }
+  }
+  
+  // Редактирование - зелёный (темная тема)
+  .editButton {
+    color: rgba(74, 222, 128, 0.8);
+    
+    &:hover {
+      background: rgba(34, 197, 94, 0.15);
+      color: rgb(74, 222, 128);
+    }
+  }
+  
+  // Удаление - красный (темная тема)
+  .deleteButton {
+    color: rgba(248, 113, 113, 0.8);
+    
+    &:hover {
+      background: rgba(239, 68, 68, 0.15);
+      color: rgb(248, 113, 113);
+    }
+  }
+  
+  // Сохранение - синий (темная тема)
+  .saveButton {
+    color: rgba(96, 165, 250, 0.8);
+    
+    &:hover {
+      background: rgba(59, 130, 246, 0.15);
+      color: rgb(96, 165, 250);
+    }
+  }
+  
+  // Отмена - серый (темная тема)
+  .cancelButton {
+    color: rgba(156, 163, 175, 0.8);
+    
+    &:hover {
+      background: rgba(107, 114, 128, 0.15);
+      color: rgb(156, 163, 175);
+    }
+  }
+  
+  .importantInfo {
+    background: rgba(var(--main-Color), 0.03);
+  }
+  
+  .participantsInfo {
+    svg {
+      color: #9CA3AF;
+    }
+  }
+  
+  .participantsText {
+    color: #9CA3AF;
+    
+    &.clickable {
+      color: #9CA3AF;
+      
+      &:hover {
+        color: #D1D5DB;
+      }
+    }
+  }
+
+}
+
+// Mobile adaptations
+@media (max-width: 768px) {
+  .eventCardWrapper {
+    max-width: 100%;
+    margin: 0 0 20px 0;
+  }
+  
+  .eventCard {
+    border-radius: 20px;
+  }
+  
+  .cardHeader {
+    padding: 20px 18px 20px 18px;
+  }
+  
+  .groupInfo {
+    padding: 0;
+    border-radius: 0;
+  }
+  
+  .groupAvatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+  
+  .groupName {
+    font-size: 12px;
+  }
+  
+  .headerTop {
+    margin-bottom: 14px;
+  }
+  
+  .cardBody {
+    padding: 16px 18px;
+  }
+  
+  .importantInfo {
+    padding: 16px 18px;
+    gap: 12px;
+  }
+  
+  .cardFooter {
+    padding: 16px 18px 20px 18px;
+    flex-direction: row;
+    gap: 35px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  // Мобильная версия: вертикальное расположение
+  .importantInfo {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .timeInfo,
+  .placeInfo {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 13px;
+  }
+  
+  // Скрыть участников в importantInfo на мобильных
+  .importantInfo .participantsInfo {
+    display: none;
+  }
+  
+  // Показать участников в футере на мобильных
+  .cardFooter .participantsInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    
+    svg {
+      color: #6B7280;
+    }
+  }
+  
+  .participantsText {
+    color: #6B7280;
+    font-size: 13px;
+    white-space: nowrap;
+    
+    &.clickable {
+      color: #6B7280;
+      
+      &:hover {
+        color: #4B5563;
+      }
+    }
+  }
+  
+  .eventTitle {
+    font-size: 21px;
+  }
+  
+  .timeText,
+  .placeText {
+    font-size: 14px;
+  }
+  
+  .description {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}
+
+// Extra small phones
+@media (max-width: 400px) {
+  .timeInfo,
+  .placeInfo {
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  .timeText,
+  .placeText {
+    font-size: 12px;
+  }
+
+  .participantsInfo {
+    gap: 8px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .participantsText {
+    font-size: 12px;
+  }
+}
+
+
+
+
+

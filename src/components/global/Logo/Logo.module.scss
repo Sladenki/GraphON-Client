@@ -1,0 +1,37 @@
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    opacity: 0.6;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgb(var(--main-Color));
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+}
+
+.logo {
+  display: block;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+}
+
+// Отключение эффектов для accessibility
+@media (prefers-reduced-motion: reduce) {
+  .logoLink {
+    transition: none;
+  }
+}
+

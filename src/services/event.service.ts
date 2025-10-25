@@ -20,6 +20,11 @@ export const EventService = {
         return axiosAuth.get(`/event/upcoming/${selectedGraphId}`);
     },
 
+    // --- Получение мероприятия по ID ---
+    async getEventById(eventId: string) {
+        return axiosAuth.get(`/event/${eventId}`);
+    },
+
     // --- Получение недельного расписания по globalGraphId ---
     async getWeeklyScheduleByGlobalGraphId(globalGraphId: string) {
         return axiosAuth.get(`/event/weekly/${globalGraphId}`);
@@ -45,6 +50,7 @@ export const EventService = {
         graphId: string;
         name: string;
         description: string;
+        place: string;
         eventDate?: string;
         timeFrom?: string;
         timeTo?: string;

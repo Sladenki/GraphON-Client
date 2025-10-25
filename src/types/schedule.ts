@@ -1,5 +1,9 @@
 export interface ScheduleItem {
   _id: string;
+  graphId?: {
+    _id: string;
+    name: string;
+  };
   dayOfWeek: number;
   timeFrom: string;
   timeTo: string;

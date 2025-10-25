@@ -1,9 +1,18 @@
+.universitySelectWrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+  padding: 24px;
+}
+
 // Больше 1000px
 @media only screen and (min-width: 1000px) {
   .wrapper{
     height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 4.5fr;
+    grid-template-columns: 260px 1fr; // фиксированная ширина сайдбара
     overflow: hidden;
     
     // Основной контент
@@ -20,7 +29,6 @@
         height: 100vh;
         overflow-y: auto;
         border-radius: 60px 0 0 60px;
-        box-shadow: -16px 0px 28px 0px rgba(var(--main-Color), 0.03);
         display: flex;
         flex-direction: column;
         
@@ -44,14 +52,6 @@
       }
     }
 
-    .profileCorner{
-      margin: 10px;
-      margin-right: 15px;
-      position: absolute;
-      top: 0; 
-      right: 0; 
-    }
-
     .BottomMenu{
       display: none;
     }
@@ -61,10 +61,12 @@
 // Меньше 1000Px
 @media only screen and (max-width: 1000px) {
 .wrapper {
-  padding-bottom: 80px;
+  padding-top: 60px; // отступ для TopPanel
+  padding-bottom: 40px; // отступ для BottomMenu
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--block-color);
 }
 
 .BottomMenu{
@@ -79,6 +81,48 @@
 .sidebar{
   display: none;
 }
+
+// Стили для мобильного контента внутри MobileDrawer
+.main {
+  width: 100%;
+  
+  .content {
+    background-color: var(--block-color);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 60px);
+    
+    // Стилизация скроллбара для мобильных
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(var(--main-Color), 0.2);
+      border-radius: 2px;
+    }
+  }
+}
+}
+
+// Точные значения для меньших экранов
+@media only screen and (max-width: 768px) {
+  .wrapper { 
+    padding-top: 56px;
+  }
+  .main .content { min-height: calc(100vh - 56px); }
+}
+
+@media only screen and (max-width: 480px) {
+  .wrapper { 
+    padding-top: 52px;
+  }
+  .main .content { min-height: calc(100vh - 52px); }
 }
 
 

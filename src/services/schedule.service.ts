@@ -6,7 +6,7 @@ export interface ICreateScheduleDto {
     name: string;
     type: string;
     roomNumber: number;
-    dayOfWeek: number;
+    dayOfWeek: number | number[];
     timeFrom: string;
     timeTo: string;
 }

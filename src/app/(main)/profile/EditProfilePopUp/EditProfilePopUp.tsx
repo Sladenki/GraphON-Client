@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react';
 import PopUpWrapper from '@/components/global/PopUpWrapper/PopUpWrapper';
 import styles from './EditProfilePopUp.module.scss';
 import { IUpdateUserDto, IUser } from '@/types/user.interface';
+import DatePickerField from '@/components/ui/DatePickerField/DatePickerField';
+import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
+import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { UserService } from '@/services/user.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useAuth } from '@/providers/AuthProvider';
@@ -20,7 +23,7 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
     const small = useMediaQuery('(max-width: 650px)');
     const isUsernameLocked = Boolean(typedUser?.username && typedUser.username.trim() !== '');
 
-    const [formState, setFormState] = useState<IUpdateUserDto>({ firstName: '', lastName: '', username: '' });
+    const [formState, setFormState] = useState<IUpdateUserDto>({ firstName: '', lastName: '', username: '', gender: undefined, birthDate: '' });
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
@@ -31,7 +34,7 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                 username: typedUser.username || ''
             });
         } else {
-            setFormState({ firstName: '', lastName: '', username: '' });
+            setFormState({ firstName: '', lastName: '', username: '', gender: undefined, birthDate: '' });
         }
     }, [typedUser?.firstName, typedUser?.lastName, typedUser?.username, isOpen]);
 
@@ -40,7 +43,6 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
             isOpen={isOpen}
             onClose={onClose}
             width={small ? '92vw' : 520}
-            modalId="edit-profile-popup"
         >
             <div className={styles.editFormWrapper}>
                 <div className={styles.formHeader}>
@@ -57,6 +59,8 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                                 firstName: formState.firstName?.trim() || '',
                                 lastName: formState.lastName?.trim() || ''
                             };
+                            if (formState.gender) payload.gender = formState.gender;
+                            if (formState.birthDate) payload.birthDate = formState.birthDate;
                             if (!isUsernameLocked) {
                                 const rawUsername = (formState.username || '').trim();
                                 // Extract Telegram handle from various formats: @name, t.me/name, https://t.me/name
@@ -101,7 +105,6 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                                 className={styles.input}
                                 autoComplete="given-name"
                             />
-                            <span className={styles.fieldHint}>Как к вам обращаться</span>
                         </label>
                         <label className={styles.inputGroup}>
                             <span className={styles.fieldLabel}>Фамилия</span>
@@ -114,8 +117,29 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                                 className={styles.input}
                                 autoComplete="family-name"
                             />
-                            <span className={styles.fieldHint}>Необязательное поле</span>
                         </label>
+                        <div className={`${styles.inlineRow} ${styles.fullRow}`}>
+                            <DropdownSelect
+                                value={formState.gender || ''}
+                                onChange={(val) => setFormState(v => ({ ...v, gender: (val as 'male' | 'female') || undefined }))}
+                                options={[
+                                    { value: '', label: 'Не указан' },
+                                    { value: 'male', label: 'Мужской' },
+                                    { value: 'female', label: 'Женский' },
+                                ]}
+                                placeholder="Выберите пол"
+                            />
+                            <label className={styles.inputGroup}>
+                                <span className={styles.fieldLabel}>Дата рождения</span>
+                                <DatePickerField
+                                    value={formState.birthDate || ''}
+                                    onChange={(val) => setFormState(v => ({ ...v, birthDate: val }))}
+                                    ariaLabel="Дата рождения"
+                                    size="sm"
+                                    variant="bordered"
+                                  />
+                            </label>
+                        </div>
                         <label className={styles.inputGroup}>
                             <span className={styles.fieldLabel}>Username</span>
                             <input 
@@ -135,21 +159,19 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
                     </div>
                     <div className={styles.divider} />
                     <div className={styles.actions}>
-                        <button 
-                            type="button" 
-                            className={styles.secondaryBtn}
+                        <ActionButton
+                            type="button"
+                            variant="info"
+                            label="Отмена"
                             onClick={onClose}
                             disabled={isSubmitting}
-                        >
-                            Отмена
-                        </button>
-                        <button 
-                            type="submit" 
-                            className={styles.submitBtn}
+                        />
+                        <ActionButton
+                            type="submit"
+                            variant="primary"
+                            label={isSubmitting ? 'Сохранение…' : 'Сохранить'}
                             disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Сохранение…' : 'Сохранить'}
-                        </button>
+                        />
                     </div>
                 </form>
             </div>

@@ -1,24 +1,35 @@
-.ScheduleWrapper{
-    margin: 0 auto;
-    overflow-x: hidden;
+.ScheduleWrapper {
+  margin: 0 auto;
+  overflow-x: hidden;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 1200px;
 
-    .warningText{
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        align-items: center;
-        justify-content: center;
-        width: 70%;
-        height: 100vh; /* Растягиваем блок на весь экран */
-        margin: 0 auto; /* Центрируем по горизонтали */
-    }
+  .warningText {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    height: 100vh;
+    margin: 0 auto;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .ScheduleWrapper {
+    padding: 12px;
+  }
 }
 
 @media only screen and (max-width: 680px) {
-
-    .ScheduleWrapper{
-        width: 98%;
-      
-    }
-      
+  .ScheduleWrapper {
+    width: 98%;
+    padding: 8px;
   }
+}

@@ -1,28 +1,37 @@
 .sidebar{    
-    margin-top: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; // возвращаем выравнивание элементов по центру
+  height: 100vh; // строго по вьюпорту
+  padding-bottom: 16px;
+  overflow-y: hidden; // убираем вертикальный скролл
+  overflow-x: visible; // даем тени/капсуле выходить вправо
+  box-sizing: border-box;
 }
 
-.projectTitle {
-    font-family: var(--font-orbitron), 'Orbitron', 'Space Grotesk', 'Trebuchet MS', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: rgb(150, 130, 238);
-    letter-spacing: 0.05em;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    font-display: swap;
-    line-height: 1;
-    margin: 0;
-    padding: 0;
-    margin-bottom: 30px;
-    text-shadow: 0 2px 4px rgba(150, 130, 238, 0.2);
-    animation: fadeInUp 0.6s ease-out;
+.projectTitle{
+  margin: 30px;
+  margin-right: 55px;
 }
+
+.RenderMenuList{
+  margin-left: 15px;
+}
+
+// Футер для кнопки входа и информации о пользователе
+.footer {
+  width: calc(100% - 50px);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  flex-shrink: 0; // Предотвращаем сжатие футера
+  margin-left: 30px;
+}
+
 
 @keyframes fadeInUp {
     from {
@@ -35,36 +44,7 @@
     }
 }
 
-.betaLabel {
-    font-family: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 0.6rem;
-    font-weight: 500;
-    color: rgba(150, 130, 238, 0.7);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-align: center;
-    background: linear-gradient(135deg, rgba(150, 130, 238, 0.2), rgba(0, 255, 255, 0.15));
-    border: 1px solid rgba(150, 130, 238, 0.2);
-    border-radius: 6px;
-    padding: 2px 6px;
-    box-shadow: 
-        0 2px 4px rgba(150, 130, 238, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-    transition: all 0.2s ease;
-    font-display: swap;
-    line-height: 1.2;
-    margin: 0;
-    
-    &:hover {
-        background: linear-gradient(135deg, rgba(150, 130, 238, 0.25), rgba(0, 255, 255, 0.2));
-        transform: translateY(-1px);
-        box-shadow: 
-            0 4px 8px rgba(150, 130, 238, 0.25),
-            0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-    }
-}
-
-@media only screen and (max-width: 680px)  {
+@media only screen and (max-width: 1000px)  {
     .sidebar{
         display: none
     }
@@ -105,6 +85,76 @@
                 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
         }
     }
+}
+
+
+
+.signInLink {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(var(--main-Color), 0.1);
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  border-radius: 12px;
+  text-decoration: none;
+  color: rgb(var(--main-Color));
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(var(--main-Color), 0.1);
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.userInfo {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--main-text);
+  text-align: center;
+  padding: 8px 12px;
+  background: rgba(var(--main-Color), 0.05);
+  border: 1px solid rgba(var(--main-Color), 0.1);
+  border-radius: 8px;
+  width: 100%;
+}
+
+.themeToggleContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+}
+
+// Темная тема для футера
+html[data-theme="dark"] {
+  .signInLink {
+    background: rgba(var(--main-Color), 0.15);
+    border-color: rgba(var(--main-Color), 0.3);
+    color: rgb(var(--main-Color));
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.2);
+    }
+  }
+
+  .userInfo {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.15);
+    color: var(--main-text);
+  }
 }
 
 

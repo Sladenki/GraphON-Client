@@ -1,0 +1,489 @@
+.calendarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.calendar {
+  max-width: 400px;
+  margin: 0 auto;
+  background: var(--background-color);
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid rgba(var(--main-Color), 0.1);
+  width: 100%;
+  backdrop-filter: blur(10px);
+}
+
+/* Заголовок с навигацией */
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+/* Название месяца */
+.monthTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-color);
+  text-align: center;
+  letter-spacing: -0.5px;
+  flex: 1;
+  margin: 0;
+}
+
+/* Дни недели */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  padding: 12px 8px;
+  border-radius: 12px;
+  background: rgba(var(--main-Color), 0.05);
+  transition: all 0.2s ease;
+  cursor: default;
+  
+  &:hover {
+    color: rgb(var(--main-Color));
+    background: rgba(var(--main-Color), 0.1);
+  }
+}
+
+/* Календарная сетка */
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.emptyDay {
+  min-height: 48px;
+}
+
+.day {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px 8px;
+  border-radius: 16px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  font-weight: 500;
+
+  &:hover {
+    background-color: rgba(var(--main-Color), 0.08);
+  }
+  
+  &:active {
+    background-color: rgba(var(--main-Color), 0.12);
+  }
+}
+
+.dayNumber {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 4px;
+  transition: all 0.3s ease;
+}
+
+.dayToday {
+  .dayNumber {
+    color: white;
+    font-weight: 700;
+    background: linear-gradient(135deg, rgb(var(--main-Color)) 0%, rgba(var(--main-Color), 0.8) 100%);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(var(--main-Color), 0.4);
+    margin-bottom: 4px;
+  }
+}
+
+.daySelected {
+  background: linear-gradient(135deg, rgba(var(--main-Color), 0.15) 0%, rgba(var(--main-Color), 0.05) 100%);
+  border: 2px solid rgba(var(--main-Color), 0.3);
+  
+  .dayNumber {
+    color: rgb(var(--main-Color));
+    font-weight: 700;
+    background: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(var(--main-Color), 0.25);
+    margin-bottom: 4px;
+  }
+  
+  .eventDot {
+    background-color: rgb(var(--main-Color));
+    
+    .eventCount {
+      color: white;
+      background-color: rgb(var(--main-Color));
+    }
+  }
+}
+
+/* Индикатор событий */
+.eventDot {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: rgb(var(--main-Color));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eventCount {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ff4757;
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 50%;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  border: 2px solid white;
+}
+
+/* Кнопки навигации */
+.navButton {
+  background: rgba(var(--main-Color), 0.1);
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  color: rgb(var(--main-Color));
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 12px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.2);
+    border-color: rgba(var(--main-Color), 0.4);
+  }
+  
+  &:active {
+    background: rgba(var(--main-Color), 0.25);
+  }
+}
+
+/* Секция мероприятий */
+.eventsSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+/* Стили для ПК версии */
+@media (min-width: 1024px) {
+  .calendarContainer {
+    gap: 32px;
+  }
+  
+  .calendar {
+    max-width: 500px;
+    padding: 24px;
+    border-radius: 20px;
+  }
+  
+  .calendarHeader {
+    margin-bottom: 24px;
+    gap: 16px;
+  }
+  
+  .monthTitle {
+    font-size: 24px;
+  }
+  
+  .weekday {
+    font-size: 14px;
+    padding: 12px 8px;
+  }
+  
+  .calendarGrid {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .emptyDay {
+    min-height: 54px;
+  }
+  
+  .day {
+    min-height: 54px;
+    padding: 12px 8px;
+    border-radius: 16px;
+  }
+  
+  .dayNumber {
+    font-size: 16px;
+  }
+  
+  .dayToday .dayNumber {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .daySelected .dayNumber {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .eventDot {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .eventCount {
+    font-size: 10px;
+    min-width: 18px;
+    height: 18px;
+  }
+  
+  .navButton {
+    padding: 10px;
+    border-radius: 14px;
+  }
+}
+
+/* Стили для планшетов */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .calendarContainer {
+    gap: 32px;
+  }
+  
+  .calendar {
+    max-width: 500px;
+    padding: 24px;
+    border-radius: 20px;
+  }
+  
+  .calendarHeader {
+    margin-bottom: 28px;
+    gap: 20px;
+  }
+  
+  .monthTitle {
+    font-size: 32px;
+  }
+  
+  .weekday {
+    font-size: 15px;
+    padding: 14px 10px;
+  }
+  
+  .calendarGrid {
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .emptyDay {
+    min-height: 56px;
+  }
+  
+  .day {
+    min-height: 56px;
+    padding: 14px 10px;
+    border-radius: 18px;
+  }
+  
+  .dayNumber {
+    font-size: 17px;
+  }
+  
+  .dayToday .dayNumber {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .daySelected .dayNumber {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .eventDot {
+    width: 9px;
+    height: 9px;
+  }
+  
+  .eventCount {
+    font-size: 11px;
+    min-width: 19px;
+    height: 19px;
+  }
+  
+  .navButton {
+    padding: 12px;
+    border-radius: 14px;
+  }
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+  .calendarContainer {
+    gap: 24px;
+  }
+  
+  .calendar {
+    max-width: 100%;
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .calendarHeader {
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+  
+  .monthTitle {
+    font-size: 22px;
+  }
+
+  .weekday {
+    font-size: 13px;
+    padding: 10px 6px;
+  }
+
+  .calendarGrid {
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .emptyDay {
+    min-height: 44px;
+  }
+
+  .day {
+    min-height: 44px;
+    padding: 10px 6px;
+    border-radius: 14px;
+  }
+
+  .dayNumber {
+    font-size: 15px;
+  }
+  
+  .dayToday .dayNumber {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .daySelected .dayNumber {
+    width: 28px;
+    height: 28px;
+  }
+
+  .eventDot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .eventCount {
+    font-size: 9px;
+    min-width: 16px;
+    height: 16px;
+  }
+  
+  .navButton {
+    padding: 8px;
+    border-radius: 10px;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar {
+    padding: 8px;
+  }
+
+  .monthTitle {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .emptyDay {
+    min-height: 32px;
+  }
+
+  .day {
+    min-height: 32px;
+    padding: 4px 2px;
+  }
+
+  .dayNumber {
+    font-size: 12px;
+  }
+
+  .navigation {
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .navButton {
+    padding: 6px;
+    border-radius: 8px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  .monthTitle {
+    font-size: 16px;
+  }
+  
+  .weekday {
+    font-size: 11px;
+    padding: 8px 4px;
+  }
+}

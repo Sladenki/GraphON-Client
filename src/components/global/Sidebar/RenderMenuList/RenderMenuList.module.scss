@@ -1,9 +1,22 @@
 // Список вкладок
 .listMenu{
-    margin-left: 15px;
-    margin-bottom: 25px;
     display: flex;
     flex-direction: column;
-    gap: 8px;        
+    gap: 5px;
+    flex: 1 1 auto;
+    overflow: hidden; // убираем внутренний скролл, высоту контролирует контейнер
+    max-height: none;
+}
 
+.group{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.divider{
+    height: 1px;
+    background: rgba(var(--main-Color), 0.08);
+    margin: 8px 4px;
+    border-radius: 1px;
 }

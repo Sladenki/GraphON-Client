@@ -1,92 +1,88 @@
 'use client'
 
+import { useState, useEffect } from 'react';
 import Sidebar from "@/components/global/Sidebar/Sidebar";
 import styles from './layout.module.scss'
 import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
-import { AllProvers } from "@/providers/main";
-import type { Metadata } from 'next';
-import { inter, orbitron } from "@/app/fonts";
-import '../../styles/globals.scss'
+import MobileDrawer from "@/components/global/MobileDrawer/MobileDrawer";
+import TopPanel from "@/components/global/TopPanel/TopPanel";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import Script from "next/script";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
-import ProfileCorner from "@/components/global/ProfileCorner/ProfileCorner";
-import { Providers } from '../providers';
+import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
+import { useSelectedGraphId } from '@/stores/useUIStore';
+import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 
-// Fonts are configured in server file src/app/fonts.ts
+export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const small = useMediaQuery('(max-width: 1000px)')
+  const selectedGraphId = useSelectedGraphId();
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  const small = useMediaQuery('(max-width: 650px)')
+  // Ждем пока Zustand загрузит данные из localStorage
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // Показываем лоадер пока загружаются данные из localStorage
+  if (!isHydrated) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        background: 'var(--background-color)'
+      }}>
+        <SpinnerLoader />
+      </div>
+    );
+  }
 
   return (
-    <html lang="ru" className={`${inter.variable} ${orbitron.variable}`}>
-      <head>
-        <title>GraphON</title>
+    <HeroUIProvider>
+      <Toaster position="top-right" richColors />
 
-         {/* Подключаем Google Analytics только если есть ID */}
-         {/* {process.env.NEXT_PUBLIC_GA_ID && (
-          <>
-                          
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
+      {/* Если университет не выбран - показываем экран выбора */}
+      {!selectedGraphId ? (
+        <div className={styles.universitySelectWrapper}>
+          <UniversitySelect />
+        </div>
+      ) : (
+        <div className={styles.wrapper}>
+          {/* Top Panel - только для мобильных */}
+          {small && <TopPanel />}
 
-                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
-                  page_path: window.location.pathname,
-                });
-              `}
-            </Script>
-          </>
-        )} */}
-      </head>
-      <body className={inter.className}>
-        <Providers>
-          <HeroUIProvider>
-            <Toaster position="top-right" richColors /> 
-
-            <div className={styles.wrapper}>
-              <AllProvers>
-
-                
-                {/* Sidebar */}
-                <div className={styles.sidebar}>
-                  <Sidebar/>
+          {/* Mobile Drawer - только для мобильных */}
+          {small ? (
+            <MobileDrawer>
+              <div className={styles.main}>
+                <div className={styles.content}>
+                  {children}
                 </div>
-                
-                {/* Основная страница */}
-                <div className={styles.main}>
-                  <div className={styles.content}>
-                    {/* Добавляем компонент для отслеживания переходов */}
-                    {/* <GoogleAnalytics />  */}
-                    {children}
-                  </div>
+              </div>
+            </MobileDrawer>
+          ) : (
+            <>
+              {/* Sidebar - только для десктопа */}
+              <div className={styles.sidebar}>
+                <Sidebar/>
+              </div>
+              
+              {/* Основная страница */}
+              <div className={styles.main}>
+                <div className={styles.content}>
+                  {children}
                 </div>
-                
-                {/* Ава в углу */}
-                {!small && (
-                  <div className={styles.profileCorner}>
-                    <ProfileCorner/>
-                  </div>
-                )}
+              </div>
+            </>
+          )}
 
-                <div className={styles.BottomMenu}>
-                  <BottomMenu/>
-                </div>
-                  
-              </AllProvers>
-            </div>
-          </HeroUIProvider>
-        </Providers>
-      </body>
-    </html>
+          <div className={styles.BottomMenu}>
+            <BottomMenu/>
+          </div>
+        </div>
+      )}
+    </HeroUIProvider>
   );
 }

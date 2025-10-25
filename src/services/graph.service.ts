@@ -5,7 +5,12 @@ export const GraphService = {
 
     // --- Получение графа по id ---
     async getGraphById(graphId: string): Promise<GraphInfo> {
-        const response = await axiosClassic.get<GraphInfo>(`/graph/getById/${graphId}`);
+        // Если пользователь авторизован (есть токен), запрашиваем через axiosAuth,
+        // чтобы сервер вернул поле isSubscribed; иначе используем публичный клиент
+        const hasWindow = typeof window !== 'undefined';
+        const token = hasWindow ? (localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')) : null;
+        const client = token ? axiosAuth : axiosClassic;
+        const response = await client.get<GraphInfo>(`/graph/getById/${graphId}`);
         return response.data;
     },
 
@@ -43,4 +48,5 @@ export const GraphService = {
     async getTopicGraphsWithGlobal(globalGraphId: string) {
         return axiosClassic.get(`/graph/getTopicGraphsWithGlobal/${globalGraphId}`)
     }
+
 }

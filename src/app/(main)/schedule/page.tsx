@@ -3,13 +3,14 @@
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
 import { GraphSubsService } from "@/services/graphSubs.service";
 import { useQuery } from "@tanstack/react-query";
+import { CalendarX } from 'lucide-react';
 
 import styles from './Schedule.module.scss'
 import { useRouter } from "next/navigation";
 import { notifyError } from "@/lib/notifications";
 import { AxiosError } from "axios";
 import { EmptyState } from "@/components/global/EmptyState/EmptyState";
-import SchedulePage from "../../../components/ui/Schedule/Schedule";
+import Calendar from "../../../components/shared/Calendar/Calendar";
 
 
 const Schedule = () => {
@@ -39,14 +40,16 @@ const Schedule = () => {
 
   return (
     <div className={styles.ScheduleWrapper}>
-      {scheduleByDays.schedule == 0 && scheduleByDays.events == 0 ? (
+      <Calendar schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
+      {/* {scheduleByDays.schedule == 0 && scheduleByDays.events == 0 ? (
         <EmptyState
           message="Тут пока пусто"
           subMessage="На этой неделе нет занятий или мероприятий"
+          icon={CalendarX}
         />
       ) : (
-        <SchedulePage schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
-      )}
+        <Calendar schedule={scheduleByDays.schedule} events={scheduleByDays.events} />
+      )} */}
     </div>
   );
 }

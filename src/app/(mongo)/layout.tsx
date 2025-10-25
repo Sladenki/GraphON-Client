@@ -1,5 +1,3 @@
-import '../../styles/globals.scss'
-import { inter, orbitron } from '@/app/fonts';
 import { cookies } from 'next/headers';
 import MongoClientRoot from './mongo/components/MongoClientRoot';
 
@@ -10,13 +8,9 @@ export default async function MongoLayout({ children }: Readonly<{ children: Rea
   const mustAskPassword = status === 'prod' && !hasAuthCookie;
 
   return (
-    <html lang="ru" className={`${inter.variable} ${orbitron.variable}`}>
-      <body className={inter.className}>
-        <MongoClientRoot mustAskPassword={mustAskPassword}>
-          {children}
-        </MongoClientRoot>
-      </body>
-    </html>
+    <MongoClientRoot mustAskPassword={mustAskPassword}>
+      {children}
+    </MongoClientRoot>
   );
 }
 

@@ -3,23 +3,32 @@
 import React, { useMemo } from "react";
 import styles from "./BottomMenu.module.scss";
 import Link from "next/link";
-import { sidebarMobile } from "@/constants/sidebar";
+import { bottomMenuItems } from "@/constants/sidebar";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { UserRole } from "@/types/user.interface";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const BottomMenu: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
   const pathname = usePathname();
-  const showProfileBadge = isLoggedIn && !user?.selectedGraphId;
+  const isMobile = useMediaQuery('(max-width: 1000px)');
+
+  // Определяем доступ к управлению
+  const hasManageAccess = (() => {
+    if (!user) return false
+    const anyUser: any = user as any
+    const managedIds = anyUser?.managed_graph_id ?? anyUser?.managedGraphIds ?? []
+    return Array.isArray(managedIds) && managedIds.length > 0
+  })()
 
   const menuItems = useMemo(() => {
-    return sidebarMobile.filter(({ forAuthUsers, path }) => {
+    return bottomMenuItems.filter(({ forAuthUsers, path }) => {
       // Базовая проверка авторизации
       let shouldInclude = !forAuthUsers || isLoggedIn;
 
-      // 🔐 Дополнительное ограничение для "Создать"
-      if (path === '/createPost/' && user?.role === UserRole.User) {
+      // Для админки проверяем роль пользователя
+      if (path === '/admin/' && user?.role === UserRole.User) {
         shouldInclude = false;
       }
 
@@ -27,22 +36,21 @@ const BottomMenu: React.FC = () => {
     });
   }, [isLoggedIn, user]);
 
+  if (isMobile && !isLoggedIn) return null;
+
   return (
-    <nav className={styles.bottomSidebarWrapper}>
+    <nav className={styles.bottomSidebarWrapper} role="navigation" aria-label="Bottom navigation">
       <ul className={styles.listMenu}>
         {menuItems.map(({ id, icon, title, path }) => {
           const isActive = pathname === path;
 
           return (
             <li key={id} className={styles.listItem}>
-              <Link href={path} className={`${styles.link} ${isActive ? styles.active : ""}`}>
+              <Link href={path} className={`${styles.link} ${isActive ? styles.active : ""}`} aria-label={title} aria-current={isActive ? "page" : undefined} title={title}>
                 <span className={styles.iconWrapper}>
                   <span className={styles.icon}>{icon}</span>
-                  {showProfileBadge && path === '/profile/' && (
-                    <span className={styles.iconBadge} aria-hidden="true" />
-                  )}
                 </span>
-                {/* <span className={styles.title}>{title}</span> */}
+                <span className={styles.srOnly}>{title}</span>
               </Link>
             </li>
           );

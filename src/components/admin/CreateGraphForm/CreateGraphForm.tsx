@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AdminService } from '@/services/admin.service';
 import { IGraphList } from '@/types/graph.interface';
-import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
+import { AdminForm, FormInputGroup, FormInput, DropdownSelect, FormTextarea } from '@/components/shared/AdminForm';
 import { GraphService } from '@/services/graph.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 
@@ -22,21 +22,17 @@ export const CreateGraphForm = () => {
     const ABOUT_MAX_LENGTH = 200;
 
     // Получение глобальных графов
-    const { data: globalGraphs, isLoading: isLoadingGlobalGraphs } = useQuery({
+    const { data: globalGraphs, isLoading: isLoadingGlobalGraphs } = useQuery<{ data: IGraphList[] }>({
         queryKey: ['graph/getGlobalGraphs'],
-        queryFn: async () => {
-            const response = await GraphService.getGlobalGraphs();
-            return response.data as IGraphList[];
-        },
+        queryFn: () => GraphService.getGlobalGraphs(),
     });
 
     // Получение родительских графов (графов-тематик) после выбора глобального графа
-    const { data: parentGraphs, isLoading: isLoadingParentGraphs } = useQuery({
+    const { data: parentGraphs, isLoading: isLoadingParentGraphs } = useQuery<{ data: IGraphList[] }>({
         queryKey: ['graph/getTopicGraphs', selectedGlobalGraph],
-        queryFn: async () => {
-            if (!selectedGlobalGraph) return [];
-            const response = await GraphService.getGraphsByTopic(selectedGlobalGraph);
-            return response.data as IGraphList[];
+        queryFn: () => {
+            if (!selectedGlobalGraph) return { data: [] };
+            return GraphService.getGraphsByTopic(selectedGlobalGraph);
         },
         enabled: !!selectedGlobalGraph, // Запрос выполняется только если выбран глобальный граф
     });
@@ -120,9 +116,8 @@ export const CreateGraphForm = () => {
         }
     };
 
-    const handleGlobalGraphChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newGlobalGraphId = e.target.value;
-        setSelectedGlobalGraph(newGlobalGraphId);
+    const handleGlobalGraphChange = (value: string) => {
+        setSelectedGlobalGraph(value);
         // Сбрасываем выбор родительского графа при смене глобального графа
         setSelectedParentGraph('');
     };
@@ -148,15 +143,15 @@ export const CreateGraphForm = () => {
             </FormInputGroup>
 
             <FormInputGroup label="Глобальный граф:">
-                <FormSelect
+                <DropdownSelect
                     value={selectedGlobalGraph}
-                    onChange={handleGlobalGraphChange}
+                    onChange={(v) => handleGlobalGraphChange(Array.isArray(v) ? v[0] ?? '' : v)}
                     options={[
                         { value: '', label: 'Выберите глобальный граф' },
-                        ...(globalGraphs?.map((graph: IGraphList) => ({
+                        ...(globalGraphs?.data || []).map((graph: IGraphList) => ({
                             value: graph._id,
                             label: graph.name
-                        })) || [])
+                        }))
                     ]}
                     required
                     disabled={isLoadingGlobalGraphs}
@@ -164,15 +159,15 @@ export const CreateGraphForm = () => {
             </FormInputGroup>
 
             <FormInputGroup label="Родительский граф (граф-тематика):">
-                <FormSelect
+                <DropdownSelect
                     value={selectedParentGraph}
-                    onChange={(e) => setSelectedParentGraph(e.target.value)}
+                    onChange={(v) => setSelectedParentGraph(Array.isArray(v) ? v[0] ?? '' : v)}
                     options={[
                         { value: '', label: selectedGlobalGraph ? 'Выберите родительский граф' : 'Сначала выберите глобальный граф' },
-                        ...(parentGraphs?.map((graph: IGraphList) => ({
+                        ...(parentGraphs?.data || []).map((graph: IGraphList) => ({
                             value: graph._id,
                             label: graph.name
-                        })) || [])
+                        }))
                     ]}
                     required
                     disabled={!selectedGlobalGraph || isLoadingParentGraphs}

@@ -1,54 +1,55 @@
-import React, { FC, useCallback, useEffect, useRef } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "./PopUpWrapper.module.scss";
 import { X } from 'lucide-react';
-import { useModalManager, useModalState } from "./useModalManager";
-import { useSmoothScrollLock } from "./useSmoothScrollLock";
+import { useModalManager, incrementModalOpenCount, decrementModalOpenCount } from "./useModalManager";
+import { useScrollLock } from "./useScrollLock";
+
 
 interface PopUpWrapperProps {
-  isOpen: boolean; // Управляет открытием/закрытием попапа
-  onClose: () => void; // Функция для закрытия попапа
-  children: React.ReactNode; // Контент внутри попапа
-  width?: number | string; // Необязательная ширина
-  height?: number | string; // Необязательная высота
-  modalId?: string; // Уникальный ID для modal окна
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  width?: number | string;
+  height?: number | string;
 }
 
 const PopUpWrapper: FC<PopUpWrapperProps> = ({ 
   isOpen, 
   onClose, 
   children,
-  width = 'auto', // Дефолтное значение для ширины
-  height = 'auto', // Дефолтное значение для высоты
-  modalId = 'popup-wrapper' // Дефолтный ID
- }) => {
+  width = 'auto',
+  height = 'auto'
+}) => {
   const modalContainer = useModalManager();
-  const { registerModal } = useModalState();
-  const unregisterRef = useRef<(() => void) | null>(null);
+  
+  // Блокируем скролл когда попап открыт
+  useScrollLock(isOpen);
 
-  // Используем плавную блокировку скролла
-  useSmoothScrollLock(isOpen);
-
-  // Регистрируем/отменяем регистрацию modal окна при изменении isOpen
+  // Закрытие по Escape
   useEffect(() => {
-    if (isOpen) {
-      unregisterRef.current = registerModal(modalId);
-    } else {
-      if (unregisterRef.current) {
-        unregisterRef.current();
-        unregisterRef.current = null;
-      }
-    }
-
+    // Управляем счетчиком реально открытых модалок
+    if (isOpen) incrementModalOpenCount();
     return () => {
-      if (unregisterRef.current) {
-        unregisterRef.current();
-        unregisterRef.current = null;
+      if (isOpen) decrementModalOpenCount();
+    };
+  }, [isOpen]);
+
+  // Закрытие по Escape
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
       }
     };
-  }, [isOpen, modalId, registerModal]);
 
-  // Обработчик клика вне окна для его закрытия
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
+  // Обработчик клика вне окна
   const handleOverlayClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (e.target === e.currentTarget) {
@@ -60,11 +61,14 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
 
   if (!isOpen || !modalContainer) return null;
 
-  // Рендерим через портал в специальный контейнер
   return createPortal(
-    <div className={styles.popupOverlay} onClick={handleOverlayClick}>
-      <div className={styles.popupContent} style={{ width, height }}>
-        <button onClick={onClose} className={styles.closeButton}>
+    <div className={styles.overlay} onClick={handleOverlayClick}>
+      <div className={styles.content} style={{ width, height }}>
+        <button 
+          onClick={onClose} 
+          className={styles.closeButton}
+          aria-label="Закрыть"
+        >
           <X size={24} /> 
         </button>
         {children}

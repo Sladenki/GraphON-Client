@@ -3,7 +3,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { EventService } from '@/services/event.service';
 import { GraphService } from '@/services/graph.service';
 import { IGraphList } from '@/types/graph.interface';
-import { AdminForm, FormInputGroup, FormInput, FormSelect, FormTextarea } from '@/components/ui/AdminForm';
+import { AdminForm, FormInputGroup, FormInput, DropdownSelect, FormTextarea } from '@/components/shared/AdminForm';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useAuth } from '@/providers/AuthProvider';
 import styles from './CreateEventForm.module.scss';
@@ -162,49 +162,42 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             </div>
         ) : (
         <AdminForm
-            title="Создание нового мероприятия"
             onSubmit={handleSubmit}
             submitButtonText="Создать мероприятие"
             isSubmitting={isPending || isLoadingTopics}
             isSubmitDisabled={!isFormValid}
         >
             <FormInputGroup 
-                label="Название мероприятия"
-                description="Введите название мероприятия. Используйте понятное и информативное название, которое отражает суть события"
+                label="1. Название мероприятия"
             >
                 <FormInput
                     name="name"
                     type="text"
                     value={eventData.name}
                     onChange={handleChange}
-                    placeholder="Введите название мероприятия"
                     required
                 />
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Место проведения"
-                description="Укажите место проведения мероприятия"
+                label="2. Место проведения"
             >
                 <FormInput
                     name="place"
                     type="text"
                     value={eventData.place}
                     onChange={handleChange}
-                    placeholder="Введите место проведения мероприятия"
                     required
                 />
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Описание"
-                description={`Подробно опишите мероприятие. Укажите цель, программу, требования к участникам и другую важную информацию (максимум ${DESCRIPTION_MAX_LENGTH} символов)`}
+                label="3. Описание"
             >
                 <FormTextarea
                     name="description"
                     value={eventData.description}
                     onChange={handleChange}
-                    placeholder="Введите описание мероприятия"
                     maxLength={DESCRIPTION_MAX_LENGTH}
                     required
                 />
@@ -214,30 +207,28 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Граф"
-                description="Выберите граф, к которому относится мероприятие. Это поможет участникам найти связанные материалы и контент"
+                label="4. Граф"
+                description="Выберите граф, к которому относится мероприятие"
             >
-                <FormSelect
+                <DropdownSelect
                     name="graphId"
                     value={eventData.graphId}
-                    onChange={handleChange}
-                    options={[
-                        { value: '', label: isLoadingTopics ? 'Загрузка...' : 'Выберите граф' },
-                        ...mainTopics.map((graph: IGraphList) => ({
-                            value: graph._id,
-                            label: graph.name
-                        }))
-                    ]}
+                    onChange={(value) => setEventData(prev => ({ ...prev, graphId: Array.isArray(value) ? (value[0] ?? '') : value }))}
+                    placeholder={isLoadingTopics ? 'Загрузка...' : 'Выберите граф'}
+                    options={mainTopics.map((graph: IGraphList) => ({
+                        value: graph._id,
+                        label: graph.name
+                    }))}
                     required
                     disabled={isLoadingTopics}
                 />
             </FormInputGroup>
 
             <FormInputGroup 
-                label="Дата и время"
-                description="Укажите, уточнена ли дата и время мероприятия"
+                label="5. Дата и время"
+                description="Вы можете уточнить дату и время мероприятия позже при редактировании"
             >
-                <div className={styles.checkboxRow}>
+                <label className={styles.checkboxRow}>
                     <input
                         type="checkbox"
                         id="isDateTbd"
@@ -247,12 +238,11 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                             ...prev,
                             isDateTbd: e.target.checked
                         }))}
-                        style={{ width: '16px', height: '16px' }}
                     />
-                    <label htmlFor="isDateTbd" className={styles.checkboxLabel}>
+                    <span className={styles.checkboxLabel}>
                         Дата и время уточняется
-                    </label>
-                </div>
+                    </span>
+                </label>
             </FormInputGroup>
 
             {!eventData.isDateTbd && (
