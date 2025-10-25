@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useEffect, useMemo, useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { useEffect, useRef } from "react";
 import styles from "./page.module.scss";
 import { inter } from "@/app/fonts";
 import coding from "../photos/coding.jpg";
@@ -20,28 +20,10 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0 },
 };
 
-function useAnimatedSum(increments: number[]) {
-  const totalTarget = useMemo(() => increments.reduce((a, b) => a + b, 0), [increments]);
-  const raw = useMotionValue(0);
-  const eased = useSpring(raw, { stiffness: 90, damping: 20, mass: 0.6 });
-  const formatted = useTransform(eased, (v) =>
-    new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 0 }).format(v)
-  );
-
-  const add = (value: number) => {
-    const current = raw.get();
-    raw.set(current + value);
-  };
-
-  const reset = () => raw.set(0);
-
-  return { formatted, add, reset, totalTarget } as const;
-}
-
-function AwardTrigger({ amount, onVisible, children }: { amount: number; onVisible: (v: number) => void; children: React.ReactNode }) {
+function AwardTrigger({ onVisible, children }: { onVisible?: () => void; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const inView = useInView(ref, { margin: "-20% 0px -20% 0px", once: true });
-  useEffect(() => { if (inView) onVisible(amount); }, [inView, amount, onVisible]);
+  useEffect(() => { if (inView && onVisible) onVisible(); }, [inView, onVisible]);
   return (
     <div ref={ref}>
       {children}
@@ -49,20 +31,7 @@ function AwardTrigger({ amount, onVisible, children }: { amount: number; onVisib
   );
 }
 
-function SumBar({ label = "Итоговая сумма", sticky = false, children }: { label?: string; sticky?: boolean; children: React.ReactNode }) {
-  return (
-    <div className={sticky ? styles.sumSticky : styles.sumInline}>
-      <span className={styles.sumLabel}>{label}</span>
-      {children}
-    </div>
-  );
-}
-
 export default function PetrikinPage() {
-  // amounts matching spec:
-  const increments = [15000, 0, 66321, 1_000_000, 350_000];
-  const { formatted, add } = useAnimatedSum(increments);
-
   return (
     <main className={`${styles.page} ${inter.variable}`}>
       {/* 1 — Приветствие */}
@@ -138,7 +107,7 @@ export default function PetrikinPage() {
           </motion.div>
         </section>
 
-        {/* 5 — Стартап GraphON (большой блок) */}
+        {/* 5 — Стартап GraphON (большой блок, текст во всю ширину) */}
         <section className={styles.section}>
           <motion.div
             className={styles.bigBlock}
@@ -149,17 +118,14 @@ export default function PetrikinPage() {
             transition={{ duration: 0.6 }}
           >
             <div className={styles.heading}>Стартап GraphON</div>
-            <p className={styles.text}>
+            <p className={styles.textWide}>
               На данный момент я занимаюсь развитием своего стартапа. Проект называется GraphON — это платформа, которая помогает студентам КГТУ находить и участвовать во внеучебных мероприятиях с помощью визуализации в системе графов.
             </p>
-            <SumBar sticky>
-              <motion.span className={styles.sumValue}>{formatted}</motion.span>
-            </SumBar>
           </motion.div>
         </section>
 
         {/* 6 — Generation Z (+15 000) */}
-        <AwardTrigger amount={15000} onVisible={add}>
+        <AwardTrigger>
           <section className={`${styles.section} ${styles.award}`}>
             <motion.div
               className={styles.split}
@@ -176,16 +142,14 @@ export default function PetrikinPage() {
                 В декабре 2024г вместе с Кристиной Крисько, мы заняли 3 место в поколении Z с проектом GraphON.
                 {" "}
                 <Link href="#" className={styles.link}>Ссылка</Link>
+                <div className={styles.sumDelta}><span className={styles.sumDeltaValue}>+15 000 ₽</span></div>
               </motion.div>
             </motion.div>
           </section>
         </AwardTrigger>
-        <SumBar>
-          <motion.span className={styles.sumValue}>{formatted}</motion.span>
-        </SumBar>
 
         {/* 7 — Я в деле (+0) */}
-        <AwardTrigger amount={0} onVisible={add}>
+        <AwardTrigger>
           <section className={styles.section}>
             <motion.div
               className={styles.split}
@@ -206,7 +170,7 @@ export default function PetrikinPage() {
         </AwardTrigger>
 
         {/* 8 — РосМолодёжь (+66 321) */}
-        <AwardTrigger amount={66321} onVisible={add}>
+        <AwardTrigger>
           <section className={`${styles.section} ${styles.award}`}>
             <motion.div
               className={styles.split}
@@ -221,16 +185,14 @@ export default function PetrikinPage() {
               <motion.div variants={fadeInUp} className={styles.text}>
                 <div className={styles.heading}>РосМолодёжь</div>
                 В июне 2025г я выиграл РосМолодёжь.Гранты, где получил 66 000₽ на разработку GraphON.
+                <div className={styles.sumDelta}><span className={styles.sumDeltaValue}>+66 321 ₽</span></div>
               </motion.div>
             </motion.div>
           </section>
         </AwardTrigger>
-        <SumBar>
-          <motion.span className={styles.sumValue}>{formatted}</motion.span>
-        </SumBar>
 
         {/* 9 — Студенческий стартап (+1 000 000) */}
-        <AwardTrigger amount={1_000_000} onVisible={add}>
+        <AwardTrigger>
           <section className={`${styles.section} ${styles.award}`}>
             <motion.div
               initial="hidden"
@@ -241,16 +203,14 @@ export default function PetrikinPage() {
               <motion.div variants={fadeInUp}>
                 <div className={styles.heading}>Студенческий стартап</div>
                 В сентябре 2025г я выиграл программу «Студенческий стартап», где получил 1 000 000₽ на разработку GraphON.
+                <div className={styles.sumDelta}><span className={styles.sumDeltaValue}>+1 000 000 ₽</span></div>
               </motion.div>
             </motion.div>
           </section>
         </AwardTrigger>
-        <SumBar>
-          <motion.span className={styles.sumValue}>{formatted}</motion.span>
-        </SumBar>
 
         {/* 10 — БизнесБаттл (+350 000) */}
-        <AwardTrigger amount={350_000} onVisible={add}>
+        <AwardTrigger>
           <section className={`${styles.section} ${styles.award}`}>
             <motion.div
               className={styles.split}
@@ -261,6 +221,7 @@ export default function PetrikinPage() {
               <motion.div variants={fadeInUp} className={styles.text}>
                 <div className={styles.heading}>БизнесБаттл</div>
                 В сентябре 2025г с командой выиграли «БизнесБаттл 7 сезона», где получили 350 000₽ на рекламу в западной медиа-прессе.
+                <div className={styles.sumDelta}><span className={styles.sumDeltaValue}>+350 000 ₽</span></div>
               </motion.div>
               <motion.div variants={fadeInUp} className={styles.imageWrap}>
                 <Image src={battlSrc} alt="БизнесБаттл" width={1200} height={800} style={{ width: "100%", height: "auto" }} />
@@ -268,9 +229,6 @@ export default function PetrikinPage() {
             </motion.div>
           </section>
         </AwardTrigger>
-        <SumBar>
-          <motion.span className={styles.sumValue}>{formatted}</motion.span>
-        </SumBar>
 
         {/* Завершение — действия */}
         <section className={styles.section}>

@@ -130,6 +130,42 @@
   gap: 12px;
 }
 
+/* Compact, pretty delta badge like +15.000₽ */
+.sumDelta {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(91, 124, 250, 0.18), rgba(62, 207, 189, 0.18));
+  border: 1px solid rgba(92, 100, 170, 0.2);
+  box-shadow: 0 6px 18px rgba(91, 124, 250, 0.18);
+  color: var(--text);
+}
+
+.sumDelta::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--primary), var(--accent));
+  box-shadow: 0 0 0 4px rgba(91, 124, 250, 0.15);
+}
+
+.sumDeltaValue {
+  font-weight: 800;
+  font-size: clamp(16px, 2vw, 20px);
+  letter-spacing: 0.02em;
+}
+
+.textWide {
+  font-size: clamp(20px, 2.2vw, 24px);
+  line-height: 1.75;
+  color: var(--text);
+  max-width: none;
+}
+
 .sumLabel {
   color: var(--muted);
   font-weight: 600;
