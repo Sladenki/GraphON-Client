@@ -238,7 +238,7 @@ export default function PetrikinPage() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
-              className={styles.text}
+              className={styles.textWide}
             >
               <motion.div variants={fadeInUp}>
                 <div className={styles.heading}>Студенческий стартап</div>
