@@ -107,6 +107,36 @@ export default function PetrikinPage() {
           </motion.div>
         </section>
 
+        {/* Технологии: React, Next.js, TypeScript, MongoDB */}
+        <section className={`${styles.section} ${styles.techSection}`}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ staggerChildren: 0.06 }}
+          >
+            <div className={styles.heading}>Технологии</div>
+            <div className={styles.techGrid}>
+              <motion.div variants={fadeInUp} className={styles.techCard}>
+                <Image src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" width={64} height={64} className={styles.techLogo} />
+                <span className={styles.techName}>React</span>
+              </motion.div>
+              <motion.div variants={fadeInUp} className={styles.techCard}>
+                <Image src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt="Next.js" width={64} height={64} className={styles.techLogo} />
+                <span className={styles.techName}>Next.js</span>
+              </motion.div>
+              <motion.div variants={fadeInUp} className={styles.techCard}>
+                <Image src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript" width={64} height={64} className={styles.techLogo} />
+                <span className={styles.techName}>TypeScript</span>
+              </motion.div>
+              <motion.div variants={fadeInUp} className={styles.techCard}>
+                <Image src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB" width={64} height={64} className={styles.techLogo} />
+                <span className={styles.techName}>MongoDB</span>
+              </motion.div>
+            </div>
+          </motion.div>
+        </section>
+
         {/* 3 — Опыт работы */}
         <section className={styles.section}>
           <motion.div
