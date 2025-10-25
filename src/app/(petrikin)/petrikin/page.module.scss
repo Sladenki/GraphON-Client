@@ -23,6 +23,8 @@
   background:
     radial-gradient(80% 60% at 50% 0%, rgba(123, 92, 250, 0.08) 0%, rgba(123, 92, 250, 0) 60%),
     radial-gradient(60% 50% at 50% 100%, rgba(62, 207, 189, 0.08) 0%, rgba(62, 207, 189, 0) 60%);
+  position: relative;
+  overflow: clip;
 }
 
 .heroText {
@@ -74,6 +76,12 @@
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(15, 18, 34, 0.12);
   width: 100%;
+  transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease;
+}
+
+.imageWrap:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 16px 44px rgba(15, 18, 34, 0.16);
 }
 
 .imageSm {
@@ -164,6 +172,19 @@
   transform: translateY(-2px);
   box-shadow: 0 18px 48px rgba(20, 25, 55, 0.18);
   border-color: rgba(90, 100, 170, 0.28);
+}
+
+/* Decorative hero blobs - very cheap gradients */
+.heroDecor { position: absolute; inset: 0; pointer-events: none; }
+.blob { position: absolute; filter: blur(22px); opacity: .7; }
+.blobA { width: 420px; height: 420px; top: -80px; left: -80px; background: radial-gradient(closest-side, rgba(123,92,250,.22), rgba(123,92,250,0)); }
+.blobB { width: 520px; height: 520px; bottom: -120px; right: -120px; background: radial-gradient(closest-side, rgba(62,207,189,.22), rgba(62,207,189,0)); }
+
+@keyframes floatY { 0%{ transform: translateY(0);} 50%{ transform: translateY(-10px);} 100%{ transform: translateY(0);} }
+.blob { animation: floatY 10s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .blob { animation: none; }
 }
 
 .sumSticky {
@@ -403,12 +424,26 @@
     linear-gradient(135deg, var(--primary), var(--accent)) border-box;
   box-shadow: 0 10px 26px rgba(91, 124, 250, 0.35);
   transition: transform .15s ease, box-shadow .15s ease, filter .2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .ctaBtn:hover {
   transform: translateY(-2px);
   box-shadow: 0 14px 32px rgba(91, 124, 250, 0.42);
   filter: brightness(1.05);
+}
+
+.ctaBtn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.35) 50%, transparent 100%);
+  transform: translateX(-120%);
+}
+.ctaBtn:hover::after {
+  transform: translateX(120%);
+  transition: transform .65s cubic-bezier(.2,.8,.2,1);
 }
 
 .ctaBtnSecondary {

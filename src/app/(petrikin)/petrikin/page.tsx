@@ -76,6 +76,10 @@ export default function PetrikinPage() {
     <main className={`${styles.page} ${inter.variable}`}>
       {/* 1 — Приветствие */}
       <section className={styles.hero}>
+        <div className={styles.heroDecor}>
+          <div className={`${styles.blob} ${styles.blobA}`} />
+          <div className={`${styles.blob} ${styles.blobB}`} />
+        </div>
         <motion.h1
           className={styles.heroText}
           initial="hidden"
