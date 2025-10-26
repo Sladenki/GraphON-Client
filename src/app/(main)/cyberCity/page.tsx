@@ -110,7 +110,10 @@ export default function CyberCityPage() {
                       const color = neonFor(ly.id);
                       const sid = (ly.id || "").toLowerCase();
                       map.setPaintProperty(ly.id, "line-color", color);
-                      map.setPaintProperty(ly.id, "line-opacity", 0.95);
+                      map.setPaintProperty(ly.id, "line-opacity", [
+                        "interpolate", ["linear"], ["zoom"],
+                        10, 0.25, 12, 0.45, 14, 0.70, 16, 0.98
+                      ]);
                       if (sid.includes("motorway") || sid.includes("highway") || sid.includes("primary") || sid.includes("main")) {
                         map.setPaintProperty(ly.id, "line-width", [
                           "interpolate", ["linear"], ["zoom"],
@@ -141,7 +144,10 @@ export default function CyberCityPage() {
                             layout: ly.layout || {},
                             paint: {
                               "line-color": color,
-                              "line-opacity": 0.35,
+                              "line-opacity": [
+                                "interpolate", ["linear"], ["zoom"],
+                                10, 0.08, 12, 0.14, 14, 0.22, 16, 0.30
+                              ],
                               "line-width": [
                                 "interpolate", ["linear"], ["zoom"],
                                 10, 1.6, 12, 2.6, 14, 4.2, 16, 6.0
@@ -172,6 +178,8 @@ export default function CyberCityPage() {
             {/* Canvas для будущего glow‑лейблов/оверлеев */}
             <div className={styles.labelsGlow} />
           </div>
+          {/* лёгкий depth fade поверх карты */}
+          <div className={styles.depthFade} />
         </div>
       </div>
     </section>
