@@ -35,18 +35,36 @@ export default function CyberCityPage() {
 
                   const layers = map.getStyle()?.layers || [];
                   const hideIfIdIncludes = [
-                    "building", "extrusion", "poi", "amenity", "icon", "landuse",
-                    "transit", "rail", "railway", "aeroway", "ferry"
+                    // requested categories and close variants
+                    "poi", "amenity", "poi-label", "poi_label",
+                    "landuse", "landcover", "park", "green", "greenspace", "forest",
+                    "transit", "public_transport",
+                    "rail", "railway", "rail-station",
+                    "aeroway", "airport", "aerodrome", "runway", "taxiway",
+                    "ferry", "harbour", "harbor", "maritime", "pier",
+                    // also hide 3D/building extras/icons if present
+                    "building", "extrusion", "icon"
                   ];
-                  const hideMinorRoadBelowZoom = 16;
+                  const hideMinorRoadBelowZoom = 17;
 
                   // Спрячем лишние детали и упростим подписи
                   layers.forEach((ly: any) => {
                     const id = (ly.id || "").toLowerCase();
-                    if (hideIfIdIncludes.some(s => id.includes(s))) {
+                    const src = ((ly as any)["source-layer"] || "").toLowerCase();
+                    if (hideIfIdIncludes.some(s => id.includes(s) || src.includes(s))) {
                       try { map.setLayoutProperty(ly.id, "visibility", "none"); } catch {}
                       return;
                     }
+                    // Полностью скрываем пешеходные/внутрипарковые/внутриквартальные линии
+                    const suppressLineKeywords = [
+                      "footway", "path", "steps", "pedestrian", "cycle", "cycleway",
+                      "track", "service", "bridleway", "living", "sidewalk", "trail"
+                    ];
+                    if (suppressLineKeywords.some(k => id.includes(k) || src.includes(k))) {
+                      try { map.setLayoutProperty(ly.id, "visibility", "none"); } catch {}
+                      return;
+                    }
+                    // Остальные минорные дороги показываем только с крупного масштаба
                     if (id.includes("residential") || id.includes("service") || id.includes("minor") || id.includes("track") || id.includes("footway") || id.includes("path")) {
                       try { map.setLayerZoomRange(ly.id, hideMinorRoadBelowZoom, 24); } catch {}
                     }
@@ -74,6 +92,21 @@ export default function CyberCityPage() {
 
                   layers.forEach((ly: any) => {
                     if (ly.type === "line") {
+                      // Жёсткий фильтр по классам транспортных линий в OpenMapTiles
+                      try {
+                        const sourceLayer = ((ly as any)["source-layer"] || "").toLowerCase();
+                        if (sourceLayer === "transportation") {
+                          const suppressed: string[] = [
+                            "residential", "service", "minor", "track", "path", "footway",
+                            "pedestrian", "living_street", "cycleway", "steps"
+                          ];
+                          // Используем legacy-формат фильтров (как в стилях Carto): ["!in", "class", ...]
+                          const notInExpr: any = ["!in", "class", ...suppressed];
+                          const current = map.getFilter(ly.id);
+                          const combined = current ? ["all", current, notInExpr] : notInExpr;
+                          map.setFilter(ly.id, combined as any);
+                        }
+                      } catch {}
                       const color = neonFor(ly.id);
                       const sid = (ly.id || "").toLowerCase();
                       map.setPaintProperty(ly.id, "line-color", color);
