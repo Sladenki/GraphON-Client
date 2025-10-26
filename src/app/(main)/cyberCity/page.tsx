@@ -83,7 +83,9 @@ export default function CyberCityPage() {
                   layers.forEach((ly: any) => {
                     const id = (ly.id || "").toLowerCase();
                     const src = ((ly as any)["source-layer"] || "").toLowerCase();
-                    if (hideIfIdIncludes.some(s => id.includes(s) || src.includes(s))) {
+                    const matchesHide = hideIfIdIncludes.some(s => id.includes(s) || src.includes(s));
+                    const isQuarterLayer = id.includes("landuse") || id.includes("landcover") || id.includes("building") || src.includes("landuse") || src.includes("landcover") || src.includes("building");
+                    if (matchesHide && !(isLight && isQuarterLayer)) {
                       try { map.setLayoutProperty(ly.id, "visibility", "none"); } catch {}
                       return;
                     }
@@ -102,13 +104,18 @@ export default function CyberCityPage() {
                     }
                     if (ly.type === "symbol") {
                       try {
-                        map.setPaintProperty(ly.id, "text-halo-color", "#0c0f19");
-                        map.setPaintProperty(ly.id, "text-halo-width", 1.2);
-                        map.setPaintProperty(ly.id, "text-halo-blur", 0.3);
+                        if (isLight) {
+                          map.setPaintProperty(ly.id, "text-color", "#243447");
+                          map.setPaintProperty(ly.id, "text-halo-color", "#ffffff");
+                          map.setPaintProperty(ly.id, "text-halo-width", 1.4);
+                        } else {
+                          map.setPaintProperty(ly.id, "text-color", "#8cf7ff");
+                          map.setPaintProperty(ly.id, "text-halo-color", "#ff5cf4");
+                          map.setPaintProperty(ly.id, "text-halo-width", 1.2);
+                        }
+                        map.setPaintProperty(ly.id, "text-halo-blur", 0.2);
                         map.setLayoutProperty(ly.id, "text-size", [
-                          "interpolate", ["linear"], ["zoom"],
-                          10, 10,
-                          16, 12
+                          "interpolate", ["linear"], ["zoom"], 10, 10, 16, 12
                         ]);
                         map.setPaintProperty(ly.id, "icon-opacity", 0);
                       } catch {}
@@ -117,9 +124,9 @@ export default function CyberCityPage() {
                   const colorFor = (id: string) => {
                     const s = (id || "").toLowerCase();
                     if (isLight) {
-                      if (s.includes("motorway") || s.includes("highway") || s.includes("primary") || s.includes("main")) return "#2a3a4a";
-                      if (s.includes("secondary") || s.includes("street") || s.includes("road")) return "#5a6b7c";
-                      return "#6b7c8d";
+                      if (s.includes("motorway") || s.includes("highway") || s.includes("primary") || s.includes("main")) return "#3f4a55"; // тёмно‑серый
+                      if (s.includes("secondary") || s.includes("street") || s.includes("road")) return "#87909a"; // средний серый
+                      return "#9aa4ae";
                     }
                     if (s.includes("motorway") || s.includes("highway")) return "#00eaff";
                     if (s.includes("primary") || s.includes("main")) return "#ff5cf4";
@@ -147,31 +154,32 @@ export default function CyberCityPage() {
                       const color = colorFor(ly.id);
                       const sid = (ly.id || "").toLowerCase();
                       map.setPaintProperty(ly.id, "line-color", color);
-                      map.setPaintProperty(ly.id, "line-opacity", [
-                        "interpolate", ["linear"], ["zoom"],
-                        10, 0.25, 12, 0.45, 14, 0.70, 16, 0.98
+                      map.setPaintProperty(ly.id, "line-opacity", isLight ? [
+                        "interpolate", ["linear"], ["zoom"], 10, 0.35, 12, 0.55, 14, 0.75, 16, 0.90
+                      ] : [
+                        "interpolate", ["linear"], ["zoom"], 10, 0.25, 12, 0.45, 14, 0.70, 16, 0.98
                       ]);
                       if (sid.includes("motorway") || sid.includes("highway") || sid.includes("primary") || sid.includes("main")) {
                         map.setPaintProperty(ly.id, "line-width", [
                           "interpolate", ["linear"], ["zoom"],
                           10, 1.0, 12, 2.0, 14, 3.2, 16, 5.0
                         ]);
-                        map.setPaintProperty(ly.id, "line-blur", 0.4);
+                        map.setPaintProperty(ly.id, "line-blur", isLight ? 0.15 : 0.4);
                       } else if (sid.includes("secondary") || sid.includes("street") || sid.includes("road")) {
                         map.setPaintProperty(ly.id, "line-width", [
                           "interpolate", ["linear"], ["zoom"],
                           10, 0.3, 12, 0.6, 14, 1.0, 16, 1.6
                         ]);
-                        map.setPaintProperty(ly.id, "line-blur", 0.2);
+                        map.setPaintProperty(ly.id, "line-blur", isLight ? 0.1 : 0.2);
                       } else {
                         map.setPaintProperty(ly.id, "line-width", [
                           "interpolate", ["linear"], ["zoom"],
                           10, 0.2, 12, 0.4, 14, 0.6, 16, 1.0
                         ]);
-                        map.setPaintProperty(ly.id, "line-blur", 0.1);
+                        map.setPaintProperty(ly.id, "line-blur", isLight ? 0.05 : 0.1);
                       }
 
-                      if (ly.source) {
+                      if (!isLight && ly.source) {
                         const glowId = `${ly.id}-neon-glow`;
                         if (!layers.find((l: any) => l.id === glowId) && !map.getLayer(glowId)) {
                           const addDef: any = {
@@ -198,13 +206,18 @@ export default function CyberCityPage() {
                         }
                       }
                     } else if (ly.type === "symbol") {
-                      map.setPaintProperty(ly.id, "text-color", "#8cf7ff");
-                      map.setPaintProperty(ly.id, "text-halo-color", "#ff5cf4");
-                      map.setPaintProperty(ly.id, "text-halo-width", 1.2);
-                      map.setPaintProperty(ly.id, "text-halo-blur", 0.2);
-                    } else if (ly.type === "fill" && (ly.id || "").toLowerCase().includes("water")) {
-                      map.setPaintProperty(ly.id, "fill-color", "#081624");
-                      map.setPaintProperty(ly.id, "fill-opacity", 0.95);
+                      // обработано выше
+                    } else if (ly.type === "fill") {
+                      const idLow = (ly.id || "").toLowerCase();
+                      if (idLow.includes("water")) {
+                        map.setPaintProperty(ly.id, "fill-color", isLight ? "#dfe6ee" : "#081624");
+                        map.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.94 : 0.95);
+                      } else if (isLight && (idLow.includes("landuse") || idLow.includes("landcover") || idLow.includes("building"))) {
+                        try {
+                          map.setPaintProperty(ly.id, "fill-color", "#edf0f3");
+                          map.setPaintProperty(ly.id, "fill-opacity", ["interpolate", ["linear"], ["zoom"], 10, 0.18, 12, 0.20, 14, 0.22, 16, 0.24]);
+                        } catch {}
+                      }
                     }
                   });
                 } catch {}
