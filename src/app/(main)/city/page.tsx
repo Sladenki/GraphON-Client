@@ -115,9 +115,11 @@ const MapContainer = dynamic(async () => (await import("react-leaflet")).MapCont
 const TileLayer = dynamic(async () => (await import("react-leaflet")).TileLayer, { ssr: false });
 const Marker = dynamic(async () => (await import("react-leaflet")).Marker, { ssr: false });
 const Popup = dynamic(async () => (await import("react-leaflet")).Popup, { ssr: false });
+import { useMap } from "react-leaflet";
 
 // Leaflet icon fix: we'll use DivIcon for glow
 import L from "leaflet";
+import { useEffect } from "react";
 
 function buildGlowIcon(category: EventCategory, hovered: boolean) {
   const colorClass =
@@ -130,6 +132,14 @@ function buildGlowIcon(category: EventCategory, hovered: boolean) {
   const klass = `${styles.glowMarker} ${colorClass} ${hovered ? styles.markerHover : ""}`;
   const html = `<div class="${klass}"><div class="${styles.pulseRing}" style="color:inherit"></div></div>`;
   return L.divIcon({ className: "", html, iconSize: [18, 18], iconAnchor: [9, 9] });
+}
+
+function HideLeafletAttribution() {
+  const map = useMap();
+  useEffect(() => {
+    try { map.attributionControl.setPrefix(""); } catch {}
+  }, [map]);
+  return null;
 }
 
 export default function CityPage() {
@@ -190,41 +200,54 @@ export default function CityPage() {
       </div>
 
       <div className={styles.content}>
-        <div className={styles.mapWrap}>
-          <MapContainer center={[KalCenter.lat, KalCenter.lng]} zoom={13} className={styles.map} preferCanvas>
-            <TileLayer url={url} />
-            {filtered.map(ev => (
-              <Marker
-                key={ev.id}
-                position={[ev.lat, ev.lng]}
-                icon={buildGlowIcon(ev.category, hoverId === ev.id)}
-                eventHandlers={{
-                  mouseover: () => setHoverId(ev.id),
-                  mouseout: () => setHoverId(curr => (curr === ev.id ? null : curr)),
-                }}
-              >
-                <Popup>
-                  <strong>{ev.name}</strong>
-                  <div>{ev.place}</div>
-                  <div>
-                    {ev.isDateTbd ? "Дата уточняется" : ev.eventDate}
-                    {ev.timeFrom ? ` • ${ev.timeFrom}${ev.timeTo ? "–" + ev.timeTo : ""}` : ""}
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
+        <div className={`${styles.mapWrap} ${styles.tilt}`}>
+          <div className={styles.tiltInner}>
+            <MapContainer
+              center={[KalCenter.lat, KalCenter.lng]}
+              zoom={13}
+              className={`${styles.map} ${styles.neonMap}`}
+              preferCanvas
+              maxBounds={L.latLngBounds([54.62, 20.36], [54.78, 20.58])}
+              maxBoundsViscosity={0.8}
+            >
+              <HideLeafletAttribution />
+              {/* Slightly brightened base */}
+              <TileLayer className={styles.baseBoost} url={"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"} opacity={0.9} />
+              {/* Blend light tiles to reduce overall darkness without tokens */}
+              <TileLayer className={styles.lightMix} url={"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"} opacity={0.22} />
+              {/* Labels glow overlay - upper layer for neon labels */}
+              <TileLayer className={styles.labelsGlow} url={"https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png"} opacity={0.9} />
+              {/* Soft blur underlay for stronger glow */}
+              <TileLayer className={styles.labelsBlur} url={"https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png"} opacity={0.6} />
+              {filtered.map(ev => (
+                <Marker
+                  key={ev.id}
+                  position={[ev.lat, ev.lng]}
+                  icon={buildGlowIcon(ev.category, hoverId === ev.id)}
+                  eventHandlers={{
+                    mouseover: () => setHoverId(ev.id),
+                    mouseout: () => setHoverId(curr => (curr === ev.id ? null : curr)),
+                  }}
+                >
+                  <Popup>
+                    <strong>{ev.name}</strong>
+                    <div>{ev.place}</div>
+                    <div>
+                      {ev.isDateTbd ? "Дата уточняется" : ev.eventDate}
+                      {ev.timeFrom ? ` • ${ev.timeFrom}${ev.timeTo ? "–" + ev.timeTo : ""}` : ""}
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            </MapContainer>
+          </div>
         </div>
         <aside className={styles.sidebar}>
           {filtered.map(ev => (
             <div key={ev.id} className={styles.card} onClick={() => {
-              // Fly to event position
-              // Find an existing Leaflet map instance (first one on the page)
               const maps = (L as any)?.map?.instances || [];
               const map = maps?.[0];
-              if (map) {
-                map.flyTo([ev.lat, ev.lng], 15, { duration: 0.8 });
-              }
+              if (map) map.flyTo([ev.lat, ev.lng], 15, { duration: 0.8 });
             }}>
               <div className={styles.cardTitle}>{ev.name}</div>
               <div className={styles.cardMeta}>{ev.place}</div>
