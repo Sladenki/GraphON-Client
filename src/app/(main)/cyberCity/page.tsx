@@ -19,16 +19,20 @@ export default function CyberCityPage() {
         <div className={styles.mapHost}>
           <div className={styles.tiltInner}>
             <ReactMapGL
-              initialViewState={{ longitude: 20.4522, latitude: 54.7104, zoom: 12.8, pitch: 52, bearing: -15 }}
+              initialViewState={{ longitude: 20.5147, latitude: 54.7064, zoom: 13.5, pitch: 52, bearing: -15 }}
               style={{ width: "100%", height: "100%" }}
               mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
               attributionControl={false}
               cooperativeGestures={false}
               dragRotate={true}
+              maxBounds={[[20.36, 54.62], [20.58, 54.78]]}
               onLoad={(e: any) => {
                 const map = e?.target;
                 if (!map) return;
                 try {
+                  // Ограничим область — Калининград
+                  try { map.setMaxBounds([[20.36, 54.62], [20.58, 54.78]]); } catch {}
+
                   const layers = map.getStyle()?.layers || [];
                   const neonFor = (id: string) => {
                     const s = (id || "").toLowerCase();
