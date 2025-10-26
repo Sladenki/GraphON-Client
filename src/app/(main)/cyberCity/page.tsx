@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./page.module.scss";
 
 // MapLibre GL JS is open-source (BSD), не требует токенов при использовании открытых стилей/тайлов (например, Carto/OSM).
@@ -10,6 +11,36 @@ import styles from "./page.module.scss";
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
 
 export default function CyberCityPage() {
+  const [isLight, setIsLight] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const media = window.matchMedia("(prefers-color-scheme: light)");
+    const readDomTheme = (): "light" | "dark" | null => {
+      const el = document.documentElement;
+      const attr = (el.getAttribute("data-theme") || "").toLowerCase();
+      if (attr === "light") return "light";
+      if (attr === "dark") return "dark";
+      if (el.classList.contains("dark") || el.classList.contains("theme-dark")) return "dark";
+      if (el.classList.contains("light") || el.classList.contains("theme-light")) return "light";
+      return null;
+    };
+    const apply = () => {
+      const dom = readDomTheme();
+      if (dom) { setIsLight(dom === "light"); return; }
+      setIsLight(media.matches); // fallback на системную тему
+    };
+    apply();
+    media.addEventListener("change", apply);
+    const obs = new MutationObserver(apply);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] });
+    return () => { media.removeEventListener("change", apply); obs.disconnect(); };
+  }, []);
+
+  const baseStyleUrl = useMemo(() => (
+    isLight
+      ? "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" // светлая основа
+      : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+  ), [isLight]);
   return (
     <section className={styles.page}>
       <div className={styles.header}>
@@ -19,9 +50,10 @@ export default function CyberCityPage() {
         <div className={styles.mapHost}>
           <div className={styles.tiltInner}>
             <ReactMapGL
+              key={isLight ? "light" : "dark"}
               initialViewState={{ longitude: 20.5147, latitude: 54.7064, zoom: 13.5, pitch: 52, bearing: -15 }}
               style={{ width: "100%", height: "100%" }}
-              mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+              mapStyle={baseStyleUrl}
               attributionControl={false}
               cooperativeGestures={false}
               dragRotate={true}
@@ -82,8 +114,13 @@ export default function CyberCityPage() {
                       } catch {}
                     }
                   });
-                  const neonFor = (id: string) => {
+                  const colorFor = (id: string) => {
                     const s = (id || "").toLowerCase();
+                    if (isLight) {
+                      if (s.includes("motorway") || s.includes("highway") || s.includes("primary") || s.includes("main")) return "#2a3a4a";
+                      if (s.includes("secondary") || s.includes("street") || s.includes("road")) return "#5a6b7c";
+                      return "#6b7c8d";
+                    }
                     if (s.includes("motorway") || s.includes("highway")) return "#00eaff";
                     if (s.includes("primary") || s.includes("main")) return "#ff5cf4";
                     if (s.includes("secondary") || s.includes("street") || s.includes("road")) return "#a47cff";
@@ -107,7 +144,7 @@ export default function CyberCityPage() {
                           map.setFilter(ly.id, combined as any);
                         }
                       } catch {}
-                      const color = neonFor(ly.id);
+                      const color = colorFor(ly.id);
                       const sid = (ly.id || "").toLowerCase();
                       map.setPaintProperty(ly.id, "line-color", color);
                       map.setPaintProperty(ly.id, "line-opacity", [
