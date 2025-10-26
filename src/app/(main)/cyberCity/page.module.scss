@@ -59,4 +59,12 @@
   .title { font-size: 14px; }
 }
 
+/* Ultra-small screens: width < 400px */
+@media (max-width: 400px) {
+  .header { padding: 8px 10px; }
+  .title { font-size: 13px; letter-spacing: .2px; }
+  .mapHost { min-height: 420px; }
+  .neonBoost { filter: brightness(1.1) contrast(1.06) saturate(1.05); }
+}
+
 
