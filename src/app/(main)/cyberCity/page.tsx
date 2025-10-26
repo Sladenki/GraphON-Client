@@ -34,6 +34,36 @@ export default function CyberCityPage() {
                   try { map.setMaxBounds([[20.36, 54.62], [20.58, 54.78]]); } catch {}
 
                   const layers = map.getStyle()?.layers || [];
+                  const hideIfIdIncludes = [
+                    "building", "extrusion", "poi", "amenity", "icon", "landuse",
+                    "transit", "rail", "railway", "aeroway", "ferry"
+                  ];
+                  const hideMinorRoadBelowZoom = 16;
+
+                  // Спрячем лишние детали и упростим подписи
+                  layers.forEach((ly: any) => {
+                    const id = (ly.id || "").toLowerCase();
+                    if (hideIfIdIncludes.some(s => id.includes(s))) {
+                      try { map.setLayoutProperty(ly.id, "visibility", "none"); } catch {}
+                      return;
+                    }
+                    if (id.includes("residential") || id.includes("service") || id.includes("minor") || id.includes("track") || id.includes("footway") || id.includes("path")) {
+                      try { map.setLayerZoomRange(ly.id, hideMinorRoadBelowZoom, 24); } catch {}
+                    }
+                    if (ly.type === "symbol") {
+                      try {
+                        map.setPaintProperty(ly.id, "text-halo-color", "#0c0f19");
+                        map.setPaintProperty(ly.id, "text-halo-width", 1.2);
+                        map.setPaintProperty(ly.id, "text-halo-blur", 0.3);
+                        map.setLayoutProperty(ly.id, "text-size", [
+                          "interpolate", ["linear"], ["zoom"],
+                          10, 10,
+                          16, 12
+                        ]);
+                        map.setPaintProperty(ly.id, "icon-opacity", 0);
+                      } catch {}
+                    }
+                  });
                   const neonFor = (id: string) => {
                     const s = (id || "").toLowerCase();
                     if (s.includes("motorway") || s.includes("highway")) return "#00eaff";
@@ -45,13 +75,28 @@ export default function CyberCityPage() {
                   layers.forEach((ly: any) => {
                     if (ly.type === "line") {
                       const color = neonFor(ly.id);
+                      const sid = (ly.id || "").toLowerCase();
                       map.setPaintProperty(ly.id, "line-color", color);
-                      map.setPaintProperty(ly.id, "line-opacity", 0.9);
-                      map.setPaintProperty(ly.id, "line-width", [
-                        "interpolate", ["linear"], ["zoom"],
-                        10, 0.6, 12, 1.2, 14, 2.0, 16, 3.2
-                      ]);
-                      map.setPaintProperty(ly.id, "line-blur", 0.4);
+                      map.setPaintProperty(ly.id, "line-opacity", 0.95);
+                      if (sid.includes("motorway") || sid.includes("highway") || sid.includes("primary") || sid.includes("main")) {
+                        map.setPaintProperty(ly.id, "line-width", [
+                          "interpolate", ["linear"], ["zoom"],
+                          10, 1.0, 12, 2.0, 14, 3.2, 16, 5.0
+                        ]);
+                        map.setPaintProperty(ly.id, "line-blur", 0.4);
+                      } else if (sid.includes("secondary") || sid.includes("street") || sid.includes("road")) {
+                        map.setPaintProperty(ly.id, "line-width", [
+                          "interpolate", ["linear"], ["zoom"],
+                          10, 0.3, 12, 0.6, 14, 1.0, 16, 1.6
+                        ]);
+                        map.setPaintProperty(ly.id, "line-blur", 0.2);
+                      } else {
+                        map.setPaintProperty(ly.id, "line-width", [
+                          "interpolate", ["linear"], ["zoom"],
+                          10, 0.2, 12, 0.4, 14, 0.6, 16, 1.0
+                        ]);
+                        map.setPaintProperty(ly.id, "line-blur", 0.1);
+                      }
 
                       if (ly.source) {
                         const glowId = `${ly.id}-neon-glow`;
