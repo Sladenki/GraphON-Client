@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./page.module.scss";
 
 // MapLibre GL JS is open-source (BSD), не требует токенов при использовании открытых стилей/тайлов (например, Carto/OSM).
@@ -12,6 +12,11 @@ const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map
 
 export default function CyberCityPage() {
   const [isLight, setIsLight] = useState(false);
+  const [mapRef, setMapRef] = useState<any>(null);
+  const [search, setSearch] = useState("");
+  const [suggests, setSuggests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const debounceTimer = useRef<number | null>(null);
   useEffect(() => {
     if (typeof window === "undefined") return;
     const media = window.matchMedia("(prefers-color-scheme: light)");
@@ -43,16 +48,13 @@ export default function CyberCityPage() {
   ), [isLight]);
   return (
     <section className={styles.page}>
-      <div className={styles.header}>
-        <div className={styles.title}>Киберпанк‑карта — Калининград (MapLibre, 3D pitch)</div>
-      </div>
       <div className={styles.content}>
         <div className={styles.mapHost}>
           <div className={styles.tiltInner}>
             <ReactMapGL
               key={isLight ? "light" : "dark"}
               initialViewState={{ longitude: 20.5147, latitude: 54.7064, zoom: 13.5, pitch: 52, bearing: -15 }}
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: "100%", height: "100%", display: "block" }}
               mapStyle={baseStyleUrl}
               attributionControl={false}
               cooperativeGestures={false}
@@ -61,6 +63,7 @@ export default function CyberCityPage() {
               onLoad={(e: any) => {
                 const map = e?.target;
                 if (!map) return;
+                setMapRef(map);
                 try {
                   // Ограничим область — Калининград
                   try { map.setMaxBounds([[20.36, 54.62], [20.58, 54.78]]); } catch {}
@@ -228,8 +231,102 @@ export default function CyberCityPage() {
             {/* Canvas для будущего glow‑лейблов/оверлеев */}
             <div className={styles.labelsGlow} />
           </div>
-          {/* лёгкий depth fade поверх карты */}
-          <div className={styles.depthFade} />
+          {/* Поиск по адресам (Nominatim) */}
+          <div className={styles.searchBox}>
+            <input
+              className={styles.searchInput}
+              placeholder="Поиск адреса/места"
+              value={search}
+              onChange={(ev) => {
+                const q = ev.target.value;
+                setSearch(q);
+                if (debounceTimer.current) window.clearTimeout(debounceTimer.current);
+                if (!q.trim()) { setSuggests([]); return; }
+                debounceTimer.current = window.setTimeout(async () => {
+                  try {
+                    setLoading(true);
+                    const url = new URL("https://nominatim.openstreetmap.org/search");
+                    url.searchParams.set("format", "jsonv2");
+                    url.searchParams.set("q", q);
+                    // ограничим Калининградом
+                    url.searchParams.set("viewbox", "20.36,54.78,20.58,54.62");
+                    url.searchParams.set("bounded", "1");
+                    url.searchParams.set("addressdetails", "1");
+                    url.searchParams.set("limit", "6");
+                    const res = await fetch(url.toString(), { headers: { "Accept-Language": "ru" } });
+                    const data = await res.json();
+                    setSuggests(Array.isArray(data) ? data : []);
+                  } finally {
+                    setLoading(false);
+                  }
+                }, 320) as unknown as number;
+              }}
+              onKeyDown={async (ev) => {
+                if (ev.key === "Enter" && suggests[0]) {
+                  const s = suggests[0];
+                  const lat = parseFloat(s.lat); const lon = parseFloat(s.lon);
+                  if (mapRef) {
+                    try { mapRef.flyTo({ center: [lon, lat], zoom: 15, speed: 1.2 }); } catch {}
+                    // highlight точка
+                    const pt = { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: { type: "Point", coordinates: [lon, lat] } }] } as any;
+                    if (!mapRef.getSource("search-pt")) {
+                      try { mapRef.addSource("search-pt", { type: "geojson", data: pt } as any); } catch {}
+                      try {
+                        mapRef.addLayer({ id: "search-pt-ring", type: "circle", source: "search-pt", paint: {
+                          "circle-color": isLight ? "#2563eb" : "#00eaff",
+                          "circle-opacity": 0.25,
+                          "circle-radius": 16
+                        } } as any);
+                        mapRef.addLayer({ id: "search-pt-core", type: "circle", source: "search-pt", paint: {
+                          "circle-color": isLight ? "#1d4ed8" : "#00eaff",
+                          "circle-opacity": 0.9,
+                          "circle-radius": 5
+                        } } as any);
+                      } catch {}
+                    } else {
+                      try { (mapRef.getSource("search-pt") as any).setData(pt); } catch {}
+                    }
+                  }
+                }
+              }}
+            />
+            {Boolean(suggests.length) && (
+              <div className={styles.suggests}>
+                {suggests.map((s, i) => (
+                  <button key={i} className={styles.suggestItem} onClick={() => {
+                    const lat = parseFloat(s.lat); const lon = parseFloat(s.lon);
+                    if (mapRef) {
+                      try { mapRef.flyTo({ center: [lon, lat], zoom: 15, speed: 1.2 }); } catch {}
+                      const pt = { type: "FeatureCollection", features: [{ type: "Feature", properties: {}, geometry: { type: "Point", coordinates: [lon, lat] } }] } as any;
+                      if (!mapRef.getSource("search-pt")) {
+                        try { mapRef.addSource("search-pt", { type: "geojson", data: pt } as any); } catch {}
+                        try {
+                          mapRef.addLayer({ id: "search-pt-ring", type: "circle", source: "search-pt", paint: {
+                            "circle-color": isLight ? "#2563eb" : "#00eaff",
+                            "circle-opacity": 0.25,
+                            "circle-radius": 16
+                          } } as any);
+                          mapRef.addLayer({ id: "search-pt-core", type: "circle", source: "search-pt", paint: {
+                            "circle-color": isLight ? "#1d4ed8" : "#00eaff",
+                            "circle-opacity": 0.9,
+                            "circle-radius": 5
+                          } } as any);
+                        } catch {}
+                      } else {
+                        try { (mapRef.getSource("search-pt") as any).setData(pt); } catch {}
+                      }
+                    }
+                    setSuggests([]);
+                    setSearch(s.display_name || "");
+                  }}>
+                    {s.display_name}
+                  </button>
+                ))}
+                {loading && <div className={styles.suggestLoading}>Поиск…</div>}
+              </div>
+            )}
+          </div>
+          { !isLight ? <div className={styles.depthFade} /> : null }
         </div>
       </div>
     </section>
