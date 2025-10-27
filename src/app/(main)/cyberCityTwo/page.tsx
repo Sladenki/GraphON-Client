@@ -12,9 +12,20 @@ export default function CyberCityTwo() {
   const [isLight, setIsLight] = useState(false);
   const [mapRef, setMapRef] = useState<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
   // Состояние для фильтра
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Определяем мобильное устройство
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 400);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -202,7 +213,7 @@ export default function CyberCityTwo() {
   ), [isLight]);
 
   return (
-    <section className={styles.page}>
+    <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`}>
       {/* Индикатор загрузки */}
       {!mapLoaded && (
         <div className={styles.loadingOverlay}>
@@ -213,14 +224,20 @@ export default function CyberCityTwo() {
         </div>
       )}
       <div className={styles.content}>
-        <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''}`}>
+        <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''} ${isMobile ? styles.mobileMap : ''}`}>
           <ReactMapGL
             key={isLight ? "light" : "dark"}
-            initialViewState={{ longitude: 20.5147, latitude: 54.7064, zoom: 13.5, pitch: 40, bearing: -10 }}
+            initialViewState={{ 
+              longitude: 20.5147, 
+              latitude: 54.7064, 
+              zoom: isMobile ? 12.5 : 13.5, 
+              pitch: isMobile ? 25 : 40, 
+              bearing: isMobile ? 0 : -10 
+            }}
             style={{ width: "100%", height: "100%", display: "block" }}
             mapStyle={baseStyleUrl}
             attributionControl={false}
-            dragRotate={true}
+            dragRotate={!isMobile}
             maxBounds={[[20.36, 54.62], [20.58, 54.78]]}
             onLoad={(e: any) => {
               const map = e?.target; if (!map) return; setMapRef(map);
