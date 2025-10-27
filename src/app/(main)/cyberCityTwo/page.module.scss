@@ -9,10 +9,74 @@
 
 .content { position: relative; height: 100%; overflow: hidden; }
 
-.mapHost { position: relative; height: 100%; overflow: hidden; }
+.mapHost { 
+  position: relative; 
+  height: 100%; 
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  
+  &.mapLoaded {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
 .neonBoost { filter: brightness(1.2) contrast(1.12) saturate(1.2); pointer-events: none; position: absolute; inset: 0; }
 .labelsGlow { position: absolute; inset: 0; pointer-events: none; }
+
+/* Loading Animation */
+.loadingOverlay {
+  position: absolute;
+  inset: 0;
+  background: #0b0d14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeOut 0.3s ease-out 0.8s forwards;
+}
+
+.loadingSpinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.spinnerRing {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(120, 160, 220, 0.2);
+  border-top: 3px solid #00eaff;
+  border-right: 3px solid #ff5cf4;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinnerText {
+  color: #00eaff;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; pointer-events: none; }
+}
 
 /* Search UI */
 .searchBox { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 10; display: flex; flex-direction: column; gap: 8px; }

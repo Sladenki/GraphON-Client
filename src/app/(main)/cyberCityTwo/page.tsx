@@ -13,6 +13,7 @@ export default function CyberCityTwo() {
   const [suggests, setSuggests] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [districts, setDistricts] = useState<any[]>([]);
+  const [mapLoaded, setMapLoaded] = useState(false);
   const debounceTimer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -202,8 +203,17 @@ export default function CyberCityTwo() {
 
   return (
     <section className={styles.page}>
+      {/* Индикатор загрузки */}
+      {!mapLoaded && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingSpinner}>
+            <div className={styles.spinnerRing}></div>
+            <div className={styles.spinnerText}>Загрузка карты...</div>
+          </div>
+        </div>
+      )}
       <div className={styles.content}>
-        <div className={styles.mapHost}>
+        <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''}`}>
           <ReactMapGL
             key={isLight ? "light" : "dark"}
             initialViewState={{ longitude: 20.5147, latitude: 54.7064, zoom: 13.5, pitch: 40, bearing: -10 }}
@@ -214,6 +224,9 @@ export default function CyberCityTwo() {
             maxBounds={[[20.36, 54.62], [20.58, 54.78]]}
             onLoad={(e: any) => {
               const map = e?.target; if (!map) return; setMapRef(map);
+              
+              // Анимация загрузки завершена (минимальная задержка)
+              setMapLoaded(true);
               
               try {
                 const layers = map.getStyle()?.layers || [];
