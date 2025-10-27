@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView, useMotionValue, useSpring, useTransform, useMotionValueEvent, useScroll } from "framer-motion";
+import { motion, useInView, useMotionValue, useSpring, useTransform, useMotionValueEvent, useScroll, useMotionValueEvent as useMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.scss";
 import { inter } from "@/app/fonts";
@@ -18,6 +18,7 @@ import g1 from "../photos/g_1.jpg";
 import g2 from "../photos/g_2.jpg";
 import g3 from "../photos/g_3.jpg";
 import g4 from "../photos/g_4.jpg";
+import ThemeToggle from "@/components/global/ThemeToggle/ThemeToggle";
 
 
 const fadeInUp = {
@@ -112,11 +113,43 @@ function TypewriterText() {
 export default function PetrikinPage() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 20, mass: 0.4 });
+  const [showHeader, setShowHeader] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (heroRef.current) {
+        const heroBottom = heroRef.current.getBoundingClientRect().bottom;
+        setShowHeader(heroBottom < 0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Проверяем при монтировании
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <main className={`${styles.page} ${inter.variable}`}>
+      {/* Фиксированная шапка */}
+      <motion.header
+        className={styles.fixedHeader}
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ 
+          y: showHeader ? 0 : -100, 
+          opacity: showHeader ? 1 : 0 
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
+        <div className={styles.headerContent}>
+          <h2 className={styles.headerTitle}>Сетевые инф. технологии</h2>
+          <ThemeToggle size="sm" />
+        </div>
+      </motion.header>
+
       <motion.div className={styles.progress} style={{ scaleX }} />
       {/* 1 — Приветствие */}
-      <section className={styles.hero}>
+      <section ref={heroRef} className={styles.hero}>
         <div className={styles.heroDecor}>
           <div className={`${styles.blob} ${styles.blobA}`} />
           <div className={`${styles.blob} ${styles.blobB}`} />
