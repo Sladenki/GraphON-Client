@@ -251,9 +251,9 @@ export default function CyberCityTwo() {
           // Земельные участки и острова
           const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin") && !fillId.includes("boundary");
           if (isLand && (fillId.includes("land") || fillId.includes("landcover") || fillId.includes("earth") || fillId === "")) {
-            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.15);
+            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.25);
             if (!isLight) {
-              mapRef.setPaintProperty(ly.id, "fill-color", "#1a1f2a");
+              mapRef.setPaintProperty(ly.id, "fill-color", "#2a2f3a");
             }
           }
         }
@@ -424,9 +424,9 @@ export default function CyberCityTwo() {
                     if (fillId.includes("land") || fillId.includes("landcover") || fillId.includes("earth") || (!fillId.includes("water") && !fillId.includes("park") && !fillId.includes("admin"))) {
                       const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin");
                       if (isLand) {
-                        map.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.15);
+                        map.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.25);
                         if (!isLight) {
-                          map.setPaintProperty(ly.id, "fill-color", "#1a1f2a");
+                          map.setPaintProperty(ly.id, "fill-color", "#2a2f3a");
                         }
                       }
                     }
