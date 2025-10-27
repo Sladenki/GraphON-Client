@@ -143,7 +143,10 @@ export default function PetrikinPage() {
       >
         <div className={styles.headerContent}>
           <h2 className={styles.headerTitle}>Сетевые инф. технологии</h2>
-          <ThemeToggle size="sm" />
+          <div className={styles.themeToggleContainer}>
+            <ThemeToggle />
+          </div>
+
         </div>
       </motion.header>
 
