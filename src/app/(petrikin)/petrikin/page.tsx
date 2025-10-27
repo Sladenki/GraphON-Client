@@ -372,16 +372,16 @@ export default function PetrikinPage() {
             </p>
             <div className={styles.galleryGrid}>
               <motion.div variants={fadeInUp} className={styles.galleryItem}>
-                <Image src={g1} alt="GraphON 1" placeholder="blur" style={{ width: "100%", height: "auto" }} />
+                <Image src={g1} alt="GraphON 1" placeholder="blur" sizes="(max-width: 980px) 50vw, 25vw" style={{ width: "100%", height: "auto" }} />
               </motion.div>
               <motion.div variants={fadeInUp} className={styles.galleryItem}>
-                <Image src={g2} alt="GraphON 2" placeholder="blur" style={{ width: "100%", height: "auto" }} />
+                <Image src={g2} alt="GraphON 2" placeholder="blur" sizes="(max-width: 980px) 50vw, 25vw" style={{ width: "100%", height: "auto" }} />
               </motion.div>
               <motion.div variants={fadeInUp} className={styles.galleryItem}>
-                <Image src={g3} alt="GraphON 3" placeholder="blur" style={{ width: "100%", height: "auto" }} />
+                <Image src={g3} alt="GraphON 3" placeholder="blur" sizes="(max-width: 980px) 50vw, 25vw" style={{ width: "100%", height: "auto" }} />
               </motion.div>
               <motion.div variants={fadeInUp} className={styles.galleryItem}>
-                <Image src={g4} alt="GraphON 4" placeholder="blur" style={{ width: "100%", height: "auto" }} />
+                <Image src={g4} alt="GraphON 4" placeholder="blur" sizes="(max-width: 980px) 50vw, 25vw" style={{ width: "100%", height: "auto" }} />
               </motion.div>
             </div>
           </motion.div>
