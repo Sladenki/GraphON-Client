@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./page.module.scss";
 
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
@@ -9,12 +9,7 @@ const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map
 export default function CyberCityTwo() {
   const [isLight, setIsLight] = useState(false);
   const [mapRef, setMapRef] = useState<any>(null);
-  const [search, setSearch] = useState("");
-  const [suggests, setSuggests] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [districts, setDistricts] = useState<any[]>([]);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const debounceTimer = useRef<number | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -310,49 +305,6 @@ export default function CyberCityTwo() {
 
           {/* Неоновый пост-обработка для темной темы */}
           {!isLight && <div className={styles.neonBoost} style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />}
-
-          {/* Поиск по адресам */}
-          <div className={styles.searchBox}>
-            <input
-              className={styles.searchInput}
-              placeholder="Поиск адреса/места"
-              value={search}
-              onChange={(ev) => {
-                const q = ev.target.value; setSearch(q);
-                if (debounceTimer.current) window.clearTimeout(debounceTimer.current);
-                if (!q.trim()) { setSuggests([]); return; }
-                debounceTimer.current = window.setTimeout(async () => {
-                  try {
-                    setLoading(true);
-                    const url = new URL("https://nominatim.openstreetmap.org/search");
-                    url.searchParams.set("format", "jsonv2"); url.searchParams.set("q", q);
-                    url.searchParams.set("viewbox", "20.36,54.78,20.58,54.62"); url.searchParams.set("bounded", "1");
-                    url.searchParams.set("addressdetails", "1"); url.searchParams.set("limit", "6");
-                    const res = await fetch(url.toString(), { headers: { "Accept-Language": "ru" } });
-                    const data = await res.json(); setSuggests(Array.isArray(data) ? data : []);
-                  } finally { setLoading(false); }
-                }, 320) as unknown as number;
-              }}
-              onKeyDown={async (ev) => {
-                if (ev.key === "Enter" && suggests[0] && mapRef) {
-                  const s = suggests[0]; const lat = parseFloat(s.lat); const lon = parseFloat(s.lon);
-                  try { mapRef.flyTo({ center: [lon, lat], zoom: 15, speed: 1.2 }); } catch {}
-                }
-              }}
-            />
-            {Boolean(suggests.length) && (
-              <div className={styles.suggests}>
-                {suggests.map((s, i) => (
-                  <button key={i} className={styles.suggestItem} onClick={() => {
-                    if (!mapRef) return; const lat = parseFloat(s.lat); const lon = parseFloat(s.lon);
-                    try { mapRef.flyTo({ center: [lon, lat], zoom: 15, speed: 1.2 }); } catch {}
-                    setSuggests([]); setSearch(s.display_name || "");
-                  }}>{s.display_name}</button>
-                ))}
-                {loading && <div className={styles.suggestLoading}>Поиск…</div>}
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </section>
