@@ -212,6 +212,55 @@ export default function CyberCityTwo() {
       : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
   ), [isLight]);
 
+  // Эффект для обновления стилей карты при изменении темы
+  useEffect(() => {
+    if (!mapRef || !mapLoaded) return;
+    
+    try {
+      const layers = mapRef.getStyle()?.layers || [];
+      layers.forEach((ly: any) => {
+        if (ly.type === "fill") {
+          const fillId = (ly.id || "").toLowerCase();
+          
+          // Парки и зеленые зоны
+          if (fillId.includes("park") || fillId.includes("garden") || fillId.includes("forest") || fillId.includes("grass")) {
+            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.4 : 0.25);
+            mapRef.setPaintProperty(ly.id, "fill-color", isLight ? "#a8c29a" : "#2a5a4a");
+            
+            // Обновляем обводку парков
+            const parkOutlineId = `${ly.id}-outline`;
+            if (mapRef.getLayer(parkOutlineId)) {
+              mapRef.setPaintProperty(parkOutlineId, "line-color", isLight ? "#7ba07a" : "#3a7a5a");
+              mapRef.setPaintProperty(parkOutlineId, "line-opacity", isLight ? 0.5 : 0.45);
+              mapRef.setPaintProperty(parkOutlineId, "line-width", isLight ? 0.3 : 0.5);
+            }
+          }
+          
+          // Водные объекты
+          if (fillId.includes("water") || fillId.includes("marine") || fillId.includes("river")) {
+            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.5 : 0.3);
+            mapRef.setPaintProperty(ly.id, "fill-color", isLight ? "#a0b3c8" : "#1a2a3f");
+            
+            const waterOutlineId = `${ly.id}-outline`;
+            if (mapRef.getLayer(waterOutlineId)) {
+              mapRef.setPaintProperty(waterOutlineId, "line-color", isLight ? "#7a9aba" : "#2a4a6f");
+              mapRef.setPaintProperty(waterOutlineId, "line-opacity", isLight ? 0.6 : 0.5);
+            }
+          }
+          
+          // Земельные участки и острова
+          const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin") && !fillId.includes("boundary");
+          if (isLand && (fillId.includes("land") || fillId.includes("landcover") || fillId.includes("earth") || fillId === "")) {
+            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.15);
+            if (!isLight) {
+              mapRef.setPaintProperty(ly.id, "fill-color", "#1a1f2a");
+            }
+          }
+        }
+      });
+    } catch {}
+  }, [mapRef, mapLoaded, isLight]);
+
   return (
     <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`}>
       {/* Индикатор загрузки */}
@@ -371,6 +420,17 @@ export default function CyberCityTwo() {
                       }
                     }
                     
+                    // Земельные участки и острова (включая остров Канта)
+                    if (fillId.includes("land") || fillId.includes("landcover") || fillId.includes("earth") || (!fillId.includes("water") && !fillId.includes("park") && !fillId.includes("admin"))) {
+                      const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin");
+                      if (isLand) {
+                        map.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.15);
+                        if (!isLight) {
+                          map.setPaintProperty(ly.id, "fill-color", "#1a1f2a");
+                        }
+                      }
+                    }
+                    
                     // Водные объекты (реки, водоемы)
                     if (fillId.includes("water") || fillId.includes("marine") || fillId.includes("river")) {
                       map.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.5 : 0.3);
@@ -400,8 +460,8 @@ export default function CyberCityTwo() {
                     
                     // Парки и зеленые зоны
                     if (fillId.includes("park") || fillId.includes("garden") || fillId.includes("forest") || fillId.includes("grass")) {
-                      map.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.4 : 0.15);
-                      map.setPaintProperty(ly.id, "fill-color", isLight ? "#a8c29a" : "#1a3a2a");
+                      map.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.4 : 0.25);
+                      map.setPaintProperty(ly.id, "fill-color", isLight ? "#a8c29a" : "#2a5a4a");
                       
                       // Обводка для парков
                       const parkOutlineId = `${ly.id}-outline`;
@@ -413,9 +473,9 @@ export default function CyberCityTwo() {
                             source: ly.source,
                             layout: ly.layout || {},
                             paint: {
-                              "line-color": isLight ? "#7ba07a" : "#2a5a3a",
-                              "line-opacity": isLight ? 0.5 : 0.3,
-                              "line-width": 0.3
+                              "line-color": isLight ? "#7ba07a" : "#3a7a5a",
+                              "line-opacity": isLight ? 0.5 : 0.45,
+                              "line-width": isLight ? 0.3 : 0.5
                             }
                           };
                           if ((ly as any)["source-layer"]) parkOutlineDef["source-layer"] = (ly as any)["source-layer"];
