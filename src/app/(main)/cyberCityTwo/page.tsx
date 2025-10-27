@@ -2,7 +2,9 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
+import { Filter } from "lucide-react";
 import styles from "./page.module.scss";
+import EventFilter from "./EventFilter/EventFilter";
 
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
 
@@ -10,6 +12,9 @@ export default function CyberCityTwo() {
   const [isLight, setIsLight] = useState(false);
   const [mapRef, setMapRef] = useState<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  
+  // Состояние для фильтра
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -305,6 +310,18 @@ export default function CyberCityTwo() {
 
           {/* Неоновый пост-обработка для темной темы */}
           {!isLight && <div className={styles.neonBoost} style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />}
+          
+          {/* Плавающая кнопка фильтра */}
+          <button 
+            className={styles.filterButton}
+            onClick={() => setIsFilterOpen(true)}
+            aria-label="Открыть фильтры"
+          >
+            <Filter size={20} />
+          </button>
+
+          {/* Pop-up фильтра */}
+          <EventFilter isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
         </div>
       </div>
     </section>
