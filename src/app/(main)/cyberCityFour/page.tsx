@@ -1,12 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Filter } from "lucide-react";
 import styles from "./page.module.scss";
 import EventFilter from "./EventFilter/EventFilter";
 
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
+
+// Типы для лучшей типизации
+type RoadType = "major" | "secondary" | "minor";
+type FillType = "admin" | "water" | "park" | "land";
 
 // Константы цветов
 const COLORS = {
@@ -51,9 +55,7 @@ const getLayerColor = (id: string, isLight: boolean) => {
   return COLORS.dark.minor;
 };
 
-// Типы для лучшей типизации
-type RoadType = "major" | "secondary" | "minor";
-type FillType = "admin" | "water" | "park" | "land";
+// ===== СТАТИЧЕСКИЕ УТИЛИТЫ (вынесены за пределы компонента) =====
 
 // Утилиты для работы с paint properties
 const setPaintProperties = (map: any, layerId: string, properties: Record<string, any>) => {
@@ -104,6 +106,8 @@ const classifyFill = (id: string): FillType => {
   return "land";
 };
 
+// ===== СТАТИЧЕСКИЕ КОНСТАНТЫ СТИЛЕЙ =====
+
 // Константы стилей дорог
 const ROAD_STYLES = {
   major: {
@@ -143,8 +147,44 @@ const FILL_STYLES: any = {
   }
 };
 
-// Функции стилизации слоев
-const applyLineStyles = (map: any, layer: any, isLight: boolean) => {
+// Константы для "тяжелых" стилей дорог (более толстые)
+const HEAVY_ROAD_STYLES = {
+  major: {
+    opacity: { light: 0.9, dark: 1.0 },
+    width: [3.0, 5.0, 7.0, 10.0],
+    blur: { light: 0.3, dark: 0.6 }
+  },
+  secondary: {
+    opacity: { light: 0.4, dark: 0.5 },
+    width: [0.5, 1.0, 1.5, 2.0],
+    blur: { light: 0.1, dark: 0.2 }
+  },
+  minor: {
+    opacity: { light: 0.15, dark: 0.2 },
+    width: [0.2, 0.3, 0.5, 0.8],
+    blur: { light: 0.05, dark: 0.1 }
+  },
+  default: {
+    opacity: { light: 0.6, dark: 0.7 },
+    width: [1.0, 1.5, 2.0, 3.0],
+    blur: { light: 0.1, dark: 0.2 }
+  }
+};
+
+// ===== КОМПОНЕНТ =====
+
+export default function CyberCityFour() {
+  const [isLight, setIsLight] = useState(false);
+  const [mapRef, setMapRef] = useState<any>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Состояние для фильтра
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // ===== МЕМОИЗИРОВАННЫЕ ФУНКЦИИ СТИЛИЗАЦИИ =====
+  
+  const applyLineStyles = useCallback((map: any, layer: any, isLight: boolean) => {
   const roadType = classifyRoad(layer.id);
   const color = getLayerColor(layer.id, isLight);
   const style = ROAD_STYLES[roadType];
@@ -166,9 +206,9 @@ const applyLineStyles = (map: any, layer: any, isLight: boolean) => {
       "line-blur": 1.4
     });
   }
-};
+  }, []); // Пустые зависимости, так как функция не зависит от состояния
 
-const applyFillStyles = (map: any, layer: any, isLight: boolean) => {
+  const applyFillStyles = useCallback((map: any, layer: any, isLight: boolean) => {
   const fillType = classifyFill(layer.id);
   const style = FILL_STYLES[fillType];
   
@@ -216,26 +256,19 @@ const applyFillStyles = (map: any, layer: any, isLight: boolean) => {
       }
       break;
   }
-};
+  }, []); // Пустые зависимости, так как функция не зависит от состояния
 
-export default function CyberCityFour() {
-  const [isLight, setIsLight] = useState(false);
-  const [mapRef, setMapRef] = useState<any>(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  
-  // Состояние для фильтра
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  // Мемоизированная функция для проверки мобильного устройства
+  const checkMobile = useCallback(() => {
+    setIsMobile(window.innerWidth <= 400);
+  }, []);
 
   // Определяем мобильное устройство
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 400);
-    };
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  }, [checkMobile]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -268,32 +301,8 @@ export default function CyberCityFour() {
       : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
   ), [isLight]);
 
-  // Константы для "тяжелых" стилей дорог (более толстые)
-  const HEAVY_ROAD_STYLES = {
-    major: {
-      opacity: { light: 0.9, dark: 1.0 },
-      width: [3.0, 5.0, 7.0, 10.0],
-      blur: { light: 0.3, dark: 0.6 }
-    },
-    secondary: {
-      opacity: { light: 0.4, dark: 0.5 },
-      width: [0.5, 1.0, 1.5, 2.0],
-      blur: { light: 0.1, dark: 0.2 }
-    },
-    minor: {
-      opacity: { light: 0.15, dark: 0.2 },
-      width: [0.2, 0.3, 0.5, 0.8],
-      blur: { light: 0.05, dark: 0.1 }
-    },
-    default: {
-      opacity: { light: 0.6, dark: 0.7 },
-      width: [1.0, 1.5, 2.0, 3.0],
-      blur: { light: 0.1, dark: 0.2 }
-    }
-  };
-
-  // Функция для принудительного обновления стилей дорог (делает дороги толще)
-  const updateRoadStyles = () => {
+  // Мемоизированная функция для принудительного обновления стилей дорог (делает дороги толще)
+  const updateRoadStyles = useCallback(() => {
     if (!mapRef) return;
     
     try {
@@ -323,9 +332,38 @@ export default function CyberCityFour() {
     } catch (e) {
       console.error("Ошибка при обновлении стилей дорог:", e);
     }
-  };
+  }, [mapRef, isLight]); // Зависит от mapRef и isLight
 
-  // Эффект для обновления стилей карты при изменении темы
+  // Мемоизированный обработчик загрузки карты
+  const handleMapLoad = useCallback((e: any) => {
+    const map = e?.target; 
+    if (!map) return; 
+    setMapRef(map);
+    setMapLoaded(true);
+    
+    try {
+      const layers = map.getStyle()?.layers || [];
+      layers.forEach((layer: any) => {
+        if (layer.type === "line") {
+          applyLineStyles(map, layer, isLight);
+        } else if (layer.type === "fill" && layer.source) {
+          applyFillStyles(map, layer, isLight);
+        }
+      });
+    } catch {}
+  }, [applyLineStyles, applyFillStyles, isLight]);
+
+  // Мемоизированный обработчик открытия фильтра
+  const handleFilterOpen = useCallback(() => {
+    setIsFilterOpen(true);
+  }, []);
+
+  // Мемоизированный обработчик закрытия фильтра
+  const handleFilterClose = useCallback(() => {
+    setIsFilterOpen(false);
+  }, []);
+
+  // Эффект для обновления стилей карты при изменении темы (оптимизированный)
   useEffect(() => {
     if (!mapRef || !mapLoaded) return;
     
@@ -339,7 +377,7 @@ export default function CyberCityFour() {
         }
       });
     } catch {}
-  }, [mapRef, mapLoaded, isLight]);
+  }, [mapRef, mapLoaded, isLight, updateRoadStyles, applyFillStyles]); // Добавлены мемоизированные функции в зависимости
 
   return (
     <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`}>
@@ -368,23 +406,7 @@ export default function CyberCityFour() {
             attributionControl={false}
             dragRotate={!isMobile}
             maxBounds={[[20.36, 54.62], [20.58, 54.78]]}
-            onLoad={(e: any) => {
-              const map = e?.target; 
-              if (!map) return; 
-              setMapRef(map);
-              setMapLoaded(true);
-              
-              try {
-                const layers = map.getStyle()?.layers || [];
-                layers.forEach((layer: any) => {
-                  if (layer.type === "line") {
-                    applyLineStyles(map, layer, isLight);
-                  } else if (layer.type === "fill" && layer.source) {
-                    applyFillStyles(map, layer, isLight);
-                  }
-                });
-              } catch {}
-            }}
+            onLoad={handleMapLoad}
           />
 
           {/* Неоновый пост-обработка для темной темы */}
@@ -407,14 +429,14 @@ export default function CyberCityFour() {
             {/* Кнопка фильтра */}
             <button 
               className={styles.filterButton}
-              onClick={() => setIsFilterOpen(true)}
+              onClick={handleFilterOpen}
               aria-label="Открыть фильтры"
             >
               <Filter size={20} />
             </button>
 
           {/* Pop-up фильтра */}
-          <EventFilter isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
+          <EventFilter isOpen={isFilterOpen} onClose={handleFilterClose} />
         </div>
       </div>
     </section>
