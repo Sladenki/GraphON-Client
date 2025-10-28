@@ -8,6 +8,176 @@ import EventFilter from "./EventFilter/EventFilter";
 
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
 
+// Константы цветов
+const COLORS = {
+  light: {
+    major: "#3f4a55",
+    secondary: "#87909a",
+    minor: "#9aa4ae",
+    water: "#a0b3c8",
+    waterOutline: "#7a9aba",
+    park: "#a8c29a",
+    parkOutline: "#7ba07a",
+    boundary: "#94a3b8"
+  },
+  dark: {
+    motorway: "#00eaff",
+    highway: "#00eaff",
+    primary: "#ff5cf4",
+    main: "#ff5cf4",
+    secondary: "#a47cff",
+    street: "#a47cff",
+    road: "#a47cff",
+    minor: "#3effc3",
+    water: "#1a2a3f",
+    waterOutline: "#2a4a6f",
+    park: "#3a6a5a",
+    parkOutline: "#4a8a6a",
+    boundary: "#3a4a5a"
+  }
+};
+
+// Функция получения цвета
+const getLayerColor = (id: string, isLight: boolean) => {
+  const s = id.toLowerCase();
+  if (isLight) {
+    if (s.includes("motorway") || s.includes("highway") || s.includes("primary") || s.includes("main")) return COLORS.light.major;
+    if (s.includes("secondary") || s.includes("street") || s.includes("road")) return COLORS.light.secondary;
+    return COLORS.light.minor;
+  }
+  if (s.includes("motorway") || s.includes("highway")) return COLORS.dark.motorway;
+  if (s.includes("primary") || s.includes("main")) return COLORS.dark.primary;
+  if (s.includes("secondary") || s.includes("street") || s.includes("road")) return COLORS.dark.secondary;
+  return COLORS.dark.minor;
+};
+
+// Функция создания outline слоя
+const createOutlineLayer = (baseLayer: any, id: string, paint: any) => {
+  const def: any = {
+    id, type: "line", source: baseLayer.source, layout: baseLayer.layout || {}, paint
+  };
+  if (baseLayer["source-layer"]) def["source-layer"] = baseLayer["source-layer"];
+  if (baseLayer.filter) def.filter = baseLayer.filter;
+  return def;
+};
+
+// Функции стилизации слоев
+const applyLineStyles = (map: any, layer: any, isLight: boolean) => {
+  const color = getLayerColor(layer.id, isLight);
+  const sid = layer.id.toLowerCase();
+  
+  const isMajorRoad = sid.includes("motorway") || sid.includes("highway") || sid.includes("primary") || sid.includes("main");
+  const isSecondaryRoad = sid.includes("secondary") || sid.includes("street") || sid.includes("road");
+  
+  map.setPaintProperty(layer.id, "line-color", color);
+  
+  if (isMajorRoad) {
+    map.setPaintProperty(layer.id, "line-opacity", isLight ? [
+      "interpolate", ["linear"], ["zoom"], 10, 0.5, 12, 0.7, 14, 0.85, 16, 0.95
+    ] : [
+      "interpolate", ["linear"], ["zoom"], 10, 0.45, 12, 0.65, 14, 0.85, 16, 1.0
+    ]);
+    map.setPaintProperty(layer.id, "line-width", [
+      "interpolate", ["linear"], ["zoom"], 10, 1.0, 12, 2.0, 14, 3.2, 16, 5.0
+    ]);
+    map.setPaintProperty(layer.id, "line-blur", isLight ? 0.15 : 0.4);
+  } else if (isSecondaryRoad) {
+    map.setPaintProperty(layer.id, "line-opacity", isLight ? [
+      "interpolate", ["linear"], ["zoom"], 10, 0.25, 12, 0.35, 14, 0.45, 16, 0.55
+    ] : [
+      "interpolate", ["linear"], ["zoom"], 10, 0.20, 12, 0.30, 14, 0.45, 16, 0.60
+    ]);
+    map.setPaintProperty(layer.id, "line-width", [
+      "interpolate", ["linear"], ["zoom"], 10, 0.3, 12, 0.6, 14, 1.0, 16, 1.6
+    ]);
+    map.setPaintProperty(layer.id, "line-blur", isLight ? 0.1 : 0.2);
+  } else {
+    map.setPaintProperty(layer.id, "line-opacity", isLight ? [
+      "interpolate", ["linear"], ["zoom"], 10, 0.12, 12, 0.18, 14, 0.25, 16, 0.30
+    ] : [
+      "interpolate", ["linear"], ["zoom"], 10, 0.10, 12, 0.15, 14, 0.22, 16, 0.30
+    ]);
+    map.setPaintProperty(layer.id, "line-width", [
+      "interpolate", ["linear"], ["zoom"], 10, 0.2, 12, 0.4, 14, 0.6, 16, 1.0
+    ]);
+    map.setPaintProperty(layer.id, "line-blur", isLight ? 0.05 : 0.1);
+  }
+
+  // Неоновый эффект для главных дорог в темной теме
+  if (!isLight && layer.source && isMajorRoad) {
+    const glowId = `${layer.id}-neon-glow`;
+    if (!map.getLayer(glowId)) {
+      try {
+        const glowDef = createOutlineLayer(layer, glowId, {
+          "line-color": color,
+          "line-opacity": ["interpolate", ["linear"], ["zoom"], 10, 0.08, 12, 0.14, 14, 0.22, 16, 0.30],
+          "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1.6, 12, 2.6, 14, 4.2, 16, 6.0],
+          "line-blur": 1.4
+        });
+        map.addLayer(glowDef, layer.id);
+      } catch {}
+    }
+  }
+};
+
+const applyFillStyles = (map: any, layer: any, isLight: boolean) => {
+  const fillId = layer.id.toLowerCase();
+  
+  if (fillId.includes("admin") || fillId.includes("boundary")) {
+    map.setPaintProperty(layer.id, "fill-opacity", 0.05);
+    const outlineId = `${layer.id}-glow-outline`;
+    if (!map.getLayer(outlineId)) {
+      try {
+        const outlineDef = createOutlineLayer(layer, outlineId, {
+          "line-color": isLight ? COLORS.light.boundary : COLORS.dark.boundary,
+          "line-opacity": 0.2,
+          "line-width": 1,
+          "line-blur": 2
+        });
+        map.addLayer(outlineDef);
+      } catch {}
+    }
+  } else if (fillId.includes("water") || fillId.includes("marine") || fillId.includes("river")) {
+    map.setPaintProperty(layer.id, "fill-opacity", isLight ? 0.5 : 0.3);
+    map.setPaintProperty(layer.id, "fill-color", isLight ? COLORS.light.water : COLORS.dark.water);
+    
+    const outlineId = `${layer.id}-outline`;
+    if (!map.getLayer(outlineId)) {
+      try {
+        const outlineDef = createOutlineLayer(layer, outlineId, {
+          "line-color": isLight ? COLORS.light.waterOutline : COLORS.dark.waterOutline,
+          "line-opacity": isLight ? 0.6 : 0.5,
+          "line-width": 0.5
+        });
+        map.addLayer(outlineDef);
+      } catch {}
+    }
+  } else if (fillId.includes("park") || fillId.includes("garden") || fillId.includes("forest") || fillId.includes("grass")) {
+    map.setPaintProperty(layer.id, "fill-opacity", isLight ? 0.4 : 0.3);
+    map.setPaintProperty(layer.id, "fill-color", isLight ? COLORS.light.park : COLORS.dark.park);
+    
+    const outlineId = `${layer.id}-outline`;
+    if (!map.getLayer(outlineId)) {
+      try {
+        const outlineDef = createOutlineLayer(layer, outlineId, {
+          "line-color": isLight ? COLORS.light.parkOutline : COLORS.dark.parkOutline,
+          "line-opacity": 0.5,
+          "line-width": isLight ? 0.3 : 0.5
+        });
+        map.addLayer(outlineDef);
+      } catch {}
+    }
+  } else {
+    const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin") && !fillId.includes("boundary");
+    if (isLand) {
+      map.setPaintProperty(layer.id, "fill-opacity", isLight ? undefined : 0.35);
+      if (!isLight) {
+        map.setPaintProperty(layer.id, "fill-color", "#3a3f4a");
+      }
+    }
+  }
+};
+
 export default function CyberCityFour() {
   const [isLight, setIsLight] = useState(false);
   const [mapRef, setMapRef] = useState<any>(null);
@@ -122,50 +292,13 @@ export default function CyberCityFour() {
   useEffect(() => {
     if (!mapRef || !mapLoaded) return;
     
-    // Обновляем стили дорог
     updateRoadStyles();
     
     try {
       const layers = mapRef.getStyle()?.layers || [];
-      
-      layers.forEach((ly: any) => {
-        if (ly.type === "fill") {
-          const fillId = (ly.id || "").toLowerCase();
-          
-          // Парки и зеленые зоны
-          if (fillId.includes("park") || fillId.includes("garden") || fillId.includes("forest") || fillId.includes("grass")) {
-            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.4 : 0.3);
-            mapRef.setPaintProperty(ly.id, "fill-color", isLight ? "#a8c29a" : "#3a6a5a");
-            
-            // Обновляем обводку парков
-            const parkOutlineId = `${ly.id}-outline`;
-            if (mapRef.getLayer(parkOutlineId)) {
-              mapRef.setPaintProperty(parkOutlineId, "line-color", isLight ? "#7ba07a" : "#4a8a6a");
-              mapRef.setPaintProperty(parkOutlineId, "line-opacity", isLight ? 0.5 : 0.5);
-              mapRef.setPaintProperty(parkOutlineId, "line-width", isLight ? 0.3 : 0.5);
-            }
-          }
-          
-          // Водные объекты
-          if (fillId.includes("water") || fillId.includes("marine") || fillId.includes("river")) {
-            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.5 : 0.3);
-            mapRef.setPaintProperty(ly.id, "fill-color", isLight ? "#a0b3c8" : "#1a2a3f");
-            
-            const waterOutlineId = `${ly.id}-outline`;
-            if (mapRef.getLayer(waterOutlineId)) {
-              mapRef.setPaintProperty(waterOutlineId, "line-color", isLight ? "#7a9aba" : "#2a4a6f");
-              mapRef.setPaintProperty(waterOutlineId, "line-opacity", isLight ? 0.6 : 0.5);
-            }
-          }
-          
-          // Земельные участки и острова
-          const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin") && !fillId.includes("boundary");
-          if (isLand && (fillId.includes("land") || fillId.includes("landcover") || fillId.includes("earth") || fillId === "")) {
-            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.35);
-            if (!isLight) {
-              mapRef.setPaintProperty(ly.id, "fill-color", "#3a3f4a");
-            }
-          }
+      layers.forEach((layer: any) => {
+        if (layer.type === "fill") {
+          applyFillStyles(mapRef, layer, isLight);
         }
       });
     } catch {}
@@ -199,199 +332,18 @@ export default function CyberCityFour() {
             dragRotate={!isMobile}
             maxBounds={[[20.36, 54.62], [20.58, 54.78]]}
             onLoad={(e: any) => {
-              const map = e?.target; if (!map) return; setMapRef(map);
-              
-              // Анимация загрузки завершена (минимальная задержка)
+              const map = e?.target; 
+              if (!map) return; 
+              setMapRef(map);
               setMapLoaded(true);
               
               try {
                 const layers = map.getStyle()?.layers || [];
-                const colorFor = (id: string) => {
-                  const s = (id || "").toLowerCase();
-                  if (isLight) {
-                    if (s.includes("motorway") || s.includes("highway") || s.includes("primary") || s.includes("main")) return "#3f4a55";
-                    if (s.includes("secondary") || s.includes("street") || s.includes("road")) return "#87909a";
-                    return "#9aa4ae";
-                  }
-                  if (s.includes("motorway") || s.includes("highway")) return "#00eaff";
-                  if (s.includes("primary") || s.includes("main")) return "#ff5cf4";
-                  if (s.includes("secondary") || s.includes("street") || s.includes("road")) return "#a47cff";
-                  return "#3effc3";
-                };
-
-                layers.forEach((ly: any) => {
-                  if (ly.type === "line") {
-                    const color = colorFor(ly.id);
-                    const sid = (ly.id || "").toLowerCase();
-                    
-                    // Определяем тип дороги для визуальной иерархии
-                    const isMajorRoad = sid.includes("motorway") || sid.includes("highway") || sid.includes("primary") || sid.includes("main");
-                    const isSecondaryRoad = sid.includes("secondary") || sid.includes("street") || sid.includes("road");
-                    const isMinorRoad = !isMajorRoad && !isSecondaryRoad;
-                    
-                    map.setPaintProperty(ly.id, "line-color", color);
-                    
-                    // Визуальная иерархия по типам дорог
-                    if (isMajorRoad) {
-                      // Главные магистрали - яркие и контрастные
-                      map.setPaintProperty(ly.id, "line-opacity", isLight ? [
-                        "interpolate", ["linear"], ["zoom"], 10, 0.5, 12, 0.7, 14, 0.85, 16, 0.95
-                      ] : [
-                        "interpolate", ["linear"], ["zoom"], 10, 0.45, 12, 0.65, 14, 0.85, 16, 1.0
-                      ]);
-                      map.setPaintProperty(ly.id, "line-width", [
-                        "interpolate", ["linear"], ["zoom"],
-                        10, 1.0, 12, 2.0, 14, 3.2, 16, 5.0
-                      ]);
-                      map.setPaintProperty(ly.id, "line-blur", isLight ? 0.15 : 0.4);
-                    } else if (isSecondaryRoad) {
-                      // Вторичные дороги - средняя яркость
-                      map.setPaintProperty(ly.id, "line-opacity", isLight ? [
-                        "interpolate", ["linear"], ["zoom"], 10, 0.25, 12, 0.35, 14, 0.45, 16, 0.55
-                      ] : [
-                        "interpolate", ["linear"], ["zoom"], 10, 0.20, 12, 0.30, 14, 0.45, 16, 0.60
-                      ]);
-                      map.setPaintProperty(ly.id, "line-width", [
-                        "interpolate", ["linear"], ["zoom"],
-                        10, 0.3, 12, 0.6, 14, 1.0, 16, 1.6
-                      ]);
-                      map.setPaintProperty(ly.id, "line-blur", isLight ? 0.1 : 0.2);
-                    } else {
-                      // Мелкие дороги - приглушенные
-                      map.setPaintProperty(ly.id, "line-opacity", isLight ? [
-                        "interpolate", ["linear"], ["zoom"], 10, 0.12, 12, 0.18, 14, 0.25, 16, 0.30
-                      ] : [
-                        "interpolate", ["linear"], ["zoom"], 10, 0.10, 12, 0.15, 14, 0.22, 16, 0.30
-                      ]);
-                      map.setPaintProperty(ly.id, "line-width", [
-                        "interpolate", ["linear"], ["zoom"],
-                        10, 0.2, 12, 0.4, 14, 0.6, 16, 1.0
-                      ]);
-                      map.setPaintProperty(ly.id, "line-blur", isLight ? 0.05 : 0.1);
-                    }
-
-                    // Неоновый эффект (glow) только для основных дорог в темной теме
-                    if (!isLight && ly.source && isMajorRoad) {
-                      const glowId = `${ly.id}-neon-glow`;
-                      if (!layers.find((l: any) => l.id === glowId) && !map.getLayer(glowId)) {
-                        const addDef: any = {
-                          id: glowId,
-                          type: "line",
-                          source: ly.source,
-                          layout: ly.layout || {},
-                          paint: {
-                            "line-color": color,
-                            "line-opacity": [
-                              "interpolate", ["linear"], ["zoom"],
-                              10, 0.08, 12, 0.14, 14, 0.22, 16, 0.30
-                            ],
-                            "line-width": [
-                              "interpolate", ["linear"], ["zoom"],
-                              10, 1.6, 12, 2.6, 14, 4.2, 16, 6.0
-                            ],
-                            "line-blur": 1.4
-                          }
-                        };
-                        if ((ly as any)["source-layer"]) addDef["source-layer"] = (ly as any)["source-layer"];
-                        if (ly.filter) addDef.filter = ly.filter;
-                        try { map.addLayer(addDef, ly.id); } catch {}
-                      }
-                    }
-                  }
-                  
-                  // Улучшенные стили для водных объектов и парков
-                  if (ly.type === "fill" && ly.source) {
-                    const fillId = (ly.id || "").toLowerCase();
-                    
-                    // Границы районов и зоны с glow
-                    if (fillId.includes("admin") || fillId.includes("boundary")) {
-                      map.setPaintProperty(ly.id, "fill-opacity", 0.05);
-                      
-                      // Обводка с glow эффектом
-                      const boundaryOutlineId = `${ly.id}-glow-outline`;
-                      if (!map.getLayer(boundaryOutlineId)) {
-                        try {
-                          const boundaryOutlineDef: any = {
-                            id: boundaryOutlineId,
-                            type: "line",
-                            source: ly.source,
-                            layout: ly.layout || {},
-                            paint: {
-                              "line-color": isLight ? "#94a3b8" : "#3a4a5a",
-                              "line-opacity": 0.2,
-                              "line-width": 1,
-                              "line-blur": 2
-                            }
-                          };
-                          if ((ly as any)["source-layer"]) boundaryOutlineDef["source-layer"] = (ly as any)["source-layer"];
-                          if (ly.filter) boundaryOutlineDef.filter = ly.filter;
-                          map.addLayer(boundaryOutlineDef);
-                        } catch {}
-                      }
-                    }
-                    
-                    // Земельные участки и острова
-                    const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin") && !fillId.includes("boundary");
-                    if (isLand) {
-                      map.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.35);
-                      if (!isLight) {
-                        map.setPaintProperty(ly.id, "fill-color", "#3a3f4a");
-                      }
-                    }
-                    
-                    // Водные объекты (реки, водоемы)
-                    if (fillId.includes("water") || fillId.includes("marine") || fillId.includes("river")) {
-                      map.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.5 : 0.3);
-                      map.setPaintProperty(ly.id, "fill-color", isLight ? "#a0b3c8" : "#1a2a3f");
-                      
-                      // Обводка для воды
-                      const waterOutlineId = `${ly.id}-outline`;
-                      if (!map.getLayer(waterOutlineId)) {
-                        try {
-                          const outlineDef: any = {
-                            id: waterOutlineId,
-                            type: "line",
-                            source: ly.source,
-                            layout: ly.layout || {},
-                            paint: {
-                              "line-color": isLight ? "#7a9aba" : "#2a4a6f",
-                              "line-opacity": isLight ? 0.6 : 0.5,
-                              "line-width": 0.5
-                            }
-                          };
-                          if ((ly as any)["source-layer"]) outlineDef["source-layer"] = (ly as any)["source-layer"];
-                          if (ly.filter) outlineDef.filter = ly.filter;
-                          map.addLayer(outlineDef);
-                        } catch {}
-                      }
-                    }
-                    
-                    // Парки и зеленые зоны
-                    if (fillId.includes("park") || fillId.includes("garden") || fillId.includes("forest") || fillId.includes("grass")) {
-                      map.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.4 : 0.3);
-                      map.setPaintProperty(ly.id, "fill-color", isLight ? "#a8c29a" : "#3a6a5a");
-                      
-                      // Обводка для парков
-                      const parkOutlineId = `${ly.id}-outline`;
-                      if (!map.getLayer(parkOutlineId)) {
-                        try {
-                          const parkOutlineDef: any = {
-                            id: parkOutlineId,
-                            type: "line",
-                            source: ly.source,
-                            layout: ly.layout || {},
-                            paint: {
-                              "line-color": isLight ? "#7ba07a" : "#4a8a6a",
-                              "line-opacity": isLight ? 0.5 : 0.5,
-                              "line-width": isLight ? 0.3 : 0.5
-                            }
-                          };
-                          if ((ly as any)["source-layer"]) parkOutlineDef["source-layer"] = (ly as any)["source-layer"];
-                          if (ly.filter) parkOutlineDef.filter = ly.filter;
-                          map.addLayer(parkOutlineDef);
-                        } catch {}
-                      }
-                    }
+                layers.forEach((layer: any) => {
+                  if (layer.type === "line") {
+                    applyLineStyles(map, layer, isLight);
+                  } else if (layer.type === "fill" && layer.source) {
+                    applyFillStyles(map, layer, isLight);
                   }
                 });
               } catch {}
@@ -412,7 +364,7 @@ export default function CyberCityFour() {
               {/* Анимированная сетка с адаптацией к зуму */}
               <div 
                 className={styles.gridTexture}
-                style={{
+              style={{
                   backgroundSize: `${Math.max(15, Math.min(30, zoomLevel * 2))}px ${Math.max(15, Math.min(30, zoomLevel * 2))}px`
                 }}
               />
@@ -427,15 +379,15 @@ export default function CyberCityFour() {
               <div className={styles.noiseOverlay} />
             </>
           )}
-          
-          {/* Кнопка фильтра */}
-          <button 
-            className={styles.filterButton}
-            onClick={() => setIsFilterOpen(true)}
-            aria-label="Открыть фильтры"
-          >
-            <Filter size={20} />
-          </button>
+            
+            {/* Кнопка фильтра */}
+            <button 
+              className={styles.filterButton}
+              onClick={() => setIsFilterOpen(true)}
+              aria-label="Открыть фильтры"
+            >
+              <Filter size={20} />
+            </button>
 
           {/* Pop-up фильтра */}
           <EventFilter isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
