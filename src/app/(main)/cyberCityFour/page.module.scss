@@ -73,15 +73,6 @@
   mix-blend-mode: screen;
 }
 
-.gridTexture {
-  @extend %cyberpunk-base;
-  background: 
-    linear-gradient(rgba(0, 234, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 234, 255, 0.03) 1px, transparent 1px);
-  background-size: 20px 20px;
-  animation: gridMove 30s linear infinite;
-  z-index: 2;
-}
 
 .edgeGlow {
   @extend %cyberpunk-base;
@@ -122,9 +113,6 @@
 }
 
 // Анимации
-@keyframes gridMove {
-  to { background-position: 20px 20px; }
-}
 
 @keyframes pulseGlow {
   0%, 100% { opacity: 0.3; transform: scale(1); }
@@ -279,10 +267,6 @@
 }
 
 @media (max-width: 400px) {
-  .gridTexture {
-    background-size: 15px 15px;
-    animation: gridMove 20s linear infinite;
-  }
   
   .noiseOverlay {
     opacity: 0.12;

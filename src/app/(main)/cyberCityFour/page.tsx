@@ -183,7 +183,6 @@ export default function CyberCityFour() {
   const [mapRef, setMapRef] = useState<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [zoomLevel, setZoomLevel] = useState(13.5);
   
   // Состояние для фильтра
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -348,11 +347,6 @@ export default function CyberCityFour() {
                 });
               } catch {}
             }}
-            onMove={(e: any) => {
-              if (e.viewState) {
-                setZoomLevel(e.viewState.zoom);
-              }
-            }}
           />
 
           {/* Неоновый пост-обработка для темной темы */}
@@ -361,14 +355,6 @@ export default function CyberCityFour() {
           {/* Cyberpunk Effects - только для темной темы */}
           {!isLight && (
             <>
-              {/* Анимированная сетка с адаптацией к зуму */}
-              <div 
-                className={styles.gridTexture}
-              style={{
-                  backgroundSize: `${Math.max(15, Math.min(30, zoomLevel * 2))}px ${Math.max(15, Math.min(30, zoomLevel * 2))}px`
-                }}
-              />
-              
               {/* Неоновый виньетка (радиальное свечение по краям) */}
               <div className={styles.cyberpunkVignette} />
               
