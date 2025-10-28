@@ -356,25 +356,26 @@ export default function CyberCityFour() {
       )}
       <div className={styles.content}>
         <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''} ${isMobile ? styles.mobileMap : ''}`}>
+          <div className={styles.map}>
           <ReactMapGL
             key={isLight ? "light" : "dark"}
             initialViewState={{ 
               longitude: 20.5147, 
               latitude: 54.7064, 
-              zoom: isVerySmallScreen ? 12.0 : (isMobile ? 12.5 : 13.5), 
-              pitch: isVerySmallScreen ? 20 : (isMobile ? 25 : 40), 
+                zoom: isVerySmallScreen ? 12.0 : (isMobile ? 12.5 : 13.5), 
+                pitch: isVerySmallScreen ? 20 : (isMobile ? 25 : 40), 
               bearing: isMobile ? 0 : -10 
             }}
-            style={{ width: "100%", height: "100%", display: "block" }}
             mapStyle={baseStyleUrl}
             attributionControl={false}
             dragRotate={!isMobile}
             maxBounds={[[20.36, 54.62], [20.58, 54.78]]}
-            onLoad={handleMapLoad}
-          />
+              onLoad={handleMapLoad}
+            />
+          </div>
 
           {/* Неоновый пост-обработка для темной темы */}
-          {!isLight && <div className={styles.neonBoost} style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />}
+          {!isLight && <div className={styles.neonBoost} />}
           
           {/* Cyberpunk Effects - только для темной темы */}
           {!isLight && (

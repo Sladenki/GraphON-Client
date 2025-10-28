@@ -95,6 +95,19 @@
   }
 }
 
+/* Контейнер карты (замена инлайн-стилей width/height/display) */
+.map {
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* Обеспечиваем 100% размер для внутреннего контейнера карты */
+  > :global(div) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
 // Общие стили для эффектов
 %cyberpunk-base {
   position: absolute;
