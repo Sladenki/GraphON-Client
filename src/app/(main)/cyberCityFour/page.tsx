@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Filter } from "lucide-react";
 import styles from "./page.module.scss";
 import EventFilter from "./EventFilter/EventFilter";
@@ -16,8 +16,6 @@ import {
 } from "./mapStyles";
 
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
-
-// ===== СТАТИЧЕСКИЕ УТИЛИТЫ (вынесены за пределы компонента) =====
 
 // Debounce функция для оптимизации вызовов с очисткой таймера
 const debounce = <T extends (...args: any[]) => void>(
@@ -185,54 +183,27 @@ export default function CyberCityFour() {
   // Состояния для разных размеров экрана
   const [isVerySmallScreen, setIsVerySmallScreen] = useState(false);
 
-  // Мемоизированная функция для проверки мобильного устройства
-  const checkMobile = useCallback(() => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    
-    // Определяем очень маленькие экраны отдельно
-    setIsVerySmallScreen(width <= 350 || (width <= 380 && height <= 700));
-    
-    // Более точное определение мобильного устройства
-    // Учитываем не только ширину, но и соотношение сторон для оптимизации карты
-    setIsMobile(
-      width <= 400 || 
-      (width <= 480 && height <= 800) || // Маленькие телефоны в альбомной ориентации
-      (width <= 350) // Очень маленькие экраны
-    );
-  }, []);
-
-  // Мемоизированный дебаунсированный обработчик resize (300мс задержка)
-  const debouncedCheckMobile = useMemo(
-    () => debounce(checkMobile, 300),
-    [checkMobile]
-  );
-
-  // Сохраняем ссылку на дебаунсированную функцию для правильной очистки
-  const debouncedCheckMobileRef = useRef(debouncedCheckMobile);
-  
+  // Единый эффект адаптивности экрана с дебаунсом
   useEffect(() => {
-    debouncedCheckMobileRef.current = debouncedCheckMobile;
-  }, [debouncedCheckMobile]);
-
-
-  // Определяем мобильное устройство с дебаунсингом
-  useEffect(() => {
-    // Вызываем сразу без задержки при первой загрузке
-    checkMobile();
-    
-    // Добавляем дебаунсированный обработчик для последующих изменений
-    const debouncedHandler = debouncedCheckMobileRef.current;
-    window.addEventListener("resize", debouncedHandler);
-    
-    return () => {
-      window.removeEventListener("resize", debouncedHandler);
-      // Отменяем любые ожидающие вызовы при размонтировании
-      if (typeof debouncedHandler.cancel === 'function') {
-        debouncedHandler.cancel();
-      }
+    const update = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsVerySmallScreen(width <= 350 || (width <= 380 && height <= 700));
+      setIsMobile(
+        width <= 400 ||
+        (width <= 480 && height <= 800) ||
+        width <= 350
+      );
     };
-  }, [checkMobile]); // Зависит только от checkMobile, дебаунсированная версия обновляется через ref
+
+    update();
+    const onResize: any = debounce(update, 300);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      if (typeof onResize.cancel === 'function') onResize.cancel();
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
