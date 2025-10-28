@@ -16,6 +16,13 @@
   --shadow-hover: 0 6px 16px rgba(106, 87, 232, 0.4);
 }
 
+// Простое решение для мобильных устройств
+@media (max-width: 400px) {
+  :global(body) {
+    overflow: hidden !important;
+  }
+}
+
 .page {
   height: 100svh;
   display: grid;
@@ -24,13 +31,35 @@
   color: var(--color-text);
   overflow: hidden;
   
-  &.mobile { height: 100vh; }
+  &.mobile { 
+    /* Радикальное решение для мобильных - используем фиксированную высоту */
+    height: 100vh !important;
+    max-height: 100vh !important;
+    min-height: 100vh !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw !important;
+  }
 }
 
 .content { 
   position: relative; 
   height: 100%; 
-  overflow: hidden; 
+  overflow: hidden;
+  
+  .mobile & {
+    /* Для мобильных - используем абсолютное позиционирование */
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100% !important;
+    height: 100% !important;
+  }
 }
 
 .mapHost { 
@@ -41,6 +70,10 @@
   transform: scale(0.98);
   transition: opacity 0.4s ease-out, transform 0.4s ease-out;
   
+  /* Оптимизация для touch устройств */
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  
   &.mapLoaded {
     opacity: 1;
     transform: scale(1);
@@ -48,6 +81,17 @@
   
   &.mobileMap {
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    /* Дополнительные оптимизации для мобильных */
+    will-change: transform, opacity;
+    
+    /* Для мобильных - абсолютное позиционирование */
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100% !important;
+    height: 100% !important;
   }
 }
 
@@ -245,8 +289,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 9999; /* Максимальный z-index для видимости */
   transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  
+  /* Обработка safe-area для iOS устройств */
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  right: calc(24px + env(safe-area-inset-right));
   box-shadow: var(--shadow);
 
   &:hover {
@@ -259,14 +307,28 @@
 // Объединенные медиа-запросы для оптимизации
 @media (max-width: 480px) {
   .filterButton {
-    bottom: 16px;
-    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: calc(16px + env(safe-area-inset-right));
     width: 52px;
     height: 52px;
+    z-index: 9999;
   }
 }
 
 @media (max-width: 400px) {
+  .page {
+    &.mobile {
+      /* Убираем все переопределения высоты - используем только fixed из основного правила */
+    }
+  }
+  
+  .content {
+    /* Убираем переопределения - используем только absolute из основного правила */
+  }
+  
+  .mapHost {
+    /* Убираем переопределения - используем только absolute из mobileMap */
+  }
   
   .noiseOverlay {
     opacity: 0.12;
@@ -294,14 +356,87 @@
   }
   
   .filterButton {
-    bottom: 12px;
-    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    right: calc(12px + env(safe-area-inset-right)) !important;
     width: 48px;
     height: 48px;
+    z-index: 9999 !important;
     
     svg {
       width: 18px;
       height: 18px;
     }
+  }
+}
+
+// Дополнительная оптимизация для очень маленьких экранов (300-350px)
+@media (max-width: 350px) {
+  .mapHost {
+    &.mobileMap {
+      /* GPU ускорение для плавности */
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+  }
+  
+  .filterButton {
+    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    right: calc(8px + env(safe-area-inset-right)) !important;
+    width: 44px;
+    height: 44px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  .loadingOverlay {
+    /* Оптимизация загрузочного экрана для маленьких экранов */
+    padding: 10px;
+  }
+  
+  .spinnerRing {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .spinnerText {
+    font-size: 13px;
+    margin-top: 8px;
+  }
+}
+
+// Дополнительная оптимизация для экранов шириной 300px и меньше
+@media (max-width: 320px) {
+  .page {
+    &.mobile {
+      overflow: hidden !important;
+    }
+  }
+  
+  .filterButton {
+    bottom: calc(6px + env(safe-area-inset-bottom)) !important;
+    right: calc(6px + env(safe-area-inset-right)) !important;
+    width: 40px;
+    height: 40px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  
+  .searchBox {
+    top: 6px;
+    left: 6px;
+    right: 6px;
+  }
+  
+  .searchInput {
+    padding: 6px 8px;
+    font-size: 13px;
   }
 }

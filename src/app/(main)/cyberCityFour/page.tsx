@@ -182,9 +182,24 @@ export default function CyberCityFour() {
   }
   }, []); // Пустые зависимости, так как функция не зависит от состояния
 
+  // Состояния для разных размеров экрана
+  const [isVerySmallScreen, setIsVerySmallScreen] = useState(false);
+
   // Мемоизированная функция для проверки мобильного устройства
   const checkMobile = useCallback(() => {
-    setIsMobile(window.innerWidth <= 400);
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    
+    // Определяем очень маленькие экраны отдельно
+    setIsVerySmallScreen(width <= 350 || (width <= 380 && height <= 700));
+    
+    // Более точное определение мобильного устройства
+    // Учитываем не только ширину, но и соотношение сторон для оптимизации карты
+    setIsMobile(
+      width <= 400 || 
+      (width <= 480 && height <= 800) || // Маленькие телефоны в альбомной ориентации
+      (width <= 350) // Очень маленькие экраны
+    );
   }, []);
 
   // Мемоизированный дебаунсированный обработчик resize (300мс задержка)
@@ -199,6 +214,7 @@ export default function CyberCityFour() {
   useEffect(() => {
     debouncedCheckMobileRef.current = debouncedCheckMobile;
   }, [debouncedCheckMobile]);
+
 
   // Определяем мобильное устройство с дебаунсингом
   useEffect(() => {
@@ -345,8 +361,8 @@ export default function CyberCityFour() {
             initialViewState={{ 
               longitude: 20.5147, 
               latitude: 54.7064, 
-              zoom: isMobile ? 12.5 : 13.5, 
-              pitch: isMobile ? 25 : 40, 
+              zoom: isVerySmallScreen ? 12.0 : (isMobile ? 12.5 : 13.5), 
+              pitch: isVerySmallScreen ? 20 : (isMobile ? 25 : 40), 
               bearing: isMobile ? 0 : -10 
             }}
             style={{ width: "100%", height: "100%", display: "block" }}
