@@ -51,6 +51,23 @@ const getLayerColor = (id: string, isLight: boolean) => {
   return COLORS.dark.minor;
 };
 
+// Типы для лучшей типизации
+type RoadType = "major" | "secondary" | "minor";
+type FillType = "admin" | "water" | "park" | "land";
+
+// Утилиты для работы с paint properties
+const setPaintProperties = (map: any, layerId: string, properties: Record<string, any>) => {
+  Object.entries(properties).forEach(([prop, value]) => {
+    map.setPaintProperty(layerId, prop, value);
+  });
+};
+
+// Создание интерполяции для зума
+const createZoomInterpolation = (values: number[]) => [
+  "interpolate", ["linear"], ["zoom"], 
+  10, values[0], 12, values[1], 14, values[2], 16, values[3]
+];
+
 // Функция создания outline слоя
 const createOutlineLayer = (baseLayer: any, id: string, paint: any) => {
   const def: any = {
@@ -61,120 +78,143 @@ const createOutlineLayer = (baseLayer: any, id: string, paint: any) => {
   return def;
 };
 
+// Безопасное добавление outline слоя
+const addOutlineIfNotExists = (map: any, layer: any, outlineId: string, paint: any) => {
+  if (!map.getLayer(outlineId)) {
+    try {
+      const outlineDef = createOutlineLayer(layer, outlineId, paint);
+      map.addLayer(outlineDef);
+    } catch {}
+  }
+};
+
+// Функции классификации слоев
+const classifyRoad = (id: string): RoadType => {
+  const s = id.toLowerCase();
+  if (s.includes("motorway") || s.includes("highway") || s.includes("primary") || s.includes("main") || s.includes("trunk")) return "major";
+  if (s.includes("secondary") || s.includes("street") || s.includes("road") || s.includes("tertiary")) return "secondary";
+  return "minor";
+};
+
+const classifyFill = (id: string): FillType => {
+  const s = id.toLowerCase();
+  if (s.includes("admin") || s.includes("boundary")) return "admin";
+  if (s.includes("water") || s.includes("marine") || s.includes("river")) return "water";
+  if (s.includes("park") || s.includes("garden") || s.includes("forest") || s.includes("grass")) return "park";
+  return "land";
+};
+
+// Константы стилей дорог
+const ROAD_STYLES = {
+  major: {
+    opacity: { light: [0.5, 0.7, 0.85, 0.95], dark: [0.45, 0.65, 0.85, 1.0] },
+    width: [1.0, 2.0, 3.2, 5.0],
+    blur: { light: 0.15, dark: 0.4 }
+  },
+  secondary: {
+    opacity: { light: [0.25, 0.35, 0.45, 0.55], dark: [0.20, 0.30, 0.45, 0.60] },
+    width: [0.3, 0.6, 1.0, 1.6],
+    blur: { light: 0.1, dark: 0.2 }
+  },
+  minor: {
+    opacity: { light: [0.12, 0.18, 0.25, 0.30], dark: [0.10, 0.15, 0.22, 0.30] },
+    width: [0.2, 0.4, 0.6, 1.0],
+    blur: { light: 0.05, dark: 0.1 }
+  }
+};
+
+// Константы стилей для fill слоев (убираем строгую типизацию для гибкости)
+const FILL_STYLES: any = {
+  admin: {
+    opacity: 0.05,
+    outline: { opacity: 0.2, width: 1, blur: 2 }
+  },
+  water: {
+    opacity: { light: 0.5, dark: 0.3 },
+    outline: { opacity: { light: 0.6, dark: 0.5 }, width: 0.5 }
+  },
+  park: {
+    opacity: { light: 0.4, dark: 0.3 },
+    outline: { opacity: 0.5, width: { light: 0.3, dark: 0.5 } }
+  },
+  land: {
+    opacity: { dark: 0.35 },
+    color: { dark: "#3a3f4a" }
+  }
+};
+
 // Функции стилизации слоев
 const applyLineStyles = (map: any, layer: any, isLight: boolean) => {
+  const roadType = classifyRoad(layer.id);
   const color = getLayerColor(layer.id, isLight);
-  const sid = layer.id.toLowerCase();
+  const style = ROAD_STYLES[roadType];
   
-  const isMajorRoad = sid.includes("motorway") || sid.includes("highway") || sid.includes("primary") || sid.includes("main");
-  const isSecondaryRoad = sid.includes("secondary") || sid.includes("street") || sid.includes("road");
-  
-  map.setPaintProperty(layer.id, "line-color", color);
-  
-  if (isMajorRoad) {
-    map.setPaintProperty(layer.id, "line-opacity", isLight ? [
-      "interpolate", ["linear"], ["zoom"], 10, 0.5, 12, 0.7, 14, 0.85, 16, 0.95
-    ] : [
-      "interpolate", ["linear"], ["zoom"], 10, 0.45, 12, 0.65, 14, 0.85, 16, 1.0
-    ]);
-    map.setPaintProperty(layer.id, "line-width", [
-      "interpolate", ["linear"], ["zoom"], 10, 1.0, 12, 2.0, 14, 3.2, 16, 5.0
-    ]);
-    map.setPaintProperty(layer.id, "line-blur", isLight ? 0.15 : 0.4);
-  } else if (isSecondaryRoad) {
-    map.setPaintProperty(layer.id, "line-opacity", isLight ? [
-      "interpolate", ["linear"], ["zoom"], 10, 0.25, 12, 0.35, 14, 0.45, 16, 0.55
-    ] : [
-      "interpolate", ["linear"], ["zoom"], 10, 0.20, 12, 0.30, 14, 0.45, 16, 0.60
-    ]);
-    map.setPaintProperty(layer.id, "line-width", [
-      "interpolate", ["linear"], ["zoom"], 10, 0.3, 12, 0.6, 14, 1.0, 16, 1.6
-    ]);
-    map.setPaintProperty(layer.id, "line-blur", isLight ? 0.1 : 0.2);
-  } else {
-    map.setPaintProperty(layer.id, "line-opacity", isLight ? [
-      "interpolate", ["linear"], ["zoom"], 10, 0.12, 12, 0.18, 14, 0.25, 16, 0.30
-    ] : [
-      "interpolate", ["linear"], ["zoom"], 10, 0.10, 12, 0.15, 14, 0.22, 16, 0.30
-    ]);
-    map.setPaintProperty(layer.id, "line-width", [
-      "interpolate", ["linear"], ["zoom"], 10, 0.2, 12, 0.4, 14, 0.6, 16, 1.0
-    ]);
-    map.setPaintProperty(layer.id, "line-blur", isLight ? 0.05 : 0.1);
-  }
+  // Применяем основные стили дороги
+  setPaintProperties(map, layer.id, {
+    "line-color": color,
+    "line-opacity": createZoomInterpolation(isLight ? style.opacity.light : style.opacity.dark),
+    "line-width": createZoomInterpolation(style.width),
+    "line-blur": isLight ? style.blur.light : style.blur.dark
+  });
 
   // Неоновый эффект для главных дорог в темной теме
-  if (!isLight && layer.source && isMajorRoad) {
-    const glowId = `${layer.id}-neon-glow`;
-    if (!map.getLayer(glowId)) {
-      try {
-        const glowDef = createOutlineLayer(layer, glowId, {
-          "line-color": color,
-          "line-opacity": ["interpolate", ["linear"], ["zoom"], 10, 0.08, 12, 0.14, 14, 0.22, 16, 0.30],
-          "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1.6, 12, 2.6, 14, 4.2, 16, 6.0],
-          "line-blur": 1.4
-        });
-        map.addLayer(glowDef, layer.id);
-      } catch {}
-    }
+  if (!isLight && layer.source && roadType === "major") {
+    addOutlineIfNotExists(map, layer, `${layer.id}-neon-glow`, {
+      "line-color": color,
+      "line-opacity": createZoomInterpolation([0.08, 0.14, 0.22, 0.30]),
+      "line-width": createZoomInterpolation([1.6, 2.6, 4.2, 6.0]),
+      "line-blur": 1.4
+    });
   }
 };
 
 const applyFillStyles = (map: any, layer: any, isLight: boolean) => {
-  const fillId = layer.id.toLowerCase();
+  const fillType = classifyFill(layer.id);
+  const style = FILL_STYLES[fillType];
   
-  if (fillId.includes("admin") || fillId.includes("boundary")) {
-    map.setPaintProperty(layer.id, "fill-opacity", 0.05);
-    const outlineId = `${layer.id}-glow-outline`;
-    if (!map.getLayer(outlineId)) {
-      try {
-        const outlineDef = createOutlineLayer(layer, outlineId, {
-          "line-color": isLight ? COLORS.light.boundary : COLORS.dark.boundary,
-          "line-opacity": 0.2,
-          "line-width": 1,
-          "line-blur": 2
+  switch (fillType) {
+    case "admin":
+      setPaintProperties(map, layer.id, { "fill-opacity": style.opacity });
+      addOutlineIfNotExists(map, layer, `${layer.id}-glow-outline`, {
+        "line-color": isLight ? COLORS.light.boundary : COLORS.dark.boundary,
+        "line-opacity": style.outline.opacity,
+        "line-width": style.outline.width,
+        "line-blur": style.outline.blur
+      });
+      break;
+      
+    case "water":
+      setPaintProperties(map, layer.id, {
+        "fill-opacity": isLight ? style.opacity.light : style.opacity.dark,
+        "fill-color": isLight ? COLORS.light.water : COLORS.dark.water
+      });
+      addOutlineIfNotExists(map, layer, `${layer.id}-outline`, {
+        "line-color": isLight ? COLORS.light.waterOutline : COLORS.dark.waterOutline,
+        "line-opacity": isLight ? style.outline.opacity.light : style.outline.opacity.dark,
+        "line-width": style.outline.width
+      });
+      break;
+      
+    case "park":
+      setPaintProperties(map, layer.id, {
+        "fill-opacity": isLight ? style.opacity.light : style.opacity.dark,
+        "fill-color": isLight ? COLORS.light.park : COLORS.dark.park
+      });
+      addOutlineIfNotExists(map, layer, `${layer.id}-outline`, {
+        "line-color": isLight ? COLORS.light.parkOutline : COLORS.dark.parkOutline,
+        "line-opacity": style.outline.opacity,
+        "line-width": isLight ? style.outline.width.light : style.outline.width.dark
+      });
+      break;
+      
+    case "land":
+      if (!isLight && style.opacity.dark && style.color.dark) {
+        setPaintProperties(map, layer.id, {
+          "fill-opacity": style.opacity.dark,
+          "fill-color": style.color.dark
         });
-        map.addLayer(outlineDef);
-      } catch {}
-    }
-  } else if (fillId.includes("water") || fillId.includes("marine") || fillId.includes("river")) {
-    map.setPaintProperty(layer.id, "fill-opacity", isLight ? 0.5 : 0.3);
-    map.setPaintProperty(layer.id, "fill-color", isLight ? COLORS.light.water : COLORS.dark.water);
-    
-    const outlineId = `${layer.id}-outline`;
-    if (!map.getLayer(outlineId)) {
-      try {
-        const outlineDef = createOutlineLayer(layer, outlineId, {
-          "line-color": isLight ? COLORS.light.waterOutline : COLORS.dark.waterOutline,
-          "line-opacity": isLight ? 0.6 : 0.5,
-          "line-width": 0.5
-        });
-        map.addLayer(outlineDef);
-      } catch {}
-    }
-  } else if (fillId.includes("park") || fillId.includes("garden") || fillId.includes("forest") || fillId.includes("grass")) {
-    map.setPaintProperty(layer.id, "fill-opacity", isLight ? 0.4 : 0.3);
-    map.setPaintProperty(layer.id, "fill-color", isLight ? COLORS.light.park : COLORS.dark.park);
-    
-    const outlineId = `${layer.id}-outline`;
-    if (!map.getLayer(outlineId)) {
-      try {
-        const outlineDef = createOutlineLayer(layer, outlineId, {
-          "line-color": isLight ? COLORS.light.parkOutline : COLORS.dark.parkOutline,
-          "line-opacity": 0.5,
-          "line-width": isLight ? 0.3 : 0.5
-        });
-        map.addLayer(outlineDef);
-      } catch {}
-    }
-  } else {
-    const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin") && !fillId.includes("boundary");
-    if (isLand) {
-      map.setPaintProperty(layer.id, "fill-opacity", isLight ? undefined : 0.35);
-      if (!isLight) {
-        map.setPaintProperty(layer.id, "fill-color", "#3a3f4a");
       }
-    }
+      break;
   }
 };
 
@@ -228,58 +268,56 @@ export default function CyberCityFour() {
       : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
   ), [isLight]);
 
-  // Функция для принудительного обновления стилей дорог
+  // Константы для "тяжелых" стилей дорог (более толстые)
+  const HEAVY_ROAD_STYLES = {
+    major: {
+      opacity: { light: 0.9, dark: 1.0 },
+      width: [3.0, 5.0, 7.0, 10.0],
+      blur: { light: 0.3, dark: 0.6 }
+    },
+    secondary: {
+      opacity: { light: 0.4, dark: 0.5 },
+      width: [0.5, 1.0, 1.5, 2.0],
+      blur: { light: 0.1, dark: 0.2 }
+    },
+    minor: {
+      opacity: { light: 0.15, dark: 0.2 },
+      width: [0.2, 0.3, 0.5, 0.8],
+      blur: { light: 0.05, dark: 0.1 }
+    },
+    default: {
+      opacity: { light: 0.6, dark: 0.7 },
+      width: [1.0, 1.5, 2.0, 3.0],
+      blur: { light: 0.1, dark: 0.2 }
+    }
+  };
+
+  // Функция для принудительного обновления стилей дорог (делает дороги толще)
   const updateRoadStyles = () => {
     if (!mapRef) return;
     
     try {
       const layers = mapRef.getStyle()?.layers || [];
-      console.log("Обновляем стили дорог в CyberCityThree, найдено слоев:", layers.length);
       
-      layers.forEach((ly: any) => {
-        if (ly.type === "line") {
-          const sid = (ly.id || "").toLowerCase();
-          console.log("Обрабатываем слой:", ly.id, "source-layer:", (ly as any)["source-layer"]);
+      layers.forEach((layer: any) => {
+        if (layer.type === "line") {
+          const roadType = classifyRoad(layer.id);
+          const sid = layer.id.toLowerCase();
           
-          // Проверяем по ID слоя более точно
-          const isMajorRoad = sid.includes("motorway") || sid.includes("highway") || sid.includes("primary") || sid.includes("trunk");
-          const isSecondaryRoad = sid.includes("secondary") || sid.includes("tertiary");
-          const isMinorRoad = sid.includes("residential") || sid.includes("service") || sid.includes("unclassified") || sid.includes("minor");
-          
-          if (isMajorRoad) {
-            console.log("Применяем стили главной дороги к:", ly.id);
-            // Главные дороги - очень толстые и яркие
-            mapRef.setPaintProperty(ly.id, "line-opacity", isLight ? 0.9 : 1.0);
-            mapRef.setPaintProperty(ly.id, "line-width", [
-              "interpolate", ["linear"], ["zoom"],
-              10, 3.0, 12, 5.0, 14, 7.0, 16, 10.0
-            ]);
-            mapRef.setPaintProperty(ly.id, "line-blur", isLight ? 0.3 : 0.6);
-          } else if (isSecondaryRoad) {
-            console.log("Применяем стили вторичной дороги к:", ly.id);
-            // Вторичные дороги - умеренные
-            mapRef.setPaintProperty(ly.id, "line-opacity", isLight ? 0.4 : 0.5);
-            mapRef.setPaintProperty(ly.id, "line-width", [
-              "interpolate", ["linear"], ["zoom"],
-              10, 0.5, 12, 1.0, 14, 1.5, 16, 2.0
-            ]);
-          } else if (isMinorRoad) {
-            console.log("Применяем стили мелкой дороги к:", ly.id);
-            // Мелкие дороги - очень приглушенные
-            mapRef.setPaintProperty(ly.id, "line-opacity", isLight ? 0.15 : 0.2);
-            mapRef.setPaintProperty(ly.id, "line-width", [
-              "interpolate", ["linear"], ["zoom"],
-              10, 0.2, 12, 0.3, 14, 0.5, 16, 0.8
-            ]);
-          } else {
-            console.log("Применяем стили по умолчанию к:", ly.id);
-            // Остальные дороги - средние
-            mapRef.setPaintProperty(ly.id, "line-opacity", isLight ? 0.6 : 0.7);
-            mapRef.setPaintProperty(ly.id, "line-width", [
-              "interpolate", ["linear"], ["zoom"],
-              10, 1.0, 12, 1.5, 14, 2.0, 16, 3.0
-            ]);
+          // Более точная классификация для специальных случаев
+          let style = HEAVY_ROAD_STYLES[roadType];
+          if (roadType === "minor" && (sid.includes("residential") || sid.includes("service") || sid.includes("unclassified"))) {
+            style = HEAVY_ROAD_STYLES.minor;
+          } else if (roadType === "minor") {
+            // Для остальных мелких дорог используем default стиль
+            style = HEAVY_ROAD_STYLES.default;
           }
+          
+          setPaintProperties(mapRef, layer.id, {
+            "line-opacity": isLight ? style.opacity.light : style.opacity.dark,
+            "line-width": createZoomInterpolation(style.width),
+            "line-blur": isLight ? style.blur.light : style.blur.dark
+          });
         }
       });
     } catch (e) {
