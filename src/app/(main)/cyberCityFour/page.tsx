@@ -52,160 +52,6 @@ export default function CyberCityFour() {
     return () => { media.removeEventListener("change", apply); obs.disconnect(); };
   }, []);
 
-  // useEffect(() => {
-  //   // Создаем данные о трех основных районах Калининграда с кривыми контурами
-  //   const loadDistricts = () => {
-  //      const kaliningradDistricts = [
-  //       {
-  //         id: 1,
-  //         name: "Ленинградский район",
-  //         geometry: [[
-  //           [20.3600, 54.7400],
-  //           [20.3750, 54.7480],
-  //           [20.3950, 54.7550],
-  //           [20.4200, 54.7585],
-  //           [20.4450, 54.7600],
-  //           [20.4700, 54.7570],
-  //           [20.4950, 54.7500],
-  //           [20.5100, 54.7400],
-  //           [20.5200, 54.7250],
-  //           [20.5250, 54.7100],
-  //           [20.5200, 54.6950],
-  //           [20.5050, 54.6880],
-  //           [20.4850, 54.6885],
-  //           [20.4600, 54.6930],
-  //           [20.4400, 54.7000],
-  //           [20.4250, 54.7120],
-  //           [20.4100, 54.7250],
-  //           [20.3900, 54.7320],
-  //           [20.3700, 54.7370],
-  //           [20.3600, 54.7400]
-  //         ]],
-  //         color: "#00eaff"
-  //       },
-  //       {
-  //         id: 2,
-  //         name: "Центральный район",
-  //         geometry: [[
-  //           [20.4550, 54.7100],
-  //           [20.4680, 54.7050],
-  //           [20.4850, 54.7020],
-  //           [20.5000, 54.7005],
-  //           [20.5170, 54.7020],
-  //           [20.5320, 54.7065],
-  //           [20.5450, 54.7140],
-  //           [20.5520, 54.7240],
-  //           [20.5500, 54.7350],
-  //           [20.5400, 54.7440],
-  //           [20.5250, 54.7480],
-  //           [20.5050, 54.7470],
-  //           [20.4900, 54.7420],
-  //           [20.4780, 54.7340],
-  //           [20.4720, 54.7240],
-  //           [20.4680, 54.7160],
-  //           [20.4600, 54.7130],
-  //           [20.4550, 54.7100]
-  //         ]],
-  //         color: "#a47cff"
-  //       },
-  //       {
-  //         id: 3,
-  //         name: "Балтийский район",
-  //         geometry: [[
-  //           [20.3350, 54.6900],
-  //           [20.3500, 54.6820],
-  //           [20.3700, 54.6780],
-  //           [20.3900, 54.6740],
-  //           [20.4100, 54.6720],
-  //           [20.4300, 54.6705],
-  //           [20.4500, 54.6710],
-  //           [20.4700, 54.6750],
-  //           [20.4880, 54.6820],
-  //           [20.4950, 54.6920],
-  //           [20.4930, 54.7040],
-  //           [20.4850, 54.7130],
-  //           [20.4700, 54.7180],
-  //           [20.4500, 54.7180],
-  //           [20.4300, 54.7140],
-  //           [20.4100, 54.7060],
-  //           [20.3950, 54.7000],
-  //           [20.3750, 54.6950],
-  //           [20.3550, 54.6920],
-  //           [20.3350, 54.6900]
-  //         ]],
-  //         color: "#3effc3"
-  //       }
-  //     ];
-  //     
-  //     
-  //     console.log("Loading districts:", kaliningradDistricts);
-  //     setDistricts(kaliningradDistricts as any);
-  //   };
-  //   loadDistricts();
-  // }, []);
-
-  // // Эффект для добавления границ районов на карту
-  // useEffect(() => {
-  //   if (!mapRef || districts.length === 0) return;
-  //   
-  //   console.log("Adding districts to map:", districts);
-  //   
-  //   districts.forEach((district: any) => {
-  //     try {
-  //       const geoJson = {
-  //         type: "Feature",
-  //         geometry: {
-  //           type: "Polygon",
-  //           coordinates: district.geometry
-  //         },
-  //         properties: { name: district.name }
-  //       };
-  //       
-  //       const sourceId = `district-${district.id}`;
-  //       
-  //       if (!mapRef.getSource(sourceId)) {
-  //         console.log("Adding source:", sourceId);
-  //         mapRef.addSource(sourceId, {
-  //           type: "geojson",
-  //           data: geoJson as any
-  //         });
-  //         
-  //         mapRef.addLayer({
-  //           id: `district-fill-${district.id}`,
-  //           type: "fill",
-  //           source: sourceId,
-  //           paint: {
-  //             "fill-color": district.color,
-  //             "fill-opacity": 0.15
-  //           }
-  //         } as any);
-  //         
-  //         mapRef.addLayer({
-  //           id: `district-line-${district.id}`,
-  //           type: "line",
-  //           source: sourceId,
-  //           paint: {
-  //             "line-color": district.color,
-  //             "line-width": 4,
-  //             "line-opacity": isLight ? 0.7 : 0.9
-  //           }
-  //         } as any);
-  //       } else {
-  //         // Обновляем существующие слои
-  //         const fillLayerId = `district-fill-${district.id}`;
-  //         const lineLayerId = `district-line-${district.id}`;
-  //         if (mapRef.getLayer(lineLayerId)) {
-  //           mapRef.setPaintProperty(lineLayerId, "line-opacity", isLight ? 0.7 : 0.9);
-  //         }
-  //         if (mapRef.getLayer(fillLayerId)) {
-  //           mapRef.setPaintProperty(fillLayerId, "fill-opacity", 0.15);
-  //         }
-  //       }
-  //     } catch (err) {
-  //       console.error("Error adding district:", district.name, err);
-  //     }
-  //   });
-  // }, [mapRef, districts, isLight]);
 
   const baseStyleUrl = useMemo(() => (
     isLight
@@ -484,14 +330,12 @@ export default function CyberCityFour() {
                       }
                     }
                     
-                    // Земельные участки и острова (включая остров Канта)
-                    if (fillId.includes("land") || fillId.includes("landcover") || fillId.includes("earth") || (!fillId.includes("water") && !fillId.includes("park") && !fillId.includes("admin"))) {
-                      const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin");
-                      if (isLand) {
-                        map.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.35);
-                        if (!isLight) {
-                          map.setPaintProperty(ly.id, "fill-color", "#3a3f4a");
-                        }
+                    // Земельные участки и острова
+                    const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin") && !fillId.includes("boundary");
+                    if (isLand) {
+                      map.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.35);
+                      if (!isLight) {
+                        map.setPaintProperty(ly.id, "fill-color", "#3a3f4a");
                       }
                     }
                     
@@ -584,30 +428,14 @@ export default function CyberCityFour() {
             </>
           )}
           
-          {/* Плавающие кнопки */}
-          <div style={{ position: "fixed", bottom: "24px", right: "24px", display: "flex", flexDirection: "column", gap: "12px", zIndex: 100 }}>
-            {/* Кнопка обновления стилей дорог */}
-            <button 
-              style={{
-                width: "56px", height: "56px", borderRadius: "50%", background: "#ff5cf4", border: "none", 
-                color: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 4px 12px rgba(255, 92, 244, 0.3)", fontSize: "12px", fontWeight: "bold"
-              }}
-              onClick={updateRoadStyles}
-              aria-label="Обновить стили дорог"
-            >
-              ↻
-            </button>
-            
-            {/* Кнопка фильтра */}
-            <button 
-              className={styles.filterButton}
-              onClick={() => setIsFilterOpen(true)}
-              aria-label="Открыть фильтры"
-            >
-              <Filter size={20} />
-            </button>
-          </div>
+          {/* Кнопка фильтра */}
+          <button 
+            className={styles.filterButton}
+            onClick={() => setIsFilterOpen(true)}
+            aria-label="Открыть фильтры"
+          >
+            <Filter size={20} />
+          </button>
 
           {/* Pop-up фильтра */}
           <EventFilter isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
