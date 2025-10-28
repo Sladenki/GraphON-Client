@@ -8,7 +8,7 @@ import EventFilter from "./EventFilter/EventFilter";
 
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
 
-export default function CyberCityTwo() {
+export default function CyberCityThree() {
   const [isLight, setIsLight] = useState(false);
   const [mapRef, setMapRef] = useState<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -212,12 +212,75 @@ export default function CyberCityTwo() {
       : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
   ), [isLight]);
 
+  // Функция для принудительного обновления стилей дорог
+  const updateRoadStyles = () => {
+    if (!mapRef) return;
+    
+    try {
+      const layers = mapRef.getStyle()?.layers || [];
+      console.log("Обновляем стили дорог в CyberCityThree, найдено слоев:", layers.length);
+      
+      layers.forEach((ly: any) => {
+        if (ly.type === "line") {
+          const sid = (ly.id || "").toLowerCase();
+          console.log("Обрабатываем слой:", ly.id, "source-layer:", (ly as any)["source-layer"]);
+          
+          // Проверяем по ID слоя более точно
+          const isMajorRoad = sid.includes("motorway") || sid.includes("highway") || sid.includes("primary") || sid.includes("trunk");
+          const isSecondaryRoad = sid.includes("secondary") || sid.includes("tertiary");
+          const isMinorRoad = sid.includes("residential") || sid.includes("service") || sid.includes("unclassified") || sid.includes("minor");
+          
+          if (isMajorRoad) {
+            console.log("Применяем стили главной дороги к:", ly.id);
+            // Главные дороги - очень толстые и яркие
+            mapRef.setPaintProperty(ly.id, "line-opacity", isLight ? 0.9 : 1.0);
+            mapRef.setPaintProperty(ly.id, "line-width", [
+              "interpolate", ["linear"], ["zoom"],
+              10, 3.0, 12, 5.0, 14, 7.0, 16, 10.0
+            ]);
+            mapRef.setPaintProperty(ly.id, "line-blur", isLight ? 0.3 : 0.6);
+          } else if (isSecondaryRoad) {
+            console.log("Применяем стили вторичной дороги к:", ly.id);
+            // Вторичные дороги - умеренные
+            mapRef.setPaintProperty(ly.id, "line-opacity", isLight ? 0.4 : 0.5);
+            mapRef.setPaintProperty(ly.id, "line-width", [
+              "interpolate", ["linear"], ["zoom"],
+              10, 0.5, 12, 1.0, 14, 1.5, 16, 2.0
+            ]);
+          } else if (isMinorRoad) {
+            console.log("Применяем стили мелкой дороги к:", ly.id);
+            // Мелкие дороги - очень приглушенные
+            mapRef.setPaintProperty(ly.id, "line-opacity", isLight ? 0.15 : 0.2);
+            mapRef.setPaintProperty(ly.id, "line-width", [
+              "interpolate", ["linear"], ["zoom"],
+              10, 0.2, 12, 0.3, 14, 0.5, 16, 0.8
+            ]);
+          } else {
+            console.log("Применяем стили по умолчанию к:", ly.id);
+            // Остальные дороги - средние
+            mapRef.setPaintProperty(ly.id, "line-opacity", isLight ? 0.6 : 0.7);
+            mapRef.setPaintProperty(ly.id, "line-width", [
+              "interpolate", ["linear"], ["zoom"],
+              10, 1.0, 12, 1.5, 14, 2.0, 16, 3.0
+            ]);
+          }
+        }
+      });
+    } catch (e) {
+      console.error("Ошибка при обновлении стилей дорог:", e);
+    }
+  };
+
   // Эффект для обновления стилей карты при изменении темы
   useEffect(() => {
     if (!mapRef || !mapLoaded) return;
     
+    // Обновляем стили дорог
+    updateRoadStyles();
+    
     try {
       const layers = mapRef.getStyle()?.layers || [];
+      
       layers.forEach((ly: any) => {
         if (ly.type === "fill") {
           const fillId = (ly.id || "").toLowerCase();
@@ -494,14 +557,30 @@ export default function CyberCityTwo() {
           {/* Неоновый пост-обработка для темной темы */}
           {!isLight && <div className={styles.neonBoost} style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />}
           
-          {/* Плавающая кнопка фильтра */}
-          <button 
-            className={styles.filterButton}
-            onClick={() => setIsFilterOpen(true)}
-            aria-label="Открыть фильтры"
-          >
-            <Filter size={20} />
-          </button>
+          {/* Плавающие кнопки */}
+          <div style={{ position: "fixed", bottom: "24px", right: "24px", display: "flex", flexDirection: "column", gap: "12px", zIndex: 100 }}>
+            {/* Кнопка обновления стилей дорог */}
+            <button 
+              style={{
+                width: "56px", height: "56px", borderRadius: "50%", background: "#ff5cf4", border: "none", 
+                color: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 4px 12px rgba(255, 92, 244, 0.3)", fontSize: "12px", fontWeight: "bold"
+              }}
+              onClick={updateRoadStyles}
+              aria-label="Обновить стили дорог"
+            >
+              ↻
+            </button>
+            
+            {/* Кнопка фильтра */}
+            <button 
+              className={styles.filterButton}
+              onClick={() => setIsFilterOpen(true)}
+              aria-label="Открыть фильтры"
+            >
+              <Filter size={20} />
+            </button>
+          </div>
 
           {/* Pop-up фильтра */}
           <EventFilter isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
