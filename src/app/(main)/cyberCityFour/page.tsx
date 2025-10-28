@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Filter } from "lucide-react";
 import styles from "./page.module.scss";
 import EventFilter from "./EventFilter/EventFilter";
@@ -18,6 +18,32 @@ import {
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
 
 // ===== СТАТИЧЕСКИЕ УТИЛИТЫ (вынесены за пределы компонента) =====
+
+// Debounce функция для оптимизации вызовов с очисткой таймера
+const debounce = <T extends (...args: any[]) => void>(
+  func: T, 
+  wait: number
+): {
+  (...args: Parameters<T>): void;
+  cancel: () => void;
+} => {
+  let timeout: NodeJS.Timeout | null = null;
+  
+  const debouncedFunc = (...args: Parameters<T>) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+  
+  // Функция для принудительной очистки таймера
+  debouncedFunc.cancel = () => {
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
+  };
+  
+  return debouncedFunc;
+};
 
 // Утилиты для работы с paint properties
 const setPaintProperties = (map: any, layerId: string, properties: Record<string, any>) => {
@@ -161,12 +187,36 @@ export default function CyberCityFour() {
     setIsMobile(window.innerWidth <= 400);
   }, []);
 
-  // Определяем мобильное устройство
+  // Мемоизированный дебаунсированный обработчик resize (300мс задержка)
+  const debouncedCheckMobile = useMemo(
+    () => debounce(checkMobile, 300),
+    [checkMobile]
+  );
+
+  // Сохраняем ссылку на дебаунсированную функцию для правильной очистки
+  const debouncedCheckMobileRef = useRef(debouncedCheckMobile);
+  
   useEffect(() => {
+    debouncedCheckMobileRef.current = debouncedCheckMobile;
+  }, [debouncedCheckMobile]);
+
+  // Определяем мобильное устройство с дебаунсингом
+  useEffect(() => {
+    // Вызываем сразу без задержки при первой загрузке
     checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, [checkMobile]);
+    
+    // Добавляем дебаунсированный обработчик для последующих изменений
+    const debouncedHandler = debouncedCheckMobileRef.current;
+    window.addEventListener("resize", debouncedHandler);
+    
+    return () => {
+      window.removeEventListener("resize", debouncedHandler);
+      // Отменяем любые ожидающие вызовы при размонтировании
+      if (typeof debouncedHandler.cancel === 'function') {
+        debouncedHandler.cancel();
+      }
+    };
+  }, [checkMobile]); // Зависит только от checkMobile, дебаунсированная версия обновляется через ref
 
   useEffect(() => {
     if (typeof window === "undefined") return;
