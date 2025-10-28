@@ -1,17 +1,37 @@
+// CSS переменные
+:root {
+  --color-bg: #0b0d14;
+  --color-text: #e6f4ff;
+  --color-text-dim: #cfe7ff;
+  --color-text-muted: #9fb7d6;
+  --color-neon-cyan: #00eaff;
+  --color-neon-pink: #ff5cf4;
+  --color-neon-purple: #a27cff;
+  --color-neon-mint: #3effc3;
+  --color-primary: #6a57e8;
+  --color-primary-hover: #5a4ad8;
+  --color-border: rgba(120, 160, 220, 0.25);
+  --color-overlay: rgba(12, 14, 20, 0.75);
+  --shadow: 0 4px 12px rgba(106, 87, 232, 0.3);
+  --shadow-hover: 0 6px 16px rgba(106, 87, 232, 0.4);
+}
+
 .page {
   height: 100svh;
   display: grid;
   grid-template-rows: 1fr;
-  background: #0b0d14;
-  color: #e6f4ff;
+  background: var(--color-bg);
+  color: var(--color-text);
   overflow: hidden;
+  
+  &.mobile { height: 100vh; }
 }
 
-.page.mobile {
-  height: 100vh;
+.content { 
+  position: relative; 
+  height: 100%; 
+  overflow: hidden; 
 }
-
-.content { position: relative; height: 100%; overflow: hidden; }
 
 .mapHost { 
   position: relative; 
@@ -25,79 +45,85 @@
     opacity: 1;
     transform: scale(1);
   }
-}
-
-.mapHost.mobileMap {
-  // Уменьшенная анимация для мобильных
-  transform: scale(0.98);
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
   
-  &.mapLoaded {
-    opacity: 1;
-    transform: scale(1);
+  &.mobileMap {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
   }
 }
 
-.neonBoost { filter: brightness(1.2) contrast(1.12) saturate(1.2); pointer-events: none; position: absolute; inset: 0; }
-.labelsGlow { position: absolute; inset: 0; pointer-events: none; }
-
-/* Cyberpunk Effects */
-.cyberpunkOverlay {
+// Общие стили для эффектов
+%cyberpunk-base {
   position: absolute;
   inset: 0;
   pointer-events: none;
+}
+
+.neonBoost { 
+  @extend %cyberpunk-base;
+  filter: brightness(1.2) contrast(1.12) saturate(1.2); 
+}
+
+.labelsGlow { @extend %cyberpunk-base; }
+
+/* Cyberpunk Effects */
+.cyberpunkOverlay {
+  @extend %cyberpunk-base;
   z-index: 1;
   opacity: 0.4;
   mix-blend-mode: screen;
 }
 
 .gridTexture {
-  position: absolute;
-  inset: 0;
-  background-image: 
+  @extend %cyberpunk-base;
+  background: 
     linear-gradient(rgba(0, 234, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 234, 255, 0.03) 1px, transparent 1px);
   background-size: 20px 20px;
   animation: gridMove 30s linear infinite;
-  pointer-events: none;
   z-index: 2;
 }
 
-@keyframes gridMove {
-  0% { background-position: 0 0; }
-  100% { background-position: 20px 20px; }
-}
-
 .edgeGlow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+  @extend %cyberpunk-base;
   z-index: 3;
   
-  &::before,
-  &::after {
+  &::before, &::after {
     content: '';
     position: absolute;
-    background: radial-gradient(ellipse at center, rgba(0, 234, 255, 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(0, 234, 255, 0.15), transparent 70%);
     border-radius: 50%;
+    width: 100%;
+    height: 100%;
     animation: pulseGlow 4s ease-in-out infinite;
   }
   
-  &::before {
-    top: -50%;
-    left: -50%;
-    width: 100%;
-    height: 100%;
-    animation-delay: 0s;
-  }
-  
-  &::after {
-    bottom: -50%;
-    right: -50%;
-    width: 100%;
-    height: 100%;
-    animation-delay: 2s;
-  }
+  &::before { top: -50%; left: -50%; }
+  &::after { bottom: -50%; right: -50%; animation-delay: 2s; }
+}
+
+.noiseOverlay {
+  @extend %cyberpunk-base;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  z-index: 4;
+  animation: noiseFlicker 8s ease-in-out infinite;
+}
+
+.cyberpunkVignette {
+  @extend %cyberpunk-base;
+  background: 
+    radial-gradient(ellipse at top left, rgba(0, 234, 255, 0.08), transparent 50%),
+    radial-gradient(ellipse at top right, rgba(255, 92, 244, 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(162, 124, 255, 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(62, 255, 195, 0.08), transparent 50%);
+  z-index: 1;
+  animation: vignettePulse 6s ease-in-out infinite;
+}
+
+// Анимации
+@keyframes gridMove {
+  to { background-position: 20px 20px; }
 }
 
 @keyframes pulseGlow {
@@ -105,33 +131,9 @@
   50% { opacity: 0.6; transform: scale(1.1); }
 }
 
-.noiseOverlay {
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.08;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  z-index: 4;
-  animation: noiseFlicker 8s ease-in-out infinite;
-}
-
 @keyframes noiseFlicker {
   0%, 100% { opacity: 0.08; }
   50% { opacity: 0.15; }
-}
-
-.cyberpunkVignette {
-  position: absolute;
-  inset: 0;
-  background: 
-    radial-gradient(ellipse at top left, rgba(0, 234, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at top right, rgba(255, 92, 244, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at bottom left, rgba(162, 124, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at bottom right, rgba(62, 255, 195, 0.08) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 1;
-  animation: vignettePulse 6s ease-in-out infinite;
 }
 
 @keyframes vignettePulse {
@@ -139,22 +141,11 @@
   50% { opacity: 1; }
 }
 
-@media (max-width: 400px) {
-  .gridTexture {
-    background-size: 15px 15px;
-    animation: gridMove 20s linear infinite;
-  }
-  
-  .noiseOverlay {
-    opacity: 0.12;
-  }
-}
-
 /* Loading Animation */
 .loadingOverlay {
   position: absolute;
   inset: 0;
-  background: #0b0d14;
+  background: var(--color-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -173,14 +164,14 @@
   width: 60px;
   height: 60px;
   border: 3px solid rgba(120, 160, 220, 0.2);
-  border-top: 3px solid #00eaff;
-  border-right: 3px solid #ff5cf4;
+  border-top: 3px solid var(--color-neon-cyan);
+  border-right: 3px solid var(--color-neon-pink);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 .spinnerText {
-  color: #00eaff;
+  color: var(--color-neon-cyan);
   font-size: 16px;
   font-weight: 500;
   text-transform: uppercase;
@@ -188,21 +179,9 @@
   animation: pulse 1s ease-in-out infinite;
 }
 
-@media (max-width: 400px) {
-  .spinnerRing {
-    width: 50px;
-    height: 50px;
-    border-width: 2px;
-  }
-
-  .spinnerText {
-    font-size: 14px;
-  }
-}
-
+// Дополнительные анимации
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes pulse {
@@ -215,19 +194,52 @@
 }
 
 /* Search UI */
-.searchBox { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 10; display: flex; flex-direction: column; gap: 8px; }
-.searchInput {
-  width: 100%; background: rgba(12,14,20,.75); border: 1px solid rgba(120,160,220,.25);
-  color: #e6f4ff; padding: 10px 12px; border-radius: 10px; outline: none;
+.searchBox { 
+  position: absolute; 
+  top: 12px; 
+  left: 12px; 
+  right: 12px; 
+  z-index: 10; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
 }
-.suggests { background: rgba(12,14,20,.85); border: 1px solid rgba(120,160,220,.25); border-radius: 10px; overflow: hidden; }
-.suggestItem { display: block; width: 100%; text-align: left; padding: 10px 12px; color: #cfe7ff; border: none; background: transparent; cursor: pointer; }
-.suggestItem:hover { background: rgba(110,150,220,.12); }
-.suggestLoading { padding: 8px 12px; color: #9fb7d6; }
 
-@media (max-width: 400px) {
-  .searchBox { top: 8px; left: 8px; right: 8px; }
-  .searchInput { padding: 8px 10px; font-size: 14px; }
+.searchInput {
+  width: 100%; 
+  background: var(--color-overlay); 
+  border: 1px solid var(--color-border);
+  color: var(--color-text); 
+  padding: 10px 12px; 
+  border-radius: 10px; 
+  outline: none;
+}
+
+.suggests { 
+  background: rgba(12, 14, 20, 0.85); 
+  border: 1px solid var(--color-border); 
+  border-radius: 10px; 
+  overflow: hidden; 
+}
+
+.suggestItem { 
+  display: block; 
+  width: 100%; 
+  text-align: left; 
+  padding: 10px 12px; 
+  color: var(--color-text-dim); 
+  border: none; 
+  background: transparent; 
+  cursor: pointer; 
+  
+  &:hover { 
+    background: rgba(110, 150, 220, 0.12); 
+  }
+}
+
+.suggestLoading { 
+  padding: 8px 12px; 
+  color: var(--color-text-muted); 
 }
 
 /* Filter Button */
@@ -238,7 +250,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #6a57e8;
+  background: var(--color-primary);
   border: none;
   color: white;
   cursor: pointer;
@@ -247,16 +259,16 @@
   justify-content: center;
   z-index: 100;
   transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 12px rgba(106, 87, 232, 0.3);
+  box-shadow: var(--shadow);
+  
+  &:hover {
+    transform: scale(1.05);
+    background: var(--color-primary-hover);
+    box-shadow: var(--shadow-hover);
+  }
 }
 
-.filterButton:hover {
-  transform: scale(1.05);
-  background: #5a4ad8;
-  box-shadow: 0 6px 16px rgba(106, 87, 232, 0.4);
-}
-
-/* Mobile Adaptations */
+// Объединенные медиа-запросы для оптимизации
 @media (max-width: 480px) {
   .filterButton {
     bottom: 16px;
@@ -267,6 +279,36 @@
 }
 
 @media (max-width: 400px) {
+  .gridTexture {
+    background-size: 15px 15px;
+    animation: gridMove 20s linear infinite;
+  }
+  
+  .noiseOverlay {
+    opacity: 0.12;
+  }
+  
+  .searchBox { 
+    top: 8px; 
+    left: 8px; 
+    right: 8px; 
+  }
+  
+  .searchInput { 
+    padding: 8px 10px; 
+    font-size: 14px; 
+  }
+  
+  .spinnerRing {
+    width: 50px;
+    height: 50px;
+    border-width: 2px;
+  }
+
+  .spinnerText {
+    font-size: 14px;
+  }
+  
   .filterButton {
     bottom: 12px;
     right: 12px;
@@ -279,5 +321,3 @@
     }
   }
 }
-
-
