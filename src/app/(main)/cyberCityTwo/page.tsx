@@ -224,14 +224,14 @@ export default function CyberCityTwo() {
           
           // Парки и зеленые зоны
           if (fillId.includes("park") || fillId.includes("garden") || fillId.includes("forest") || fillId.includes("grass")) {
-            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.4 : 0.25);
-            mapRef.setPaintProperty(ly.id, "fill-color", isLight ? "#a8c29a" : "#2a5a4a");
+            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.4 : 0.3);
+            mapRef.setPaintProperty(ly.id, "fill-color", isLight ? "#a8c29a" : "#3a6a5a");
             
             // Обновляем обводку парков
             const parkOutlineId = `${ly.id}-outline`;
             if (mapRef.getLayer(parkOutlineId)) {
-              mapRef.setPaintProperty(parkOutlineId, "line-color", isLight ? "#7ba07a" : "#3a7a5a");
-              mapRef.setPaintProperty(parkOutlineId, "line-opacity", isLight ? 0.5 : 0.45);
+              mapRef.setPaintProperty(parkOutlineId, "line-color", isLight ? "#7ba07a" : "#4a8a6a");
+              mapRef.setPaintProperty(parkOutlineId, "line-opacity", isLight ? 0.5 : 0.5);
               mapRef.setPaintProperty(parkOutlineId, "line-width", isLight ? 0.3 : 0.5);
             }
           }
@@ -251,9 +251,9 @@ export default function CyberCityTwo() {
           // Земельные участки и острова
           const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin") && !fillId.includes("boundary");
           if (isLand && (fillId.includes("land") || fillId.includes("landcover") || fillId.includes("earth") || fillId === "")) {
-            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.25);
+            mapRef.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.35);
             if (!isLight) {
-              mapRef.setPaintProperty(ly.id, "fill-color", "#2a2f3a");
+              mapRef.setPaintProperty(ly.id, "fill-color", "#3a3f4a");
             }
           }
         }
@@ -424,9 +424,9 @@ export default function CyberCityTwo() {
                     if (fillId.includes("land") || fillId.includes("landcover") || fillId.includes("earth") || (!fillId.includes("water") && !fillId.includes("park") && !fillId.includes("admin"))) {
                       const isLand = !fillId.includes("water") && !fillId.includes("marine") && !fillId.includes("park") && !fillId.includes("garden") && !fillId.includes("admin");
                       if (isLand) {
-                        map.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.25);
+                        map.setPaintProperty(ly.id, "fill-opacity", isLight ? undefined : 0.35);
                         if (!isLight) {
-                          map.setPaintProperty(ly.id, "fill-color", "#2a2f3a");
+                          map.setPaintProperty(ly.id, "fill-color", "#3a3f4a");
                         }
                       }
                     }
@@ -460,8 +460,8 @@ export default function CyberCityTwo() {
                     
                     // Парки и зеленые зоны
                     if (fillId.includes("park") || fillId.includes("garden") || fillId.includes("forest") || fillId.includes("grass")) {
-                      map.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.4 : 0.25);
-                      map.setPaintProperty(ly.id, "fill-color", isLight ? "#a8c29a" : "#2a5a4a");
+                      map.setPaintProperty(ly.id, "fill-opacity", isLight ? 0.4 : 0.3);
+                      map.setPaintProperty(ly.id, "fill-color", isLight ? "#a8c29a" : "#3a6a5a");
                       
                       // Обводка для парков
                       const parkOutlineId = `${ly.id}-outline`;
@@ -473,8 +473,8 @@ export default function CyberCityTwo() {
                             source: ly.source,
                             layout: ly.layout || {},
                             paint: {
-                              "line-color": isLight ? "#7ba07a" : "#3a7a5a",
-                              "line-opacity": isLight ? 0.5 : 0.45,
+                              "line-color": isLight ? "#7ba07a" : "#4a8a6a",
+                              "line-opacity": isLight ? 0.5 : 0.5,
                               "line-width": isLight ? 0.3 : 0.5
                             }
                           };
