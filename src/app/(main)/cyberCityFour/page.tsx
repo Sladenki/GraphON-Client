@@ -8,11 +8,12 @@ import EventFilter from "./EventFilter/EventFilter";
 
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
 
-export default function CyberCityThree() {
+export default function CyberCityFour() {
   const [isLight, setIsLight] = useState(false);
   const [mapRef, setMapRef] = useState<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(13.5);
   
   // Состояние для фильтра
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -551,11 +552,37 @@ export default function CyberCityThree() {
                 });
               } catch {}
             }}
-            onMove={(e: any) => {}}
+            onMove={(e: any) => {
+              if (e.viewState) {
+                setZoomLevel(e.viewState.zoom);
+              }
+            }}
           />
 
           {/* Неоновый пост-обработка для темной темы */}
           {!isLight && <div className={styles.neonBoost} style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />}
+          
+          {/* Cyberpunk Effects - только для темной темы */}
+          {!isLight && (
+            <>
+              {/* Анимированная сетка с адаптацией к зуму */}
+              <div 
+                className={styles.gridTexture}
+                style={{
+                  backgroundSize: `${Math.max(15, Math.min(30, zoomLevel * 2))}px ${Math.max(15, Math.min(30, zoomLevel * 2))}px`
+                }}
+              />
+              
+              {/* Неоновый виньетка (радиальное свечение по краям) */}
+              <div className={styles.cyberpunkVignette} />
+              
+              {/* Неоновое свечение по углам */}
+              <div className={styles.edgeGlow} />
+              
+              {/* Шум текстура */}
+              <div className={styles.noiseOverlay} />
+            </>
+          )}
           
           {/* Плавающие кнопки */}
           <div style={{ position: "fixed", bottom: "24px", right: "24px", display: "flex", flexDirection: "column", gap: "12px", zIndex: 100 }}>

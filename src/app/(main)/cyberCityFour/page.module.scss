@@ -41,6 +41,115 @@
 .neonBoost { filter: brightness(1.2) contrast(1.12) saturate(1.2); pointer-events: none; position: absolute; inset: 0; }
 .labelsGlow { position: absolute; inset: 0; pointer-events: none; }
 
+/* Cyberpunk Effects */
+.cyberpunkOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.4;
+  mix-blend-mode: screen;
+}
+
+.gridTexture {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0, 234, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 234, 255, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  animation: gridMove 30s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes gridMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 20px 20px; }
+}
+
+.edgeGlow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background: radial-gradient(ellipse at center, rgba(0, 234, 255, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulseGlow 4s ease-in-out infinite;
+  }
+  
+  &::before {
+    top: -50%;
+    left: -50%;
+    width: 100%;
+    height: 100%;
+    animation-delay: 0s;
+  }
+  
+  &::after {
+    bottom: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    animation-delay: 2s;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.noiseOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 4;
+  animation: noiseFlicker 8s ease-in-out infinite;
+}
+
+@keyframes noiseFlicker {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.15; }
+}
+
+.cyberpunkVignette {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at top left, rgba(0, 234, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at top right, rgba(255, 92, 244, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(162, 124, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(62, 255, 195, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+  animation: vignettePulse 6s ease-in-out infinite;
+}
+
+@keyframes vignettePulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 400px) {
+  .gridTexture {
+    background-size: 15px 15px;
+    animation: gridMove 20s linear infinite;
+  }
+  
+  .noiseOverlay {
+    opacity: 0.12;
+  }
+}
+
 /* Loading Animation */
 .loadingOverlay {
   position: absolute;
