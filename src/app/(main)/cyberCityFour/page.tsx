@@ -328,7 +328,7 @@ export default function CyberCityFour() {
             initialViewState={{ 
               longitude: 20.5103, 
               latitude: 54.7068, 
-                zoom: isVerySmallScreen ? 13.0 : (isMobile ? 14.0 : 15.0), 
+                zoom: isVerySmallScreen ? 12.5 : (isMobile ? 13.0 : 15.0), 
                 pitch: isVerySmallScreen ? 20 : (isMobile ? 25 : 40), 
               bearing: isMobile ? 0 : -10 
             }}
