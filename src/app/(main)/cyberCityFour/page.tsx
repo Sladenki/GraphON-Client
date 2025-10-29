@@ -331,8 +331,8 @@ export default function CyberCityFour() {
               longitude: 20.5103, 
               latitude: 54.7068, 
                 zoom: isVerySmallScreen ? 12.5 : (isMobile ? 13.0 : 15.0), 
-                pitch: isVerySmallScreen ? 20 : (isMobile ? 25 : 40), 
-              bearing: isMobile ? 0 : -10 
+                pitch: 40, 
+              bearing: -12 
             }}
             mapStyle={baseStyleUrl}
             attributionControl={false}
