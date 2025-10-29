@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Filter } from "lucide-react";
 import styles from "./page.module.scss";
 import EventFilter from "./EventFilter/EventFilter";
+import { useDebounce } from "@/hooks/useDebounce";
 import { 
   type RoadType, 
   type FillType, 
@@ -17,31 +18,7 @@ import {
 
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
 
-// Debounce функция для оптимизации вызовов с очисткой таймера
-const debounce = <T extends (...args: any[]) => void>(
-  func: T, 
-  wait: number
-): {
-  (...args: Parameters<T>): void;
-  cancel: () => void;
-} => {
-  let timeout: NodeJS.Timeout | null = null;
-  
-  const debouncedFunc = (...args: Parameters<T>) => {
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-  
-  // Функция для принудительной очистки таймера
-  debouncedFunc.cancel = () => {
-    if (timeout) {
-      clearTimeout(timeout);
-      timeout = null;
-    }
-  };
-  
-  return debouncedFunc;
-};
+//
 
 // Утилиты для работы с paint properties
 const setPaintProperties = (map: any, layerId: string, properties: Record<string, any>) => {
@@ -182,28 +159,31 @@ export default function CyberCityFour() {
 
   // Состояния для разных размеров экрана
   const [isVerySmallScreen, setIsVerySmallScreen] = useState(false);
+  const [viewport, setViewport] = useState({ width: 0, height: 0 });
+  const debouncedViewport = useDebounce(viewport, 300);
 
   // Единый эффект адаптивности экрана с дебаунсом
   useEffect(() => {
     const update = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      setIsVerySmallScreen(width <= 350 || (width <= 380 && height <= 700));
-      setIsMobile(
-        width <= 400 ||
-        (width <= 480 && height <= 800) ||
-        width <= 350
-      );
+      setViewport({ width: window.innerWidth, height: window.innerHeight });
     };
 
     update();
-    const onResize: any = debounce(update, 300);
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", update);
     return () => {
-      window.removeEventListener("resize", onResize);
-      if (typeof onResize.cancel === 'function') onResize.cancel();
+      window.removeEventListener("resize", update);
     };
   }, []);
+
+  useEffect(() => {
+    const { width, height } = debouncedViewport;
+    setIsVerySmallScreen(width <= 350 || (width <= 380 && height <= 700));
+    setIsMobile(
+      width <= 400 ||
+      (width <= 480 && height <= 800) ||
+      width <= 350
+    );
+  }, [debouncedViewport]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
