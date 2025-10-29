@@ -185,6 +185,21 @@ export default function CyberCityFour() {
     );
   }, [debouncedViewport]);
 
+  // Локальная блокировка скролла для мобильных без глобальных стилей
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const body = document.body;
+    const prevOverflow = body.style.overflow;
+    if (isMobile) {
+      body.style.overflow = "hidden";
+    } else {
+      body.style.overflow = prevOverflow || "";
+    }
+    return () => {
+      body.style.overflow = prevOverflow;
+    };
+  }, [isMobile]);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const media = window.matchMedia("(prefers-color-scheme: light)");

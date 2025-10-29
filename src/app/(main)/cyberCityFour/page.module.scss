@@ -1,9 +1,4 @@
-// Простое решение для мобильных устройств
-@media (max-width: 400px) {
-  :global(body) {
-    overflow: hidden !important;
-  }
-}
+// Убраны глобальные стили для body — скролл блокируется внутри компонента
 
 .page {
   height: 100svh;
@@ -83,7 +78,7 @@
   height: 100%;
   display: block;
   /* Обеспечиваем 100% размер для внутреннего контейнера карты */
-  > :global(div) {
+  > div {
     width: 100%;
     height: 100%;
     display: block;
@@ -311,19 +306,6 @@
 }
 
 @media (max-width: 400px) {
-  .page {
-    &.mobile {
-      /* Убираем все переопределения высоты - используем только fixed из основного правила */
-    }
-  }
-  
-  .content {
-    /* Убираем переопределения - используем только absolute из основного правила */
-  }
-  
-  .mapHost {
-    /* Убираем переопределения - используем только absolute из mobileMap */
-  }
   
   .noiseOverlay {
     opacity: 0.12;
