@@ -6,6 +6,7 @@ import { Filter } from "lucide-react";
 import styles from "./page.module.scss";
 import EventFilter from "./EventFilter/EventFilter";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useAuth } from "@/providers/AuthProvider";
 import { 
   type RoadType, 
   type FillType, 
@@ -77,6 +78,7 @@ export default function CyberCityFour() {
   const [mapRef, setMapRef] = useState<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { isLoggedIn } = useAuth();
   
   // Состояние для фильтра
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -359,7 +361,7 @@ export default function CyberCityFour() {
             
             {/* Кнопка фильтра */}
             <button 
-              className={styles.filterButton}
+              className={`${styles.filterButton} ${isLoggedIn ? styles.filterButtonWithMenu : ''}`}
               onClick={handleFilterOpen}
               aria-label="Открыть фильтры"
             >

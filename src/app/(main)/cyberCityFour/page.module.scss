@@ -293,7 +293,6 @@
     box-shadow: var(--shadow-hover);
   }
 }
-
 // Объединенные медиа-запросы для оптимизации
 @media (max-width: 480px) {
   .filterButton {
@@ -302,6 +301,9 @@
     width: 52px;
     height: 52px;
     z-index: 9999;
+  }
+  .filterButtonWithMenu {
+    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 44px));
   }
 }
 
@@ -344,6 +346,9 @@
       height: 18px;
     }
   }
+  .filterButtonWithMenu {
+    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+  }
 }
 
 // Дополнительная оптимизация для очень маленьких экранов (300-350px)
@@ -367,6 +372,9 @@
       width: 16px;
       height: 16px;
     }
+  }
+  .filterButtonWithMenu {
+    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
   }
   
   .loadingOverlay {
@@ -404,6 +412,9 @@
       width: 14px;
       height: 14px;
     }
+  }
+  .filterButtonWithMenu {
+    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 76px)) !important;
   }
   
   .searchBox {
