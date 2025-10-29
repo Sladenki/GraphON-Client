@@ -311,9 +311,9 @@ export default function CyberCityFour() {
           <ReactMapGL
             key={isLight ? "light" : "dark"}
             initialViewState={{ 
-              longitude: 20.5147, 
-              latitude: 54.7064, 
-                zoom: isVerySmallScreen ? 12.0 : (isMobile ? 12.5 : 13.5), 
+              longitude: 20.5103, 
+              latitude: 54.7068, 
+                zoom: isVerySmallScreen ? 13.0 : (isMobile ? 14.0 : 15.0), 
                 pitch: isVerySmallScreen ? 20 : (isMobile ? 25 : 40), 
               bearing: isMobile ? 0 : -10 
             }}
