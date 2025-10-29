@@ -10,6 +10,7 @@ interface TouchPoint {
   x: number;
   y: number;
   time: number;
+  fromEdge?: boolean; // признак начала жеста у левого края
 }
 
 /**
@@ -32,10 +33,12 @@ export const useMobileDrawerOptimization = ({
 
   // Конфигурация для свайпа
   const SWIPE_CONFIG = {
-    minDistance: 35, // Минимальное расстояние для свайпа (в пикселях)
-    maxTime: 600, // Максимальное время для свайпа (в мс)
-    maxVerticalDistance: 160, // Максимальное вертикальное отклонение
-  };
+    minDistance: 70, // требуем более длинный жест
+    maxTime: 450, // окно времени короче — меньше ложных срабатываний
+    maxVerticalDistance: 100, // вертикальное отклонение строже
+    edgeZone: 28, // открытие только при старте у левого края экрана
+    horizontalDominanceRatio: 1.5, // |ΔX| должен заметно превышать |ΔY|
+  } as const;
 
   // Функция для проверки, можно ли использовать свайп
   const canUseSwipe = useCallback(() => {
@@ -80,6 +83,7 @@ export const useMobileDrawerOptimization = ({
         x: touch.clientX,
         y: touch.clientY,
         time: Date.now(),
+        fromEdge: touch.clientX <= SWIPE_CONFIG.edgeZone,
       };
       touchMoveRef.current = null;
       return;
@@ -107,6 +111,7 @@ export const useMobileDrawerOptimization = ({
       x: touch.clientX,
       y: touch.clientY,
       time: Date.now(),
+      fromEdge: touch.clientX <= SWIPE_CONFIG.edgeZone,
     };
     touchMoveRef.current = null;
   }, [canUseSwipe]);
@@ -138,7 +143,7 @@ export const useMobileDrawerOptimization = ({
       const deltaY = Math.abs(currentPoint.y - touchStartRef.current.y);
       
       // Если горизонтальное движение превышает вертикальное, это может быть свайп
-      if (deltaX > deltaY && deltaX > 10) {
+      if (deltaX > deltaY * SWIPE_CONFIG.horizontalDominanceRatio && deltaX > 16) {
         // Предотвращаем скролл только для потенциальных свайпов
         event.preventDefault();
       }
@@ -174,7 +179,7 @@ export const useMobileDrawerOptimization = ({
     const deltaY = Math.abs(currentPoint.y - touchStartRef.current.y);
     
     // Если горизонтальное движение превышает вертикальное, это может быть свайп
-    if (deltaX > deltaY && deltaX > 10) {
+    if (deltaX > deltaY * SWIPE_CONFIG.horizontalDominanceRatio && deltaX > 16) {
       // Предотвращаем скролл только для потенциальных свайпов вне скроллируемых областей
       event.preventDefault();
     }
@@ -201,12 +206,12 @@ export const useMobileDrawerOptimization = ({
 
     // Проверяем общие условия для свайпа
     const isWithinTimeLimit = deltaTime < SWIPE_CONFIG.maxTime;
-    const isHorizontalSwipe = deltaY < SWIPE_CONFIG.maxVerticalDistance;
+    const isHorizontalSwipe = deltaY < SWIPE_CONFIG.maxVerticalDistance && Math.abs(deltaX) > Math.abs(deltaY) * SWIPE_CONFIG.horizontalDominanceRatio;
 
     if (isWithinTimeLimit && isHorizontalSwipe) {
       // Свайп слева направо для открытия (когда панель закрыта)
       const isRightSwipe = deltaX > SWIPE_CONFIG.minDistance;
-      if (isRightSwipe && !isOpen) {
+      if (isRightSwipe && !isOpen && !!startPoint.fromEdge) {
         setIsOpen(true);
       }
       
