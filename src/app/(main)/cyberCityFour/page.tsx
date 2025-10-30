@@ -342,6 +342,9 @@ export default function CyberCityFour() {
             />
           </div>
 
+          {/* Мягкая градиентная подложка для светлой темы */}
+          {isLight && <div className={styles.lightGradientOverlay} />}
+
           {/* Неоновый пост-обработка для темной темы */}
           {!isLight && <div className={styles.neonBoost} />}
           

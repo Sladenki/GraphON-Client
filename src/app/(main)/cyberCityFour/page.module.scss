@@ -135,6 +135,14 @@
   animation: noiseFlicker 8s ease-in-out infinite;
 }
 
+// Светлая мягкая градиентная подложка, чтобы убрать "ослепляющий" эффект белого
+.lightGradientOverlay {
+  @extend %cyberpunk-base;
+  z-index: 0; // ниже остальных оверлеев
+  opacity: 0.28; // деликатная тонировка
+  background: linear-gradient(180deg, #E9EDF2 0%, #F5F8FB 100%);
+}
+
 .cyberpunkVignette {
   @extend %cyberpunk-base;
   background: 

@@ -7,14 +7,14 @@ export type FillType = "admin" | "water" | "park" | "land";
 
 export const COLORS = {
   light: {
-    major: "#3f4a55",
-    secondary: "#87909a",
-    minor: "#9aa4ae",
-    water: "#a0b3c8",
-    waterOutline: "#7a9aba",
+    major: "#5C7CFA", // accent for major roads
+    secondary: "#A6B2C0", // soft roads
+    minor: "#BCC6D0", // softer minor roads
+    water: "#BBD6EC", // cold blue water
+    waterOutline: "#9EC3E3", // slightly darker than fill
     park: "#a8c29a",
     parkOutline: "#7ba07a",
-    boundary: "#94a3b8"
+    boundary: "#9AA9BA"
   },
   dark: {
     motorway: "#00eaff",
