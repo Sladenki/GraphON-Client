@@ -33,10 +33,10 @@ export const useMobileDrawerOptimization = ({
 
   // Конфигурация для свайпа
   const SWIPE_CONFIG = {
-    minDistance: 70, // требуем более длинный жест
-    maxTime: 450, // окно времени короче — меньше ложных срабатываний
-    maxVerticalDistance: 100, // вертикальное отклонение строже
-    edgeZone: 28, // открытие только при старте у левого края экрана
+    minDistance: 35, // минимум жеста короче — открытие легче
+    maxTime: 600, // больше времени на жест — меньше промахов
+    maxVerticalDistance: 160, // допускаем большее вертикальное отклонение
+    edgeZone: Number.POSITIVE_INFINITY, // разрешаем старт в любом месте экрана
     horizontalDominanceRatio: 1.5, // |ΔX| должен заметно превышать |ΔY|
   } as const;
 
