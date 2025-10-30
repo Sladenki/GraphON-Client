@@ -73,7 +73,7 @@ export const ROAD_STYLES = {
 export const FILL_STYLES: any = {
   admin: {
     opacity: 0.05,
-    outline: { opacity: 0.2, width: 1, blur: 2 }
+    outline: { opacity: 0.4, width: 2, blur: 2 }
   },
   water: {
     opacity: { light: 0.5, dark: 0.3 },

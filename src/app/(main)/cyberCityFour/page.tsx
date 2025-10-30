@@ -337,7 +337,7 @@ export default function CyberCityFour() {
             mapStyle={baseStyleUrl}
             attributionControl={false}
             dragRotate={!isMobile}
-            maxBounds={[[20.36, 54.62], [20.58, 54.78]]}
+            maxBounds={[[20.36, 54.62], [20.62, 54.78]]}
               onLoad={handleMapLoad}
             />
           </div>
