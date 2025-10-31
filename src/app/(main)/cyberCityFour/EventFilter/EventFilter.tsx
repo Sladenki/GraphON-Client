@@ -23,6 +23,8 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
   const dragStartYRef = useRef<number | null>(null);
   const [dragTranslateY, setDragTranslateY] = useState(0);
   const [animateOpen, setAnimateOpen] = useState(false);
+  const [datePreset, setDatePreset] = useState<"today" | "tomorrow" | "weekend" | "custom" | null>(null);
+  const [customDate, setCustomDate] = useState<string>("");
 
   const handlePointerDown = useCallback((clientY: number) => {
     setIsDragging(true);
@@ -115,6 +117,54 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
         </div>
 
         <div className={styles.filterContent}>
+          <div className={styles.dateGroup} role="group" aria-label="Дата мероприятия">
+            <button
+              type="button"
+              className={styles.dateButton}
+              data-selected={datePreset === "today"}
+              onClick={() => setDatePreset("today")}
+              aria-pressed={datePreset === "today"}
+            >
+              Сегодня
+            </button>
+            <button
+              type="button"
+              className={styles.dateButton}
+              data-selected={datePreset === "tomorrow"}
+              onClick={() => setDatePreset("tomorrow")}
+              aria-pressed={datePreset === "tomorrow"}
+            >
+              Завтра
+            </button>
+            <button
+              type="button"
+              className={styles.dateButton}
+              data-selected={datePreset === "weekend"}
+              onClick={() => setDatePreset("weekend")}
+              aria-pressed={datePreset === "weekend"}
+            >
+              Выходные
+            </button>
+            <button
+              type="button"
+              className={styles.dateButton}
+              data-selected={datePreset === "custom"}
+              onClick={() => setDatePreset("custom")}
+              aria-pressed={datePreset === "custom"}
+            >
+              Выбрать дату
+            </button>
+          </div>
+          {datePreset === "custom" && (
+            <div className={styles.datePickerRow}>
+              <input
+                className={styles.datePicker}
+                type="date"
+                value={customDate}
+                onChange={(e) => setCustomDate(e.target.value)}
+              />
+            </div>
+          )}
           <div className={styles.categoriesGrid}>
             {categories.map(({ key, label, Icon }) => (
               <button
