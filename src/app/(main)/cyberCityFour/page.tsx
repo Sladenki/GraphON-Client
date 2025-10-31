@@ -5,6 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Filter } from "lucide-react";
 import styles from "./page.module.scss";
 import EventFilter from "./EventFilter/EventFilter";
+import { mockEvents, type CityEvent } from "./mockEvents";
+import { Source, Layer, Popup } from "react-map-gl/maplibre";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useAuth } from "@/providers/AuthProvider";
 import { 
@@ -82,6 +84,52 @@ export default function CyberCityFour() {
   
   // Состояние для фильтра
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  
+  // Состояние для выбранного события (для popup)
+  const [selectedEvent, setSelectedEvent] = useState<CityEvent | null>(null);
+  
+  // Преобразование mockEvents в GeoJSON для WebGL-слоя
+  const eventGeoJSON = useMemo(() => ({
+    type: "FeatureCollection" as const,
+    features: mockEvents.map(ev => ({
+      type: "Feature" as const,
+      geometry: {
+        type: "Point" as const,
+        coordinates: [ev.lng, ev.lat] as [number, number]
+      },
+      properties: {
+        id: ev.id,
+        name: ev.name,
+        place: ev.place,
+        description: ev.description,
+        category: ev.category,
+        eventDate: ev.eventDate,
+        isDateTbd: ev.isDateTbd,
+        timeFrom: ev.timeFrom || "",
+        timeTo: ev.timeTo || "",
+        regedUsers: ev.regedUsers
+      }
+    }))
+  }), []);
+  
+  // Обработчик клика по карте для открытия popup
+  const handleMapClick = useCallback((event: any) => {
+    if (!mapRef || !event.features || event.features.length === 0) {
+      setSelectedEvent(null);
+      return;
+    }
+    
+    const feature = event.features[0];
+    if (feature.layer.id === 'event-points') {
+      const eventId = feature.properties.id;
+      const clickedEvent = mockEvents.find(ev => ev.id === eventId);
+      if (clickedEvent) {
+        setSelectedEvent(clickedEvent);
+      }
+    } else {
+      setSelectedEvent(null);
+    }
+  }, [mapRef]);
 
   // ===== МЕМОИЗИРОВАННЫЕ ФУНКЦИИ СТИЛИЗАЦИИ =====
   
@@ -299,17 +347,39 @@ export default function CyberCityFour() {
   useEffect(() => {
     if (!mapRef || !mapLoaded) return;
     
-    updateRoadStyles();
-    
+    // Обновляем стиль карты через setStyle вместо пересоздания компонента
     try {
+      mapRef.setStyle(baseStyleUrl);
+      
+      // После загрузки нового стиля обновляем кастомные стили
+      mapRef.once('styledata', () => {
+        // ВАЖНО: Сначала применяем неоновые эффекты для дорог
+        const layers = mapRef.getStyle()?.layers || [];
+        layers.forEach((layer: any) => {
+          if (layer.type === "line") {
+            applyLineStyles(mapRef, layer, isLight);
+          } else if (layer.type === "fill" && layer.source) {
+            applyFillStyles(mapRef, layer, isLight);
+          }
+        });
+        
+        // Затем обновляем дополнительные стили дорог
+        updateRoadStyles();
+      });
+    } catch (e) {
+      console.error('Ошибка при обновлении стиля карты:', e);
+      // Fallback: обновляем только слои без смены базового стиля
       const layers = mapRef.getStyle()?.layers || [];
       layers.forEach((layer: any) => {
-        if (layer.type === "fill") {
+        if (layer.type === "line") {
+          applyLineStyles(mapRef, layer, isLight);
+        } else if (layer.type === "fill" && layer.source) {
           applyFillStyles(mapRef, layer, isLight);
         }
       });
-    } catch {}
-  }, [mapRef, mapLoaded, isLight, updateRoadStyles, applyFillStyles]); // Добавлены мемоизированные функции в зависимости
+      updateRoadStyles();
+    }
+  }, [mapRef, mapLoaded, isLight, baseStyleUrl, updateRoadStyles, applyFillStyles, applyLineStyles]);
 
   return (
     <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`}>
@@ -326,20 +396,84 @@ export default function CyberCityFour() {
         <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''} ${isMobile ? styles.mobileMap : ''}`}>
           <div className={styles.map}>
           <ReactMapGL
-            key={isLight ? "light" : "dark"}
             initialViewState={{ 
               longitude: 20.5103, 
               latitude: 54.7068, 
-                zoom: isVerySmallScreen ? 12.5 : (isMobile ? 13.0 : 15.0), 
-                pitch: 40, 
+              zoom: isVerySmallScreen ? 12.5 : (isMobile ? 13.0 : 15.0), 
+              pitch: 40, 
               bearing: -12 
             }}
             mapStyle={baseStyleUrl}
             attributionControl={false}
             dragRotate={!isMobile}
             maxBounds={[[20.36, 54.62], [20.62, 54.78]]}
-              onLoad={handleMapLoad}
-            />
+            onLoad={handleMapLoad}
+            onClick={handleMapClick}
+            interactiveLayerIds={['event-points']}
+            cursor="pointer"
+          >
+            {/* WebGL слой для событий - гарантированно фиксированные точки */}
+            <Source id="events" type="geojson" data={eventGeoJSON}>
+              <Layer
+                id="event-points"
+                type="circle"
+                paint={{
+                  "circle-radius": 8,
+                  "circle-color": isLight ? "#3b82f6" : "#60a5fa",
+                  "circle-stroke-width": 2,
+                  "circle-stroke-color": isLight ? "#1e40af" : "#2563eb",
+                  "circle-opacity": 0.9,
+                }}
+              />
+              {/* Текст с названием события */}
+              <Layer
+                id="event-labels"
+                type="symbol"
+                layout={{
+                  "text-field": ["get", "name"],
+                  "text-font": ["Open Sans Regular", "Arial Unicode MS Regular"],
+                  "text-size": 12,
+                  "text-anchor": "top",
+                  "text-offset": [0, 1.5],
+                  "text-allow-overlap": false,
+                  "text-optional": true,
+                }}
+                paint={{
+                  "text-color": isLight ? "#1e40af" : "#ffffff",
+                  "text-halo-color": isLight ? "#ffffff" : "#000000",
+                  "text-halo-width": 1.5,
+                  "text-halo-blur": 1,
+                }}
+              />
+            </Source>
+            
+            {/* Popup для выбранного события */}
+            {selectedEvent && (
+              <Popup
+                longitude={selectedEvent.lng}
+                latitude={selectedEvent.lat}
+                anchor="bottom"
+                offset={[0, -10]}
+                closeButton={true}
+                onClose={() => setSelectedEvent(null)}
+                className="z-50"
+              >
+                <div className="p-2 text-sm">
+                  <div className="font-semibold text-blue-700">{selectedEvent.name}</div>
+                  <div className="text-xs text-gray-600">{selectedEvent.place}</div>
+                  <div className="text-xs mt-1">
+                    {selectedEvent.isDateTbd ? "Дата уточняется" : selectedEvent.eventDate}
+                    {selectedEvent.timeFrom && selectedEvent.timeTo 
+                      ? ` • ${selectedEvent.timeFrom} – ${selectedEvent.timeTo}` 
+                      : ""}
+                  </div>
+                  {selectedEvent.description && (
+                    <div className="text-xs mt-1 text-gray-500">{selectedEvent.description}</div>
+                  )}
+                </div>
+              </Popup>
+            )}
+            </ReactMapGL>
           </div>
 
           {/* Мягкая градиентная подложка для светлой темы */}
@@ -374,7 +508,11 @@ export default function CyberCityFour() {
           )}
 
           {/* Pop-up фильтра */}
-          <EventFilter isOpen={isFilterOpen} onClose={handleFilterClose} />
+          <EventFilter 
+            isOpen={isFilterOpen} 
+            onClose={handleFilterClose}
+            resultsCount={mockEvents.length}
+          />
         </div>
       </div>
     </section>
