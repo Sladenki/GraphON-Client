@@ -362,7 +362,8 @@ export default function CyberCityFour() {
             </>
           )}
             
-            {/* Кнопка фильтра */}
+          {/* Кнопка фильтра */}
+          {!isFilterOpen && (
             <button 
               className={`${styles.filterButton} ${isLoggedIn ? styles.filterButtonWithMenu : ''}`}
               onClick={handleFilterOpen}
@@ -370,6 +371,7 @@ export default function CyberCityFour() {
             >
               <Filter size={20} />
             </button>
+          )}
 
           {/* Pop-up фильтра */}
           <EventFilter isOpen={isFilterOpen} onClose={handleFilterClose} />
