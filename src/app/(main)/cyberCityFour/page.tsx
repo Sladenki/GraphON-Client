@@ -6,8 +6,8 @@ import { Filter } from "lucide-react";
 import styles from "./page.module.scss";
 import EventFilter from "./EventFilter/EventFilter";
 import EventPopup from "./EventPopup/EventPopup";
+import EventMarker from "./EventMarker/EventMarker";
 import { mockEvents, type CityEvent } from "./mockEvents";
-import { Source, Layer } from "react-map-gl/maplibre";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useAuth } from "@/providers/AuthProvider";
 import { 
@@ -414,128 +414,9 @@ export default function CyberCityFour() {
             interactiveLayerIds={['event-points']}
             cursor="pointer"
           >
-            {/* WebGL слой для событий - гарантированно фиксированные точки */}
-            <Source id="events" type="geojson" data={eventGeoJSON}>
-              {/* Внешний слой свечения для темной темы */}
-              {!isLight && (
-                <Layer
-                  id="event-glow"
-                  type="circle"
-                  paint={{
-                    "circle-radius": [
-                      "interpolate",
-                      ["linear"],
-                      ["zoom"],
-                      10, 12,
-                      15, 16,
-                      18, 20
-                    ],
-                    "circle-color": [
-                      "match",
-                      ["get", "category"],
-                      "concert", "rgba(139, 92, 246, 0.3)", // purple
-                      "exhibit", "rgba(6, 182, 212, 0.3)", // cyan
-                      "lecture", "rgba(34, 197, 94, 0.3)", // green
-                      "festival", "rgba(236, 72, 153, 0.3)", // pink
-                      "meetup", "rgba(251, 146, 60, 0.3)", // orange
-                      "rgba(96, 165, 250, 0.3)" // default blue
-                    ],
-                    "circle-opacity": 0.6,
-                    "circle-blur": 2,
-                  }}
-                />
-              )}
-              {/* Основной маркер */}
-              <Layer
-                id="event-points"
-                type="circle"
-                paint={{
-                  "circle-radius": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    10, 10,
-                    15, 14,
-                    18, 18
-                  ],
-                  "circle-color": [
-                    "match",
-                    ["get", "category"],
-                    "concert", isLight ? "#8b5cf6" : "#a78bfa", // purple
-                    "exhibit", isLight ? "#06b6d4" : "#22d3ee", // cyan
-                    "lecture", isLight ? "#22c55e" : "#4ade80", // green
-                    "festival", isLight ? "#ec4899" : "#f472b6", // pink
-                    "meetup", isLight ? "#fb923c" : "#fb923c", // orange
-                    isLight ? "#3b82f6" : "#60a5fa" // default blue
-                  ],
-                  "circle-stroke-width": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    10, 2,
-                    15, 3,
-                    18, 4
-                  ],
-                  "circle-stroke-color": [
-                    "match",
-                    ["get", "category"],
-                    "concert", isLight ? "#6d28d9" : "#c4b5fd",
-                    "exhibit", isLight ? "#0891b2" : "#67e8f9",
-                    "lecture", isLight ? "#16a34a" : "#86efac",
-                    "festival", isLight ? "#db2777" : "#f9a8d4",
-                    "meetup", isLight ? "#ea580c" : "#fdba74",
-                    isLight ? "#1e40af" : "#93c5fd"
-                  ],
-                  "circle-opacity": 1,
-                }}
-              />
-              {/* Внутренний белый центр */}
-              <Layer
-                id="event-center"
-                type="circle"
-                paint={{
-                  "circle-radius": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    10, 4,
-                    15, 5,
-                    18, 6
-                  ],
-                  "circle-color": "#ffffff",
-                  "circle-opacity": 0.9,
-                }}
-              />
-              {/* Текст с названием события */}
-              <Layer
-                id="event-labels"
-                type="symbol"
-                layout={{
-                  "text-field": ["get", "name"],
-                  "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                  "text-size": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    10, 11,
-                    15, 13,
-                    18, 15
-                  ],
-                  "text-anchor": "top",
-                  "text-offset": [0, 2.2],
-                  "text-allow-overlap": false,
-                  "text-optional": true,
-                }}
-                paint={{
-                  "text-color": isLight ? "#1e293b" : "#ffffff",
-                  "text-halo-color": isLight ? "#ffffff" : "#000000",
-                  "text-halo-width": 2,
-                  "text-halo-blur": 1.5,
-                }}
-              />
-            </Source>
-            
-            </ReactMapGL>
+            {/* Маркеры событий */}
+            <EventMarker eventGeoJSON={eventGeoJSON} isLight={isLight} />
+          </ReactMapGL>
           </div>
 
           {/* Мягкая градиентная подложка для светлой темы */}
