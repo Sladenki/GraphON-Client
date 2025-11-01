@@ -2,8 +2,13 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0);
   z-index: 1000;
+  transition: background 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.overlay.overlayVisible {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 /* Bottom Sheet */
@@ -90,6 +95,22 @@
   border-top: 1px solid var(--color-border, #e5e7eb);
 }
 
+/* Desktop Adaptations */
+@media (min-width: 769px) {
+  .sheet {
+    left: 50%;
+    right: auto;
+    width: 55vw;
+    max-width: 1200px;
+    border-radius: 20px 20px 0 0;
+    transform: translate(-50%, 100%);
+  }
+  
+  .sheetOpen {
+    transform: translate(-50%, 0%);
+  }
+}
+
 /* Mobile Adaptations */
 @media (max-width: 480px) {
   .sheet {
@@ -103,7 +124,7 @@
 
 /* Dark theme adaptations */
 [data-theme="dark"] {
-  .overlay {
+  .overlay.overlayVisible {
     background: rgba(0, 0, 0, 0.7);
   }
   

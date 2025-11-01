@@ -31,10 +31,28 @@ export default function FooterPopUp({
   const dragStartYRef = useRef<number | null>(null);
   const [dragTranslateY, setDragTranslateY] = useState(0);
   const [animateOpen, setAnimateOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Определяем десктоп
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+    
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
-      setAnimateOpen(true);
+      // Небольшая задержка для корректной работы CSS transition
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setAnimateOpen(true);
+        });
+      });
     } else {
       setAnimateOpen(false);
     }
@@ -90,13 +108,21 @@ export default function FooterPopUp({
 
   if (!isOpen) return null;
 
+  // Стиль для драга - только когда идет перетаскивание
   const sheetStyle = {
-    transform: `translateY(${isDragging ? dragTranslateY : 0}px)`,
+    ...(isDragging && {
+      transform: isDesktop 
+        ? `translate(-50%, ${dragTranslateY}px)`
+        : `translateY(${dragTranslateY}px)`,
+    }),
     maxHeight,
   } as React.CSSProperties;
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div 
+      className={`${styles.overlay} ${animateOpen ? styles.overlayVisible : ""}`} 
+      onClick={onClose}
+    >
       <div
         className={`${styles.sheet} ${animateOpen ? styles.sheetOpen : ""} ${className}`}
         style={sheetStyle}
