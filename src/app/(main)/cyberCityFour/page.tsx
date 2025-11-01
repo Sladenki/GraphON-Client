@@ -398,6 +398,7 @@ export default function CyberCityFour() {
         <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''} ${isMobile ? styles.mobileMap : ''}`}>
           <div className={styles.map}>
           <ReactMapGL
+              key={isLight ? "light" : "dark"}
             initialViewState={{ 
               longitude: 20.5103, 
               latitude: 54.7068, 
