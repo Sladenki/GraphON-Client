@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { getModalState } from '../PopUpWrapper/useModalManager';
 
 interface UseMobileDrawerOptimizationProps {
@@ -27,6 +28,7 @@ export const useMobileDrawerOptimization = ({
   isOpen,
   setIsOpen,
 }: UseMobileDrawerOptimizationProps) => {
+  const pathname = usePathname();
   const bodyOverflowRef = useRef<string>('');
   const touchStartRef = useRef<TouchPoint | null>(null);
   const touchMoveRef = useRef<TouchPoint | null>(null);
@@ -42,9 +44,14 @@ export const useMobileDrawerOptimization = ({
 
   // Функция для проверки, можно ли использовать свайп
   const canUseSwipe = useCallback(() => {
+    // Отключаем свайп на странице cyberCityFour
+    if (pathname === '/cyberCityFour') {
+      return false;
+    }
+    
     const modalState = getModalState();
     return !modalState.isAnyModalOpen;
-  }, []);
+  }, [pathname]);
 
   // Оптимизированная блокировка скролла
   useEffect(() => {
