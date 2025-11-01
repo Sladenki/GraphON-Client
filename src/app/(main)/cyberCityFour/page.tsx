@@ -49,11 +49,21 @@ const createOutlineLayer = (baseLayer: any, id: string, paint: any) => {
 
 // Безопасное добавление outline слоя
 const addOutlineIfNotExists = (map: any, layer: any, outlineId: string, paint: any) => {
-  if (!map.getLayer(outlineId)) {
-    try {
-      const outlineDef = createOutlineLayer(layer, outlineId, paint);
-      map.addLayer(outlineDef);
-    } catch {}
+  try {
+    // Удаляем старый слой если существует
+    if (map.getLayer(outlineId)) {
+      try {
+        map.removeLayer(outlineId);
+      } catch (e) {
+        // Игнорируем ошибку
+      }
+    }
+    
+    // Добавляем новый слой
+    const outlineDef = createOutlineLayer(layer, outlineId, paint);
+    map.addLayer(outlineDef);
+  } catch (e) {
+    // Игнорируем ошибки
   }
 };
 
@@ -148,14 +158,25 @@ export default function CyberCityFour() {
     "line-blur": isLight ? style.blur.light : style.blur.dark
   });
 
-  // Неоновый эффект для главных дорог в темной теме
-  if (!isLight && layer.source && roadType === "major") {
-    addOutlineIfNotExists(map, layer, `${layer.id}-neon-glow`, {
-      "line-color": color,
-      "line-opacity": createZoomInterpolation([0.08, 0.14, 0.22, 0.30]),
-      "line-width": createZoomInterpolation([1.6, 2.6, 4.2, 6.0]),
-      "line-blur": 1.4
-    });
+  // Неоновый эффект для главных дорог
+  if (layer.source && roadType === "major") {
+    if (isLight) {
+      // Мягкое свечение для светлой темы
+      addOutlineIfNotExists(map, layer, `${layer.id}-neon-glow`, {
+        "line-color": color,
+        "line-opacity": createZoomInterpolation([0.10, 0.16, 0.22, 0.30]),
+        "line-width": createZoomInterpolation([1.8, 3.0, 4.5, 6.5]),
+        "line-blur": 1.8
+      });
+    } else {
+      // Яркое свечение для темной темы
+      addOutlineIfNotExists(map, layer, `${layer.id}-neon-glow`, {
+        "line-color": color,
+        "line-opacity": createZoomInterpolation([0.08, 0.14, 0.22, 0.30]),
+        "line-width": createZoomInterpolation([1.6, 2.6, 4.2, 6.0]),
+        "line-blur": 1.4
+      });
+    }
   }
   }, []); // Пустые зависимости, так как функция не зависит от состояния
 
@@ -415,8 +436,8 @@ export default function CyberCityFour() {
             interactiveLayerIds={['event-points']}
             cursor="pointer"
           >
-            {/* Маркеры событий */}
-            <EventMarker eventGeoJSON={eventGeoJSON} isLight={isLight} />
+            {/* Маркеры событий с SVG иконками */}
+            <EventMarker eventGeoJSON={eventGeoJSON} isLight={isLight} mapRef={mapRef} />
           </ReactMapGL>
           </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { Source, Layer } from "react-map-gl/maplibre";
+import { useEventIcons } from "./useEventIcons";
 
 interface EventMarkerProps {
   eventGeoJSON: {
@@ -15,13 +16,17 @@ interface EventMarkerProps {
     }>;
   };
   isLight: boolean;
+  mapRef?: any;
 }
 
 /**
  * Компонент для отображения маркеров событий на карте
- * Создает многослойные маркеры с цветовой категоризацией и улучшенными визуальными эффектами
+ * Использует SVG иконки через icon-image для высокой производительности
  */
-export default function EventMarker({ eventGeoJSON, isLight }: EventMarkerProps) {
+export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
+  // Загружаем SVG иконки в карту
+  useEventIcons(mapRef, isLight);
+  
   // Конфигурация цветов для категорий
   const categoryColors = {
     concert: { 
@@ -210,48 +215,34 @@ export default function EventMarker({ eventGeoJSON, isLight }: EventMarkerProps)
         }}
       />
 
-      {/* Внутреннее белое кольцо (создает эффект булавки) */}
+      {/* SVG Иконки категорий */}
       <Layer
-        id="event-ring-inner"
-        type="circle"
-        paint={{
-          "circle-radius": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            10, 6,
-            15, 8,
-            18, 10
-          ],
-          "circle-color": "#ffffff",
-          "circle-opacity": 1,
-        }}
-      />
-
-      {/* Центральная точка */}
-      <Layer
-        id="event-center"
-        type="circle"
-        paint={{
-          "circle-radius": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            10, 3,
-            15, 4,
-            18, 5
-          ],
-          "circle-color": [
+        id="event-icons"
+        type="symbol"
+        layout={{
+          "icon-image": [
             "match",
             ["get", "category"],
-            "concert", isLight ? categoryColors.concert.stroke.light : categoryColors.concert.light,
-            "exhibit", isLight ? categoryColors.exhibit.stroke.light : categoryColors.exhibit.light,
-            "lecture", isLight ? categoryColors.lecture.stroke.light : categoryColors.lecture.light,
-            "festival", isLight ? categoryColors.festival.stroke.light : categoryColors.festival.light,
-            "meetup", isLight ? categoryColors.meetup.stroke.light : categoryColors.meetup.light,
-            isLight ? categoryColors.default.stroke.light : categoryColors.default.light
+            "concert", "icon-concert",
+            "exhibit", "icon-exhibit",
+            "lecture", "icon-lecture",
+            "festival", "icon-festival",
+            "meetup", "icon-meetup",
+            "icon-default"
           ],
-          "circle-opacity": 0.95,
+          "icon-size": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            10, 0.5,
+            15, 0.65,
+            18, 0.8
+          ],
+          "icon-allow-overlap": true,
+          "icon-ignore-placement": true,
+        }}
+        paint={{
+          "icon-opacity": 1,
         }}
       />
 
