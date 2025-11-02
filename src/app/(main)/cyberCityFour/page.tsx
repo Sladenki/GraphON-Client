@@ -375,6 +375,21 @@ export default function CyberCityFour() {
   const handleListClose = useCallback(() => {
     setIsListOpen(false);
   }, []);
+  
+  // Приближение камеры к выбранному событию
+  useEffect(() => {
+    if (!mapRef || !selectedEvent) return;
+    
+    // Анимированное перемещение камеры к событию
+    mapRef.flyTo({
+      center: [selectedEvent.lng, selectedEvent.lat],
+      zoom: 16, // Увеличенный зум для детального просмотра
+      duration: 1500, // Длительность анимации в мс
+      essential: true, // Анимация будет выполнена даже если prefers-reduced-motion
+      pitch: 45, // Угол наклона камеры
+      bearing: mapRef.getBearing() // Сохраняем текущий поворот
+    });
+  }, [selectedEvent, mapRef]);
 
   // Эффект для обновления стилей карты при изменении темы (оптимизированный)
   useEffect(() => {
