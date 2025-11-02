@@ -21,8 +21,26 @@ export default function EventPopup({ event, isOpen, onClose, isLight = false }: 
     const yandexMapsURL = `https://yandex.ru/maps/?rtext=~${event.lat},${event.lng}&rtt=auto`;
     window.open(yandexMapsURL, '_blank');
   };
+
+  // Фиксированная кнопка внизу
+  const footer = event ? (
+    <button 
+      className={styles.yandexMapsButton}
+      onClick={openInYandexMaps}
+      type="button"
+    >
+      <Navigation size={18} />
+      <span>Показать в Яндекс Картах</span>
+    </button>
+  ) : null;
+
   return (
-    <FooterPopUp isOpen={isOpen && !!event} onClose={onClose} title={event?.name || ""}>
+    <FooterPopUp 
+      isOpen={isOpen && !!event} 
+      onClose={onClose} 
+      title={event?.name || ""}
+      footer={footer}
+    >
       {event && (
         <>
           <div className={styles.eventInfo}>
@@ -73,16 +91,6 @@ export default function EventPopup({ event, isOpen, onClose, isLight = false }: 
               <p className={styles.descriptionText}>{event.description}</p>
             </div>
           )}
-
-          {/* Кнопка открытия в Яндекс.Картах */}
-          <button 
-            className={styles.yandexMapsButton}
-            onClick={openInYandexMaps}
-            type="button"
-          >
-            <Navigation size={18} />
-            <span>Показать в Яндекс Картах</span>
-          </button>
         </>
       )}
     </FooterPopUp>
