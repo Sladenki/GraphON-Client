@@ -273,10 +273,11 @@
 }
 
 /* Filter Button */
-.filterButton {
+/* Action buttons (filter & list) */
+.filterButton,
+.listButton {
   position: fixed;
   bottom: 24px;
-  right: 24px;
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -296,11 +297,20 @@
   box-shadow: var(--shadow);
 
   &:hover {
-  transform: scale(1.05);
+    transform: scale(1.05);
     background: var(--color-primary-hover);
     box-shadow: var(--shadow-hover);
   }
 }
+
+.filterButton {
+  right: 24px;
+}
+
+.listButton {
+  right: calc(24px + 56px + 12px);
+}
+
 // Объединенные медиа-запросы для оптимизации
 @media (max-width: 480px) {
   .filterButton {
@@ -311,6 +321,17 @@
     z-index: 9999;
   }
   .filterButtonWithMenu {
+    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 44px));
+  }
+  
+  .listButton {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: calc(16px + env(safe-area-inset-right) + 52px + 10px);
+    width: 52px;
+    height: 52px;
+    z-index: 9999;
+  }
+  .listButtonWithMenu {
     bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 44px));
   }
 }
@@ -357,6 +378,22 @@
   .filterButtonWithMenu {
     bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
   }
+  
+  .listButton {
+    bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    right: calc(12px + env(safe-area-inset-right) + 48px + 8px) !important;
+    width: 48px;
+    height: 48px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  .listButtonWithMenu {
+    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+  }
 }
 
 // Дополнительная оптимизация для очень маленьких экранов (300-350px)
@@ -382,6 +419,22 @@
     }
   }
   .filterButtonWithMenu {
+    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+  }
+  
+  .listButton {
+    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    right: calc(8px + env(safe-area-inset-right) + 44px + 8px) !important;
+    width: 44px;
+    height: 44px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  .listButtonWithMenu {
     bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
   }
   
@@ -422,6 +475,22 @@
     }
   }
   .filterButtonWithMenu {
+    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 76px)) !important;
+  }
+  
+  .listButton {
+    bottom: calc(6px + env(safe-area-inset-bottom)) !important;
+    right: calc(6px + env(safe-area-inset-right) + 40px + 6px) !important;
+    width: 40px;
+    height: 40px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  .listButtonWithMenu {
     bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 76px)) !important;
   }
   

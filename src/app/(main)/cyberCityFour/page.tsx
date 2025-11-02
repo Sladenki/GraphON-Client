@@ -2,11 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Filter } from "lucide-react";
+import { Filter, List } from "lucide-react";
 import styles from "./page.module.scss";
 import EventFilter from "./EventFilter/EventFilter";
 import EventPopup from "./EventPopup/EventPopup";
 import EventMarker from "./EventMarker/EventMarker";
+import EventsList from "./EventsList";
 import { mockEvents, type CityEvent } from "./mockEvents";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useAuth } from "@/providers/AuthProvider";
@@ -96,6 +97,7 @@ export default function CyberCityFour() {
   
   // Состояние для фильтра
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isListOpen, setIsListOpen] = useState(false);
   
   // Состояние для выбранного события (для popup)
   const [selectedEvent, setSelectedEvent] = useState<CityEvent | null>(null);
@@ -365,6 +367,14 @@ export default function CyberCityFour() {
   const handleFilterClose = useCallback(() => {
     setIsFilterOpen(false);
   }, []);
+  
+  const handleListOpen = useCallback(() => {
+    setIsListOpen(true);
+  }, []);
+  
+  const handleListClose = useCallback(() => {
+    setIsListOpen(false);
+  }, []);
 
   // Эффект для обновления стилей карты при изменении темы (оптимизированный)
   useEffect(() => {
@@ -461,15 +471,24 @@ export default function CyberCityFour() {
             </>
           )}
             
-          {/* Кнопка фильтра */}
-          {!isFilterOpen && (
-            <button 
-              className={`${styles.filterButton} ${isLoggedIn ? styles.filterButtonWithMenu : ''}`}
-              onClick={handleFilterOpen}
-              aria-label="Открыть фильтры"
-            >
-              <Filter size={20} />
-            </button>
+          {/* Кнопки фильтра и списка */}
+          {!isFilterOpen && !isListOpen && (
+            <>
+              <button 
+                className={`${styles.listButton} ${isLoggedIn ? styles.listButtonWithMenu : ''}`}
+                onClick={handleListOpen}
+                aria-label="Список мероприятий"
+              >
+                <List size={20} />
+              </button>
+              <button 
+                className={`${styles.filterButton} ${isLoggedIn ? styles.filterButtonWithMenu : ''}`}
+                onClick={handleFilterOpen}
+                aria-label="Открыть фильтры"
+              >
+                <Filter size={20} />
+              </button>
+            </>
           )}
 
           {/* Pop-up фильтра */}
@@ -477,6 +496,14 @@ export default function CyberCityFour() {
             isOpen={isFilterOpen} 
             onClose={handleFilterClose}
             resultsCount={mockEvents.length}
+          />
+          
+          {/* Pop-up списка мероприятий */}
+          <EventsList
+            isOpen={isListOpen}
+            onClose={handleListClose}
+            events={mockEvents}
+            onEventClick={setSelectedEvent}
           />
           
           {/* Pop-up события */}
