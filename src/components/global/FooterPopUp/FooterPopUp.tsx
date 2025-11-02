@@ -145,7 +145,11 @@ export default function FooterPopUp({
         </div>
 
         {title && (
-          <div className={styles.header}>
+          <div 
+            className={styles.header}
+            onMouseDown={(e) => handlePointerDown(e.clientY)}
+            onTouchStart={(e) => handlePointerDown(e.touches[0]?.clientY ?? 0)}
+          >
             <h3 className={styles.title}>{title}</h3>
             <button
               className={styles.closeButton}
