@@ -13,11 +13,11 @@ interface EventFilterProps {
 
 export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: EventFilterProps) {
   const [selectedCategories, setSelectedCategories] = useState<Record<string, boolean>>({
-    concert: true,
-    exhibit: true,
-    lecture: true,
-    festival: true,
-    meetup: true,
+    concert: false,
+    exhibit: false,
+    lecture: false,
+    festival: false,
+    meetup: false,
   });
 
   const [datePreset, setDatePreset] = useState<"today" | "tomorrow" | "weekend" | "custom" | null>(null);
@@ -49,6 +49,8 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
       footer={footer}
       maxHeight="70vh"
     >
+      {/* Секция дат */}
+      <div className={styles.sectionTitle}>Когда</div>
       <div className={styles.dateGroup} role="group" aria-label="Дата мероприятия">
         <button
           type="button"
@@ -97,6 +99,9 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
           />
         </div>
       )}
+      
+      {/* Секция категорий */}
+      <div className={styles.sectionTitle}>Что интересует</div>
       <div className={styles.categoriesGrid}>
         {categories.map(({ key, label, Icon }) => (
           <button

@@ -1,28 +1,44 @@
 /* Date presets */
 .dateGroup {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 14px;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  
+  /* Скрыть scrollbar но оставить функциональность */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .dateButton {
-  height: 36px;
-  border: 1px solid #e5e7eb;
+  height: 34px;
+  min-width: fit-content;
+  padding: 0 16px;
+  border: 2px solid #e5e7eb;
   background: #ffffff;
-  color: #111827;
+  color: #6b7280;
   border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  
+  &:hover {
+    border-color: #d1d5db;
+    background: #f9fafb;
+  }
 }
 
 .dateButton[data-selected="true"] {
   background: #6a57e8;
   color: #ffffff;
   border-color: #6a57e8;
-  box-shadow: 0 4px 10px rgba(106, 87, 232, 0.25);
 }
 
 .datePickerRow {
@@ -42,7 +58,8 @@
 .categoriesGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 14px;
+  margin-top: 24px;
 }
 
 .categoryItem {
@@ -50,30 +67,60 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
+  gap: 10px;
+  padding: 18px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
   background: #ffffff;
-  color: #111827;
+  color: #9ca3af;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-}
-
-.categoryItem:active {
-  transform: translateY(1px);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  
+  /* Неактивное состояние - приглушенное */
+  svg {
+    opacity: 0.35;
+    transition: all 0.2s ease;
+  }
+  
+  &:hover {
+    border-color: #6a57e8;
+    background: rgba(106, 87, 232, 0.03);
+    
+    svg {
+      opacity: 0.5;
+    }
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 .categoryItem[data-selected="true"] {
   border-color: #6a57e8;
-  background: #f3f4ff;
-  box-shadow: 0 4px 12px rgba(106, 87, 232, 0.15);
+  background: #6a57e8;
+  color: #ffffff;
+  
+  /* Активное состояние - яркое */
+  svg {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  
+  /* Иконка становится белой */
+  &:hover {
+    background: #5a4ad8;
+    border-color: #5a4ad8;
+  }
 }
 
 .categoryLabel {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: inherit;
+  transition: color 0.2s ease;
 }
 
 /* Apply Button */
@@ -95,18 +142,33 @@
   box-shadow: 0 6px 16px rgba(106, 87, 232, 0.25);
 }
 
+/* Section Headers */
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
 /* Dark theme adaptations */
 [data-theme="dark"] {
   .dateButton {
     background: #2a2d33;
-    color: #e0e0e0;
+    color: #9ca3af;
     border-color: #3a3d42;
+    
+    &:hover {
+      background: #2f3238;
+      border-color: #4a4d52;
+    }
   }
 
   .dateButton[data-selected="true"] {
-    background: #6a57e8;
+    background: #7f72ff;
     color: #ffffff;
-    border-color: #6a57e8;
+    border-color: #7f72ff;
   }
 
   .datePicker {
@@ -117,12 +179,27 @@
 
   .categoryItem {
     background: #2a2d33;
-    color: #e0e0e0;
+    color: #6b7280;
     border-color: #3a3d42;
+    
+    &:hover {
+      border-color: #7f72ff;
+      background: rgba(127, 114, 255, 0.08);
+    }
   }
 
   .categoryItem[data-selected="true"] {
-    background: #2f3150;
+    background: #7f72ff;
+    color: #ffffff;
     border-color: #7f72ff;
+    
+    &:hover {
+      background: #6a57e8;
+      border-color: #6a57e8;
+    }
+  }
+
+  .sectionTitle {
+    color: #9ca3af;
   }
 }
