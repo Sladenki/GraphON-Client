@@ -70,6 +70,13 @@ export const useMobileDrawerOptimization = ({
 
   // Обработчик начала касания
   const handleTouchStart = useCallback((event: TouchEvent) => {
+    // ВАЖНО: Блокируем свайп на странице cyberCityFour
+    if (pathname === '/cyberCityFour') {
+      touchStartRef.current = null;
+      touchMoveRef.current = null;
+      return;
+    }
+    
     // Блокируем свайп если открыт любой popup
     if (!canUseSwipe()) {
       touchStartRef.current = null;
@@ -81,6 +88,7 @@ export const useMobileDrawerOptimization = ({
     const target = event.target as HTMLElement;
     
     // Проверяем, разрешен ли свайп в этом контейнере
+    // НО только если canUseSwipe() разрешает свайп глобально
     const isSwipeEnabled = target.closest('[data-swipe-enabled="true"]');
     
     // Если свайп разрешен в контейнере, всегда инициализируем его
@@ -121,10 +129,15 @@ export const useMobileDrawerOptimization = ({
       fromEdge: touch.clientX <= SWIPE_CONFIG.edgeZone,
     };
     touchMoveRef.current = null;
-  }, [canUseSwipe]);
+  }, [pathname, canUseSwipe]);
 
   // Обработчик движения касания
   const handleTouchMove = useCallback((event: TouchEvent) => {
+    // ВАЖНО: Блокируем свайп на странице cyberCityFour
+    if (pathname === '/cyberCityFour') {
+      return;
+    }
+    
     // Блокируем свайп если открыт любой popup
     if (!canUseSwipe() || !touchStartRef.current) {
       return;
@@ -134,6 +147,7 @@ export const useMobileDrawerOptimization = ({
     const target = event.target as HTMLElement;
     
     // Проверяем, разрешен ли свайп в этом контейнере
+    // НО только если canUseSwipe() разрешает свайп глобально
     const isSwipeEnabled = target.closest('[data-swipe-enabled="true"]');
     
     // Если свайп разрешен в контейнере, обрабатываем движение
@@ -192,10 +206,17 @@ export const useMobileDrawerOptimization = ({
     }
     
     touchMoveRef.current = currentPoint;
-  }, [canUseSwipe]);
+  }, [pathname, canUseSwipe]);
 
   // Обработчик окончания касания
   const handleTouchEnd = useCallback(() => {
+    // ВАЖНО: Блокируем свайп на странице cyberCityFour
+    if (pathname === '/cyberCityFour') {
+      touchStartRef.current = null;
+      touchMoveRef.current = null;
+      return;
+    }
+    
     // Блокируем свайп если открыт любой popup
     if (!canUseSwipe() || !touchStartRef.current || !touchMoveRef.current) {
       touchStartRef.current = null;
@@ -232,7 +253,7 @@ export const useMobileDrawerOptimization = ({
     // Очищаем ссылки
     touchStartRef.current = null;
     touchMoveRef.current = null;
-  }, [isOpen, setIsOpen, canUseSwipe]);
+  }, [pathname, isOpen, setIsOpen, canUseSwipe]);
 
   // Добавляем обработчики touch событий (capture, чтобы не блокировались дочерними элементами)
   useEffect(() => {
