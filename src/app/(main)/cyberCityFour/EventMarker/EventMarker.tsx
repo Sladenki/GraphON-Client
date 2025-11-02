@@ -161,9 +161,9 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
         />
       )}
 
-      {/* Внешнее кольцо маркера (темная обводка) */}
+      {/* Цветная обводка вокруг иконки */}
       <Layer
-        id="event-ring-outer"
+        id="event-border-circle"
         type="circle"
         paint={{
           "circle-radius": [
@@ -171,37 +171,20 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
             ["linear"],
             ["zoom"],
             10, 11,
-            15, 16,
-            18, 21
+            15, 15,
+            18, 19
           ],
-          "circle-color": [
-            "match",
-            ["get", "category"],
-            "concert", isLight ? categoryColors.concert.stroke.light : categoryColors.concert.stroke.dark,
-            "exhibit", isLight ? categoryColors.exhibit.stroke.light : categoryColors.exhibit.stroke.dark,
-            "lecture", isLight ? categoryColors.lecture.stroke.light : categoryColors.lecture.stroke.dark,
-            "festival", isLight ? categoryColors.festival.stroke.light : categoryColors.festival.stroke.dark,
-            "meetup", isLight ? categoryColors.meetup.stroke.light : categoryColors.meetup.stroke.dark,
-            isLight ? categoryColors.default.stroke.light : categoryColors.default.stroke.dark
-          ],
-          "circle-opacity": 1,
-        }}
-      />
-
-      {/* Основной цветной маркер */}
-      <Layer
-        id="event-points"
-        type="circle"
-        paint={{
-          "circle-radius": [
+          "circle-color": "#ffffff",
+          "circle-opacity": 0.3,
+          "circle-stroke-width": [
             "interpolate",
             ["linear"],
             ["zoom"],
-            10, 9,
-            15, 13,
-            18, 17
+            10, 3,
+            15, 4,
+            18, 5
           ],
-          "circle-color": [
+          "circle-stroke-color": [
             "match",
             ["get", "category"],
             "concert", isLight ? categoryColors.concert.light : categoryColors.concert.dark,
@@ -211,11 +194,11 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
             "meetup", isLight ? categoryColors.meetup.light : categoryColors.meetup.dark,
             isLight ? categoryColors.default.light : categoryColors.default.dark
           ],
-          "circle-opacity": 1,
+          "circle-stroke-opacity": 1,
         }}
       />
 
-      {/* SVG Иконки категорий */}
+      {/* SVG Иконки категорий (рендерятся ПОВЕРХ белого круга) */}
       <Layer
         id="event-icons"
         type="symbol"
@@ -243,6 +226,24 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
         }}
         paint={{
           "icon-opacity": 1,
+        }}
+      />
+
+      {/* Интерактивный слой для кликов (невидимый круг) */}
+      <Layer
+        id="event-points"
+        type="circle"
+        paint={{
+          "circle-radius": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            10, 16,
+            15, 22,
+            18, 28
+          ],
+          "circle-color": "transparent",
+          "circle-opacity": 0,
         }}
       />
 
