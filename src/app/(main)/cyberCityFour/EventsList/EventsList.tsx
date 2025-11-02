@@ -1,6 +1,6 @@
 "use client";
 
-import { Music, Image, GraduationCap, Sparkles, Users, MapPin } from "lucide-react";
+import { Music, Image as ImageIcon, GraduationCap, Sparkles, Users, MapPin } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import styles from "./EventsList.module.scss";
 import type { CityEvent } from "../mockEvents";
@@ -19,7 +19,7 @@ export default function EventsList({ isOpen, onClose, events, onEventClick }: Ev
       case 'concert':
         return <Music size={18} />;
       case 'exhibit':
-        return <Image size={18} />;
+        return <ImageIcon size={18} />;
       case 'lecture':
         return <GraduationCap size={18} />;
       case 'festival':
