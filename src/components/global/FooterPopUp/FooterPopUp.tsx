@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import styles from "./FooterPopUp.module.scss";
 
@@ -32,6 +33,13 @@ export default function FooterPopUp({
   const [dragTranslateY, setDragTranslateY] = useState(0);
   const [animateOpen, setAnimateOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Монтируем компонент для Portal
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   // Определяем десктоп
   useEffect(() => {
@@ -106,7 +114,7 @@ export default function FooterPopUp({
     };
   }, [isDragging, handlePointerMove, finishDrag]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   // Стиль для драга - только когда идет перетаскивание
   const sheetStyle = {
@@ -118,7 +126,7 @@ export default function FooterPopUp({
     maxHeight,
   } as React.CSSProperties;
 
-  return (
+  const content = (
     <div 
       className={`${styles.overlay} ${animateOpen ? styles.overlayVisible : ""}`} 
       onClick={onClose}
@@ -155,5 +163,8 @@ export default function FooterPopUp({
       </div>
     </div>
   );
+
+  // Рендерим через Portal в document.body
+  return createPortal(content, document.body);
 }
 
