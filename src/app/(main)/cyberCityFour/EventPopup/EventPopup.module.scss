@@ -72,6 +72,40 @@
   }
 }
 
+/* Yandex Maps Button */
+.yandexMapsButton {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #6a57e8 0%, #5a4ad8 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(106, 87, 232, 0.3);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(106, 87, 232, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(106, 87, 232, 0.3);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
 /* Dark theme adaptations */
 [data-theme="dark"] {
   .infoValue {
@@ -80,6 +114,15 @@
   
   .descriptionText {
     color: #d0d0d0;
+  }
+
+  .yandexMapsButton {
+    background: linear-gradient(135deg, #7f72ff 0%, #6a57e8 100%);
+    box-shadow: 0 4px 12px rgba(127, 114, 255, 0.4);
+
+    &:hover {
+      box-shadow: 0 6px 16px rgba(127, 114, 255, 0.5);
+    }
   }
 }
 

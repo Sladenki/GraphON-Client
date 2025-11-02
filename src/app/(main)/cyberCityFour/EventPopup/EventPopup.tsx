@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Calendar, Users, Clock } from "lucide-react";
+import { MapPin, Calendar, Users, Clock, Navigation } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import styles from "./EventPopup.module.scss";
 import type { CityEvent } from "../mockEvents";
@@ -13,6 +13,14 @@ interface EventPopupProps {
 }
 
 export default function EventPopup({ event, isOpen, onClose, isLight = false }: EventPopupProps) {
+  // Функция открытия маршрута в Яндекс.Картах
+  const openInYandexMaps = () => {
+    if (!event) return;
+    
+    // URL с маршрутом: от текущего местоположения (~) до координат события
+    const yandexMapsURL = `https://yandex.ru/maps/?rtext=~${event.lat},${event.lng}&rtt=auto`;
+    window.open(yandexMapsURL, '_blank');
+  };
   return (
     <FooterPopUp isOpen={isOpen && !!event} onClose={onClose} title={event?.name || ""}>
       {event && (
@@ -65,6 +73,16 @@ export default function EventPopup({ event, isOpen, onClose, isLight = false }: 
               <p className={styles.descriptionText}>{event.description}</p>
             </div>
           )}
+
+          {/* Кнопка открытия в Яндекс.Картах */}
+          <button 
+            className={styles.yandexMapsButton}
+            onClick={openInYandexMaps}
+            type="button"
+          >
+            <Navigation size={18} />
+            <span>Показать в Яндекс Картах</span>
+          </button>
         </>
       )}
     </FooterPopUp>
