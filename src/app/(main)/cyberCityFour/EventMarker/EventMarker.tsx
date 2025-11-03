@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { Source, Layer } from "react-map-gl/maplibre";
 import { useEventIcons } from "./useEventIcons";
 
@@ -19,16 +20,8 @@ interface EventMarkerProps {
   mapRef?: any;
 }
 
-/**
- * Компонент для отображения маркеров событий на карте
- * Использует SVG иконки через icon-image для высокой производительности
- */
-export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
-  // Загружаем SVG иконки в карту
-  useEventIcons(mapRef, isLight);
-  
-  // Конфигурация цветов для категорий
-  const categoryColors = {
+// Конфигурация цветов для категорий (вынесена наружу для оптимизации)
+const CATEGORY_COLORS = {
     concert: { 
       light: "#8b5cf6", 
       dark: "#a78bfa", 
@@ -71,7 +64,16 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
       glow: "rgba(96, 165, 250, 0.5)",
       pulseGlow: "rgba(96, 165, 250, 0.25)"
     },
-  };
+} as const;
+
+/**
+ * Компонент для отображения маркеров событий на карте
+ * Использует SVG иконки через icon-image для высокой производительности
+ * Мемоизирован для предотвращения лишних рендеров
+ */
+function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
+  // Загружаем SVG иконки в карту
+  useEventIcons(mapRef, isLight);
 
   return (
     <Source id="events" type="geojson" data={eventGeoJSON}>
@@ -91,12 +93,12 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
           "circle-color": [
             "match",
             ["get", "category"],
-            "concert", categoryColors.concert.pulseGlow,
-            "exhibit", categoryColors.exhibit.pulseGlow,
-            "lecture", categoryColors.lecture.pulseGlow,
-            "festival", categoryColors.festival.pulseGlow,
-            "meetup", categoryColors.meetup.pulseGlow,
-            categoryColors.default.pulseGlow
+            "concert", CATEGORY_COLORS.concert.pulseGlow,
+            "exhibit", CATEGORY_COLORS.exhibit.pulseGlow,
+            "lecture", CATEGORY_COLORS.lecture.pulseGlow,
+            "festival", CATEGORY_COLORS.festival.pulseGlow,
+            "meetup", CATEGORY_COLORS.meetup.pulseGlow,
+            CATEGORY_COLORS.default.pulseGlow
           ],
           "circle-opacity": isLight ? 0.3 : 0.4,
           "circle-blur": 1,
@@ -119,12 +121,12 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
           "circle-color": [
             "match",
             ["get", "category"],
-            "concert", categoryColors.concert.glow,
-            "exhibit", categoryColors.exhibit.glow,
-            "lecture", categoryColors.lecture.glow,
-            "festival", categoryColors.festival.glow,
-            "meetup", categoryColors.meetup.glow,
-            categoryColors.default.glow
+            "concert", CATEGORY_COLORS.concert.glow,
+            "exhibit", CATEGORY_COLORS.exhibit.glow,
+            "lecture", CATEGORY_COLORS.lecture.glow,
+            "festival", CATEGORY_COLORS.festival.glow,
+            "meetup", CATEGORY_COLORS.meetup.glow,
+            CATEGORY_COLORS.default.glow
           ],
           "circle-opacity": isLight ? 0.5 : 0.7,
           "circle-blur": 1.5,
@@ -148,12 +150,12 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
             "circle-color": [
               "match",
               ["get", "category"],
-              "concert", categoryColors.concert.glow,
-              "exhibit", categoryColors.exhibit.glow,
-              "lecture", categoryColors.lecture.glow,
-              "festival", categoryColors.festival.glow,
-              "meetup", categoryColors.meetup.glow,
-              categoryColors.default.glow
+              "concert", CATEGORY_COLORS.concert.glow,
+              "exhibit", CATEGORY_COLORS.exhibit.glow,
+              "lecture", CATEGORY_COLORS.lecture.glow,
+              "festival", CATEGORY_COLORS.festival.glow,
+              "meetup", CATEGORY_COLORS.meetup.glow,
+              CATEGORY_COLORS.default.glow
             ],
             "circle-opacity": 0.8,
             "circle-blur": 2,
@@ -187,12 +189,12 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
           "circle-stroke-color": [
             "match",
             ["get", "category"],
-            "concert", isLight ? categoryColors.concert.light : categoryColors.concert.dark,
-            "exhibit", isLight ? categoryColors.exhibit.light : categoryColors.exhibit.dark,
-            "lecture", isLight ? categoryColors.lecture.light : categoryColors.lecture.dark,
-            "festival", isLight ? categoryColors.festival.light : categoryColors.festival.dark,
-            "meetup", isLight ? categoryColors.meetup.light : categoryColors.meetup.dark,
-            isLight ? categoryColors.default.light : categoryColors.default.dark
+            "concert", isLight ? CATEGORY_COLORS.concert.light : CATEGORY_COLORS.concert.dark,
+            "exhibit", isLight ? CATEGORY_COLORS.exhibit.light : CATEGORY_COLORS.exhibit.dark,
+            "lecture", isLight ? CATEGORY_COLORS.lecture.light : CATEGORY_COLORS.lecture.dark,
+            "festival", isLight ? CATEGORY_COLORS.festival.light : CATEGORY_COLORS.festival.dark,
+            "meetup", isLight ? CATEGORY_COLORS.meetup.light : CATEGORY_COLORS.meetup.dark,
+            isLight ? CATEGORY_COLORS.default.light : CATEGORY_COLORS.default.dark
           ],
           "circle-stroke-opacity": 1,
         }}
@@ -272,12 +274,12 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
           "text-color": [
             "match",
             ["get", "category"],
-            "concert", isLight ? categoryColors.concert.stroke.light : categoryColors.concert.dark,
-            "exhibit", isLight ? categoryColors.exhibit.stroke.light : categoryColors.exhibit.dark,
-            "lecture", isLight ? categoryColors.lecture.stroke.light : categoryColors.lecture.dark,
-            "festival", isLight ? categoryColors.festival.stroke.light : categoryColors.festival.dark,
-            "meetup", isLight ? categoryColors.meetup.stroke.light : categoryColors.meetup.dark,
-            isLight ? categoryColors.default.stroke.light : categoryColors.default.dark
+            "concert", isLight ? CATEGORY_COLORS.concert.stroke.light : CATEGORY_COLORS.concert.dark,
+            "exhibit", isLight ? CATEGORY_COLORS.exhibit.stroke.light : CATEGORY_COLORS.exhibit.dark,
+            "lecture", isLight ? CATEGORY_COLORS.lecture.stroke.light : CATEGORY_COLORS.lecture.dark,
+            "festival", isLight ? CATEGORY_COLORS.festival.stroke.light : CATEGORY_COLORS.festival.dark,
+            "meetup", isLight ? CATEGORY_COLORS.meetup.stroke.light : CATEGORY_COLORS.meetup.dark,
+            isLight ? CATEGORY_COLORS.default.stroke.light : CATEGORY_COLORS.default.dark
           ],
           "text-halo-color": isLight ? "#ffffff" : "#000000",
           "text-halo-width": 2.5,
@@ -289,4 +291,23 @@ export default function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMark
   );
 }
 
+// Кастомная функция сравнения для memo
+function arePropsEqual(prevProps: EventMarkerProps, nextProps: EventMarkerProps) {
+  // Проверяем isLight (примитив)
+  if (prevProps.isLight !== nextProps.isLight) return false;
+  
+  // Проверяем mapRef (используем shallow comparison)
+  if (prevProps.mapRef !== nextProps.mapRef) return false;
+  
+  // Проверяем eventGeoJSON по длине features и первому элементу (оптимизация)
+  if (prevProps.eventGeoJSON.features.length !== nextProps.eventGeoJSON.features.length) {
+    return false;
+  }
+  
+  // Если длина одинаковая, считаем пропсы равными (eventGeoJSON не меняется часто)
+  return true;
+}
+
+// Экспортируем мемоизированную версию компонента
+export default memo(EventMarker, arePropsEqual);
 
