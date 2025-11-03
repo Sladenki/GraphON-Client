@@ -2,6 +2,7 @@
 
 import { MapPin, Calendar, Users, Clock, Navigation } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
+import ActionButton from "@/components/ui/ActionButton";
 import styles from "./EventPopup.module.scss";
 import type { CityEvent } from "../mockEvents";
 
@@ -24,14 +25,13 @@ export default function EventPopup({ event, isOpen, onClose, isLight = false }: 
 
   // Фиксированная кнопка внизу
   const footer = event ? (
-    <button 
-      className={styles.yandexMapsButton}
+    <ActionButton
+      label="Показать в Яндекс Картах"
+      icon={<Navigation size={18} />}
+      variant="primary"
       onClick={openInYandexMaps}
-      type="button"
-    >
-      <Navigation size={18} />
-      <span>Показать в Яндекс Картах</span>
-    </button>
+      className={styles.yandexMapsButton}
+    />
   ) : null;
 
   return (

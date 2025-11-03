@@ -68,35 +68,9 @@
   margin: 0;
 }
 
-/* Yandex Maps Button */
+/* Yandex Maps Button - позиционирование */
 .yandexMapsButton {
-  margin-top: 16px;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 13px 20px;
-  background: #6a57e8;
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #5a4ad8;
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-
-  svg {
-    flex-shrink: 0;
-  }
 }
 
 /* Mobile Adaptations */
@@ -147,13 +121,5 @@
   
   .descriptionText {
     color: #d1d5db;
-  }
-
-  .yandexMapsButton {
-    background: #7f72ff;
-
-    &:hover {
-      background: #6a57e8;
-    }
   }
 }

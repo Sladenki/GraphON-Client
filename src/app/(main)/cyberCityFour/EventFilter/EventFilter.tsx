@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { Music, Image, GraduationCap, Sparkles, Users } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
+import ActionButton from "@/components/ui/ActionButton";
 import styles from "./EventFilter.module.scss";
 
 interface EventFilterProps {
@@ -36,9 +37,12 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
   }, []);
 
   const footer = (
-    <button className={styles.applyButton} onClick={onClose}>
-      {`Показать ${resultsCount} событий`}
-    </button>
+    <ActionButton
+      label={`Показать ${resultsCount} событий`}
+      variant="primary"
+      onClick={onClose}
+      className={styles.applyButton}
+    />
   );
 
   return (

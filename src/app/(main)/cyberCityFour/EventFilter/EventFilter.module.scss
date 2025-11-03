@@ -123,23 +123,9 @@
   transition: color 0.2s ease;
 }
 
-/* Apply Button */
+/* Apply Button - позиционирование */
 .applyButton {
   width: 100%;
-  height: 44px;
-  border-radius: 12px;
-  border: none;
-  background: #6a57e8;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-
-.applyButton:hover {
-  background: #5a4ad8;
-  box-shadow: 0 6px 16px rgba(106, 87, 232, 0.25);
 }
 
 /* Section Headers */
