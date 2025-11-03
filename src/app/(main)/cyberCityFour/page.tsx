@@ -1,13 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, Suspense } from "react";
 import { Filter, List } from "lucide-react";
 import styles from "./page.module.scss";
-import EventFilter from "./EventFilter/EventFilter";
-import EventPopup from "./EventPopup/EventPopup";
 import EventMarker from "./EventMarker/EventMarker";
-import EventsList from "./EventsList";
 import { mockEvents, type CityEvent } from "./mockEvents";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useAuth } from "@/providers/AuthProvider";
@@ -21,7 +18,24 @@ import {
   HEAVY_ROAD_STYLES 
 } from "./mapStyles";
 
+// Динамическая загрузка тяжелых компонентов
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
+
+// Lazy loading для попапов - загружаются только при открытии
+const EventFilter = dynamic(() => import("./EventFilter/EventFilter"), {
+  loading: () => <div className={styles.popupLoader}>Загрузка...</div>,
+  ssr: false
+});
+
+const EventPopup = dynamic(() => import("./EventPopup/EventPopup"), {
+  loading: () => <div className={styles.popupLoader}>Загрузка...</div>,
+  ssr: false
+});
+
+const EventsList = dynamic(() => import("./EventsList"), {
+  loading: () => <div className={styles.popupLoader}>Загрузка...</div>,
+  ssr: false
+});
 
 //
 
@@ -523,33 +537,45 @@ export default function CyberCityFour() {
             </>
           )}
 
-          {/* Pop-up фильтра */}
-          <EventFilter 
-            isOpen={isFilterOpen} 
-            onClose={handleFilterClose}
-            resultsCount={mockEvents.length}
-          />
+          {/* Pop-up фильтра - загружается только при открытии */}
+          {isFilterOpen && (
+            <Suspense fallback={<div className={styles.popupLoader}>Загрузка фильтров...</div>}>
+              <EventFilter 
+                isOpen={isFilterOpen} 
+                onClose={handleFilterClose}
+                resultsCount={mockEvents.length}
+              />
+            </Suspense>
+          )}
           
-          {/* Pop-up списка мероприятий */}
-          <EventsList
-            isOpen={isListOpen}
-            onClose={handleListClose}
-            events={mockEvents}
-            onEventClick={handleEventSelectFromList}
-          />
+          {/* Pop-up списка мероприятий - загружается только при открытии */}
+          {isListOpen && (
+            <Suspense fallback={<div className={styles.popupLoader}>Загрузка списка...</div>}>
+              <EventsList
+                isOpen={isListOpen}
+                onClose={handleListClose}
+                events={mockEvents}
+                onEventClick={handleEventSelectFromList}
+              />
+            </Suspense>
+          )}
           
-          {/* Pop-up события */}
-          <EventPopup
-            event={selectedEvent}
-            isOpen={!!selectedEvent}
-            onClose={() => {
-              setSelectedEvent(null);
-              setEventOpenedFromList(false);
-            }}
-            isLight={isLight}
-            showBackButton={eventOpenedFromList}
-            onBack={handleBackToList}
-          />
+          {/* Pop-up события - загружается только при открытии */}
+          {selectedEvent && (
+            <Suspense fallback={<div className={styles.popupLoader}>Загрузка события...</div>}>
+              <EventPopup
+                event={selectedEvent}
+                isOpen={!!selectedEvent}
+                onClose={() => {
+                  setSelectedEvent(null);
+                  setEventOpenedFromList(false);
+                }}
+                isLight={isLight}
+                showBackButton={eventOpenedFromList}
+                onBack={handleBackToList}
+              />
+            </Suspense>
+          )}
         </div>
       </div>
     </section>

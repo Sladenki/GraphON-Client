@@ -190,6 +190,32 @@
   gap: 20px;
 }
 
+/* Popup Loader - легкий loader для lazy loaded попапов */
+.popupLoader {
+  position: fixed;
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  z-index: 3500;
+  animation: pulseLoader 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseLoader {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .spinnerRing {
   width: 60px;
   height: 60px;
