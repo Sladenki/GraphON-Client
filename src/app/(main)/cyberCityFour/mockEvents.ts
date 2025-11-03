@@ -15,8 +15,103 @@ export interface CityEvent {
   regedUsers: number;
 }
 
-// Примерные координаты в пределах Калининграда
-export const mockEvents: CityEvent[] = [
+// ===== ГЕНЕРАТОР СЛУЧАЙНЫХ МЕРОПРИЯТИЙ =====
+
+const categories: EventCategory[] = ["concert", "exhibit", "lecture", "festival", "meetup"];
+
+const places = [
+  "Кафедральный собор",
+  "Дом искусств",
+  "Музей изобразительных искусств",
+  "Центральная площадь",
+  "Набережная",
+  "Kaliningrad Tech",
+  "КГТУ",
+  "Галерея на Ленинском",
+  "Парк Юности",
+  "Драмтеатр",
+];
+
+const namesByCategory: Record<EventCategory, string[]> = {
+  concert: [
+    "Концерт камерной музыки",
+    "Джазовый вечер",
+    "Органная симфония",
+    "Рок-фест Балтика",
+    "Музыкальная ночь",
+  ],
+  exhibit: [
+    "Выставка современного искусства",
+    "Фотовыставка: Город и свет",
+    "Инсталляции будущего",
+    "Дизайн XXI века",
+    "Скульптуры Калининграда",
+  ],
+  lecture: [
+    "Арт-лекция: Кандинский",
+    "Лекция по урбанистике",
+    "Наука и культура города",
+    "Как работает архитектура",
+    "Город без пробок",
+  ],
+  festival: [
+    "Фестиваль уличной музыки",
+    "Городской фестиваль еды",
+    "Фестиваль света",
+    "Фестиваль ремёсел",
+    "Фестиваль молодых талантов",
+  ],
+  meetup: [
+    "IT-митап",
+    "Frontend Meetup",
+    "Product Night",
+    "AI & Design Talk",
+    "Startup Networking",
+  ],
+};
+
+// Калининград (примерный диапазон координат)
+const baseLat = 54.71;
+const baseLng = 20.51;
+
+function randomInRange(base: number, range = 0.03) {
+  return +(base + (Math.random() - 0.5) * range).toFixed(5);
+}
+
+function randomDate() {
+  const now = new Date("2025-11-01");
+  const offsetDays = Math.floor(Math.random() * 30); // в пределах ноября
+  const date = new Date(now);
+  date.setDate(now.getDate() + offsetDays);
+  return date.toISOString().split("T")[0];
+}
+
+export const mockEvents: CityEvent[] = Array.from({ length: 50 }, (_, i) => {
+  const category = categories[Math.floor(Math.random() * categories.length)];
+  const name =
+    namesByCategory[category][
+      Math.floor(Math.random() * namesByCategory[category].length)
+    ];
+
+  return {
+    id: `e${i + 1}`,
+    name,
+    place: places[Math.floor(Math.random() * places.length)],
+    description: `Описание события "${name}". Интересные спикеры, приятная атмосфера и новые впечатления.`,
+    category,
+    lat: randomInRange(baseLat),
+    lng: randomInRange(baseLng),
+    eventDate: randomDate(),
+    isDateTbd: Math.random() < 0.1,
+    timeFrom: ["10:00", "11:00", "14:00", "17:00", "19:00"][Math.floor(Math.random() * 5)],
+    timeTo: ["18:00", "20:00", "21:00", "22:00"][Math.floor(Math.random() * 4)],
+    regedUsers: Math.floor(Math.random() * 400) + 10,
+  };
+});
+
+// Старые статичные данные (закомментированы для возможного использования)
+/*
+export const mockEventsStatic: CityEvent[] = [
   {
     id: "e1",
     name: "Концерт камерной музыки",
@@ -128,5 +223,4 @@ export const mockEvents: CityEvent[] = [
     regedUsers: 74,
   },
 ];
-
-
+*/
