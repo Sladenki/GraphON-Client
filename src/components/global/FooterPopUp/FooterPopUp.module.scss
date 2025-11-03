@@ -137,6 +137,54 @@
   }
 }
 
+/* Light theme adaptations */
+[data-theme="light"] {
+  .overlay.overlayVisible {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  .sheet {
+    background: #ffffff;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+  }
+  
+  .header {
+    border-bottom-color: #e5e7eb;
+    background: #f9fafb;
+  }
+  
+  .title {
+    color: #111827;
+  }
+  
+  .closeButton {
+    color: #6b7280;
+  }
+  
+  .closeButton:hover {
+    color: #111827;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+  }
+  
+  .sheetHandle {
+    background: #d1d5db;
+  }
+  
+  .sheetHandleArea {
+    background: #f9fafb;
+  }
+  
+  .content {
+    background: #ffffff;
+  }
+  
+  .footer {
+    border-top-color: #e5e7eb;
+    background: #f9fafb;
+  }
+}
+
 /* Dark theme adaptations */
 [data-theme="dark"] {
   .overlay.overlayVisible {
