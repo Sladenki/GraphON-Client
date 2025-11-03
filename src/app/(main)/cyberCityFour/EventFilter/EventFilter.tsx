@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Music, Image, GraduationCap, Sparkles, Users } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import ActionButton from "@/components/ui/ActionButton";
+import DatePickerField from "@/components/ui/DatePickerField/DatePickerField";
 import styles from "./EventFilter.module.scss";
 
 interface EventFilterProps {
@@ -22,7 +23,8 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
   });
 
   const [datePreset, setDatePreset] = useState<"today" | "tomorrow" | "weekend" | "custom" | null>(null);
-  const [customDate, setCustomDate] = useState<string>("");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
 
   const categories = useMemo(() => ([
     { key: "concert", label: "Концерты", Icon: Music },
@@ -94,13 +96,27 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
         </button>
       </div>
       {datePreset === "custom" && (
-        <div className={styles.datePickerRow}>
-          <input
-            className={styles.datePicker}
-            type="date"
-            value={customDate}
-            onChange={(e) => setCustomDate(e.target.value)}
-          />
+        <div className={styles.dateRangeContainer}>
+          <div className={styles.dateRangeField}>
+            <DatePickerField
+              value={dateFrom}
+              onChange={setDateFrom}
+              label="С какого"
+              ariaLabel="Дата начала"
+              size="sm"
+              variant="flat"
+            />
+          </div>
+          <div className={styles.dateRangeField}>
+            <DatePickerField
+              value={dateTo}
+              onChange={setDateTo}
+              label="По какое"
+              ariaLabel="Дата окончания"
+              size="sm"
+              variant="flat"
+            />
+          </div>
         </div>
       )}
       
