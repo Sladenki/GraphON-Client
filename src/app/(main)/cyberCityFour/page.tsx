@@ -101,6 +101,8 @@ export default function CyberCityFour() {
   
   // Состояние для выбранного события (для popup)
   const [selectedEvent, setSelectedEvent] = useState<CityEvent | null>(null);
+  // Отслеживаем откуда был открыт EventPopup (для навигации назад)
+  const [eventOpenedFromList, setEventOpenedFromList] = useState(false);
   
   // Преобразование mockEvents в GeoJSON для WebGL-слоя
   const eventGeoJSON = useMemo(() => ({
@@ -139,6 +141,7 @@ export default function CyberCityFour() {
       const clickedEvent = mockEvents.find(ev => ev.id === eventId);
       if (clickedEvent) {
         setSelectedEvent(clickedEvent);
+        setEventOpenedFromList(false); // Открыто с карты
       }
     } else {
       setSelectedEvent(null);
@@ -375,6 +378,20 @@ export default function CyberCityFour() {
   const handleListClose = useCallback(() => {
     setIsListOpen(false);
   }, []);
+
+  // Обработчик выбора события из списка
+  const handleEventSelectFromList = useCallback((event: CityEvent) => {
+    setSelectedEvent(event);
+    setEventOpenedFromList(true); // Открыто из списка
+    setIsListOpen(false); // Закрываем список
+  }, []);
+
+  // Обработчик возврата к списку из EventPopup
+  const handleBackToList = useCallback(() => {
+    setSelectedEvent(null);
+    setEventOpenedFromList(false);
+    setIsListOpen(true); // Открываем список обратно
+  }, []);
   
   // Приближение камеры к выбранному событию
   useEffect(() => {
@@ -518,15 +535,20 @@ export default function CyberCityFour() {
             isOpen={isListOpen}
             onClose={handleListClose}
             events={mockEvents}
-            onEventClick={setSelectedEvent}
+            onEventClick={handleEventSelectFromList}
           />
           
           {/* Pop-up события */}
           <EventPopup
             event={selectedEvent}
             isOpen={!!selectedEvent}
-            onClose={() => setSelectedEvent(null)}
+            onClose={() => {
+              setSelectedEvent(null);
+              setEventOpenedFromList(false);
+            }}
             isLight={isLight}
+            showBackButton={eventOpenedFromList}
+            onBack={handleBackToList}
           />
         </div>
       </div>

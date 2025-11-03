@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Calendar, Users, Clock, Navigation } from "lucide-react";
+import { MapPin, Calendar, Users, Clock, Navigation, ArrowLeft } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import ActionButton from "@/components/ui/ActionButton";
 import styles from "./EventPopup.module.scss";
@@ -11,9 +11,18 @@ interface EventPopupProps {
   isOpen: boolean;
   onClose: () => void;
   isLight?: boolean;
+  showBackButton?: boolean;
+  onBack?: () => void;
 }
 
-export default function EventPopup({ event, isOpen, onClose, isLight = false }: EventPopupProps) {
+export default function EventPopup({ 
+  event, 
+  isOpen, 
+  onClose, 
+  isLight = false,
+  showBackButton = false,
+  onBack 
+}: EventPopupProps) {
   // Функция открытия маршрута в Яндекс.Картах
   const openInYandexMaps = () => {
     if (!event) return;
@@ -25,13 +34,24 @@ export default function EventPopup({ event, isOpen, onClose, isLight = false }: 
 
   // Фиксированная кнопка внизу
   const footer = event ? (
-    <ActionButton
-      label="Показать в Яндекс Картах"
-      icon={<Navigation size={18} />}
-      variant="primary"
-      onClick={openInYandexMaps}
-      className={styles.yandexMapsButton}
-    />
+    <div className={styles.footerButtons}>
+      {showBackButton && onBack && (
+        <ActionButton
+          label="К списку"
+          icon={<ArrowLeft size={18} />}
+          variant="info"
+          onClick={onBack}
+          className={styles.backButton}
+        />
+      )}
+      <ActionButton
+        label="Показать в Яндекс Картах"
+        icon={<Navigation size={18} />}
+        variant="primary"
+        onClick={openInYandexMaps}
+        className={styles.yandexMapsButton}
+      />
+    </div>
   ) : null;
 
   return (

@@ -68,9 +68,31 @@
   margin: 0;
 }
 
-/* Yandex Maps Button - позиционирование */
-.yandexMapsButton {
+/* Footer Buttons Container */
+.footerButtons {
+  display: flex;
+  gap: 12px;
   width: 100%;
+}
+
+.backButton {
+  flex: 0 0 auto;
+  min-width: 120px;
+}
+
+.yandexMapsButton {
+  flex: 1;
+}
+
+/* Mobile adaptations for buttons */
+@media (max-width: 480px) {
+  .footerButtons {
+    gap: 8px;
+  }
+  
+  .backButton {
+    min-width: 100px;
+  }
 }
 
 /* Mobile Adaptations */

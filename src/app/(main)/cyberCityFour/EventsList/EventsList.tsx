@@ -45,7 +45,7 @@ export default function EventsList({ isOpen, onClose, events, onEventClick }: Ev
 
   const handleEventClick = (event: CityEvent) => {
     onEventClick(event);
-    onClose();
+    // Не вызываем onClose() здесь - пусть родитель управляет навигацией
   };
 
   return (
