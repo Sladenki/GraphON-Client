@@ -7,11 +7,17 @@ export type FillType = "admin" | "water" | "park" | "land";
 
 export const COLORS = {
   light: {
-    major: "#5C7CFA", // accent for major roads
-    secondary: "#A6B2C0", // soft roads
-    minor: "#BCC6D0", // softer minor roads
-    water: "#BBD6EC", // cold blue water
-    waterOutline: "#9EC3E3", // slightly darker than fill
+    motorway: "#ff0080", // яркий розовый неон для крупных дорог
+    highway: "#ff0080", // яркий розовый неон
+    primary: "#00d4ff", // яркий голубой неон
+    main: "#00d4ff", // яркий голубой неон
+    secondary: "#a855f7", // фиолетовый неон
+    street: "#a855f7", // фиолетовый неон
+    road: "#a855f7", // фиолетовый неон
+    minor: "#10b981", // зеленый неон для мелких дорог
+    major: "#ff0080", // alias для совместимости
+    water: "#BBD6EC", // холодная голубая вода
+    waterOutline: "#9EC3E3", // чуть темнее заливки
     park: "#a8c29a",
     parkOutline: "#7ba07a",
     boundary: "#9AA9BA"
@@ -38,7 +44,8 @@ export const COLORS = {
 export const getLayerColor = (id: string, isLight: boolean) => {
   const s = id.toLowerCase();
   if (isLight) {
-    if (s.includes("motorway") || s.includes("highway") || s.includes("primary") || s.includes("main")) return COLORS.light.major;
+    if (s.includes("motorway") || s.includes("highway")) return COLORS.light.motorway;
+    if (s.includes("primary") || s.includes("main")) return COLORS.light.primary;
     if (s.includes("secondary") || s.includes("street") || s.includes("road")) return COLORS.light.secondary;
     return COLORS.light.minor;
   }
@@ -52,19 +59,19 @@ export const getLayerColor = (id: string, isLight: boolean) => {
 
 export const ROAD_STYLES = {
   major: {
-    opacity: { light: [0.5, 0.7, 0.85, 0.95], dark: [0.45, 0.65, 0.85, 1.0] },
+    opacity: { light: [0.7, 0.85, 0.95, 1.0], dark: [0.45, 0.65, 0.85, 1.0] },
     width: [1.0, 2.0, 3.2, 5.0],
-    blur: { light: 0.15, dark: 0.4 }
+    blur: { light: 0.5, dark: 0.4 } // Увеличен blur для неона в светлой теме
   },
   secondary: {
-    opacity: { light: [0.25, 0.35, 0.45, 0.55], dark: [0.20, 0.30, 0.45, 0.60] },
+    opacity: { light: [0.4, 0.5, 0.6, 0.7], dark: [0.20, 0.30, 0.45, 0.60] },
     width: [0.3, 0.6, 1.0, 1.6],
-    blur: { light: 0.1, dark: 0.2 }
+    blur: { light: 0.3, dark: 0.2 } // Увеличен blur для неона
   },
   minor: {
-    opacity: { light: [0.12, 0.18, 0.25, 0.30], dark: [0.10, 0.15, 0.22, 0.30] },
+    opacity: { light: [0.2, 0.3, 0.4, 0.5], dark: [0.10, 0.15, 0.22, 0.30] },
     width: [0.2, 0.4, 0.6, 1.0],
-    blur: { light: 0.05, dark: 0.1 }
+    blur: { light: 0.2, dark: 0.1 } // Увеличен blur для неона
   }
 };
 
@@ -93,23 +100,23 @@ export const FILL_STYLES: any = {
 
 export const HEAVY_ROAD_STYLES = {
   major: {
-    opacity: { light: 0.9, dark: 1.0 },
+    opacity: { light: 1.0, dark: 1.0 },
     width: [3.0, 5.0, 7.0, 10.0],
-    blur: { light: 0.3, dark: 0.6 }
+    blur: { light: 0.8, dark: 0.6 } // Сильный blur для неонового свечения
   },
   secondary: {
-    opacity: { light: 0.4, dark: 0.5 },
+    opacity: { light: 0.6, dark: 0.5 },
     width: [0.5, 1.0, 1.5, 2.0],
-    blur: { light: 0.1, dark: 0.2 }
+    blur: { light: 0.4, dark: 0.2 } // Увеличен blur
   },
   minor: {
-    opacity: { light: 0.15, dark: 0.2 },
+    opacity: { light: 0.3, dark: 0.2 },
     width: [0.2, 0.3, 0.5, 0.8],
-    blur: { light: 0.05, dark: 0.1 }
+    blur: { light: 0.2, dark: 0.1 } // Увеличен blur
   },
   default: {
-    opacity: { light: 0.6, dark: 0.7 },
+    opacity: { light: 0.8, dark: 0.7 },
     width: [1.0, 1.5, 2.0, 3.0],
-    blur: { light: 0.1, dark: 0.2 }
+    blur: { light: 0.4, dark: 0.2 } // Увеличен blur
   }
 };
