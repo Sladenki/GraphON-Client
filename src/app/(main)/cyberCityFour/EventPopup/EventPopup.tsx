@@ -1,10 +1,10 @@
 "use client";
 
-import { MapPin, Calendar, Users, Clock, Navigation, ArrowLeft } from "lucide-react";
+import { MapPin, Calendar, Users, Clock, Navigation, ArrowLeft, Music, Image as ImageIcon, GraduationCap, Sparkles } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import ActionButton from "@/components/ui/ActionButton";
 import styles from "./EventPopup.module.scss";
-import type { CityEvent } from "../mockEvents";
+import type { CityEvent, EventCategory } from "../mockEvents";
 
 interface EventPopupProps {
   event: CityEvent | null;
@@ -23,6 +23,36 @@ export default function EventPopup({
   showBackButton = false,
   onBack 
 }: EventPopupProps) {
+  // Получение иконки по категории
+  const getCategoryIcon = (category: EventCategory, size = 18) => {
+    switch (category) {
+      case 'concert':
+        return <Music size={size} />;
+      case 'exhibit':
+        return <ImageIcon size={size} />;
+      case 'lecture':
+        return <GraduationCap size={size} />;
+      case 'festival':
+        return <Sparkles size={size} />;
+      case 'meetup':
+        return <Users size={size} />;
+      default:
+        return <MapPin size={size} />;
+    }
+  };
+
+  // Получение цвета по категории
+  const getCategoryColor = (category: EventCategory) => {
+    const colors: Record<EventCategory, string> = {
+      concert: '#8b5cf6',
+      exhibit: '#06b6d4',
+      lecture: '#22c55e',
+      festival: '#ec4899',
+      meetup: '#fb923c',
+    };
+    return colors[category];
+  };
+
   // Функция открытия маршрута в Яндекс.Картах
   const openInYandexMaps = () => {
     if (!event) return;
@@ -63,51 +93,77 @@ export default function EventPopup({
     >
       {event && (
         <>
+          {/* Декоративные фоновые иконки */}
+          <div className={styles.backgroundIcons}>
+            <div 
+              className={styles.bgIcon}
+              style={{ color: getCategoryColor(event.category) }}
+            >
+              {getCategoryIcon(event.category, 120)}
+            </div>
+            <div 
+              className={styles.bgIconSecondary}
+              style={{ color: getCategoryColor(event.category) }}
+            >
+              {getCategoryIcon(event.category, 80)}
+            </div>
+            <div 
+              className={styles.bgIconTertiary}
+              style={{ color: getCategoryColor(event.category) }}
+            >
+              {getCategoryIcon(event.category, 60)}
+            </div>
+          </div>
+
           <div className={styles.eventInfo}>
+            {/* Место */}
             <div className={styles.infoItem}>
-              <MapPin className={styles.infoIcon} size={18} />
-              <div className={styles.infoContent}>
-                <div className={styles.infoLabel}>Место</div>
-                <div className={styles.infoValue}>{event.place}</div>
+              <div className={styles.iconWrapper}>
+                <MapPin size={16} />
               </div>
+              <div className={styles.infoValue}>{event.place}</div>
             </div>
 
-            <div className={styles.infoItem}>
-              <Calendar className={styles.infoIcon} size={18} />
-              <div className={styles.infoContent}>
-                <div className={styles.infoLabel}>Дата</div>
+            {/* Дата и время в одной строке */}
+            <div className={styles.infoRow}>
+              <div className={styles.infoItem}>
+                <div className={styles.iconWrapper}>
+                  <Calendar size={16} />
+                </div>
                 <div className={styles.infoValue}>
                   {event.isDateTbd ? "Дата уточняется" : event.eventDate}
                 </div>
               </div>
-            </div>
 
-            {event.timeFrom && event.timeTo && (
-              <div className={styles.infoItem}>
-                <Clock className={styles.infoIcon} size={18} />
-                <div className={styles.infoContent}>
-                  <div className={styles.infoLabel}>Время</div>
+              {event.timeFrom && event.timeTo && (
+                <div className={styles.infoItem}>
+                  <div className={styles.iconWrapper}>
+                    <Clock size={16} />
+                  </div>
                   <div className={styles.infoValue}>
                     {event.timeFrom} – {event.timeTo}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
+            {/* Участники */}
             {event.regedUsers > 0 && (
               <div className={styles.infoItem}>
-                <Users className={styles.infoIcon} size={18} />
-                <div className={styles.infoContent}>
-                  <div className={styles.infoLabel}>Участники</div>
-                  <div className={styles.infoValue}>{event.regedUsers} человек</div>
+                <div className={styles.iconWrapper}>
+                  <Users size={16} />
+                </div>
+                <div className={styles.infoValue}>
+                  <span className={styles.badge}>{event.regedUsers}</span>
+                  {" "}участников
                 </div>
               </div>
             )}
           </div>
 
+          {/* Описание */}
           {event.description && (
             <div className={styles.eventDescription}>
-              <div className={styles.descriptionTitle}>Описание</div>
               <p className={styles.descriptionText}>{event.description}</p>
             </div>
           )}
