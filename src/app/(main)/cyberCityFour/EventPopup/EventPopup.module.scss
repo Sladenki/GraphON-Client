@@ -153,17 +153,101 @@
 /* Footer Buttons Container */
 .footerButtons {
   display: flex;
+  align-items: center;
   gap: 12px;
   width: 100%;
 }
 
 .backButton {
-  flex: 0 0 auto;
-  min-width: 120px;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #6a57e8 0%, #8b7aef 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+  
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+  
+  svg {
+    position: relative;
+    z-index: 1;
+  }
 }
 
-.yandexMapsButton {
+.registerButton {
   flex: 1;
+}
+
+.mapButton {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #6a57e8 0%, #8b7aef 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+  
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+  
+  svg {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 /* Mobile adaptations for buttons */
@@ -173,7 +257,23 @@
   }
   
   .backButton {
-    min-width: 100px;
+    width: 44px;
+    height: 44px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  
+  .mapButton {
+    width: 44px;
+    height: 44px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 }
 
@@ -262,6 +362,34 @@
       transform: scale(0.95);
     }
   }
+  
+  .backButton {
+    &:hover {
+      transform: none;
+      
+      &::before {
+        opacity: 0;
+      }
+    }
+    
+    &:active {
+      transform: scale(0.92);
+    }
+  }
+  
+  .mapButton {
+    &:hover {
+      transform: none;
+      
+      &::before {
+        opacity: 0;
+      }
+    }
+    
+    &:active {
+      transform: scale(0.92);
+    }
+  }
 }
 
 /* Dark theme adaptations */
@@ -320,5 +448,21 @@
   
   .descriptionText {
     color: #d1d5db;
+  }
+  
+  .backButton {
+    background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+    
+    svg {
+      color: #18181b;
+    }
+  }
+  
+  .mapButton {
+    background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+    
+    svg {
+      color: #18181b;
+    }
   }
 }

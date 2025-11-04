@@ -66,21 +66,33 @@ export default function EventPopup({
   const footer = event ? (
     <div className={styles.footerButtons}>
       {showBackButton && onBack && (
-        <ActionButton
-          label="К списку"
-          icon={<ArrowLeft size={18} />}
-          variant="info"
-          onClick={onBack}
+        <button
           className={styles.backButton}
-        />
+          onClick={onBack}
+          aria-label="Назад к списку"
+          title="Назад к списку"
+        >
+          <ArrowLeft size={20} />
+        </button>
       )}
       <ActionButton
-        label="Показать в Яндекс Картах"
-        icon={<Navigation size={18} />}
+        label="Записаться"
+        icon={<Calendar size={18} />}
         variant="primary"
-        onClick={openInYandexMaps}
-        className={styles.yandexMapsButton}
+        onClick={() => {
+          // TODO: Implement registration logic
+          console.log('Register for event:', event.id);
+        }}
+        className={styles.registerButton}
       />
+      <button
+        className={styles.mapButton}
+        onClick={openInYandexMaps}
+        aria-label="Открыть в Яндекс Картах"
+        title="Открыть в Яндекс Картах"
+      >
+        <MapPin size={20} />
+      </button>
     </div>
   ) : null;
 
