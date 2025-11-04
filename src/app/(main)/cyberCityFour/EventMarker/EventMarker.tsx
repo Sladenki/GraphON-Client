@@ -76,11 +76,83 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
   useEventIcons(mapRef, isLight);
 
   return (
-    <Source id="events" type="geojson" data={eventGeoJSON}>
-      {/* Внешнее пульсирующее кольцо (самое большое) */}
+    <Source 
+      id="events" 
+      type="geojson" 
+      data={eventGeoJSON}
+      cluster={true}
+      clusterMaxZoom={14}
+      clusterRadius={50}
+    >
+      {/* Кластеры - внешнее свечение */}
+      <Layer
+        id="clusters-glow"
+        type="circle"
+        filter={["has", "point_count"]}
+        paint={{
+          "circle-radius": [
+            "step",
+            ["get", "point_count"],
+            25, // 1-10 событий
+            10, 35, // 10-50 событий
+            50, 45, // 50+ событий
+          ],
+          "circle-color": "#6a57e8",
+          "circle-opacity": 0.2,
+          "circle-blur": 1,
+        }}
+      />
+
+      {/* Кластеры - основной круг */}
+      <Layer
+        id="clusters"
+        type="circle"
+        filter={["has", "point_count"]}
+        paint={{
+          "circle-radius": [
+            "step",
+            ["get", "point_count"],
+            20, // 1-10 событий
+            10, 28, // 10-50 событий
+            50, 36, // 50+ событий
+          ],
+          "circle-color": [
+            "step",
+            ["get", "point_count"],
+            "#6a57e8", // 1-10 событий
+            10, "#8b7aef", // 10-50 событий
+            50, "#a78bfa", // 50+ событий
+          ],
+          "circle-opacity": 0.9,
+          "circle-stroke-width": 3,
+          "circle-stroke-color": "#ffffff",
+          "circle-stroke-opacity": 0.8,
+        }}
+      />
+
+      {/* Кластеры - число событий */}
+      <Layer
+        id="cluster-count"
+        type="symbol"
+        filter={["has", "point_count"]}
+        layout={{
+          "text-field": ["get", "point_count_abbreviated"],
+          "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+          "text-size": 14,
+          "text-allow-overlap": true,
+        }}
+        paint={{
+          "text-color": "#ffffff",
+          "text-halo-color": "rgba(0, 0, 0, 0.2)",
+          "text-halo-width": 1,
+        }}
+      />
+
+      {/* Некластеризованные точки - внешнее пульсирующее кольцо (самое большое) */}
       <Layer
         id="event-pulse-outer"
         type="circle"
+        filter={["!", ["has", "point_count"]]}
         paint={{
           "circle-radius": [
             "interpolate",
@@ -105,10 +177,11 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
         }}
       />
 
-      {/* Второй слой свечения (средний) */}
+      {/* Некластеризованные точки - второй слой свечения (средний) */}
       <Layer
         id="event-glow-middle"
         type="circle"
+        filter={["!", ["has", "point_count"]]}
         paint={{
           "circle-radius": [
             "interpolate",
@@ -133,11 +206,12 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
         }}
       />
 
-      {/* Основное свечение (близкое к маркеру) */}
+      {/* Некластеризованные точки - основное свечение (близкое к маркеру) */}
       {!isLight && (
         <Layer
           id="event-glow"
           type="circle"
+          filter={["!", ["has", "point_count"]]}
           paint={{
             "circle-radius": [
               "interpolate",
@@ -163,10 +237,11 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
         />
       )}
 
-      {/* Цветная обводка вокруг иконки */}
+      {/* Некластеризованные точки - цветная обводка вокруг иконки */}
       <Layer
         id="event-border-circle"
         type="circle"
+        filter={["!", ["has", "point_count"]]}
         paint={{
           "circle-radius": [
             "interpolate",
@@ -200,10 +275,11 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
         }}
       />
 
-      {/* SVG Иконки категорий (рендерятся ПОВЕРХ белого круга) */}
+      {/* Некластеризованные точки - SVG Иконки категорий (рендерятся ПОВЕРХ белого круга) */}
       <Layer
         id="event-icons"
         type="symbol"
+        filter={["!", ["has", "point_count"]]}
         layout={{
           "icon-image": [
             "match",
@@ -231,10 +307,11 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
         }}
       />
 
-      {/* Интерактивный слой для кликов (невидимый круг) */}
+      {/* Некластеризованные точки - интерактивный слой для кликов (невидимый круг) */}
       <Layer
         id="event-points"
         type="circle"
+        filter={["!", ["has", "point_count"]]}
         paint={{
           "circle-radius": [
             "interpolate",
@@ -249,10 +326,11 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
         }}
       />
 
-      {/* Текст с названием события */}
+      {/* Некластеризованные точки - текст с названием события */}
       <Layer
         id="event-labels"
         type="symbol"
+        filter={["!", ["has", "point_count"]]}
         layout={{
           "text-field": ["get", "name"],
           "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],

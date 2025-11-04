@@ -150,6 +150,28 @@ export default function CyberCityFour() {
     }
     
     const feature = event.features[0];
+    
+    // Обработка клика по кластеру - увеличиваем масштаб
+    if (feature.layer.id === 'clusters') {
+      const clusterId = feature.properties.cluster_id;
+      const source = mapRef.getSource('events');
+      
+      if (source && source.getClusterExpansionZoom) {
+        source.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
+          if (err) return;
+          
+          mapRef.easeTo({
+            center: feature.geometry.coordinates,
+            zoom: zoom,
+            duration: 500
+          });
+        });
+      }
+      setSelectedEvent(null);
+      return;
+    }
+    
+    // Обработка клика по отдельному событию
     if (feature.layer.id === 'event-points') {
       const eventId = feature.properties.id;
       const clickedEvent = mockEvents.find(ev => ev.id === eventId);
@@ -489,7 +511,7 @@ export default function CyberCityFour() {
             maxBounds={[[20.36, 54.62], [20.62, 54.78]]}
             onLoad={handleMapLoad}
             onClick={handleMapClick}
-            interactiveLayerIds={['event-points']}
+            interactiveLayerIds={['event-points', 'clusters']}
             cursor="pointer"
           >
             {/* Маркеры событий с SVG иконками */}
