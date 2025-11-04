@@ -483,7 +483,7 @@ export default function CyberCityFour() {
   }, [mapRef, mapLoaded, isLight, baseStyleUrl, updateRoadStyles, applyFillStyles, applyLineStyles]);
 
   return (
-    <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`}>
+    <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`} data-swipe-enabled="false">
       {/* Индикатор загрузки */}
       {!mapLoaded && (
         <div className={styles.loadingOverlay}>

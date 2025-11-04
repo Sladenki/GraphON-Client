@@ -44,8 +44,8 @@ export const useMobileDrawerOptimization = ({
 
   // Функция для проверки, можно ли использовать свайп
   const canUseSwipe = useCallback(() => {
-    // Отключаем свайп на странице cyberCityFour
-    if (pathname === '/cyberCityFour') {
+    // Отключаем свайп на странице cyberCityFour (проверяем разные варианты pathname)
+    if (pathname === '/cyberCityFour' || pathname?.includes('cyberCityFour')) {
       return false;
     }
     
@@ -70,8 +70,8 @@ export const useMobileDrawerOptimization = ({
 
   // Обработчик начала касания
   const handleTouchStart = useCallback((event: TouchEvent) => {
-    // ВАЖНО: Блокируем свайп на странице cyberCityFour
-    if (pathname === '/cyberCityFour') {
+    // ВАЖНО: Блокируем свайп на странице cyberCityFour (проверяем разные варианты pathname)
+    if (pathname === '/cyberCityFour' || pathname?.includes('cyberCityFour')) {
       touchStartRef.current = null;
       touchMoveRef.current = null;
       return;
@@ -86,6 +86,14 @@ export const useMobileDrawerOptimization = ({
 
     // Проверяем, происходит ли событие внутри области карточек
     const target = event.target as HTMLElement;
+    
+    // Проверяем, явно запрещен ли свайп в контейнере
+    const isSwipeDisabled = target.closest('[data-swipe-enabled="false"]');
+    if (isSwipeDisabled) {
+      touchStartRef.current = null;
+      touchMoveRef.current = null;
+      return;
+    }
     
     // Проверяем, разрешен ли свайп в этом контейнере
     // НО только если canUseSwipe() разрешает свайп глобально
@@ -133,8 +141,8 @@ export const useMobileDrawerOptimization = ({
 
   // Обработчик движения касания
   const handleTouchMove = useCallback((event: TouchEvent) => {
-    // ВАЖНО: Блокируем свайп на странице cyberCityFour
-    if (pathname === '/cyberCityFour') {
+    // ВАЖНО: Блокируем свайп на странице cyberCityFour (проверяем разные варианты pathname)
+    if (pathname === '/cyberCityFour' || pathname?.includes('cyberCityFour')) {
       return;
     }
     
@@ -145,6 +153,12 @@ export const useMobileDrawerOptimization = ({
     
     // Проверяем, происходит ли событие внутри области карточек или других скроллируемых контейнеров
     const target = event.target as HTMLElement;
+    
+    // Проверяем, явно запрещен ли свайп в контейнере
+    const isSwipeDisabled = target.closest('[data-swipe-enabled="false"]');
+    if (isSwipeDisabled) {
+      return;
+    }
     
     // Проверяем, разрешен ли свайп в этом контейнере
     // НО только если canUseSwipe() разрешает свайп глобально
@@ -210,8 +224,8 @@ export const useMobileDrawerOptimization = ({
 
   // Обработчик окончания касания
   const handleTouchEnd = useCallback(() => {
-    // ВАЖНО: Блокируем свайп на странице cyberCityFour
-    if (pathname === '/cyberCityFour') {
+    // ВАЖНО: Блокируем свайп на странице cyberCityFour (проверяем разные варианты pathname)
+    if (pathname === '/cyberCityFour' || pathname?.includes('cyberCityFour')) {
       touchStartRef.current = null;
       touchMoveRef.current = null;
       return;
