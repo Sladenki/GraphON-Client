@@ -39,7 +39,7 @@ export const useEventIcons = (mapRef: any, isLight: boolean) => {
         
         "icon-business": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="10" width="20" height="16" rx="2" stroke="${iconColor}" stroke-width="2.5" fill="none"/><path d="M12 10V8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round"/><line x1="6" y1="16" x2="26" y2="16" stroke="${iconColor}" stroke-width="2.5"/></svg>`,
         
-        "icon-sport": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16 8l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z" fill="${iconColor}"/><circle cx="16" cy="16" r="11" stroke="${iconColor}" stroke-width="2" fill="none"/></svg>`,
+        "icon-sport": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><text x="16" y="22" font-size="20" text-anchor="middle" fill="${iconColor}">🏆</text></svg>`,
         
         "icon-humor": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="10" stroke="${iconColor}" stroke-width="2.5" fill="none"/><circle cx="12" cy="14" r="1.5" fill="${iconColor}"/><circle cx="20" cy="14" r="1.5" fill="${iconColor}"/><path d="M11 19c1 2 3 3 5 3s4-1 5-3" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round"/></svg>`,
         

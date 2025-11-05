@@ -16,7 +16,7 @@ import {
   ROAD_STYLES, 
   FILL_STYLES, 
   HEAVY_ROAD_STYLES 
-} from "./mapStyles";
+} from "./constants/mapStyles";
 
 // Динамическая загрузка тяжелых компонентов
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
