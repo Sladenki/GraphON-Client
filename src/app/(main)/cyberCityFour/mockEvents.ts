@@ -1,4 +1,4 @@
-export type EventCategory = "concert" | "exhibit" | "lecture" | "festival" | "meetup";
+export type EventCategory = "music" | "art" | "education" | "business" | "sport" | "humor" | "gastro" | "family" | "city";
 
 export interface CityEvent {
   id: string;
@@ -17,7 +17,7 @@ export interface CityEvent {
 
 // ===== ГЕНЕРАТОР СЛУЧАЙНЫХ МЕРОПРИЯТИЙ =====
 
-const categories: EventCategory[] = ["concert", "exhibit", "lecture", "festival", "meetup"];
+const categories: EventCategory[] = ["music", "art", "education", "business", "sport", "humor", "gastro", "family", "city"];
 
 const places = [
   "Кафедральный собор",
@@ -33,40 +33,68 @@ const places = [
 ];
 
 const namesByCategory: Record<EventCategory, string[]> = {
-  concert: [
+  music: [
     "Концерт камерной музыки",
     "Джазовый вечер",
     "Органная симфония",
     "Рок-фест Балтика",
     "Музыкальная ночь",
   ],
-  exhibit: [
+  art: [
     "Выставка современного искусства",
     "Фотовыставка: Город и свет",
     "Инсталляции будущего",
     "Дизайн XXI века",
     "Скульптуры Калининграда",
   ],
-  lecture: [
+  education: [
     "Арт-лекция: Кандинский",
     "Лекция по урбанистике",
     "Наука и культура города",
     "Как работает архитектура",
     "Город без пробок",
   ],
-  festival: [
-    "Фестиваль уличной музыки",
-    "Городской фестиваль еды",
-    "Фестиваль света",
-    "Фестиваль ремёсел",
-    "Фестиваль молодых талантов",
-  ],
-  meetup: [
+  business: [
     "IT-митап",
     "Frontend Meetup",
     "Product Night",
     "AI & Design Talk",
     "Startup Networking",
+  ],
+  sport: [
+    "Городской марафон",
+    "Турнир по футболу",
+    "Йога в парке",
+    "Велозаезд",
+    "Мастер-класс по боксу",
+  ],
+  humor: [
+    "Stand-Up вечер",
+    "Импровизационный театр",
+    "Комедийный концерт",
+    "КВН",
+    "Comedy Battle",
+  ],
+  gastro: [
+    "Фестиваль уличной еды",
+    "Дегустация вин",
+    "Мастер-класс от шефа",
+    "Кулинарный тур",
+    "Вечер крафтового пива",
+  ],
+  family: [
+    "Семейный квест",
+    "Детский праздник",
+    "Мастер-класс для детей",
+    "Семейный пикник",
+    "День открытых дверей",
+  ],
+  city: [
+    "Субботник",
+    "Городской форум",
+    "Встреча с мэром",
+    "Благоустройство парка",
+    "Экскурсия по городу",
   ],
 };
 

@@ -15,11 +15,15 @@ interface EventFilterProps {
 
 export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: EventFilterProps) {
   const [selectedCategories, setSelectedCategories] = useState<Record<string, boolean>>({
-    concert: false,
-    exhibit: false,
-    lecture: false,
-    festival: false,
-    meetup: false,
+    music: false,
+    art: false,
+    education: false,
+    business: false,
+    sport: false,
+    humor: false,
+    gastro: false,
+    family: false,
+    city: false,
   });
 
   const [datePreset, setDatePreset] = useState<"today" | "tomorrow" | "weekend" | "custom" | null>(null);
