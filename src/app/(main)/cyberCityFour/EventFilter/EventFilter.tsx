@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import { Music, Image, GraduationCap, Sparkles, Users } from "lucide-react";
+import { useCallback, useState } from "react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import ActionButton from "@/components/ui/ActionButton";
 import DatePickerField from "@/components/ui/DatePickerField/DatePickerField";
 import styles from "./EventFilter.module.scss";
+import { CATEGORIES } from "../constants/categories";
 
 interface EventFilterProps {
   isOpen: boolean;
@@ -25,14 +25,6 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
   const [datePreset, setDatePreset] = useState<"today" | "tomorrow" | "weekend" | "custom" | null>(null);
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
-
-  const categories = useMemo(() => ([
-    { key: "concert", label: "Концерты", Icon: Music },
-    { key: "exhibit", label: "Выставки", Icon: Image },
-    { key: "lecture", label: "Лекции", Icon: GraduationCap },
-    { key: "festival", label: "Фестивали", Icon: Sparkles },
-    { key: "meetup", label: "Митапы", Icon: Users },
-  ]), []);
 
   const toggleCategory = useCallback((key: string) => {
     setSelectedCategories(prev => ({ ...prev, [key]: !prev[key] }));
@@ -123,7 +115,7 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
       {/* Секция категорий */}
       <div className={styles.sectionTitle}>Что интересует</div>
       <div className={styles.categoriesGrid}>
-        {categories.map(({ key, label, Icon }) => (
+        {CATEGORIES.map(({ key, label, Icon }) => (
           <button
             key={key}
             type="button"

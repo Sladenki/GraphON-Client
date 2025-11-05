@@ -1,10 +1,11 @@
 "use client";
 
-import { MapPin, Calendar, Users, Clock, Navigation, ArrowLeft, Music, Image as ImageIcon, GraduationCap, Sparkles } from "lucide-react";
+import { MapPin, Calendar, Users, Clock, ArrowLeft } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import ActionButton from "@/components/ui/ActionButton";
 import styles from "./EventPopup.module.scss";
-import type { CityEvent, EventCategory } from "../mockEvents";
+import type { CityEvent } from "../mockEvents";
+import { getCategoryIcon, getCategoryColor } from "../constants/categories";
 
 interface EventPopupProps {
   event: CityEvent | null;
@@ -23,35 +24,6 @@ export default function EventPopup({
   showBackButton = false,
   onBack 
 }: EventPopupProps) {
-  // Получение иконки по категории
-  const getCategoryIcon = (category: EventCategory, size = 18) => {
-    switch (category) {
-      case 'concert':
-        return <Music size={size} />;
-      case 'exhibit':
-        return <ImageIcon size={size} />;
-      case 'lecture':
-        return <GraduationCap size={size} />;
-      case 'festival':
-        return <Sparkles size={size} />;
-      case 'meetup':
-        return <Users size={size} />;
-      default:
-        return <MapPin size={size} />;
-    }
-  };
-
-  // Получение цвета по категории
-  const getCategoryColor = (category: EventCategory) => {
-    const colors: Record<EventCategory, string> = {
-      concert: '#8b5cf6',
-      exhibit: '#06b6d4',
-      lecture: '#22c55e',
-      festival: '#ec4899',
-      meetup: '#fb923c',
-    };
-    return colors[category];
-  };
 
   // Функция открытия маршрута в Яндекс.Картах
   const openInYandexMaps = () => {

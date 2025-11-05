@@ -1,9 +1,10 @@
 "use client";
 
-import { Music, Image as ImageIcon, GraduationCap, Sparkles, Users, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import styles from "./EventsList.module.scss";
 import type { CityEvent } from "../mockEvents";
+import { getCategoryIcon, getCategoryColor } from "../constants/categories";
 
 interface EventsListProps {
   isOpen: boolean;
@@ -13,35 +14,6 @@ interface EventsListProps {
 }
 
 export default function EventsList({ isOpen, onClose, events, onEventClick }: EventsListProps) {
-  // Получение иконки по категории
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'concert':
-        return <Music size={18} />;
-      case 'exhibit':
-        return <ImageIcon size={18} />;
-      case 'lecture':
-        return <GraduationCap size={18} />;
-      case 'festival':
-        return <Sparkles size={18} />;
-      case 'meetup':
-        return <Users size={18} />;
-      default:
-        return <MapPin size={18} />;
-    }
-  };
-
-  // Получение цвета по категории
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      concert: '#8b5cf6',
-      exhibit: '#06b6d4',
-      lecture: '#22c55e',
-      festival: '#ec4899',
-      meetup: '#fb923c',
-    };
-    return colors[category] || '#3b82f6';
-  };
 
   const handleEventClick = (event: CityEvent) => {
     onEventClick(event);
