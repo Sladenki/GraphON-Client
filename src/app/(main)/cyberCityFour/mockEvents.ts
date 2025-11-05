@@ -1,18 +1,29 @@
 export type EventCategory = "music" | "art" | "education" | "business" | "sport" | "humor" | "gastro" | "family" | "city";
 
-export interface CityEvent {
+/**
+ * Интерфейс события из API (БД)
+ * ⚠️ НЕ содержит координат! Только адрес.
+ */
+export interface CityEventAPI {
   id: string;
   name: string;
-  place: string;
+  place: string; // АДРЕС из БД: "ул. Профессора Баранова 43 (актовый зал)"
   description: string;
   category: EventCategory;
-  lat: number;
-  lng: number;
-  eventDate: string; // ISO date
+  eventDate: string; // ISO date: "2025-11-05"
   isDateTbd: boolean;
-  timeFrom?: string;
-  timeTo?: string;
+  timeFrom?: string; // "19:00"
+  timeTo?: string; // "21:00"
   regedUsers: number;
+}
+
+/**
+ * Интерфейс события с координатами (для клиента)
+ * Используется после геокодирования адреса
+ */
+export interface CityEvent extends CityEventAPI {
+  lat: number; // Широта (получена через геокодирование)
+  lng: number; // Долгота (получена через геокодирование)
 }
 
 // ===== ГЕНЕРАТОР СЛУЧАЙНЫХ МЕРОПРИЯТИЙ =====
@@ -20,16 +31,16 @@ export interface CityEvent {
 const categories: EventCategory[] = ["music", "art", "education", "business", "sport", "humor", "gastro", "family", "city"];
 
 const places = [
-  "Кафедральный собор",
-  "Дом искусств",
-  "Музей изобразительных искусств",
-  "Центральная площадь",
-  "Набережная",
-  "Kaliningrad Tech",
-  "КГТУ",
-  "Галерея на Ленинском",
-  "Парк Юности",
-  "Драмтеатр",
+  "ул. Канта 1 (Кафедральный собор)",
+  "пр. Московский 60-62 (Дом искусств)",
+  "пр. Мира 83 (Музей изобразительных искусств)",
+  "пл. Победы (Центральная площадь)",
+  "ул. Портовая (Набережная)",
+  "ул. Профессора Баранова 43 (Kaliningrad Tech)",
+  "Советский пр. 1 (КГТУ)",
+  "пр. Ленинский 24 (Галерея)",
+  "ул. Тельмана 3 (Парк Юности)",
+  "пр. Мира 4 (Драмтеатр)",
 ];
 
 const namesByCategory: Record<EventCategory, string[]> = {
