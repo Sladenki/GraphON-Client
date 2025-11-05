@@ -39,7 +39,7 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
       clusterMaxZoom={14}
       clusterRadius={50}
     >
-      {/* Кластеры - внешнее свечение */}
+      {/* Кластеры - внешнее свечение (усиленное) */}
       <Layer
         id="clusters-glow"
         type="circle"
@@ -48,17 +48,17 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
           "circle-radius": [
             "step",
             ["get", "point_count"],
-            25, // 1-10 событий
-            10, 35, // 10-50 событий
-            50, 45, // 50+ событий
+            28, // 1-10 событий
+            10, 38, // 10-50 событий
+            50, 48, // 50+ событий
           ],
           "circle-color": "#6a57e8",
-          "circle-opacity": 0.2,
-          "circle-blur": 1,
+          "circle-opacity": isLight ? 0.3 : 0.5,
+          "circle-blur": 2,
         }}
       />
 
-      {/* Кластеры - основной круг */}
+      {/* Кластеры - основной круг с градиентом */}
       <Layer
         id="clusters"
         type="circle"
@@ -67,21 +67,27 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
           "circle-radius": [
             "step",
             ["get", "point_count"],
-            20, // 1-10 событий
-            10, 28, // 10-50 событий
-            50, 36, // 50+ событий
+            24, // 1-10 событий (увеличено)
+            10, 32, // 10-50 событий
+            50, 40, // 50+ событий
           ],
           "circle-color": [
             "step",
             ["get", "point_count"],
             "#6a57e8", // 1-10 событий
-            10, "#8b7aef", // 10-50 событий
-            50, "#a78bfa", // 50+ событий
+            10, "#7c68eb", // 10-50 событий (промежуточный)
+            50, "#8b7aef", // 50+ событий
           ],
-          "circle-opacity": 0.9,
-          "circle-stroke-width": 3,
+          "circle-opacity": 1,
+          "circle-stroke-width": [
+            "step",
+            ["get", "point_count"],
+            4, // 1-10 событий
+            10, 4.5, // 10-50 событий
+            50, 5, // 50+ событий
+          ],
           "circle-stroke-color": "#ffffff",
-          "circle-stroke-opacity": 0.8,
+          "circle-stroke-opacity": 1,
         }}
       />
 
@@ -93,17 +99,24 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
         layout={{
           "text-field": ["get", "point_count_abbreviated"],
           "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
-          "text-size": 14,
+          "text-size": [
+            "step",
+            ["get", "point_count"],
+            16, // 1-10 событий (увеличено)
+            10, 17, // 10-50 событий
+            50, 18, // 50+ событий
+          ],
           "text-allow-overlap": true,
         }}
         paint={{
           "text-color": "#ffffff",
-          "text-halo-color": "rgba(0, 0, 0, 0.2)",
-          "text-halo-width": 1,
+          "text-halo-color": "rgba(0, 0, 0, 0.3)",
+          "text-halo-width": 1.5,
+          "text-halo-blur": 0.5,
         }}
       />
 
-      {/* Некластеризованные точки - внешнее пульсирующее кольцо (самое большое) */}
+      {/* Некластеризованные точки - внешнее пульсирующее кольцо (усиленное) */}
       <Layer
         id="event-pulse-outer"
         type="circle"
@@ -113,9 +126,9 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
             "interpolate",
             ["linear"],
             ["zoom"],
-            10, 20,
-            15, 28,
-            18, 36
+            10, 24,
+            15, 32,
+            18, 42
           ],
           "circle-color": [
             "match",
@@ -131,12 +144,12 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
             "city", CATEGORY_COLORS.city.pulseGlow,
             CATEGORY_COLORS.default.pulseGlow
           ],
-          "circle-opacity": isLight ? 0.3 : 0.4,
-          "circle-blur": 1,
+          "circle-opacity": isLight ? 0.35 : 0.5,
+          "circle-blur": 2.5,
         }}
       />
 
-      {/* Некластеризованные точки - второй слой свечения (средний) */}
+      {/* Некластеризованные точки - второй слой свечения (насыщенный) */}
       <Layer
         id="event-glow-middle"
         type="circle"
@@ -146,9 +159,9 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
             "interpolate",
             ["linear"],
             ["zoom"],
-            10, 14,
-            15, 20,
-            18, 26
+            10, 16,
+            15, 22,
+            18, 28
           ],
           "circle-color": [
             "match",
@@ -164,12 +177,12 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
             "city", CATEGORY_COLORS.city.glow,
             CATEGORY_COLORS.default.glow
           ],
-          "circle-opacity": isLight ? 0.5 : 0.7,
-          "circle-blur": 1.5,
+          "circle-opacity": isLight ? 0.6 : 0.8,
+          "circle-blur": 2,
         }}
       />
 
-      {/* Некластеризованные точки - основное свечение (близкое к маркеру) */}
+      {/* Некластеризованные точки - интенсивное свечение (только для темной темы) */}
       {!isLight && (
         <Layer
           id="event-glow"
@@ -180,9 +193,9 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
               "interpolate",
               ["linear"],
               ["zoom"],
-              10, 12,
-              15, 17,
-              18, 22
+              10, 14,
+              15, 19,
+              18, 24
             ],
             "circle-color": [
               "match",
@@ -198,13 +211,13 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
               "city", CATEGORY_COLORS.city.glow,
               CATEGORY_COLORS.default.glow
             ],
-            "circle-opacity": 0.8,
-            "circle-blur": 2,
+            "circle-opacity": 0.9,
+            "circle-blur": 2.5,
           }}
         />
       )}
 
-      {/* Некластеризованные точки - цветная обводка вокруг иконки */}
+      {/* Некластеризованные точки - стильный центральный круг */}
       <Layer
         id="event-border-circle"
         type="circle"
@@ -214,19 +227,19 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
             "interpolate",
             ["linear"],
             ["zoom"],
-            10, 11,
-            15, 15,
-            18, 19
+            10, 12,
+            15, 16,
+            18, 20
           ],
-          "circle-color": "#ffffff",
-          "circle-opacity": 0.3,
+          "circle-color": isLight ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0.15)",
+          "circle-opacity": 1,
           "circle-stroke-width": [
             "interpolate",
             ["linear"],
             ["zoom"],
-            10, 3,
-            15, 4,
-            18, 5
+            10, 3.5,
+            15, 4.5,
+            18, 5.5
           ],
           "circle-stroke-color": [
             "match",
@@ -246,7 +259,7 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
         }}
       />
 
-      {/* Некластеризованные точки - SVG Иконки категорий (рендерятся ПОВЕРХ белого круга) */}
+      {/* Некластеризованные точки - SVG Иконки категорий (увеличенные) */}
       <Layer
         id="event-icons"
         type="symbol"
@@ -270,9 +283,9 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
             "interpolate",
             ["linear"],
             ["zoom"],
-            10, 0.5,
-            15, 0.65,
-            18, 0.8
+            10, 0.6,
+            15, 0.75,
+            18, 0.9
           ],
           "icon-allow-overlap": true,
           "icon-ignore-placement": true,
@@ -282,7 +295,7 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
         }}
       />
 
-      {/* Некластеризованные точки - интерактивный слой для кликов (невидимый круг) */}
+      {/* Некластеризованные точки - интерактивный слой для кликов (увеличенный) */}
       <Layer
         id="event-points"
         type="circle"
@@ -292,36 +305,37 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
             "interpolate",
             ["linear"],
             ["zoom"],
-            10, 16,
-            15, 22,
-            18, 28
+            10, 20,
+            15, 26,
+            18, 32
           ],
           "circle-color": "transparent",
           "circle-opacity": 0,
         }}
       />
 
-      {/* Некластеризованные точки - текст с названием события */}
+      {/* Некластеризованные точки - стильные метки */}
       <Layer
         id="event-labels"
         type="symbol"
         filter={["!", ["has", "point_count"]]}
         layout={{
           "text-field": ["get", "name"],
-          "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+          "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
           "text-size": [
             "interpolate",
             ["linear"],
             ["zoom"],
-            10, 10,
-            15, 12,
-            18, 14
+            10, 11,
+            15, 13,
+            18, 15
           ],
           "text-anchor": "top",
-          "text-offset": [0, 2.5],
+          "text-offset": [0, 2.8],
           "text-allow-overlap": false,
           "text-optional": true,
-          "text-max-width": 8,
+          "text-max-width": 10,
+          "text-letter-spacing": 0.02,
         }}
         paint={{
           "text-color": [
@@ -338,9 +352,9 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
             "city", isLight ? CATEGORY_COLORS.city.stroke.light : CATEGORY_COLORS.city.dark,
             isLight ? CATEGORY_COLORS.default.stroke.light : CATEGORY_COLORS.default.dark
           ],
-          "text-halo-color": isLight ? "#ffffff" : "#000000",
-          "text-halo-width": 2.5,
-          "text-halo-blur": 1,
+          "text-halo-color": isLight ? "rgba(255, 255, 255, 0.95)" : "rgba(0, 0, 0, 0.9)",
+          "text-halo-width": 3,
+          "text-halo-blur": 1.5,
           "text-opacity": 1,
         }}
       />
