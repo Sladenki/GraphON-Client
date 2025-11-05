@@ -1,0 +1,261 @@
+/* Контейнер аналитики */
+.analyticsContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Сетка статистических карточек */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+/* Статистическая карточка */
+.statCard {
+  background: var(--color-background-secondary, #f9fafb);
+  border: 1px solid var(--color-border, #e5e7eb);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary, #6a57e8);
+  }
+}
+
+.cardBody {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+}
+
+/* Иконка статистики */
+.statIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6a57e8 0%, #8b7aef 100%);
+  color: white;
+  flex-shrink: 0;
+  
+  &[data-type="dau"] {
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  }
+  
+  &[data-type="wau"] {
+    background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+  }
+  
+  &[data-type="mau"] {
+    background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+  }
+  
+  &[data-type="new"] {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  }
+}
+
+/* Контент статистики */
+.statContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.statLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text, #111827);
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.statValueRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statSubtext {
+  font-size: 12px;
+  color: var(--color-text-tertiary, #9ca3af);
+  margin: 0;
+}
+
+.changeChip {
+  font-weight: 600;
+  font-size: 11px;
+}
+
+/* Разделитель */
+.divider {
+  margin: 8px 0;
+}
+
+/* Секция деталей */
+.detailsSection {
+  padding: 16px 20px;
+  background: var(--color-background-secondary, #f9fafb);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 12px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text, #111827);
+  margin: 0 0 16px 0;
+}
+
+/* Сетка метрик */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.metricItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--color-background, #ffffff);
+  border: 1px solid var(--color-border-light, #f3f4f6);
+  border-radius: 8px;
+  transition: background 0.2s ease;
+  
+  &:hover {
+    background: var(--color-background-hover, #f9fafb);
+  }
+}
+
+.metricLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.metricValue {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-primary, #6a57e8);
+}
+
+/* Состояния загрузки и ошибок */
+.loaderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+}
+
+.loaderText {
+  font-size: 14px;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0;
+}
+
+.errorContainer {
+  padding: 24px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+}
+
+.errorText {
+  font-size: 14px;
+  color: #dc2626;
+  margin: 0;
+  text-align: center;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .statValue {
+    font-size: 24px;
+  }
+  
+  .statIcon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Темная тема */
+[data-theme="dark"] {
+  .statCard {
+    background: #2a2d33;
+    border-color: #3a3d42;
+    
+    &:hover {
+      border-color: #8b7aef;
+    }
+  }
+  
+  .statLabel {
+    color: #9ca3af;
+  }
+  
+  .statValue {
+    color: #e5e7eb;
+  }
+  
+  .statSubtext {
+    color: #6b7280;
+  }
+  
+  .detailsSection {
+    background: #2a2d33;
+    border-color: #3a3d42;
+  }
+  
+  .sectionTitle {
+    color: #e5e7eb;
+  }
+  
+  .metricItem {
+    background: #1e2028;
+    border-color: #2a2d33;
+    
+    &:hover {
+      background: #25272f;
+    }
+  }
+  
+  .metricLabel {
+    color: #9ca3af;
+  }
+  
+  .metricValue {
+    color: #a78bfa;
+  }
+}
+
