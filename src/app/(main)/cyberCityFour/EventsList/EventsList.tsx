@@ -25,7 +25,7 @@ export default function EventsList({ isOpen, onClose, events, onEventClick }: Ev
       isOpen={isOpen} 
       onClose={onClose} 
       title={`Мероприятия (${events.length})`}
-      maxHeight="75vh"
+      maxHeight="90vh"
     >
       <div className={styles.eventsList}>
         {events.map((event) => (
