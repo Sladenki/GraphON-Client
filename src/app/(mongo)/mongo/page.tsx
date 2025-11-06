@@ -94,13 +94,6 @@ export default function MongoPage() {
     find(selectedCollection, body.query, body.options);
   }, [limit, projectionText, queryText, searchText, selectedCollection, skip, sortText]);
 
-  const handleNextPage = useCallback(() => {
-    setSkip((s) => s + Math.max(1, limit));
-  }, [limit]);
-
-  const handlePrevPage = useCallback(() => {
-    setSkip((s) => Math.max(0, s - Math.max(1, limit)));
-  }, [limit]);
 
   // formatting helpers moved to utils/format and used by CollectionStatsPanel
 
@@ -260,13 +253,14 @@ export default function MongoPage() {
             </Dropdown>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "auto auto 1fr", gap: 12, alignItems: "end" }}>
             <Input
               type="number"
               label="Limit"
               value={String(limit)}
               onValueChange={(v) => setLimit(Number(v) || 0)}
               min={1}
+              style={{ width: "120px" }}
             />
             <Input
               type="number"
@@ -274,19 +268,16 @@ export default function MongoPage() {
               value={String(skip)}
               onValueChange={(v) => setSkip(Math.max(0, Number(v) || 0))}
               min={0}
+              style={{ width: "120px" }}
             />
 
-            <div style={{ display: "flex", gap: 8, alignItems: "end", justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
               <Button color="default" variant="flat" onPress={() => { setQueryText("{}"); setSortText("{}"); setProjectionText("{}"); setLimit(20); setSkip(0); setSearchText(""); }}>
                 Сбросить
               </Button>
               <Button color="primary" onPress={handleFind} isDisabled={!canSearch || searching}>
                 Найти
               </Button>
-            </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "end" }}>
-              <Button variant="flat" onPress={handlePrevPage} isDisabled={skip === 0 || searching}>←</Button>
-              <Button variant="flat" onPress={handleNextPage} isDisabled={searching}>→</Button>
               <Button variant="flat" onPress={() => setShowEditors((v) => !v)}>
                 {showEditors ? 'Скрыть JSON' : 'Показать JSON'}
               </Button>
@@ -294,7 +285,7 @@ export default function MongoPage() {
           </div>
 
           {showEditors && (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
               <Textarea
                 label="Query JSON"
                 minRows={6}
@@ -302,22 +293,6 @@ export default function MongoPage() {
                 onValueChange={setQueryText}
                 placeholder='{"_id":"652f7f6a2c9f8d44f0c1a123"}'
               />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <Textarea
-                  label="Sort JSON"
-                  minRows={6}
-                  value={sortText}
-                  onValueChange={setSortText}
-                  placeholder='{"createdAt": -1}'
-                />
-                <Textarea
-                  label="Projection JSON"
-                  minRows={6}
-                  value={projectionText}
-                  onValueChange={setProjectionText}
-                  placeholder='{"password": 0}'
-                />
-              </div>
             </div>
           )}
 
