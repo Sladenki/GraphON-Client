@@ -74,6 +74,7 @@ export default function EventPopup({
       onClose={onClose} 
       title={event?.name || ""}
       footer={footer}
+      maxWidth="680px"
     >
       {event && (
         <>
@@ -100,16 +101,9 @@ export default function EventPopup({
           </div>
 
           <div className={styles.eventInfo}>
-            {/* Место */}
-            <div className={styles.infoItem}>
-              <div className={styles.iconWrapper}>
-                <MapPin size={16} />
-              </div>
-              <div className={styles.infoValue}>{event.place}</div>
-            </div>
-
-            {/* Дата и время в одной строке */}
-            <div className={styles.infoRow}>
+            {/* Компактная сетка информации */}
+            <div className={styles.infoGrid}>
+              {/* Дата */}
               <div className={styles.infoItem}>
                 <div className={styles.iconWrapper}>
                   <Calendar size={16} />
@@ -119,6 +113,7 @@ export default function EventPopup({
                 </div>
               </div>
 
+              {/* Время */}
               {event.timeFrom && event.timeTo && (
                 <div className={styles.infoItem}>
                   <div className={styles.iconWrapper}>
@@ -129,20 +124,28 @@ export default function EventPopup({
                   </div>
                 </div>
               )}
+
+              {/* Участники */}
+              {event.regedUsers > 0 && (
+                <div className={styles.infoItem}>
+                  <div className={styles.iconWrapper}>
+                    <Users size={16} />
+                  </div>
+                  <div className={styles.infoValue}>
+                    <span className={styles.badge}>{event.regedUsers}</span>
+                    {" "}участников
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Участники */}
-            {event.regedUsers > 0 && (
-              <div className={styles.infoItem}>
-                <div className={styles.iconWrapper}>
-                  <Users size={16} />
-                </div>
-                <div className={styles.infoValue}>
-                  <span className={styles.badge}>{event.regedUsers}</span>
-                  {" "}участников
-                </div>
+            {/* Место на всю ширину */}
+            <div className={styles.placeItem}>
+              <div className={styles.iconWrapper}>
+                <MapPin size={16} />
               </div>
-            )}
+              <div className={styles.placeValue}>{event.place}</div>
+            </div>
           </div>
 
           {/* Описание */}

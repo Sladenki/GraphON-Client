@@ -12,6 +12,7 @@ interface FooterPopUpProps {
   children: ReactNode;
   footer?: ReactNode;
   maxHeight?: string;
+  maxWidth?: string;
   className?: string;
 }
 
@@ -26,6 +27,7 @@ export default function FooterPopUp({
   children,
   footer,
   maxHeight = "70vh",
+  maxWidth,
   className = "",
 }: FooterPopUpProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -124,6 +126,7 @@ export default function FooterPopUp({
         : `translateY(${dragTranslateY}px)`,
     }),
     maxHeight,
+    ...(maxWidth && { maxWidth }),
   } as React.CSSProperties;
 
   const content = (

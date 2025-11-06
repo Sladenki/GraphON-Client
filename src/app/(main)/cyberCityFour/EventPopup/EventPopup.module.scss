@@ -55,19 +55,22 @@
   50% { transform: translateY(-10px) rotate(50deg); }
 }
 
-/* Event Info Styles - Modern & Compact */
+/* Event Info Styles - Compact Grid */
 .eventInfo {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 14px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.infoRow {
+.infoGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 8px;
 }
 
@@ -88,6 +91,31 @@
   }
 }
 
+.placeItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(106, 87, 232, 0.04);
+  border: 1px solid rgba(106, 87, 232, 0.08);
+  border-radius: 10px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:hover {
+    background: rgba(106, 87, 232, 0.08);
+    border-color: rgba(106, 87, 232, 0.15);
+  }
+}
+
+.placeValue {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.5;
+  flex: 1;
+  letter-spacing: -0.01em;
+}
+
 .iconWrapper {
   display: flex;
   align-items: center;
@@ -98,12 +126,11 @@
   background: linear-gradient(135deg, #6a57e8 0%, #8b7aef 100%);
   color: white;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(106, 87, 232, 0.2);
   transition: all 0.2s ease;
   
-  .infoItem:hover & {
+  .infoItem:hover &,
+  .placeItem:hover & {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(106, 87, 232, 0.3);
   }
 }
 
@@ -128,7 +155,6 @@
   font-size: 11px;
   font-weight: 700;
   border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(106, 87, 232, 0.2);
   letter-spacing: 0.02em;
 }
 
@@ -300,16 +326,22 @@
     }
   }
   
-  .infoRow {
-    grid-template-columns: 1fr;
+  .eventInfo {
+    max-width: 100%;
+    gap: 6px;
   }
   
-  .eventInfo {
-    gap: 6px;
+  .infoGrid {
+    grid-template-columns: 1fr;
   }
   
   .infoItem {
     padding: 8px 10px;
+    gap: 8px;
+  }
+  
+  .placeItem {
+    padding: 10px 12px;
     gap: 8px;
   }
   
@@ -422,23 +454,28 @@
     }
   }
   
-  .iconWrapper {
-    background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
-    box-shadow: 0 2px 8px rgba(167, 139, 250, 0.25);
+  .placeItem {
+    background: rgba(167, 139, 250, 0.08);
+    border-color: rgba(167, 139, 250, 0.12);
     
-    .infoItem:hover & {
-      box-shadow: 0 4px 12px rgba(167, 139, 250, 0.35);
+    &:hover {
+      background: rgba(167, 139, 250, 0.12);
+      border-color: rgba(167, 139, 250, 0.2);
     }
   }
+  
+  .iconWrapper {
+    background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+  }
 
-  .infoValue {
+  .infoValue,
+  .placeValue {
     color: #e5e7eb;
   }
   
   .badge {
     background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
     color: #18181b;
-    box-shadow: 0 2px 4px rgba(167, 139, 250, 0.25);
   }
   
   .eventDescription {
