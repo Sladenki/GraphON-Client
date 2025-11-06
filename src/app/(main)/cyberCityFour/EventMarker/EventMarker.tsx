@@ -331,7 +331,7 @@ function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
             18, 15
           ],
           "text-anchor": "top",
-          "text-offset": [0, 2.8],
+          "text-offset": [0, 1.8],
           "text-allow-overlap": false,
           "text-optional": true,
           "text-max-width": 10,
