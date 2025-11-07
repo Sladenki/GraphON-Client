@@ -3,26 +3,44 @@ import { useEffect } from 'react';
 /**
  * Хук для загрузки SVG иконок событий в MapLibre
  */
+// Флаг для предотвращения множественной загрузки
+let iconsLoaded = false;
+let lastTheme: boolean | null = null;
+
 export const useEventIcons = (mapRef: any, isLight: boolean) => {
   useEffect(() => {
-    if (!mapRef) return;
+    if (!mapRef) {
+      console.log('⚠️ mapRef отсутствует, иконки не загружены');
+      return;
+    }
+
+    // Если тема изменилась, сбрасываем флаг
+    if (lastTheme !== null && lastTheme !== isLight) {
+      console.log('🔄 Тема изменилась, перезагружаем иконки');
+      iconsLoaded = false;
+    }
+    lastTheme = isLight;
+
+    // Проверяем, не загружены ли уже иконки
+    if (iconsLoaded && mapRef.hasImage && mapRef.hasImage('icon-music')) {
+      console.log('✅ Иконки уже загружены, пропускаем');
+      return;
+    }
+
+    console.log('🎨 Начинаем загрузку иконок событий...');
 
     const loadIcons = async () => {
       // Небольшая задержка чтобы карта была готова
       await new Promise(resolve => setTimeout(resolve, 100));
       
       // Функция создания SVG иконки
-      const createIcon = (svg: string) => {
-        const img = new Image(32, 32);
-        // Убираем лишние пробелы и переносы строк из SVG
-        const cleanSvg = svg.trim().replace(/\s+/g, ' ');
-        img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(cleanSvg)}`;
+      const createIcon = (svg: string, iconId: string) => {
         return new Promise<HTMLImageElement>((resolve, reject) => {
+          const img = new Image(32, 32);
           img.onload = () => resolve(img);
-          img.onerror = (err) => {
-            console.error('Error loading SVG image:', err);
-            reject(err);
-          };
+          img.onerror = reject;
+          const cleanSvg = svg.trim().replace(/\s+/g, ' ');
+          img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(cleanSvg)}`;
         });
       };
 
@@ -52,33 +70,31 @@ export const useEventIcons = (mapRef: any, isLight: boolean) => {
         "icon-default": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M24 13c0 6-8 13-8 13s-8-7-8-13a8 8 0 0 1 16 0z" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="16" cy="13" r="3" fill="${iconColor}"/></svg>`,
       };
 
+      if (typeof mapRef.addImage !== 'function') return;
+
       // Загружаем каждую иконку
       for (const [id, svg] of Object.entries(icons)) {
         try {
-          // Проверяем, существует ли иконка
-          if (mapRef.hasImage(id)) {
-            // Если существует, сначала удаляем
+          if (mapRef.hasImage && mapRef.hasImage(id)) {
             try {
               mapRef.removeImage(id);
             } catch (e) {
-              // Игнорируем ошибку удаления
+              // Игнорируем
             }
           }
 
-          // Загружаем новую иконку
-          const img = await createIcon(svg);
+          const img = await createIcon(svg, id);
           
-          // Проверяем еще раз перед добавлением
-          if (!mapRef.hasImage(id)) {
+          if (!mapRef.hasImage || !mapRef.hasImage(id)) {
             mapRef.addImage(id, img);
-            console.log(`✅ Icon loaded: ${id}`);
           }
         } catch (e) {
-          console.error(`❌ Ошибка загрузки иконки ${id}:`, e);
+          // Игнорируем ошибки загрузки отдельных иконок
         }
       }
       
-      console.log('🎨 All event icons loaded');
+      // Устанавливаем флаг, что иконки загружены
+      iconsLoaded = true;
     };
 
     loadIcons();

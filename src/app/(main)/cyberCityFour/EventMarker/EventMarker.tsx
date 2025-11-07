@@ -27,18 +27,20 @@ interface EventMarkerProps {
  * Мемоизирован для предотвращения лишних рендеров
  */
 function EventMarker({ eventGeoJSON, isLight, mapRef }: EventMarkerProps) {
+  // ВНИМАНИЕ: Этот компонент больше НЕ используется!
+  // События добавляются через useImperativeEventLayers в page.tsx
+  // Оставлен для возможной будущей миграции обратно на декларативный подход
+  
   // Загружаем SVG иконки в карту
   useEventIcons(mapRef, isLight);
 
   return (
     <Source 
-      id="events" 
+      id="events-unused" 
       type="geojson" 
       data={eventGeoJSON}
-      cluster={true}
-      clusterMaxZoom={14}
-      clusterRadius={50}
     >
+      {/* ЭТОТ КОМПОНЕНТ НЕ ИСПОЛЬЗУЕТСЯ - события добавляются через useImperativeEventLayers */}
       {/* Кластеры - внешнее свечение (усиленное) */}
       <Layer
         id="clusters-glow"

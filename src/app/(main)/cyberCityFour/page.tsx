@@ -1,13 +1,14 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useState, Suspense } from "react";
+import React, { useCallback, useEffect, useMemo, useState, Suspense, useRef } from "react";
 import { Filter, List } from "lucide-react";
 import styles from "./page.module.scss";
 import EventMarker from "./EventMarker/EventMarker";
 import { mockEvents, type CityEvent } from "./mockEvents";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useAuth } from "@/providers/AuthProvider";
+import { useImperativeEventLayers } from "./hooks/useImperativeEventLayers";
 import { 
   type RoadType, 
   type FillType, 
@@ -17,6 +18,7 @@ import {
   FILL_STYLES, 
   HEAVY_ROAD_STYLES 
 } from "./constants/mapStyles";
+import { Protocol, PMTiles } from "pmtiles";
 
 // Динамическая загрузка тяжелых компонентов
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
@@ -76,16 +78,29 @@ const addOutlineIfNotExists = (map: any, layer: any, outlineId: string, paint: a
     
     // Добавляем новый слой
     const outlineDef = createOutlineLayer(layer, outlineId, paint);
-    map.addLayer(outlineDef);
+    
+    // ВАЖНО: Ищем следующий слой после основного слоя дороги
+    const allLayers = map.getStyle().layers;
+    const currentIndex = allLayers.findIndex((l: any) => l.id === layer.id);
+    
+    if (currentIndex !== -1 && currentIndex + 1 < allLayers.length) {
+      // Добавляем outline слой СРАЗУ ПОСЛЕ основного слоя
+      const nextLayerId = allLayers[currentIndex + 1].id;
+      map.addLayer(outlineDef, nextLayerId);
+    } else {
+      // Если не нашли следующий слой, добавляем в конец
+      map.addLayer(outlineDef);
+    }
   } catch (e) {
-    // Игнорируем ошибки
+    // Игнорируем ошибки добавления outline
   }
 };
 
 // Функции классификации слоев
 const classifyRoad = (id: string): RoadType => {
   const s = id.toLowerCase();
-  if (s.includes("motorway") || s.includes("highway") || s.includes("primary") || s.includes("main") || s.includes("trunk")) return "major";
+  // ВАЖНО: проверяем "major" и "road-major" в первую очередь!
+  if (s.includes("major") || s.includes("motorway") || s.includes("highway") || s.includes("primary") || s.includes("main") || s.includes("trunk")) return "major";
   if (s.includes("secondary") || s.includes("street") || s.includes("road") || s.includes("tertiary")) return "secondary";
   return "minor";
 };
@@ -98,6 +113,104 @@ const classifyFill = (id: string): FillType => {
   return "land";
 };
 
+// Создание локального стиля карты для PMTiles
+const createLocalMapStyle = (isLight: boolean) => ({
+  version: 8 as const,
+  sources: {
+    "local-tiles": {
+      type: "vector" as const,
+      url: "pmtiles:///tiles/kaliningrad.pmtiles",
+      attribution: "© OpenStreetMap contributors"
+    }
+  },
+  // Используем бесплатный источник шрифтов от Mapbox
+  glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+  layers: [
+    // Фон
+    {
+      id: "background",
+      type: "background",
+      paint: {
+        "background-color": isLight ? "#f8f8f8" : "#0a0a0a"
+      }
+    },
+    // Вода
+    {
+      id: "water",
+      type: "fill",
+      source: "local-tiles",
+      "source-layer": "water",
+      paint: {
+        "fill-color": isLight ? COLORS.light.water : COLORS.dark.water,
+        "fill-opacity": 0.8
+      }
+    },
+    // Парки и зеленые зоны
+    {
+      id: "landuse-park",
+      type: "fill",
+      source: "local-tiles",
+      "source-layer": "landuse",
+      filter: ["in", "class", "park", "garden", "forest", "wood"],
+      paint: {
+        "fill-color": isLight ? COLORS.light.park : COLORS.dark.park,
+        "fill-opacity": isLight ? 0.5 : 0.3
+      }
+    },
+    // Здания
+    {
+      id: "building",
+      type: "fill",
+      source: "local-tiles",
+      "source-layer": "building",
+      minzoom: 14,
+      paint: {
+        "fill-color": isLight ? "#d9d9d9" : "#1a1a1a",
+        "fill-opacity": isLight ? 0.7 : 0.5,
+        "fill-outline-color": isLight ? "#bfbfbf" : "#2a2a2a"
+      }
+    },
+    // Дороги - мелкие
+    {
+      id: "road-minor",
+      type: "line",
+      source: "local-tiles",
+      "source-layer": "transportation",
+      filter: ["in", "class", "minor", "service", "track"],
+      paint: {
+        "line-color": isLight ? "#e0e0e0" : "#2a2a2a",
+        "line-width": createZoomInterpolation([0.5, 1, 1.5, 2]),
+        "line-opacity": isLight ? 0.6 : 0.3
+      }
+    },
+    // Дороги - вторичные
+    {
+      id: "road-secondary",
+      type: "line",
+      source: "local-tiles",
+      "source-layer": "transportation",
+      filter: ["in", "class", "secondary", "tertiary"],
+      paint: {
+        "line-color": isLight ? "#d0d0d0" : "#3a3a3a",
+        "line-width": createZoomInterpolation([1, 2, 3, 4]),
+        "line-opacity": isLight ? 0.7 : 0.4
+      }
+    },
+    // Дороги - основные (приглушенные базовые цвета, неон применяется позже)
+    {
+      id: "road-major",
+      type: "line",
+      source: "local-tiles",
+      "source-layer": "transportation",
+      filter: ["in", "class", "primary", "motorway", "trunk"],
+      paint: {
+        "line-color": isLight ? "#c0c0c0" : "#4a4a4a",
+        "line-width": createZoomInterpolation([1.5, 3, 5, 7]),
+        "line-opacity": isLight ? 0.8 : 0.5
+      }
+    }
+  ]
+});
 
 
 // ===== КОМПОНЕНТ =====
@@ -338,12 +451,70 @@ export default function CyberCityFour() {
     return () => { media.removeEventListener("change", apply); obs.disconnect(); };
   }, []);
 
+  // Инициализация PMTiles протокола
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    let protocol: Protocol | null = null;
+    
+    const initProtocol = async () => {
+      try {
+        // Динамически импортируем maplibre
+        const maplibregl = (await import('maplibre-gl')).default;
+        
+        // Создаём PMTiles источник
+        const pmtiles = new PMTiles('/tiles/kaliningrad.pmtiles');
+        
+        // Создаём экземпляр протокола и добавляем источник
+        protocol = new Protocol();
+        protocol.add(pmtiles);
+        
+        // Проверяем, не зарегистрирован ли уже протокол
+        try {
+          (maplibregl as any).removeProtocol?.('pmtiles');
+        } catch (e) {
+          // Игнорируем если протокол не был зарегистрирован
+        }
+        
+        // Регистрируем протокол
+        (maplibregl as any).addProtocol('pmtiles', (request: any, callback: any) => {
+          return protocol!.tile(request, callback);
+        });
+        
+        console.log('PMTiles протокол успешно зарегистрирован');
+      } catch (e) {
+        console.error("Ошибка при регистрации PMTiles протокола:", e);
+      }
+    };
+    
+    initProtocol();
+    
+    return () => {
+      const cleanup = async () => {
+        try {
+          const maplibregl = (await import('maplibre-gl')).default;
+          (maplibregl as any).removeProtocol?.('pmtiles');
+        } catch (e) {
+          // Игнорируем ошибки при очистке
+        }
+      };
+      cleanup();
+    };
+  }, []);
 
-  const baseStyleUrl = useMemo(() => (
-    isLight
-      ? "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
-      : "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
-  ), [isLight]);
+  const mapStyle = useMemo(() => {
+    try {
+      const style = createLocalMapStyle(isLight);
+      return style as any;
+    } catch (error) {
+      console.error('❌ Ошибка при создании mapStyle:', error);
+      return null;
+    }
+  }, [isLight]);
+  
+  // Используем императивное добавление событий вместо декларативных <Source> и <Layer>
+  // Этот хук сам загружает иконки и добавляет все слои
+  useImperativeEventLayers(mapRef, eventGeoJSON, isLight, mapLoaded);
 
   // Мемоизированная функция для принудительного обновления стилей дорог (делает дороги толще)
   const updateRoadStyles = useCallback(() => {
@@ -381,11 +552,12 @@ export default function CyberCityFour() {
   // Мемоизированный обработчик загрузки карты
   const handleMapLoad = useCallback((e: any) => {
     const map = e?.target; 
-    if (!map) return; 
+    if (!map) return;
     setMapRef(map);
     setMapLoaded(true);
     
     try {
+      // Применяем неоновые эффекты дорог сразу после загрузки
       const layers = map.getStyle()?.layers || [];
       layers.forEach((layer: any) => {
         if (layer.type === "line") {
@@ -394,7 +566,9 @@ export default function CyberCityFour() {
           applyFillStyles(map, layer, isLight);
         }
       });
-    } catch {}
+    } catch (e) {
+      // Игнорируем ошибки стилизации
+    }
   }, [applyLineStyles, applyFillStyles, isLight]);
 
   // Мемоизированный обработчик открытия фильтра
@@ -444,43 +618,51 @@ export default function CyberCityFour() {
     });
   }, [selectedEvent, mapRef]);
 
-  // Эффект для обновления стилей карты при изменении темы (оптимизированный)
+  // Эффект для обновления стилей карты при изменении темы
+  // КРИТИЧНО: НЕ вызываем setStyle() - это удаляет events source!
+  const prevIsLightRef = useRef<boolean | null>(null);
+  
   useEffect(() => {
     if (!mapRef || !mapLoaded) return;
     
-    // Обновляем стиль карты через setStyle вместо пересоздания компонента
+    // При первой загрузке просто сохраняем тему
+    if (prevIsLightRef.current === null) {
+      prevIsLightRef.current = isLight;
+      return;
+    }
+    
+    // Проверяем изменение темы
+    if (prevIsLightRef.current === isLight) {
+      return; // Тема не изменилась
+    }
+    
+    prevIsLightRef.current = isLight;
+    
+    // ВАЖНО: НЕ используем setStyle() - он удаляет все динамические источники!
+    // Вместо этого обновляем только цвета слоев
     try {
-      mapRef.setStyle(baseStyleUrl);
+      // Обновляем фон
+      if (mapRef.getLayer('background')) {
+        mapRef.setPaintProperty('background', 'background-color', isLight ? '#f8f8f8' : '#0a0a0a');
+      }
       
-      // После загрузки нового стиля обновляем кастомные стили
-      mapRef.once('styledata', () => {
-        // ВАЖНО: Сначала применяем неоновые эффекты для дорог
-        const layers = mapRef.getStyle()?.layers || [];
-        layers.forEach((layer: any) => {
-          if (layer.type === "line") {
-            applyLineStyles(mapRef, layer, isLight);
-          } else if (layer.type === "fill" && layer.source) {
-            applyFillStyles(mapRef, layer, isLight);
-          }
-        });
-        
-        // Затем обновляем дополнительные стили дорог
-        updateRoadStyles();
-      });
-    } catch (e) {
-      console.error('Ошибка при обновлении стиля карты:', e);
-      // Fallback: обновляем только слои без смены базового стиля
+      // Обновляем все слои дорог и fill
       const layers = mapRef.getStyle()?.layers || [];
       layers.forEach((layer: any) => {
-        if (layer.type === "line") {
-          applyLineStyles(mapRef, layer, isLight);
-        } else if (layer.type === "fill" && layer.source) {
-          applyFillStyles(mapRef, layer, isLight);
+        try {
+          if (layer.type === "line" && layer.source === "local-tiles") {
+            applyLineStyles(mapRef, layer, isLight);
+          } else if (layer.type === "fill" && layer.source === "local-tiles") {
+            applyFillStyles(mapRef, layer, isLight);
+          }
+        } catch (e) {
+          // Игнорируем ошибки отдельных слоев
         }
       });
-      updateRoadStyles();
+    } catch (e) {
+      // Игнорируем ошибки обновления цветов
     }
-  }, [mapRef, mapLoaded, isLight, baseStyleUrl, updateRoadStyles, applyFillStyles, applyLineStyles]);
+  }, [mapRef, mapLoaded, isLight, applyFillStyles, applyLineStyles]);
 
   return (
     <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`} data-swipe-enabled="false">
@@ -497,7 +679,6 @@ export default function CyberCityFour() {
         <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''} ${isMobile ? styles.mobileMap : ''}`}>
           <div className={styles.map}>
           <ReactMapGL
-              key={isLight ? "light" : "dark"}
             initialViewState={{ 
               longitude: 20.5103, 
               latitude: 54.7068, 
@@ -505,17 +686,17 @@ export default function CyberCityFour() {
               pitch: 40, 
               bearing: -12 
             }}
-            mapStyle={baseStyleUrl}
+            mapStyle={mapStyle || undefined}
             attributionControl={false}
             dragRotate={!isMobile}
             maxBounds={[[20.36, 54.62], [20.62, 54.78]]}
             onLoad={handleMapLoad}
             onClick={handleMapClick}
-            interactiveLayerIds={['event-points', 'clusters']}
+            interactiveLayerIds={mapLoaded ? ['event-points', 'clusters'] : []}
             cursor="pointer"
           >
-            {/* Маркеры событий с SVG иконками */}
-            <EventMarker eventGeoJSON={eventGeoJSON} isLight={isLight} mapRef={mapRef} />
+            {/* Маркеры событий добавляются императивно через useImperativeEventLayers */}
+            {/* EventMarker больше не используется - декларативный подход не работает с PMTiles */}
           </ReactMapGL>
           </div>
 
