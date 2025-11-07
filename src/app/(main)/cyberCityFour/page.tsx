@@ -666,15 +666,6 @@ export default function CyberCityFour() {
 
   return (
     <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`} data-swipe-enabled="false">
-      {/* Индикатор загрузки */}
-      {!mapLoaded && (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.loadingSpinner}>
-            <div className={styles.spinnerRing}></div>
-            <div className={styles.spinnerText}>Загрузка карты...</div>
-          </div>
-        </div>
-      )}
       <div className={styles.content}>
         <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''} ${isMobile ? styles.mobileMap : ''}`}>
           <div className={styles.map}>
