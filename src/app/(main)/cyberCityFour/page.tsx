@@ -126,15 +126,26 @@ const createLocalMapStyle = (isLight: boolean) => ({
   // Используем бесплатный источник шрифтов от Mapbox
   glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
   layers: [
-    // Фон
+    // Фон - более светлый серый для лучшей читаемости
     {
       id: "background",
       type: "background",
       paint: {
-        "background-color": isLight ? "#f8f8f8" : "#0a0a0a"
+        "background-color": isLight ? "#f8f8f8" : "#1a1d23"
       }
     },
-    // Вода
+    // Земля/районы - добавляем серые тона
+    {
+      id: "landuse",
+      type: "fill",
+      source: "local-tiles",
+      "source-layer": "landuse",
+      paint: {
+        "fill-color": isLight ? "#e8e8e8" : "#2a2d35",
+        "fill-opacity": isLight ? 0.3 : 0.4
+      }
+    },
+    // Вода - улучшенная с градиентом и анимацией
     {
       id: "water",
       type: "fill",
@@ -142,10 +153,36 @@ const createLocalMapStyle = (isLight: boolean) => ({
       "source-layer": "water",
       paint: {
         "fill-color": isLight ? COLORS.light.water : COLORS.dark.water,
-        "fill-opacity": 0.8
+        "fill-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          10, isLight ? 0.6 : 0.4,
+          14, isLight ? 0.75 : 0.5,
+          18, isLight ? 0.85 : 0.6
+        ]
       }
     },
-    // Парки и зеленые зоны
+    // Обводка воды для depth эффекта
+    {
+      id: "water-outline",
+      type: "line",
+      source: "local-tiles",
+      "source-layer": "water",
+      paint: {
+        "line-color": isLight ? COLORS.light.waterOutline : COLORS.dark.waterOutline,
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          10, 0.5,
+          14, 1,
+          18, 1.5
+        ],
+        "line-opacity": isLight ? 0.6 : 0.8
+      }
+    },
+    // Парки и зеленые зоны - улучшенные с обводкой
     {
       id: "landuse-park",
       type: "fill",
@@ -154,10 +191,37 @@ const createLocalMapStyle = (isLight: boolean) => ({
       filter: ["in", "class", "park", "garden", "forest", "wood"],
       paint: {
         "fill-color": isLight ? COLORS.light.park : COLORS.dark.park,
-        "fill-opacity": isLight ? 0.5 : 0.3
+        "fill-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          10, isLight ? 0.3 : 0.2,
+          14, isLight ? 0.5 : 0.3,
+          18, isLight ? 0.6 : 0.4
+        ]
       }
     },
-    // Здания
+    // Обводка парков для depth
+    {
+      id: "landuse-park-outline",
+      type: "line",
+      source: "local-tiles",
+      "source-layer": "landuse",
+      filter: ["in", "class", "park", "garden", "forest", "wood"],
+      paint: {
+        "line-color": isLight ? COLORS.light.parkOutline : COLORS.dark.parkOutline,
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          10, 0.3,
+          14, 0.5,
+          18, 0.8
+        ],
+        "line-opacity": 0.5
+      }
+    },
+    // Здания - с улучшенной визуализацией и depth
     {
       id: "building",
       type: "fill",
@@ -165,12 +229,46 @@ const createLocalMapStyle = (isLight: boolean) => ({
       "source-layer": "building",
       minzoom: 14,
       paint: {
-        "fill-color": isLight ? "#d9d9d9" : "#1a1a1a",
-        "fill-opacity": isLight ? 0.7 : 0.5,
-        "fill-outline-color": isLight ? "#bfbfbf" : "#2a2a2a"
+        "fill-color": isLight ? "#d9d9d9" : "#3a3f4a",
+        "fill-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          14, isLight ? 0.5 : 0.4,
+          16, isLight ? 0.7 : 0.6,
+          18, isLight ? 0.85 : 0.75
+        ],
+        "fill-outline-color": isLight ? "#bfbfbf" : "#4a4f5a"
       }
     },
-    // Дороги - мелкие
+    // Обводка зданий для 3D эффекта
+    {
+      id: "building-outline",
+      type: "line",
+      source: "local-tiles",
+      "source-layer": "building",
+      minzoom: 15,
+      paint: {
+        "line-color": isLight ? "#a0a0a0" : "#5a5f6a",
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          15, 0.3,
+          17, 0.5,
+          19, 0.8
+        ],
+        "line-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          15, 0.3,
+          17, 0.5,
+          19, 0.7
+        ]
+      }
+    },
+    // Дороги - мелкие (более заметные)
     {
       id: "road-minor",
       type: "line",
@@ -178,12 +276,12 @@ const createLocalMapStyle = (isLight: boolean) => ({
       "source-layer": "transportation",
       filter: ["in", "class", "minor", "service", "track"],
       paint: {
-        "line-color": isLight ? "#e0e0e0" : "#2a2a2a",
+        "line-color": isLight ? "#e0e0e0" : "#3a3f4a",
         "line-width": createZoomInterpolation([0.5, 1, 1.5, 2]),
-        "line-opacity": isLight ? 0.6 : 0.3
+        "line-opacity": isLight ? 0.6 : 0.4
       }
     },
-    // Дороги - вторичные
+    // Дороги - вторичные (более заметные)
     {
       id: "road-secondary",
       type: "line",
@@ -191,12 +289,12 @@ const createLocalMapStyle = (isLight: boolean) => ({
       "source-layer": "transportation",
       filter: ["in", "class", "secondary", "tertiary"],
       paint: {
-        "line-color": isLight ? "#d0d0d0" : "#3a3a3a",
+        "line-color": isLight ? "#d0d0d0" : "#4a4f5a",
         "line-width": createZoomInterpolation([1, 2, 3, 4]),
-        "line-opacity": isLight ? 0.7 : 0.4
+        "line-opacity": isLight ? 0.7 : 0.5
       }
     },
-    // Дороги - основные (приглушенные базовые цвета, неон применяется позже)
+    // Дороги - основные (базовые цвета на сером фоне, неон применяется позже)
     {
       id: "road-major",
       type: "line",
@@ -204,9 +302,16 @@ const createLocalMapStyle = (isLight: boolean) => ({
       "source-layer": "transportation",
       filter: ["in", "class", "primary", "motorway", "trunk"],
       paint: {
-        "line-color": isLight ? "#c0c0c0" : "#4a4a4a",
+        "line-color": isLight ? "#c0c0c0" : "#5a5f6a",
         "line-width": createZoomInterpolation([1.5, 3, 5, 7]),
-        "line-opacity": isLight ? 0.8 : 0.5
+        "line-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          10, isLight ? 0.6 : 0.4,
+          14, isLight ? 0.8 : 0.6,
+          18, isLight ? 0.9 : 0.75
+        ]
       }
     }
   ]
@@ -643,7 +748,7 @@ export default function CyberCityFour() {
     try {
       // Обновляем фон
       if (mapRef.getLayer('background')) {
-        mapRef.setPaintProperty('background', 'background-color', isLight ? '#f8f8f8' : '#0a0a0a');
+        mapRef.setPaintProperty('background', 'background-color', isLight ? '#f8f8f8' : '#1a1d23');
       }
       
       // Обновляем все слои дорог и fill

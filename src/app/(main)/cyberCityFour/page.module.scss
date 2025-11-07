@@ -77,11 +77,27 @@
   width: 100%;
   height: 100%;
   display: block;
+  
+  /* Плавные переходы для карты */
+  :global(.maplibregl-canvas-container) {
+    transition: filter 0.3s ease-out;
+  }
+  
   /* Обеспечиваем 100% размер для внутреннего контейнера карты */
   > div {
     width: 100%;
     height: 100%;
     display: block;
+  }
+  
+  /* Улучшенная интерактивность карты */
+  :global(.maplibregl-canvas) {
+    will-change: transform;
+    cursor: grab;
+    
+    &:active {
+      cursor: grabbing;
+    }
   }
 }
 
@@ -323,9 +339,26 @@
   box-shadow: var(--shadow);
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.08) translateY(-2px);
     background: var(--color-primary-hover);
-    box-shadow: var(--shadow-hover);
+    box-shadow: 0 8px 24px rgba(106, 87, 232, 0.35);
+  }
+  
+  &:active {
+    transform: scale(1.02);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Плавная пульсация для привлечения внимания */
+  animation: subtle-pulse 3s ease-in-out infinite;
+}
+
+@keyframes subtle-pulse {
+  0%, 100% {
+    box-shadow: var(--shadow);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(106, 87, 232, 0.25);
   }
 }
 

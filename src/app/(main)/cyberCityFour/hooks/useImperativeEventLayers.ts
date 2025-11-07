@@ -76,7 +76,29 @@ export const useImperativeEventLayers = (
 
         // 2. Добавляем слои (в правильном порядке: снизу вверх)
         
-        // Кластеры - внешнее свечение
+        // Кластеры - внешнее сильное свечение
+        if (!mapRef.getLayer('clusters-glow-outer')) {
+          mapRef.addLayer({
+            id: 'clusters-glow-outer',
+            type: 'circle',
+            source: 'events',
+            filter: ['has', 'point_count'],
+            paint: {
+              'circle-radius': [
+                'step',
+                ['get', 'point_count'],
+                32, 10, 42, 50, 52
+              ],
+              'circle-color': '#6a57e8',
+              'circle-opacity': isLight ? 0.15 : 0.25,
+              'circle-blur': 2.5
+            }
+          });
+        } else {
+          mapRef.setPaintProperty('clusters-glow-outer', 'circle-opacity', isLight ? 0.15 : 0.25);
+        }
+
+        // Кластеры - среднее свечение
         if (!mapRef.getLayer('clusters-glow')) {
           mapRef.addLayer({
             id: 'clusters-glow',
