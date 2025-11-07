@@ -57,7 +57,6 @@ export const useImperativeEventLayers = (
     if (!mapRef || !mapLoaded) return;
 
     // Используем requestAnimationFrame для мгновенного добавления без задержки
-    let rafId: number;
     const addLayers = async () => {
       try {
         // Загружаем иконки
@@ -462,7 +461,7 @@ export const useImperativeEventLayers = (
     };
 
     // Используем requestAnimationFrame для плавного добавления слоев
-    rafId = requestAnimationFrame(() => {
+    const rafId = requestAnimationFrame(() => {
       addLayers();
     });
 
