@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import React, { useCallback, useEffect, useMemo, useState, Suspense, useRef } from "react";
 import { Filter, List } from "lucide-react";
 import styles from "./page.module.scss";
-import EventMarker from "./EventMarker/EventMarker";
 import { mockEvents, type CityEvent } from "./mockEvents";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useAuth } from "@/providers/AuthProvider";
