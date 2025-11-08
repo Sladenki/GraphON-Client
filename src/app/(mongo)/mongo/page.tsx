@@ -5,10 +5,12 @@ import { toast } from "sonner";
 import { useMongoCollections } from "./hooks/useMongoCollections";
 import { useMongoFind } from "./hooks/useMongoFind";
 import { useMongoDocOps } from "./hooks/useMongoDocOps";
+import { useMongoImport } from "./hooks/useMongoImport";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { safeParseJson, extractId } from "./utils/json";
 import JsonPretty from "./components/JsonPretty";
 import EditDocDialog from "./components/EditDocDialog";
+import ImportDialog from "./components/ImportDialog";
 import { useMongoExport } from "./hooks/useMongoExport";
 import { buildExportParams } from "./utils/export";
 import CollectionsSidebar from "./components/CollectionsSidebar";
@@ -30,6 +32,7 @@ export default function MongoPage() {
 
   const { data: docs, loading: searching, error: resultsError, durationMs, find } = useMongoFind(DB_NAME);
   const { loading: docMutating, patch, remove } = useMongoDocOps(DB_NAME);
+  const { importFile, loading: importing } = useMongoImport(DB_NAME);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmPayload, setConfirmPayload] = useState<{ mode: 'delete' | 'patch'; id: string; payload?: string } | null>(null);
   const [searchText, setSearchText] = useState<string>("");
@@ -37,8 +40,10 @@ export default function MongoPage() {
   const [editDoc, setEditDoc] = useState<Record<string, unknown> | null>(null);
   const [editDocId, setEditDocId] = useState<string | null>(null);
   const [showEditors, setShowEditors] = useState<boolean>(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   const canSearch = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
+  const canImport = useMemo(() => selectedCollection === "Event", [selectedCollection]);
 
   useEffect(() => {
     if (!selectedCollection && collections && collections.length) {
@@ -190,6 +195,24 @@ export default function MongoPage() {
     }
   }, [confirmPayload, handleFind, patch, remove, selectedCollection]);
 
+  const handleImport = useCallback(async (file: File) => {
+    if (!selectedCollection) {
+      toast.error("Не выбрана коллекция");
+      return;
+    }
+
+    try {
+      const result = await importFile(selectedCollection, file);
+      toast.success(result.message || `Импортировано ${result.insertedCount} документов`);
+      // Refresh collections and current results
+      await refetch();
+      handleFind();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Ошибка импорта");
+      throw err;
+    }
+  }, [selectedCollection, importFile, refetch, handleFind]);
+
   return (
     <main style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
@@ -225,7 +248,9 @@ export default function MongoPage() {
           onSelect={setSelectedCollection}
           onExportJson={() => handleExport('json')}
           onExportNdjson={() => handleExport('ndjson')}
+          onImportJson={() => setImportOpen(true)}
           canExport={canSearch}
+          canImport={canImport}
         />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -340,6 +365,13 @@ export default function MongoPage() {
               setEditOpen(false);
               handleFind();
             }}
+          />
+          <ImportDialog
+            isOpen={importOpen}
+            onClose={() => setImportOpen(false)}
+            onImport={handleImport}
+            loading={importing}
+            collection={selectedCollection}
           />
         </div>
       </section>

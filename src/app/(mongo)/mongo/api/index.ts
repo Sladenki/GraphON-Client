@@ -67,4 +67,20 @@ export async function deleteDocument(dbName: string, collection: string, id: str
   return res.json();
 }
 
+export async function postImport(dbName: string, collection: string, file: File): Promise<{ insertedCount: number; message: string }> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${API_BASE}/mongo/import/${dbName}/${encodeURIComponent(collection)}`, {
+    method: 'POST',
+    body: formData,
+  });
+  
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`${res.status} ${res.statusText}${text ? `: ${text}` : ''}`);
+  }
+  
+  return res.json();
+}
 
