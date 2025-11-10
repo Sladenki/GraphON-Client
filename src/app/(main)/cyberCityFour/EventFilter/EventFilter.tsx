@@ -132,7 +132,7 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
             onClick={() => toggleCategory(key)}
             aria-pressed={Boolean(selectedCategories[key])}
           >
-            <Icon size={22} />
+            <Icon size={18} />
             <div className={styles.categoryLabel}>{label}</div>
           </button>
         ))}
