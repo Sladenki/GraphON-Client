@@ -1,4 +1,4 @@
-export type EventCategory = "music" | "art" | "education" | "business" | "sport" | "humor" | "gastro" | "family" | "city";
+export type EventCategory = "music" | "art" | "education" | "business" | "sport" | "humor" | "gastro" | "family" | "city" | "party" | "meetup" | "cinema" | "theater";
 
 /**
  * Интерфейс события из API (БД)
@@ -28,7 +28,7 @@ export interface CityEvent extends CityEventAPI {
 
 // ===== ГЕНЕРАТОР СЛУЧАЙНЫХ МЕРОПРИЯТИЙ =====
 
-const categories: EventCategory[] = ["music", "art", "education", "business", "sport", "humor", "gastro", "family", "city"];
+const categories: EventCategory[] = ["music", "art", "education", "business", "sport", "humor", "gastro", "family", "city", "party", "meetup", "cinema", "theater"];
 
 const places = [
   "ул. Канта 1 (Кафедральный собор)",
@@ -106,6 +106,34 @@ const namesByCategory: Record<EventCategory, string[]> = {
     "Встреча с мэром",
     "Благоустройство парка",
     "Экскурсия по городу",
+  ],
+  party: [
+    "Вечеринка на крыше",
+    "Танцевальная ночь",
+    "Электронная музыка",
+    "Клубная вечеринка",
+    "Open Air Party",
+  ],
+  meetup: [
+    "Нетворкинг встреча",
+    "Встреча выпускников",
+    "Клуб по интересам",
+    "Дискуссионный клуб",
+    "Встреча единомышленников",
+  ],
+  cinema: [
+    "Кинопоказ в музее",
+    "Фестиваль короткого метра",
+    "Ретроспектива классики",
+    "Кинолекторий",
+    "Ночь кино",
+  ],
+  theater: [
+    "Спектакль на малой сцене",
+    "Театральная премьера",
+    "Экспериментальный театр",
+    "Моноспектакль",
+    "Драматическая постановка",
   ],
 };
 

@@ -24,6 +24,10 @@ export default function EventFilter({ isOpen, onClose, resultsCount = 0 }: Event
     gastro: false,
     family: false,
     city: false,
+    party: false,
+    meetup: false,
+    cinema: false,
+    theater: false,
   });
 
   const [datePreset, setDatePreset] = useState<"today" | "tomorrow" | "weekend" | "custom" | null>(null);

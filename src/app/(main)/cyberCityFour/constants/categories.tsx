@@ -8,11 +8,15 @@ import {
   UtensilsCrossed,
   Home,
   Building2,
-  MapPin
+  MapPin,
+  PartyPopper,
+  Users,
+  Film,
+  Theater
 } from "lucide-react";
 
 // Тип категории
-export type EventCategory = "music" | "art" | "education" | "business" | "sport" | "humor" | "gastro" | "family" | "city";
+export type EventCategory = "music" | "art" | "education" | "business" | "sport" | "humor" | "gastro" | "family" | "city" | "party" | "meetup" | "cinema" | "theater";
 
 /**
  * Получить иконку по категории
@@ -37,6 +41,14 @@ export function getCategoryIcon(category: string, size: number = 18) {
       return <Home size={size} />;
     case 'city':
       return <Building2 size={size} />;
+    case 'party':
+      return <PartyPopper size={size} />;
+    case 'meetup':
+      return <Users size={size} />;
+    case 'cinema':
+      return <Film size={size} />;
+    case 'theater':
+      return <Theater size={size} />;
     default:
       return <MapPin size={size} />;
   }
@@ -56,6 +68,10 @@ export function getCategoryColor(category: string): string {
     gastro: '#ef4444',     // Красный
     family: '#06b6d4',     // Голубой
     city: '#6366f1',       // Индиго
+    party: '#a855f7',      // Пурпурный
+    meetup: '#14b8a6',     // Бирюзовый
+    cinema: '#0ea5e9',     // Небесно-голубой
+    theater: '#d946ef',    // Фуксия
   };
   return colors[category] || '#3b82f6';
 }
@@ -73,6 +89,10 @@ export const CATEGORIES = [
   { key: "gastro", label: "Гастро", Icon: UtensilsCrossed },
   { key: "family", label: "Семья", Icon: Home },
   { key: "city", label: "Город", Icon: Building2 },
+  { key: "party", label: "Вечеринки", Icon: PartyPopper },
+  { key: "meetup", label: "Встречи", Icon: Users },
+  { key: "cinema", label: "Кино", Icon: Film },
+  { key: "theater", label: "Театр", Icon: Theater },
 ];
 
 /**
@@ -141,6 +161,34 @@ export const CATEGORY_COLORS = {
     stroke: { light: "#4f46e5", dark: "#a5b4fc" }, 
     glow: "rgba(99, 102, 241, 0.5)",
     pulseGlow: "rgba(99, 102, 241, 0.25)"
+  },
+  party: { 
+    light: "#a855f7", 
+    dark: "#c084fc", 
+    stroke: { light: "#9333ea", dark: "#d8b4fe" }, 
+    glow: "rgba(168, 85, 247, 0.5)",
+    pulseGlow: "rgba(168, 85, 247, 0.25)"
+  },
+  meetup: { 
+    light: "#14b8a6", 
+    dark: "#2dd4bf", 
+    stroke: { light: "#0d9488", dark: "#5eead4" }, 
+    glow: "rgba(20, 184, 166, 0.5)",
+    pulseGlow: "rgba(20, 184, 166, 0.25)"
+  },
+  cinema: { 
+    light: "#0ea5e9", 
+    dark: "#38bdf8", 
+    stroke: { light: "#0284c7", dark: "#7dd3fc" }, 
+    glow: "rgba(14, 165, 233, 0.5)",
+    pulseGlow: "rgba(14, 165, 233, 0.25)"
+  },
+  theater: { 
+    light: "#d946ef", 
+    dark: "#e879f9", 
+    stroke: { light: "#c026d3", dark: "#f0abfc" }, 
+    glow: "rgba(217, 70, 239, 0.5)",
+    pulseGlow: "rgba(217, 70, 239, 0.25)"
   },
   default: { 
     light: "#3b82f6", 
