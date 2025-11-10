@@ -210,6 +210,161 @@ export const createLocalMapStyle = (isLight: boolean) => ({
           18, isLight ? 0.9 : 0.75
         ]
       }
+    },
+    // Названия основных дорог
+    {
+      id: "road-label-major",
+      type: "symbol",
+      source: "local-tiles",
+      "source-layer": "transportation_name",
+      filter: ["in", "class", "primary", "motorway", "trunk"],
+      minzoom: 13,
+      layout: {
+        "text-field": ["get", "name"],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          13, 11,
+          16, 14,
+          18, 16
+        ],
+        "symbol-placement": "line",
+        "text-rotation-alignment": "map",
+        "text-pitch-alignment": "viewport",
+        "text-max-angle": 30
+      },
+      paint: {
+        "text-color": isLight ? "#2c3e50" : "#e0e0e0",
+        "text-halo-color": isLight ? "#ffffff" : "#1a1d23",
+        "text-halo-width": 2,
+        "text-halo-blur": 1,
+        "text-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          13, 0.7,
+          15, 0.9,
+          18, 1
+        ]
+      }
+    },
+    // Названия второстепенных дорог
+    {
+      id: "road-label-secondary",
+      type: "symbol",
+      source: "local-tiles",
+      "source-layer": "transportation_name",
+      filter: ["in", "class", "secondary", "tertiary"],
+      minzoom: 14,
+      layout: {
+        "text-field": ["get", "name"],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          14, 10,
+          16, 12,
+          18, 14
+        ],
+        "symbol-placement": "line",
+        "text-rotation-alignment": "map",
+        "text-pitch-alignment": "viewport",
+        "text-max-angle": 30
+      },
+      paint: {
+        "text-color": isLight ? "#4a5568" : "#cbd5e0",
+        "text-halo-color": isLight ? "#ffffff" : "#1a1d23",
+        "text-halo-width": 1.5,
+        "text-halo-blur": 0.8,
+        "text-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          14, 0.6,
+          16, 0.8,
+          18, 1
+        ]
+      }
+    },
+    // Названия мелких дорог
+    {
+      id: "road-label-minor",
+      type: "symbol",
+      source: "local-tiles",
+      "source-layer": "transportation_name",
+      filter: ["in", "class", "minor", "service"],
+      minzoom: 15,
+      layout: {
+        "text-field": ["get", "name"],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          15, 9,
+          17, 11,
+          19, 13
+        ],
+        "symbol-placement": "line",
+        "text-rotation-alignment": "map",
+        "text-pitch-alignment": "viewport",
+        "text-max-angle": 30
+      },
+      paint: {
+        "text-color": isLight ? "#718096" : "#a0aec0",
+        "text-halo-color": isLight ? "#ffffff" : "#1a1d23",
+        "text-halo-width": 1.2,
+        "text-halo-blur": 0.6,
+        "text-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          15, 0.5,
+          17, 0.7,
+          19, 0.9
+        ]
+      }
+    },
+    // Названия районов и важных мест
+    {
+      id: "place-label",
+      type: "symbol",
+      source: "local-tiles",
+      "source-layer": "place",
+      filter: ["in", "class", "neighbourhood", "suburb"],
+      minzoom: 12,
+      layout: {
+        "text-field": ["get", "name"],
+        "text-font": ["Noto Sans Bold"],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          12, 12,
+          14, 14,
+          16, 16
+        ],
+        "text-transform": "uppercase",
+        "text-letter-spacing": 0.1,
+        "text-max-width": 10
+      },
+      paint: {
+        "text-color": isLight ? "#1a202c" : "#f7fafc",
+        "text-halo-color": isLight ? "#ffffff" : "#1a1d23",
+        "text-halo-width": 2.5,
+        "text-halo-blur": 1.5,
+        "text-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          12, 0.4,
+          14, 0.6,
+          16, 0.8
+        ]
+      }
     }
   ]
 });
