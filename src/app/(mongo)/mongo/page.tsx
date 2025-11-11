@@ -5,10 +5,12 @@ import { toast } from "sonner";
 import { useMongoCollections } from "./hooks/useMongoCollections";
 import { useMongoFind } from "./hooks/useMongoFind";
 import { useMongoDocOps } from "./hooks/useMongoDocOps";
+import { useMongoImport } from "./hooks/useMongoImport";
 import ConfirmDialog from "./components/ConfirmDialog";
 import { safeParseJson, extractId } from "./utils/json";
 import JsonPretty from "./components/JsonPretty";
 import EditDocDialog from "./components/EditDocDialog";
+import ImportDialog from "./components/ImportDialog";
 import { useMongoExport } from "./hooks/useMongoExport";
 import { buildExportParams } from "./utils/export";
 import CollectionsSidebar from "./components/CollectionsSidebar";
@@ -30,6 +32,7 @@ export default function MongoPage() {
 
   const { data: docs, loading: searching, error: resultsError, durationMs, find } = useMongoFind(DB_NAME);
   const { loading: docMutating, patch, remove } = useMongoDocOps(DB_NAME);
+  const { importFile, loading: importing } = useMongoImport(DB_NAME);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmPayload, setConfirmPayload] = useState<{ mode: 'delete' | 'patch'; id: string; payload?: string } | null>(null);
   const [searchText, setSearchText] = useState<string>("");
@@ -37,8 +40,10 @@ export default function MongoPage() {
   const [editDoc, setEditDoc] = useState<Record<string, unknown> | null>(null);
   const [editDocId, setEditDocId] = useState<string | null>(null);
   const [showEditors, setShowEditors] = useState<boolean>(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   const canSearch = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
+  const canImport = useMemo(() => selectedCollection === "Event", [selectedCollection]);
 
   useEffect(() => {
     if (!selectedCollection && collections && collections.length) {
@@ -94,13 +99,6 @@ export default function MongoPage() {
     find(selectedCollection, body.query, body.options);
   }, [limit, projectionText, queryText, searchText, selectedCollection, skip, sortText]);
 
-  const handleNextPage = useCallback(() => {
-    setSkip((s) => s + Math.max(1, limit));
-  }, [limit]);
-
-  const handlePrevPage = useCallback(() => {
-    setSkip((s) => Math.max(0, s - Math.max(1, limit)));
-  }, [limit]);
 
   // formatting helpers moved to utils/format and used by CollectionStatsPanel
 
@@ -197,6 +195,24 @@ export default function MongoPage() {
     }
   }, [confirmPayload, handleFind, patch, remove, selectedCollection]);
 
+  const handleImport = useCallback(async (file: File) => {
+    if (!selectedCollection) {
+      toast.error("Не выбрана коллекция");
+      return;
+    }
+
+    try {
+      const result = await importFile(selectedCollection, file);
+      toast.success(result.message || `Импортировано ${result.insertedCount} документов`);
+      // Refresh collections and current results
+      await refetch();
+      handleFind();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Ошибка импорта");
+      throw err;
+    }
+  }, [selectedCollection, importFile, refetch, handleFind]);
+
   return (
     <main style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
@@ -232,7 +248,9 @@ export default function MongoPage() {
           onSelect={setSelectedCollection}
           onExportJson={() => handleExport('json')}
           onExportNdjson={() => handleExport('ndjson')}
+          onImportJson={() => setImportOpen(true)}
           canExport={canSearch}
+          canImport={canImport}
         />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -260,13 +278,14 @@ export default function MongoPage() {
             </Dropdown>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "auto auto 1fr", gap: 12, alignItems: "end" }}>
             <Input
               type="number"
               label="Limit"
               value={String(limit)}
               onValueChange={(v) => setLimit(Number(v) || 0)}
               min={1}
+              style={{ width: "120px" }}
             />
             <Input
               type="number"
@@ -274,19 +293,16 @@ export default function MongoPage() {
               value={String(skip)}
               onValueChange={(v) => setSkip(Math.max(0, Number(v) || 0))}
               min={0}
+              style={{ width: "120px" }}
             />
 
-            <div style={{ display: "flex", gap: 8, alignItems: "end", justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
               <Button color="default" variant="flat" onPress={() => { setQueryText("{}"); setSortText("{}"); setProjectionText("{}"); setLimit(20); setSkip(0); setSearchText(""); }}>
                 Сбросить
               </Button>
               <Button color="primary" onPress={handleFind} isDisabled={!canSearch || searching}>
                 Найти
               </Button>
-            </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "end" }}>
-              <Button variant="flat" onPress={handlePrevPage} isDisabled={skip === 0 || searching}>←</Button>
-              <Button variant="flat" onPress={handleNextPage} isDisabled={searching}>→</Button>
               <Button variant="flat" onPress={() => setShowEditors((v) => !v)}>
                 {showEditors ? 'Скрыть JSON' : 'Показать JSON'}
               </Button>
@@ -294,7 +310,7 @@ export default function MongoPage() {
           </div>
 
           {showEditors && (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div>
               <Textarea
                 label="Query JSON"
                 minRows={6}
@@ -302,22 +318,6 @@ export default function MongoPage() {
                 onValueChange={setQueryText}
                 placeholder='{"_id":"652f7f6a2c9f8d44f0c1a123"}'
               />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <Textarea
-                  label="Sort JSON"
-                  minRows={6}
-                  value={sortText}
-                  onValueChange={setSortText}
-                  placeholder='{"createdAt": -1}'
-                />
-                <Textarea
-                  label="Projection JSON"
-                  minRows={6}
-                  value={projectionText}
-                  onValueChange={setProjectionText}
-                  placeholder='{"password": 0}'
-                />
-              </div>
             </div>
           )}
 
@@ -365,6 +365,13 @@ export default function MongoPage() {
               setEditOpen(false);
               handleFind();
             }}
+          />
+          <ImportDialog
+            isOpen={importOpen}
+            onClose={() => setImportOpen(false)}
+            onImport={handleImport}
+            loading={importing}
+            collection={selectedCollection}
           />
         </div>
       </section>

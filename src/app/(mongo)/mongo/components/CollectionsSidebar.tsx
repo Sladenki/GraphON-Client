@@ -11,10 +11,12 @@ type Props = {
   onSelect: (name: string) => void;
   onExportJson?: () => void;
   onExportNdjson?: () => void;
+  onImportJson?: () => void;
   canExport?: boolean;
+  canImport?: boolean;
 };
 
-export default function CollectionsSidebar({ dbName, collections, loading, selectedCollection, onSelect, onExportJson, onExportNdjson, canExport }: Props) {
+export default function CollectionsSidebar({ dbName, collections, loading, selectedCollection, onSelect, onExportJson, onExportNdjson, onImportJson, canExport, canImport }: Props) {
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <h3 style={{ margin: 0 }}>Коллекции (DB: {dbName})</h3>
@@ -39,13 +41,28 @@ export default function CollectionsSidebar({ dbName, collections, loading, selec
           </div>
         )}
       </div>
-      {(onExportJson || onExportNdjson) && (
-        <div style={{ display: "flex", gap: 8, justifyContent: "space-between" }}>
-          {onExportJson && (
-            <Button variant="flat" onPress={onExportJson} isDisabled={canExport === false}>Скачать JSON</Button>
+      {(onExportJson || onExportNdjson || onImportJson) && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {onImportJson && canImport && (
+            <Button 
+              variant="solid" 
+              color="success" 
+              onPress={onImportJson} 
+              isDisabled={!canImport}
+              fullWidth
+            >
+              📁 Загрузить JSON
+            </Button>
           )}
-          {onExportNdjson && (
-            <Button variant="flat" onPress={onExportNdjson} isDisabled={canExport === false}>Скачать NDJSON</Button>
+          {(onExportJson || onExportNdjson) && (
+            <div style={{ display: "flex", gap: 8, justifyContent: "space-between" }}>
+              {onExportJson && (
+                <Button variant="flat" onPress={onExportJson} isDisabled={canExport === false}>Скачать JSON</Button>
+              )}
+              {onExportNdjson && (
+                <Button variant="flat" onPress={onExportNdjson} isDisabled={canExport === false}>Скачать NDJSON</Button>
+              )}
+            </div>
           )}
         </div>
       )}

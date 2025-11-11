@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { inter, orbitron } from './fonts';
 import '../styles/globals.scss';
 import { Providers } from '@/providers/main';
@@ -6,6 +6,14 @@ import { Providers } from '@/providers/main';
 export const metadata: Metadata = {
   title: 'GraphON',
   description: 'Your extracurricular guide',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({

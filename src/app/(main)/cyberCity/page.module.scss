@@ -1,0 +1,105 @@
+.page {
+  height: calc(100svh - 0px);
+  display: grid;
+  grid-template-rows: 1fr; /* одна строка: вся высота под карту */
+  background: #0b0d14;
+  color: #e6f4ff;
+  overflow: hidden; /* убираем полосы прокрутки на странице */
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(80, 150, 255, .18);
+  background: linear-gradient(180deg, rgba(10,12,20,.9), rgba(10,12,20,.7));
+}
+.title { font-weight: 800; letter-spacing: .4px; margin-right: auto; }
+
+.content { position: relative; height: 100%; overflow: hidden; }
+
+.mapHost {
+  position: relative;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+/* 3D tilt wrapper */
+.tilt { perspective: 1000px; }
+.tiltInner {
+  transform-style: preserve-3d;
+  transition: transform .2s ease-out, filter .3s ease-out;
+  will-change: transform;
+  height: 100%;
+  width: 100%;
+}
+
+/* Glow frame for depth */
+.mapHost::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 80px rgba(0, 255, 255, .10), inset 0 0 160px rgba(255, 0, 255, .08), inset 0 0 260px rgba(0,0,0,.25);
+}
+
+/* Neon post-process over the canvas */
+.neonBoost {
+  filter: brightness(1.2) contrast(1.12) saturate(1.2) hue-rotate(-10deg);
+}
+
+/* Labels glow canvas container (positioned above the map canvas) */
+.labelsGlow {
+  position: absolute; inset: 0; pointer-events: none;
+}
+
+/* Depth fade overlay: затемнение вдаль при 3D‑наклоне */
+.depthFade {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(120% 60% at 50% 120%, rgba(0,0,0,0.36) 0%, rgba(0,0,0,0.0) 60%), /* нижняя виньетка */
+    linear-gradient(180deg, rgba(0,0,0,0.26) 0%, rgba(0,0,0,0.06) 45%, rgba(0,0,0,0.22) 78%, rgba(0,0,0,0.34) 100%);
+  mix-blend-mode: multiply;
+}
+
+/* Search UI */
+.searchBox {
+  position: absolute; top: 12px; left: 12px; right: 12px; z-index: 10;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.searchInput {
+  width: 100%;
+  background: rgba(12,14,20,.75);
+  border: 1px solid rgba(120,160,220,.25);
+  color: #e6f4ff;
+  padding: 10px 12px;
+  border-radius: 10px;
+  outline: none;
+}
+.suggests { background: rgba(12,14,20,.85); border: 1px solid rgba(120,160,220,.25); border-radius: 10px; overflow: hidden; }
+.suggestItem { display: block; width: 100%; text-align: left; padding: 10px 12px; color: #cfe7ff; border: none; background: transparent; cursor: pointer; }
+.suggestItem:hover { background: rgba(110,150,220,.12); }
+.suggestLoading { padding: 8px 12px; color: #9fb7d6; }
+
+@media (max-width: 400px) {
+  .searchBox { top: 8px; left: 8px; right: 8px; }
+  .searchInput { padding: 8px 10px; font-size: 14px; }
+}
+
+/* Sidebar (optional in future) */
+.sidebar { display: none; }
+
+@media (max-width: 720px) {
+  .title { font-size: 14px; }
+}
+
+/* Ultra-small screens: width < 400px */
+@media (max-width: 400px) {
+  .header { padding: 8px 10px; }
+  .title { font-size: 13px; letter-spacing: .2px; }
+  .mapHost { min-height: 420px; }
+  .neonBoost { filter: brightness(1.1) contrast(1.06) saturate(1.05); }
+}
+
+

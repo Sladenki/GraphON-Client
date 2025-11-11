@@ -1,0 +1,567 @@
+// Убраны глобальные стили для body — скролл блокируется внутри компонента
+
+.page {
+  height: 100svh;
+  display: grid;
+  grid-template-rows: 1fr;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow: hidden;
+  
+  &.mobile { 
+    /* Радикальное решение для мобильных - используем фиксированную высоту */
+    height: 100vh !important;
+    max-height: 100vh !important;
+    min-height: 100vh !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw !important;
+  }
+}
+
+.content { 
+  position: relative; 
+  height: 100%; 
+  overflow: hidden;
+  
+  .mobile & {
+    /* Для мобильных - используем абсолютное позиционирование */
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+.mapHost { 
+  position: relative; 
+  height: 100%; 
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  
+  /* Оптимизация для touch устройств */
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  
+  &.mapLoaded {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  &.mobileMap {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    /* Дополнительные оптимизации для мобильных */
+    will-change: transform, opacity;
+    
+    /* Для мобильных - абсолютное позиционирование */
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+/* Контейнер карты (замена инлайн-стилей width/height/display) */
+.map {
+  width: 100%;
+  height: 100%;
+  display: block;
+  
+  /* Плавные переходы для карты */
+  :global(.maplibregl-canvas-container) {
+    transition: filter 0.3s ease-out;
+  }
+  
+  /* Обеспечиваем 100% размер для внутреннего контейнера карты */
+  > div {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  
+  /* Улучшенная интерактивность карты */
+  :global(.maplibregl-canvas) {
+    will-change: transform;
+    cursor: grab;
+    
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+// Общие стили для эффектов
+%cyberpunk-base {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.neonBoost { 
+  @extend %cyberpunk-base;
+  filter: brightness(1.2) contrast(1.12) saturate(1.2); 
+}
+
+.labelsGlow { @extend %cyberpunk-base; }
+
+/* Cyberpunk Effects */
+.cyberpunkOverlay {
+  @extend %cyberpunk-base;
+  z-index: 1;
+  opacity: 0.4;
+  mix-blend-mode: screen;
+}
+
+
+.edgeGlow {
+  @extend %cyberpunk-base;
+  z-index: 3;
+  
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    background: radial-gradient(ellipse, rgba(0, 234, 255, 0.15), transparent 70%);
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    animation: pulseGlow 4s ease-in-out infinite;
+  }
+  
+  &::before { top: -50%; left: -50%; }
+  &::after { bottom: -50%; right: -50%; animation-delay: 2s; }
+}
+
+.noiseOverlay {
+  @extend %cyberpunk-base;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  z-index: 4;
+  animation: noiseFlicker 8s ease-in-out infinite;
+}
+
+// Светлая мягкая градиентная подложка, чтобы убрать "ослепляющий" эффект белого
+.lightGradientOverlay {
+  @extend %cyberpunk-base;
+  z-index: 0; // ниже остальных оверлеев
+  opacity: 0.28; // деликатная тонировка
+  background: linear-gradient(180deg, #E9EDF2 0%, #F5F8FB 100%);
+}
+
+.cyberpunkVignette {
+  @extend %cyberpunk-base;
+  background: 
+    radial-gradient(ellipse at top left, rgba(0, 234, 255, 0.08), transparent 50%),
+    radial-gradient(ellipse at top right, rgba(255, 92, 244, 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(162, 124, 255, 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(62, 255, 195, 0.08), transparent 50%);
+  z-index: 1;
+  animation: vignettePulse 6s ease-in-out infinite;
+}
+
+// Анимации
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes noiseFlicker {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.15; }
+}
+
+@keyframes vignettePulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Loading Animation */
+.loadingOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeOut 0.3s ease-out 0.8s forwards;
+}
+
+.loadingSpinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Popup Loader - легкий loader для lazy loaded попапов */
+.popupLoader {
+  position: fixed;
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  z-index: 3500;
+  animation: pulseLoader 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseLoader {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.spinnerRing {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(120, 160, 220, 0.2);
+  border-top: 3px solid var(--color-neon-cyan);
+  border-right: 3px solid var(--color-neon-pink);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinnerText {
+  color: var(--color-neon-cyan);
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+// Дополнительные анимации
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; pointer-events: none; }
+}
+
+/* Search UI */
+.searchBox { 
+  position: absolute; 
+  top: 12px; 
+  left: 12px; 
+  right: 12px; 
+  z-index: 10; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+}
+
+.searchInput {
+  width: 100%; 
+  background: var(--color-overlay); 
+  border: 1px solid var(--color-border);
+  color: var(--color-text); 
+  padding: 10px 12px; 
+  border-radius: 10px; 
+  outline: none;
+}
+
+.suggests { 
+  background: rgba(12, 14, 20, 0.85); 
+  border: 1px solid var(--color-border); 
+  border-radius: 10px; 
+  overflow: hidden; 
+}
+
+.suggestItem { 
+  display: block; 
+  width: 100%; 
+  text-align: left; 
+  padding: 10px 12px; 
+  color: var(--color-text-dim); 
+  border: none; 
+  background: transparent; 
+  cursor: pointer; 
+  
+  &:hover { 
+    background: rgba(110, 150, 220, 0.12); 
+  }
+}
+
+.suggestLoading { 
+  padding: 8px 12px; 
+  color: var(--color-text-muted); 
+}
+
+/* Filter Button */
+/* Action buttons (filter & list) */
+.filterButton,
+.listButton {
+  position: fixed;
+  bottom: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Максимальный z-index для видимости */
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  
+  /* Обработка safe-area для iOS устройств */
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  right: calc(24px + env(safe-area-inset-right));
+  box-shadow: var(--shadow);
+
+  &:hover {
+    transform: scale(1.08) translateY(-2px);
+    background: var(--color-primary-hover);
+    box-shadow: 0 8px 24px rgba(106, 87, 232, 0.35);
+  }
+  
+  &:active {
+    transform: scale(1.02);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Плавная пульсация для привлечения внимания */
+  animation: subtle-pulse 3s ease-in-out infinite;
+}
+
+@keyframes subtle-pulse {
+  0%, 100% {
+    box-shadow: var(--shadow);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(106, 87, 232, 0.25);
+  }
+}
+
+.filterButton {
+  right: 24px;
+}
+
+.listButton {
+  right: calc(24px + 56px + 12px);
+}
+
+// Объединенные медиа-запросы для оптимизации
+@media (max-width: 480px) {
+  .filterButton {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: calc(16px + env(safe-area-inset-right));
+    width: 52px;
+    height: 52px;
+    z-index: 9999;
+  }
+  .filterButtonWithMenu {
+    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 44px));
+  }
+  
+  .listButton {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: calc(16px + env(safe-area-inset-right) + 52px + 10px);
+    width: 52px;
+    height: 52px;
+    z-index: 9999;
+  }
+  .listButtonWithMenu {
+    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 44px));
+  }
+}
+
+@media (max-width: 400px) {
+  
+  .noiseOverlay {
+    opacity: 0.12;
+  }
+  
+  .searchBox { 
+    top: 8px; 
+    left: 8px; 
+    right: 8px; 
+  }
+  
+  .searchInput { 
+    padding: 8px 10px; 
+    font-size: 14px; 
+  }
+  
+  .spinnerRing {
+    width: 50px;
+    height: 50px;
+    border-width: 2px;
+  }
+
+  .spinnerText {
+    font-size: 14px;
+  }
+  
+  .filterButton {
+    bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    right: calc(12px + env(safe-area-inset-right)) !important;
+    width: 48px;
+    height: 48px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  .filterButtonWithMenu {
+    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+  }
+  
+  .listButton {
+    bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    right: calc(12px + env(safe-area-inset-right) + 48px + 8px) !important;
+    width: 48px;
+    height: 48px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  .listButtonWithMenu {
+    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+  }
+}
+
+// Дополнительная оптимизация для очень маленьких экранов (300-350px)
+@media (max-width: 350px) {
+  .mapHost {
+    &.mobileMap {
+      /* GPU ускорение для плавности */
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+  }
+  
+  .filterButton {
+    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    right: calc(8px + env(safe-area-inset-right)) !important;
+    width: 44px;
+    height: 44px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  .filterButtonWithMenu {
+    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+  }
+  
+  .listButton {
+    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    right: calc(8px + env(safe-area-inset-right) + 44px + 8px) !important;
+    width: 44px;
+    height: 44px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  .listButtonWithMenu {
+    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+  }
+  
+  .loadingOverlay {
+    /* Оптимизация загрузочного экрана для маленьких экранов */
+    padding: 10px;
+  }
+  
+  .spinnerRing {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .spinnerText {
+    font-size: 13px;
+    margin-top: 8px;
+  }
+}
+
+// Дополнительная оптимизация для экранов шириной 300px и меньше
+@media (max-width: 320px) {
+  .page {
+    &.mobile {
+      overflow: hidden !important;
+    }
+  }
+  
+  .filterButton {
+    bottom: calc(6px + env(safe-area-inset-bottom)) !important;
+    right: calc(6px + env(safe-area-inset-right)) !important;
+    width: 40px;
+    height: 40px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  .filterButtonWithMenu {
+    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 76px)) !important;
+  }
+  
+  .listButton {
+    bottom: calc(6px + env(safe-area-inset-bottom)) !important;
+    right: calc(6px + env(safe-area-inset-right) + 40px + 6px) !important;
+    width: 40px;
+    height: 40px;
+    z-index: 9999 !important;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  .listButtonWithMenu {
+    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 76px)) !important;
+  }
+  
+  .searchBox {
+    top: 6px;
+    left: 6px;
+    right: 6px;
+  }
+  
+  .searchInput {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+}
+

@@ -19,6 +19,22 @@
   --popup-content-bg: var(--background-color);
   --popup-border-radius: 1.875rem; // 30px в rem
 
+  // Карта
+  --color-bg: #0b0d14;
+  --color-text: #e6f4ff;
+  --color-text-dim: #cfe7ff;
+  --color-text-muted: #9fb7d6;
+  --color-neon-cyan: #00eaff;
+  --color-neon-pink: #ff5cf4;
+  --color-neon-purple: #a27cff;
+  --color-neon-mint: #3effc3;
+  --color-primary: #6a57e8;
+  --color-primary-hover: #5a4ad8;
+  --color-border: rgba(120, 160, 220, 0.25);
+  --color-overlay: rgba(12, 14, 20, 0.75);
+  --shadow: 0 4px 12px rgba(106, 87, 232, 0.3);
+  --shadow-hover: 0 6px 16px rgba(106, 87, 232, 0.4);
+
   /* Переменные для графа */
   --primary-color: #6a57e8;
   --primary-hover: #5a4ad8;

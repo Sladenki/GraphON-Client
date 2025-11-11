@@ -16,6 +16,7 @@ import { useRoleAccess } from '@/hooks/useRoleAccess';
 import { AdminSection } from '@/components/admin/AdminSection/AdminSection';
 import { UserStats } from '@/components/admin/UserStats/UserStats';
 import { ServerStats } from '@/components/admin/ServerStats/ServerStats';
+import { VisitorAnalytics } from '@/components/admin/VisitorAnalytics/VisitorAnalytics';
 import { CreateGlobalGraphForm } from '@/components/admin/CreateGlobalGraphForm/CreateGlobalGraphForm';
 import { CreateTopicGraphForm } from '@/components/admin/CreateTopicGraphForm/CreateTopicGraphForm';
 import { GetWeeklySchedule } from '@/components/admin/GetWeeklySchedule/GetWeeklySchedule';
@@ -46,6 +47,16 @@ const Admin = () => {
                     role={UserRole.Create}
                 >
                     <UserStats />
+                </AdminSection>
+            )}
+
+            {canAccessCreate && (
+                <AdminSection 
+                    title="Аналитика посещаемости"
+                    emoji="📈"
+                    role={UserRole.Create}
+                >
+                    <VisitorAnalytics />
                 </AdminSection>
             )}
 

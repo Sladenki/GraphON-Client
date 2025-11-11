@@ -1,0 +1,191 @@
+.page {
+  height: calc(100svh - 0px);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--background-color);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(90,100,170,.15);
+  background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.75));
+}
+
+.title {
+  font-weight: 800;
+  font-size: 18px;
+  margin-right: auto;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(90,100,170,.25);
+  background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.7));
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  transition: transform .15s ease, box-shadow .15s ease, filter .2s ease;
+}
+
+.chip[data-active="true"] {
+  border-color: rgba(91,124,250,.6);
+  box-shadow: 0 6px 18px rgba(91,124,250,.25);
+}
+
+.mapWrap {
+  position: relative;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 12px;
+}
+
+@media (max-width: 980px) {
+  .content { grid-template-columns: 1fr; }
+}
+
+.map {
+  height: 100%;
+  min-height: 480px;
+}
+
+/* Cyberpunk/Dark neon map styling */
+.neonMap :global(.leaflet-tile) {
+  filter: brightness(1.25) contrast(1.1) saturate(1.2) hue-rotate(-4deg);
+}
+
+/* Lighten base layer a bit more */
+.baseBoost :global(.leaflet-tile) {
+  filter: brightness(1.3) contrast(1.05) saturate(1.15);
+}
+
+/* Screen-mixed light tiles to reduce overall darkness */
+.lightMix :global(.leaflet-tile) {
+  mix-blend-mode: screen;
+  filter: brightness(1.1) saturate(1.05);
+}
+
+/* Labels glow overlays */
+.labelsGlow :global(.leaflet-tile) {
+  filter: brightness(1.45) contrast(1.1)
+    drop-shadow(0 0 6px rgba(57,234,255,.55))
+    drop-shadow(0 0 12px rgba(154,107,255,.45));
+  mix-blend-mode: screen;
+}
+
+.labelsBlur :global(.leaflet-tile) {
+  filter: blur(1.1px) brightness(1.6) saturate(1.2);
+  mix-blend-mode: screen;
+}
+
+/* 3D tilt wrapper */
+.tilt {
+  perspective: 1000px;
+}
+
+.tiltInner {
+  transform-style: preserve-3d;
+  transition: transform .15s ease-out;
+  will-change: transform;
+}
+
+.glowMarker {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  position: relative;
+  transform: translate(-50%, -50%);
+  transition: transform .15s ease;
+}
+
+.glowMarker::before,
+.glowMarker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.glowMarker::before {
+  box-shadow: 0 0 0 6px currentColor;
+  opacity: .25;
+}
+
+.glowMarker::after {
+  background: currentColor;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 currentColor; opacity: .35; }
+  70% { box-shadow: 0 0 0 16px rgba(0,0,0,0); opacity: 0; }
+  100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); opacity: 0; }
+}
+
+.pulseRing {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  animation: pulse 2.2s ease-out infinite;
+  pointer-events: none;
+}
+
+/* Category colors */
+.c_concert { color: #ff4d6d; }
+.c_exhibit { color: #00c2ff; }
+.c_lecture { color: #7a5bfa; }
+.c_festival { color: #3ecfbd; }
+.c_meetup { color: #ffb020; }
+
+.markerHover {
+  transform: translate(-50%, -56%) scale(1.15);
+}
+
+.mapWrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 60px rgba(57,234,255,.12),
+    inset 0 0 120px rgba(154,107,255,.10);
+}
+
+.sidebar {
+  display: grid;
+  gap: 10px;
+  padding: 10px 12px;
+  border-left: 1px solid rgba(90,100,170,.15);
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.82));
+}
+
+.card {
+  border: 1px solid rgba(90,100,170,.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(20,25,55,.08);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(20,25,55,.12); }
+.cardTitle { font-weight: 800; margin-bottom: 4px; }
+.cardMeta { font-size: 12px; opacity: .8; }
+
+
