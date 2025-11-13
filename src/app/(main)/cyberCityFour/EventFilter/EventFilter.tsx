@@ -100,7 +100,7 @@ export default function EventFilter({
               className={styles.actionButton}
               aria-label="Список мероприятий"
             >
-              <List size={18} />
+              <List size={18} className={styles.actionIcon} />
               <span>Список мероприятий</span>
             </button>
           )}
@@ -111,7 +111,7 @@ export default function EventFilter({
               onClick={clearAllFilters}
               aria-label="Очистить все фильтры"
             >
-              <X size={18} />
+              <X size={18} className={styles.actionIcon} />
               <span>Очистить фильтры</span>
             </button>
           )}
@@ -195,7 +195,7 @@ export default function EventFilter({
             onClick={() => toggleCategory(key)}
             aria-pressed={Boolean(selectedCategories[key])}
           >
-            <Icon size={18} />
+            <Icon size={20} />
             <div className={styles.categoryLabel}>{label}</div>
           </button>
         ))}
