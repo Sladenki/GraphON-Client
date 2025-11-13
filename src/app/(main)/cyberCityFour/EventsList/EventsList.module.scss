@@ -1,34 +1,95 @@
 .eventsList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   min-height: 400px;
 }
 
 .eventCard {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: #f8f9fa;
-  border: none;
-  border-radius: 12px;
+  gap: 16px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, #ffffff 0%, #faf9fe 100%);
+  border: 2px solid transparent;
+  border-left: 4px solid var(--primary-color, #6a57e8);
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
+  overflow: hidden;
+  animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  
+  /* Декоративный градиентный элемент */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      var(--primary-color, #6a57e8) 0%, 
+      rgba(106, 87, 232, 0.3) 50%, 
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Фоновый градиент при hover */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      rgba(106, 87, 232, 0.03) 0%, 
+      rgba(139, 122, 239, 0.05) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+  }
   
   &:hover {
-    background: #ffffff;
-    transform: translateX(4px);
+    border-color: rgba(106, 87, 232, 0.2);
+    border-left-color: var(--primary-color, #6a57e8);
+    transform: translateX(6px) translateY(-2px);
+    
+    &::before {
+      opacity: 1;
+    }
+    
+    &::after {
+      opacity: 1;
+    }
+    
+    .eventIconWrapper {
+      transform: scale(1.1) rotate(5deg);
+    }
     
     .showOnMapIcon {
       opacity: 1;
-      transform: translateX(2px);
+      transform: translateX(4px) scale(1.1);
+      color: var(--primary-color, #6a57e8);
+    }
+    
+    .eventName {
+      color: var(--primary-color, #6a57e8);
     }
   }
   
   &:active {
-    transform: translateX(2px) scale(0.98);
+    transform: translateX(4px) translateY(-1px) scale(0.99);
+  }
+  
+  > * {
+    position: relative;
+    z-index: 1;
   }
 }
 
@@ -36,37 +97,60 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   color: #ffffff;
   flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  
+  /* Декоративное кольцо вокруг иконки */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 16px;
+    background: inherit;
+    opacity: 0.15;
+    transition: all 0.3s ease;
+  }
+  
+  svg {
+    position: relative;
+    z-index: 1;
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .eventContent {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
 }
 
 .eventName {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: #1f2937;
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  letter-spacing: -0.02em;
+  transition: color 0.3s ease;
 }
 
 .eventMeta {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 8px;
+  font-size: 13px;
   color: #6b7280;
+  font-weight: 500;
 }
 
 .eventPlace {
@@ -77,17 +161,24 @@
 
 .eventDate {
   flex-shrink: 0;
+  padding: 2px 8px;
+  background: rgba(106, 87, 232, 0.08);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-color, #6a57e8);
 }
 
 .eventDot {
   flex-shrink: 0;
+  color: #d1d5db;
 }
 
 .showOnMapIcon {
   flex-shrink: 0;
   color: #9ca3af;
-  opacity: 0.5;
-  transition: all 0.2s ease;
+  opacity: 0.4;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Поиск */
@@ -117,7 +208,7 @@
   border-radius: 12px;
   font-size: 14px;
   color: #1f2937;
-  background: #ffffff;
+  background: transparent;
   transition: all 0.2s ease;
   outline: none;
 
@@ -127,7 +218,7 @@
 
   &:focus {
     border-color: var(--primary-color, #6a57e8);
-    background: #ffffff;
+    background: transparent;
   }
 }
 
@@ -179,13 +270,120 @@
   color: #9ca3af;
 }
 
+/* Mobile adaptations */
+@media (max-width: 480px) {
+  .eventCard {
+    padding: 14px 16px;
+    gap: 14px;
+    border-left-width: 3px;
+    
+    &:hover {
+      transform: translateX(4px) translateY(-1px);
+    }
+  }
+  
+  .eventIconWrapper {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+  
+  .eventName {
+    font-size: 14px;
+  }
+  
+  .eventMeta {
+    font-size: 12px;
+  }
+  
+  .eventDate {
+    font-size: 11px;
+    padding: 2px 6px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+  .eventCard {
+    &:hover {
+      transform: none;
+      
+      &::before,
+      &::after {
+        opacity: 0;
+      }
+      
+      .eventIconWrapper {
+        transform: none;
+      }
+      
+      .showOnMapIcon {
+        opacity: 0.4;
+        transform: none;
+        color: #9ca3af;
+      }
+      
+      .eventName {
+        color: #1f2937;
+      }
+    }
+    
+    &:active {
+      transform: scale(0.98);
+      border-color: rgba(106, 87, 232, 0.3);
+      
+      &::after {
+        opacity: 1;
+      }
+      
+      .eventIconWrapper {
+        transform: scale(0.95);
+      }
+      
+      .eventName {
+        color: var(--primary-color, #6a57e8);
+      }
+    }
+  }
+}
+
 /* Dark theme */
 [data-theme="dark"] {
   .eventCard {
-    background: #2a2d33;
+    background: linear-gradient(135deg, #2a2d33 0%, #252831 100%);
+    border-left-color: var(--primary-color, #8a7af8);
+    
+    &::before {
+      background: linear-gradient(90deg, 
+        var(--primary-color, #8a7af8) 0%, 
+        rgba(138, 122, 248, 0.3) 50%, 
+        transparent 100%
+      );
+    }
+    
+    &::after {
+      background: linear-gradient(135deg, 
+        rgba(138, 122, 248, 0.05) 0%, 
+        rgba(167, 139, 250, 0.08) 100%
+      );
+    }
     
     &:hover {
-      background: #2f3238;
+      border-color: rgba(138, 122, 248, 0.3);
+      border-left-color: var(--primary-color, #8a7af8);
+      
+      .showOnMapIcon {
+        color: var(--primary-color, #8a7af8);
+      }
+      
+      .eventName {
+        color: var(--primary-color, #8a7af8);
+      }
     }
   }
   
@@ -197,6 +395,11 @@
     color: #9ca3af;
   }
   
+  .eventDate {
+    background: rgba(138, 122, 248, 0.12);
+    color: #c4b5fd;
+  }
+  
   .showOnMapIcon {
     color: #6b7280;
   }
@@ -206,13 +409,13 @@
   }
 
   .searchInput {
-    background: #1f2937;
+    background: transparent;
     border-color: #374151;
     color: #e5e7eb;
 
     &:focus {
       border-color: var(--primary-color, #8a7af8);
-      background: #1f2937;
+      background: transparent;
     }
   }
 
@@ -231,6 +434,35 @@
 
   .emptyText {
     color: #6b7280;
+  }
+  
+  /* Touch для темной темы */
+  @media (hover: none) {
+    .eventCard {
+      &:hover {
+        .eventName {
+          color: #e5e7eb;
+        }
+      }
+      
+      &:active {
+        .eventName {
+          color: var(--primary-color, #8a7af8);
+        }
+      }
+    }
+  }
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

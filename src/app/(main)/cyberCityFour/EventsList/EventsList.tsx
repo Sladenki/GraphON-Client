@@ -14,6 +14,30 @@ interface EventsListProps {
   onEventClick: (event: CityEvent) => void;
 }
 
+// Функция форматирования даты в формат "6 ноября 2025г."
+const formatEventDate = (dateString: string): string => {
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return dateString; // Если дата некорректна, вернем исходную строку
+    }
+    
+    const dateStr = date.toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    
+    // Если уже есть "г.", убираем пробел перед ним если есть, иначе добавляем "г." без пробела
+    if (dateStr.includes('г.')) {
+      return dateStr.replace(/\s+г\./, 'г.');
+    }
+    return dateStr.replace(/\s(\d{4})$/, '$1г.');
+  } catch {
+    return dateString;
+  }
+};
+
 export default function EventsList({ isOpen, onClose, events, onEventClick }: EventsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -83,12 +107,15 @@ export default function EventsList({ isOpen, onClose, events, onEventClick }: Ev
             </p>
           </div>
         ) : (
-          filteredEvents.map((event) => (
+          filteredEvents.map((event, index) => (
           <button
             key={event.id}
             className={styles.eventCard}
             onClick={() => handleEventClick(event)}
             type="button"
+            style={{
+              animationDelay: `${Math.min(index * 0.05, 0.4)}s`
+            }}
           >
             <div 
               className={styles.eventIconWrapper}
@@ -103,7 +130,7 @@ export default function EventsList({ isOpen, onClose, events, onEventClick }: Ev
                 <span className={styles.eventPlace}>{event.place}</span>
                 <span className={styles.eventDot}>•</span>
                 <span className={styles.eventDate}>
-                  {event.isDateTbd ? "Дата уточняется" : event.eventDate}
+                  {event.isDateTbd ? "Дата уточняется" : formatEventDate(event.eventDate)}
                 </span>
               </div>
             </div>

@@ -16,6 +16,30 @@ interface EventPopupProps {
   onBack?: () => void;
 }
 
+// Функция форматирования даты в формат "6 ноября 2025г."
+const formatEventDate = (dateString: string): string => {
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return dateString; // Если дата некорректна, вернем исходную строку
+    }
+    
+    const dateStr = date.toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    
+    // Если уже есть "г.", убираем пробел перед ним если есть, иначе добавляем "г." без пробела
+    if (dateStr.includes('г.')) {
+      return dateStr.replace(/\s+г\./, 'г.');
+    }
+    return dateStr.replace(/\s(\d{4})$/, '$1г.');
+  } catch {
+    return dateString;
+  }
+};
+
 export default function EventPopup({ 
   event, 
   isOpen, 
@@ -109,7 +133,7 @@ export default function EventPopup({
                   <Calendar size={16} />
                 </div>
                 <div className={styles.infoValue}>
-                  {event.isDateTbd ? "Дата уточняется" : event.eventDate}
+                  {event.isDateTbd ? "Дата уточняется" : formatEventDate(event.eventDate)}
                 </div>
               </div>
 
