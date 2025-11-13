@@ -116,6 +116,23 @@ export default function FooterPopUp({
     };
   }, [isDragging, handlePointerMove, finishDrag]);
 
+  // Закрытие по нажатию Escape
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleEscape);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen || !mounted) return null;
 
   // Стиль для драга - только когда идет перетаскивание
