@@ -132,8 +132,7 @@ export default function EventPopup({
                     <Users size={16} />
                   </div>
                   <div className={styles.infoValue}>
-                    <span className={styles.badge}>{event.regedUsers}</span>
-                    {" "}участников
+                    {event.regedUsers} участников
                   </div>
                 </div>
               )}

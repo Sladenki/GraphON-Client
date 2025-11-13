@@ -143,20 +143,6 @@
   letter-spacing: -0.01em;
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 24px;
-  height: 20px;
-  padding: 0 6px;
-  background: linear-gradient(135deg, #6a57e8 0%, #8b7aef 100%);
-  color: white;
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 6px;
-  letter-spacing: 0.02em;
-}
 
 .eventDescription {
   position: relative;
@@ -355,13 +341,6 @@
     font-size: 12.5px;
   }
   
-  .badge {
-    min-width: 22px;
-    height: 18px;
-    padding: 0 5px;
-    font-size: 10px;
-  }
-  
   .descriptionText {
     font-size: 12.5px;
   }
@@ -471,11 +450,6 @@
   .infoValue,
   .placeValue {
     color: #e5e7eb;
-  }
-  
-  .badge {
-    background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
-    color: #18181b;
   }
   
   .eventDescription {
