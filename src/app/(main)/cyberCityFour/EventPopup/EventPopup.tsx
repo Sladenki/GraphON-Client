@@ -1,6 +1,7 @@
 "use client";
 
-import { MapPin, Calendar, Users, Clock, ArrowLeft } from "lucide-react";
+import { useCallback } from "react";
+import { MapPin, Calendar, Users, Clock, ArrowLeft, Share2 } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import ActionButton from "@/components/ui/ActionButton";
 import styles from "./EventPopup.module.scss";
@@ -58,6 +59,59 @@ export default function EventPopup({
     window.open(yandexMapsURL, '_blank');
   };
 
+  // Функция форматирования времени для поделиться
+  const getFormattedTime = useCallback(() => {
+    if (!event) return "";
+    
+    if (event.isDateTbd) return "Дата уточняется";
+    
+    const dateStr = formatEventDate(event.eventDate);
+    if (event.timeFrom && event.timeTo) {
+      return `${dateStr}, ${event.timeFrom} – ${event.timeTo}`;
+    }
+    return dateStr;
+  }, [event]);
+
+  // Обработчик поделиться
+  const handleShare = useCallback(async () => {
+    if (!event) return;
+    
+    try {
+      const shareUrl = `${window.location.origin}/events/${event.id}`;
+      const formattedTime = getFormattedTime();
+      const text = `${event.name} — ${formattedTime}${event.place ? `, ${event.place}` : ''}`;
+      const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
+
+      const opened = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+      if (opened) {
+        return;
+      }
+
+      // Если всплывающее окно заблокировано
+      if (navigator.share) {
+        await navigator.share({ title: event.name, text: text, url: shareUrl } as any);
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareUrl);
+    } catch (err) {
+      const fallbackUrl = `${window.location.origin}/events/${event.id}`;
+      try {
+        if (navigator.share) {
+          const formattedTime = getFormattedTime();
+          const text = `${event.name} — ${formattedTime}${event.place ? `, ${event.place}` : ''}`;
+          await navigator.share({ title: event.name, text: text, url: fallbackUrl } as any);
+          return;
+        }
+      } catch {}
+      try {
+        await navigator.clipboard.writeText(fallbackUrl);
+      } catch {
+        // ignore
+      }
+    }
+  }, [event, getFormattedTime]);
+
   // Фиксированная кнопка внизу
   const footer = event ? (
     <div className={styles.footerButtons}>
@@ -81,6 +135,14 @@ export default function EventPopup({
         }}
         className={styles.registerButton}
       />
+      <button
+        className={styles.shareButton}
+        onClick={handleShare}
+        aria-label="Поделиться мероприятием"
+        title="Поделиться мероприятием"
+      >
+        <Share2 size={20} />
+      </button>
       <button
         className={styles.mapButton}
         onClick={openInYandexMaps}

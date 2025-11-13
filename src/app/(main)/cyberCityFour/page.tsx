@@ -251,8 +251,13 @@ export default function CyberCityFour() {
     }
   }, [mapRef, mapLoaded, isMobile, isVerySmallScreen]);
 
-  // Мемоизированный обработчик закрытия фильтра
+  // Мемоизированный обработчик закрытия фильтра (без сброса позиции)
   const handleFilterClose = useCallback(() => {
+    setIsFilterOpen(false);
+  }, []);
+
+  // Мемоизированный обработчик применения фильтров (с сбросом позиции)
+  const handleFilterApply = useCallback(() => {
     setIsFilterOpen(false);
     // Сбрасываем позицию карты к начальному состоянию с уменьшенным зумом
     resetMapView();
@@ -365,6 +370,7 @@ export default function CyberCityFour() {
               <EventFilter 
                 isOpen={isFilterOpen} 
                 onClose={handleFilterClose}
+                onApply={handleFilterApply}
                 resultsCount={filteredEvents.length}
                 selectedCategories={selectedCategories}
                 onCategoriesChange={setSelectedCategories}

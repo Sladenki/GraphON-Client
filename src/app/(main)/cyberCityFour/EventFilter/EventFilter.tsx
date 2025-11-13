@@ -11,6 +11,7 @@ import { CATEGORIES } from "../constants/categories";
 interface EventFilterProps {
   isOpen: boolean;
   onClose: () => void;
+  onApply?: () => void;
   resultsCount?: number;
   selectedCategories: Record<string, boolean>;
   onCategoriesChange: (categories: Record<string, boolean>) => void;
@@ -25,7 +26,8 @@ interface EventFilterProps {
 
 export default function EventFilter({ 
   isOpen, 
-  onClose, 
+  onClose,
+  onApply,
   resultsCount = 0,
   selectedCategories,
   onCategoriesChange,
@@ -77,7 +79,7 @@ export default function EventFilter({
     <ActionButton
       label={`Показать ${resultsCount} событий`}
       variant="primary"
-      onClick={onClose}
+      onClick={onApply || onClose}
       className={styles.applyButton}
     />
   );
