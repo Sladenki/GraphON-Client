@@ -186,12 +186,16 @@
   margin-bottom: 16px;
   padding-bottom: 16px;
   border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .searchWrapper {
   position: relative;
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .searchIcon {
@@ -244,6 +248,55 @@
   &:active {
     transform: scale(0.95);
   }
+}
+
+.filterButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 2px solid #e5e7eb;
+  background: transparent;
+  border-radius: 12px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    border-color: var(--primary-color, #6a57e8);
+    background: rgba(106, 87, 232, 0.05);
+    color: var(--primary-color, #6a57e8);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.filterButtonActive {
+  border-color: var(--primary-color, #6a57e8);
+  background: rgba(106, 87, 232, 0.08);
+  color: var(--primary-color, #6a57e8);
+  
+  &:hover {
+    background: rgba(106, 87, 232, 0.12);
+  }
+}
+
+.filterBadge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-color, #6a57e8);
+  border: 2px solid #ffffff;
+  box-sizing: border-box;
 }
 
 /* Пустое состояние */
@@ -426,6 +479,32 @@
       background: #374151;
       color: #e5e7eb;
     }
+  }
+
+  .filterButton {
+    border-color: #374151;
+    color: #9ca3af;
+
+    &:hover {
+      border-color: var(--primary-color, #8a7af8);
+      background: rgba(138, 122, 248, 0.1);
+      color: var(--primary-color, #8a7af8);
+    }
+  }
+
+  .filterButtonActive {
+    border-color: var(--primary-color, #8a7af8);
+    background: rgba(138, 122, 248, 0.15);
+    color: var(--primary-color, #8a7af8);
+    
+    &:hover {
+      background: rgba(138, 122, 248, 0.2);
+    }
+  }
+
+  .filterBadge {
+    background: var(--primary-color, #8a7af8);
+    border-color: #2a2d33;
   }
 
   .emptyTitle {

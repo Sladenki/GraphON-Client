@@ -366,6 +366,25 @@
   right: 24px;
 }
 
+.filterButtonActive {
+  /* Дополнительные стили при активных фильтрах (если нужны) */
+}
+
+/* Badge для индикации активных фильтров */
+.filterButton .filterBadge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--color-primary);
+  box-sizing: border-box;
+  z-index: 1;
+  pointer-events: none;
+}
+
 .listButton {
   right: calc(24px + 56px + 12px);
 }
@@ -378,6 +397,13 @@
     width: 52px;
     height: 52px;
     z-index: 9999;
+    
+    .filterBadge {
+      top: 5px;
+      right: 5px;
+      width: 9px;
+      height: 9px;
+    }
   }
   .filterButtonWithMenu {
     bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 44px));
@@ -433,6 +459,13 @@
       width: 18px;
       height: 18px;
     }
+    
+    .filterBadge {
+      top: 4px;
+      right: 4px;
+      width: 8px;
+      height: 8px;
+    }
   }
   .filterButtonWithMenu {
     bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
@@ -475,6 +508,13 @@
     svg {
       width: 16px;
       height: 16px;
+    }
+    
+    .filterBadge {
+      top: 4px;
+      right: 4px;
+      width: 8px;
+      height: 8px;
     }
   }
   .filterButtonWithMenu {
@@ -531,6 +571,13 @@
     svg {
       width: 14px;
       height: 14px;
+    }
+    
+    .filterBadge {
+      top: 3px;
+      right: 3px;
+      width: 7px;
+      height: 7px;
     }
   }
   .filterButtonWithMenu {

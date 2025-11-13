@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { MapPin, Search, X } from "lucide-react";
+import { MapPin, Search, X, Filter } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import styles from "./EventsList.module.scss";
 import type { CityEvent } from "../mockEvents";
@@ -12,6 +12,8 @@ interface EventsListProps {
   onClose: () => void;
   events: CityEvent[];
   onEventClick: (event: CityEvent) => void;
+  onOpenFilter?: () => void;
+  hasActiveFilters?: boolean;
 }
 
 // Функция форматирования даты в формат "6 ноября 2025г."
@@ -38,12 +40,18 @@ const formatEventDate = (dateString: string): string => {
   }
 };
 
-export default function EventsList({ isOpen, onClose, events, onEventClick }: EventsListProps) {
+export default function EventsList({ isOpen, onClose, events, onEventClick, onOpenFilter, hasActiveFilters = false }: EventsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleEventClick = (event: CityEvent) => {
     onEventClick(event);
     // Не вызываем onClose() здесь - пусть родитель управляет навигацией
+  };
+
+  const handleFilterClick = () => {
+    if (onOpenFilter) {
+      onOpenFilter();
+    }
   };
 
   // Фильтрация событий по поисковому запросу
@@ -73,7 +81,7 @@ export default function EventsList({ isOpen, onClose, events, onEventClick }: Ev
       title={`Мероприятия (${filteredEvents.length})`}
       maxHeight="90vh"
     >
-      {/* Поисковая строка */}
+      {/* Поисковая строка и фильтр */}
       <div className={styles.searchContainer}>
         <div className={styles.searchWrapper}>
           <Search size={18} className={styles.searchIcon} />
@@ -95,6 +103,17 @@ export default function EventsList({ isOpen, onClose, events, onEventClick }: Ev
             </button>
           )}
         </div>
+        {onOpenFilter && (
+          <button
+            type="button"
+            onClick={handleFilterClick}
+            className={`${styles.filterButton} ${hasActiveFilters ? styles.filterButtonActive : ''}`}
+            aria-label="Открыть фильтры"
+          >
+            <Filter size={18} />
+            {hasActiveFilters && <span className={styles.filterBadge} />}
+          </button>
+        )}
       </div>
 
       <div className={styles.eventsList}>

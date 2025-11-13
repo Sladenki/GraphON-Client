@@ -130,6 +130,58 @@
   text-align: center;
 }
 
+/* Top Actions Container */
+.topActionsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Unified Action Button (для обеих кнопок) */
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 2px solid #e5e7eb;
+  background: transparent;
+  color: #6b7280;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  
+  svg {
+    flex-shrink: 0;
+  }
+  
+  span {
+    white-space: nowrap;
+  }
+  
+  &:hover {
+    border-color: var(--primary-color, #6a57e8);
+    background: rgba(106, 87, 232, 0.05);
+    color: var(--primary-color, #6a57e8);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Clear Filters Button - выравнивание справа */
+.actionButton.clearButton {
+  margin-left: auto;
+}
+
 /* Apply Button - позиционирование */
 .applyButton {
   width: 100%;
@@ -194,5 +246,21 @@
 
   .sectionTitle {
     color: #9ca3af;
+  }
+
+  .topActionsContainer {
+    border-bottom-color: #374151;
+  }
+
+  .actionButton {
+    background: transparent;
+    border-color: #374151;
+    color: #9ca3af;
+
+    &:hover {
+      border-color: var(--primary-color, #8a7af8);
+      background: rgba(138, 122, 248, 0.1);
+      color: var(--primary-color, #8a7af8);
+    }
   }
 }

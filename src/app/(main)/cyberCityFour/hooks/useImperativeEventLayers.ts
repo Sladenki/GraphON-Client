@@ -71,6 +71,12 @@ export const useImperativeEventLayers = (
             clusterMaxZoom: 14,
             clusterRadius: 50
           });
+        } else {
+          // Обновляем данные источника при изменении eventGeoJSON (например, при фильтрации)
+          const source = mapRef.getSource('events');
+          if (source && source.setData) {
+            source.setData(eventGeoJSON);
+          }
         }
 
         // 2. Добавляем слои (в правильном порядке: снизу вверх)

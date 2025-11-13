@@ -53,10 +53,128 @@ export default function CyberCityFour() {
   const [selectedEvent, setSelectedEvent] = useState<CityEvent | null>(null);
   const [eventOpenedFromList, setEventOpenedFromList] = useState(false);
   
-  // GeoJSON данные для карты
+  // Состояние фильтров
+  const [selectedCategories, setSelectedCategories] = useState<Record<string, boolean>>({
+    music: false,
+    art: false,
+    education: false,
+    business: false,
+    sport: false,
+    humor: false,
+    gastro: false,
+    family: false,
+    city: false,
+    party: false,
+    meetup: false,
+    cinema: false,
+    theater: false,
+  });
+  const [datePreset, setDatePreset] = useState<"today" | "tomorrow" | "weekend" | "custom" | null>(null);
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
+  
+  // Проверка наличия активных фильтров
+  const hasActiveFilters = useMemo(() => {
+    const activeCategories = Object.entries(selectedCategories)
+      .filter(([_, selected]) => selected)
+      .map(([key]) => key);
+    
+    return activeCategories.length > 0 || datePreset !== null;
+  }, [selectedCategories, datePreset]);
+
+  // Фильтрация событий по категориям и датам
+  const filteredEvents = useMemo(() => {
+    let result = [...mockEvents];
+    
+    // Фильтрация по категориям
+    const activeCategories = Object.entries(selectedCategories)
+      .filter(([_, selected]) => selected)
+      .map(([key]) => key);
+    
+    if (activeCategories.length > 0) {
+      result = result.filter(event => activeCategories.includes(event.category));
+    }
+    
+    // Фильтрация по датам
+    if (datePreset === "today") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      result = result.filter(event => {
+        if (event.isDateTbd) return false;
+        const eventDate = new Date(event.eventDate);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= today && eventDate < tomorrow;
+      });
+    } else if (datePreset === "tomorrow") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const dayAfterTomorrow = new Date(tomorrow);
+      dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+      result = result.filter(event => {
+        if (event.isDateTbd) return false;
+        const eventDate = new Date(event.eventDate);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= tomorrow && eventDate < dayAfterTomorrow;
+      });
+    } else if (datePreset === "weekend") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const dayOfWeek = today.getDay();
+      let weekendStart = new Date(today);
+      
+      // Если сегодня понедельник-четверг, берем ближайшие выходные
+      // Если пятница-воскресенье, берем текущие выходные
+      if (dayOfWeek >= 5) {
+        // Уже выходные или пятница
+        weekendStart = new Date(today);
+      } else {
+        // Найти следующую субботу
+        const daysUntilSaturday = 6 - dayOfWeek;
+        weekendStart.setDate(today.getDate() + daysUntilSaturday);
+      }
+      
+      const weekendEnd = new Date(weekendStart);
+      weekendEnd.setDate(weekendEnd.getDate() + 2); // Выходные: суббота + воскресенье
+      
+      result = result.filter(event => {
+        if (event.isDateTbd) return false;
+        const eventDate = new Date(event.eventDate);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= weekendStart && eventDate <= weekendEnd;
+      });
+    } else if (datePreset === "custom" && (dateFrom || dateTo)) {
+      result = result.filter(event => {
+        if (event.isDateTbd) return false;
+        const eventDate = new Date(event.eventDate);
+        eventDate.setHours(0, 0, 0, 0);
+        
+        if (dateFrom) {
+          const fromDate = new Date(dateFrom);
+          fromDate.setHours(0, 0, 0, 0);
+          if (eventDate < fromDate) return false;
+        }
+        
+        if (dateTo) {
+          const toDate = new Date(dateTo);
+          toDate.setHours(23, 59, 59, 999);
+          if (eventDate > toDate) return false;
+        }
+        
+        return true;
+      });
+    }
+    
+    return result;
+  }, [selectedCategories, datePreset, dateFrom, dateTo]);
+
+  // GeoJSON данные для карты (используем отфильтрованные события)
   const eventGeoJSON = useMemo(() => ({
     type: "FeatureCollection" as const,
-    features: mockEvents.map(ev => ({
+    features: filteredEvents.map(ev => ({
       type: "Feature" as const,
       geometry: {
         type: "Point" as const,
@@ -75,7 +193,7 @@ export default function CyberCityFour() {
         regedUsers: ev.regedUsers
       }
     }))
-  }), []);
+  }), [filteredEvents]);
   
   // Обработка взаимодействия с картой
   const { handleMapClick } = useMapInteraction({
@@ -142,6 +260,18 @@ export default function CyberCityFour() {
     setIsListOpen(true); // Открываем список обратно
   }, []);
 
+  // Обработчик открытия фильтра из EventsList
+  const handleFilterOpenFromList = useCallback(() => {
+    setIsListOpen(false);
+    setIsFilterOpen(true);
+  }, []);
+
+  // Обработчик открытия списка из EventFilter
+  const handleListOpenFromFilter = useCallback(() => {
+    setIsFilterOpen(false);
+    setIsListOpen(true);
+  }, []);
+
   return (
     <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`} data-swipe-enabled="false">
       <div className={styles.content}>
@@ -199,11 +329,12 @@ export default function CyberCityFour() {
                 <List size={20} />
               </button>
               <button 
-                className={`${styles.filterButton} ${isLoggedIn ? styles.filterButtonWithMenu : ''}`}
+                className={`${styles.filterButton} ${isLoggedIn ? styles.filterButtonWithMenu : ''} ${hasActiveFilters ? styles.filterButtonActive : ''}`}
                 onClick={handleFilterOpen}
                 aria-label="Открыть фильтры"
               >
                 <Filter size={20} />
+                {hasActiveFilters && <span className={styles.filterBadge} />}
               </button>
             </>
           )}
@@ -214,7 +345,16 @@ export default function CyberCityFour() {
               <EventFilter 
                 isOpen={isFilterOpen} 
                 onClose={handleFilterClose}
-                resultsCount={mockEvents.length}
+                resultsCount={filteredEvents.length}
+                selectedCategories={selectedCategories}
+                onCategoriesChange={setSelectedCategories}
+                datePreset={datePreset}
+                onDatePresetChange={setDatePreset}
+                dateFrom={dateFrom}
+                onDateFromChange={setDateFrom}
+                dateTo={dateTo}
+                onDateToChange={setDateTo}
+                onOpenList={handleListOpenFromFilter}
               />
             </Suspense>
           )}
@@ -225,8 +365,10 @@ export default function CyberCityFour() {
               <EventsList
                 isOpen={isListOpen}
                 onClose={handleListClose}
-                events={mockEvents}
+                events={filteredEvents}
                 onEventClick={handleEventSelectFromList}
+                onOpenFilter={handleFilterOpenFromList}
+                hasActiveFilters={hasActiveFilters}
               />
             </Suspense>
           )}
