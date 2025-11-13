@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-height: 400px;
 }
 
 .eventCard {
@@ -89,6 +90,95 @@
   transition: all 0.2s ease;
 }
 
+/* Поиск */
+.searchContainer {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 40px 10px 40px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #1f2937;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  outline: none;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+
+  &:focus {
+    border-color: var(--primary-color, #6a57e8);
+    background: #ffffff;
+  }
+}
+
+.clearButton {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Пустое состояние */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: #9ca3af;
+}
+
+.emptyTitle {
+  margin: 16px 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.emptyText {
+  margin: 0;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
 /* Dark theme */
 [data-theme="dark"] {
   .eventCard {
@@ -108,6 +198,38 @@
   }
   
   .showOnMapIcon {
+    color: #6b7280;
+  }
+
+  .searchContainer {
+    border-bottom-color: #374151;
+  }
+
+  .searchInput {
+    background: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+
+    &:focus {
+      border-color: var(--primary-color, #8a7af8);
+      background: #1f2937;
+    }
+  }
+
+  .clearButton {
+    color: #9ca3af;
+
+    &:hover {
+      background: #374151;
+      color: #e5e7eb;
+    }
+  }
+
+  .emptyTitle {
+    color: #9ca3af;
+  }
+
+  .emptyText {
     color: #6b7280;
   }
 }
