@@ -1,24 +1,37 @@
 .page {
   position: relative;
   min-height: 100vh;
-  padding: clamp(48px, 5vw, 72px) clamp(12px, 5vw, 64px) clamp(48px, 5vw, 72px);
+  padding: clamp(48px, 4vw, 72px) clamp(12px, 5vw, 64px) clamp(48px, 5vw, 72px);
   background:
-    radial-gradient(circle at 12% 15%, rgba(129, 87, 241, 0.18) 0%, transparent 45%),
-    radial-gradient(circle at 82% 18%, rgba(14, 165, 233, 0.15) 0%, transparent 40%),
-    linear-gradient(180deg, rgba(5, 6, 12, 0.98) 0%, rgba(2, 4, 9, 1) 100%);
-  background-color: var(--color-background, #05060a);
+    radial-gradient(circle at 12% 15%, rgba(129, 87, 241, 0.34) 0%, transparent 54%),
+    radial-gradient(circle at 82% 18%, rgba(14, 165, 233, 0.3) 0%, transparent 47%),
+    radial-gradient(circle at 88% 85%, rgba(59, 130, 246, 0.28) 0%, transparent 42%),
+    radial-gradient(circle at 50% 40%, rgba(79, 70, 229, 0.26) 0%, transparent 48%),
+    linear-gradient(180deg, rgba(22, 28, 46, 0.85) 0%, rgba(16, 22, 38, 0.83) 55%, rgba(12, 18, 32, 0.88) 100%);
+  background-color: var(--color-background, #101631);
   color: var(--color-text, #f8fafc);
 }
 
+.content {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 3vw, 40px);
+  align-items: stretch;
+}
 
 .heroCard {
   position: relative;
   padding: clamp(22px, 3.5vw, 40px);
   border-radius: 32px;
-  background: rgba(9, 12, 20, 0.8);
-  backdrop-filter: blur(18px);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  box-shadow: 0 25px 55px rgba(15, 23, 42, 0.55);
+  background: linear-gradient(135deg, rgba(25, 23, 44, 0.7), rgba(16, 18, 34, 0.7));
+  box-shadow:
+    0 30px 60px rgba(5, 6, 12, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(129, 87, 241, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   overflow: hidden;
   margin-top: clamp(-32px, -5vw, -12px);
 }
@@ -26,8 +39,9 @@
 .heroAccent {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(147, 197, 253, 0.18), transparent 45%),
-    radial-gradient(circle at 85% 30%, rgba(167, 139, 250, 0.2), transparent 55%);
+  background:
+    radial-gradient(circle at 20% 25%, rgba(129, 87, 241, 0.3), transparent 45%),
+    radial-gradient(circle at 80% 30%, rgba(79, 70, 229, 0.24), transparent 55%);
   z-index: 0;
 }
 
@@ -42,6 +56,7 @@
 .heroBody {
   display: flex;
   flex-direction: column;
+  width: 105%;
   gap: clamp(18px, 2.3vw, 30px);
 }
 
@@ -101,15 +116,16 @@
 
 .quickFacts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: clamp(12px, 1.4vw, 18px);
+  width: min(600px, 100%);
 }
 
 .fact {
   padding: 12px 14px;
   border-radius: 14px;
-  background: rgba(148, 163, 184, 0.08);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: linear-gradient(135deg, rgba(129, 87, 241, 0.18), rgba(14, 165, 233, 0.1));
+  border: 1px solid rgba(129, 87, 241, 0.35);
 }
 
 .factLabel {
@@ -195,27 +211,35 @@
   width: 100%;
   padding: 28px;
   border-radius: 24px;
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(129, 87, 241, 0.35);
+  background: linear-gradient(120deg, rgba(15, 20, 34, 0.65), rgba(10, 15, 28, 0.65));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.4);
+  box-shadow:
+    0 18px 45px rgba(3, 5, 12, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .guideHint {
   text-transform: uppercase;
   font-size: 12px;
   letter-spacing: 0.14em;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(129, 87, 241, 0.8);
   margin-bottom: 8px;
 }
 
 .guideCTAHeading {
   margin: 0;
   font-size: clamp(20px, 2.6vw, 26px);
-  color: #e2e8f0;
+  color: #f5f3ff;
+}
+
+.themeScope {
+  width: 100%;
 }
 
 .guideButton {
@@ -278,9 +302,9 @@
   }
 
   .content {
-    min-height: calc(100vh - clamp(48px, 5vw, 72px) * 2);
-    justify-content: space-between;
-    gap: clamp(18px, 2vw, 28px);
+    min-height: unset;
+    justify-content: flex-start;
+    gap: clamp(24px, 3vw, 48px);
   }
 
   .heroInner {
@@ -297,7 +321,7 @@
   }
 }
 
-.page[data-theme="light"] {
+:global([data-theme="light"]) .page {
   background:
     radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.12) 0%, transparent 45%),
     radial-gradient(circle at 82% 18%, rgba(14, 165, 233, 0.12) 0%, transparent 40%),
@@ -305,73 +329,105 @@
   color: #0f172a;
 }
 
-.heroCard[data-theme="light"] {
+:global([data-theme="light"]) .heroCard,
+.themeScope[data-theme="light"] .heroCard {
   background: rgba(255, 255, 255, 0.85);
   border-color: rgba(148, 163, 184, 0.35);
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.1);
 }
 
-.subtitle[data-theme="light"],
-.guideText[data-theme="light"] {
+:global([data-theme="light"]) .subtitle,
+:global([data-theme="light"]) .guideText,
+.themeScope[data-theme="light"] .guideText {
   color: #475569;
 }
 
-.fact[data-theme="light"] {
+:global([data-theme="light"]) .fact,
+.themeScope[data-theme="light"] .fact {
   background: rgba(148, 163, 184, 0.12);
   border-color: rgba(148, 163, 184, 0.35);
 }
 
-.factLabel[data-theme="light"] {
+:global([data-theme="light"]) .factLabel,
+.themeScope[data-theme="light"] .factLabel {
   color: rgba(71, 85, 105, 0.8);
 }
 
-.factValue[data-theme="light"] {
+:global([data-theme="light"]) .factValue,
+.themeScope[data-theme="light"] .factValue {
   color: #0f172a;
 }
 
-.downloadButton[data-theme="light"] {
+:global([data-theme="light"]) .downloadButton,
+.themeScope[data-theme="light"] .downloadButton {
   color: #0f172a;
   background: linear-gradient(115deg, rgba(124, 106, 255, 0.9) 0%, rgba(99, 170, 255, 0.85) 45%, rgba(45, 212, 191, 0.85) 100%);
   border: 1px solid rgba(99, 102, 241, 0.2);
   box-shadow: 0 14px 32px rgba(99, 102, 241, 0.2);
 }
 
-.downloadButton[data-theme="light"]:hover {
+:global([data-theme="light"]) .downloadButton:hover,
+.themeScope[data-theme="light"] .downloadButton:hover {
   box-shadow: 0 18px 40px rgba(99, 102, 241, 0.3);
 }
 
-.heroMediaFrame[data-theme="light"] {
+:global([data-theme="light"]) .heroMediaFrame,
+.themeScope[data-theme="light"] .heroMediaFrame {
   border-color: rgba(203, 213, 225, 0.65);
   background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 24px 50px rgba(15, 23, 42, 0.15);
 }
 
-.guideCTAInner[data-theme="light"] {
+:global([data-theme="light"]) .guideCTAInner,
+.themeScope[data-theme="light"] .guideCTAInner {
   background: rgba(255, 255, 255, 0.9);
   border-color: rgba(148, 163, 184, 0.35);
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
 }
 
-.guideCTAHeading[data-theme="light"] {
+:global([data-theme="light"]) .guideItem,
+.themeScope[data-theme="light"] .guideItem {
+  background: rgba(248, 250, 255, 0.95);
+  border-color: rgba(203, 213, 225, 0.65);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+}
+
+:global([data-theme="light"]) .guideItem::before,
+.themeScope[data-theme="light"] .guideItem::before {
+  background: rgba(99, 102, 241, 0.18);
+  color: #4338ca;
+}
+
+:global([data-theme="light"]) .guideText,
+.themeScope[data-theme="light"] .guideText {
+  color: #1f2937;
+}
+
+:global([data-theme="light"]) .guideCTAHeading,
+.themeScope[data-theme="light"] .guideCTAHeading {
   color: #0f172a;
 }
 
-.guideHint[data-theme="light"] {
+:global([data-theme="light"]) .guideHint,
+.themeScope[data-theme="light"] .guideHint {
   color: rgba(71, 85, 105, 0.8);
 }
 
-.guideButton[data-theme="light"] {
+:global([data-theme="light"]) .guideButton,
+.themeScope[data-theme="light"] .guideButton {
   background: #0f172a;
   color: #f8fafc;
   border-color: transparent;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.35);
 }
 
-.guideButton[data-theme="light"]:hover {
+:global([data-theme="light"]) .guideButton:hover,
+.themeScope[data-theme="light"] .guideButton:hover {
   box-shadow: 0 16px 36px rgba(15, 23, 42, 0.4);
 }
 
-.featureIcon[data-theme="light"] {
+:global([data-theme="light"]) .featureIcon,
+.themeScope[data-theme="light"] .featureIcon {
   background: rgba(99, 102, 241, 0.18);
   color: #6d28d9;
 }

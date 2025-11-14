@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.scss";
@@ -23,9 +24,10 @@ const installGuide = [
 
 export default function DownloadAppPage() {
   const [isGuideOpen, setGuideOpen] = useState(false);
+  const { theme } = useTheme();
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} data-theme={theme ?? undefined}>
       <div className={styles.content}>
         <section className={styles.heroCard}>
           <div className={styles.heroAccent} />
@@ -88,13 +90,15 @@ export default function DownloadAppPage() {
         title="Как установить GraphON"
         maxHeight="80vh"
       >
-        <ol className={styles.guideList}>
-          {installGuide.map((step, index) => (
-            <li key={index} className={styles.guideItem}>
-              <p className={styles.guideText}>{step}</p>
-            </li>
-          ))}
-        </ol>
+        <div className={styles.themeScope} data-theme={theme ?? undefined}>
+          <ol className={styles.guideList}>
+            {installGuide.map((step, index) => (
+              <li key={index} className={styles.guideItem}>
+                <p className={styles.guideText}>{step}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </FooterPopUp>
     </main>
   );
