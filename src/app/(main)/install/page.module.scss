@@ -1,0 +1,378 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(48px, 5vw, 72px) clamp(12px, 5vw, 64px) clamp(48px, 5vw, 72px);
+  background:
+    radial-gradient(circle at 12% 15%, rgba(129, 87, 241, 0.18) 0%, transparent 45%),
+    radial-gradient(circle at 82% 18%, rgba(14, 165, 233, 0.15) 0%, transparent 40%),
+    linear-gradient(180deg, rgba(5, 6, 12, 0.98) 0%, rgba(2, 4, 9, 1) 100%);
+  background-color: var(--color-background, #05060a);
+  color: var(--color-text, #f8fafc);
+}
+
+
+.heroCard {
+  position: relative;
+  padding: clamp(22px, 3.5vw, 40px);
+  border-radius: 32px;
+  background: rgba(9, 12, 20, 0.8);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 25px 55px rgba(15, 23, 42, 0.55);
+  overflow: hidden;
+  margin-top: clamp(-32px, -5vw, -12px);
+}
+
+.heroAccent {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(147, 197, 253, 0.18), transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(167, 139, 250, 0.2), transparent 55%);
+  z-index: 0;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(18px, 2.5vw, 36px);
+  grid-template-columns: 1fr;
+}
+
+.heroBody {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.3vw, 30px);
+}
+
+.heroHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 760px;
+}
+
+.title {
+  font-size: clamp(30px, 3.4vw, 46px);
+  line-height: 1.1;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: clamp(15px, 1.8vw, 18px);
+  color: rgba(241, 245, 249, 0.85);
+  margin: 6px 0 0;
+  max-width: 520px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 26px;
+  border-radius: 18px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #05060a;
+  background: linear-gradient(120deg, #a855f7 0%, #6366f1 55%, #14b8a6 100%);
+  box-shadow: 0 15px 30px rgba(99, 102, 241, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.downloadButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 35px rgba(99, 102, 241, 0.45);
+}
+
+.version {
+  font-size: 14px;
+  color: rgba(148, 163, 184, 0.8);
+}
+
+.quickFacts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.fact {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.factLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(226, 232, 240, 0.75);
+  margin-bottom: 4px;
+}
+
+.factValue {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.heroMedia {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.heroMediaFrame {
+  position: relative;
+  width: min(320px, 80%);
+  aspect-ratio: 3 / 4;
+  border-radius: 24px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.08), transparent 60%), rgba(15, 23, 42, 0.6);
+  overflow: hidden;
+  box-shadow: 0 25px 45px rgba(2, 6, 23, 0.5);
+}
+
+.heroMediaFrame img {
+  object-fit: cover;
+}
+
+.guideList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  counter-reset: step;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guideItem {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.guideItem::before {
+  counter-increment: step;
+  content: counter(step);
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.25);
+  color: #c4b5fd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.guideText {
+  color: rgba(226, 232, 240, 0.9);
+  line-height: 1.45;
+}
+
+.guideCTA {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.guideCTAInner {
+  width: 100%;
+  padding: 28px;
+  border-radius: 24px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.4);
+}
+
+.guideHint {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: rgba(148, 163, 184, 0.7);
+  margin-bottom: 8px;
+}
+
+.guideCTAHeading {
+  margin: 0;
+  font-size: clamp(20px, 2.6vw, 26px);
+  color: #e2e8f0;
+}
+
+.guideButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 1px solid rgba(94, 234, 212, 0.35);
+  background: rgba(45, 212, 191, 0.15);
+  color: #5eead4;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.guideButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(94, 234, 212, 0.55);
+  box-shadow: 0 12px 25px rgba(15, 118, 110, 0.35);
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 48px 18px 72px;
+  }
+
+  .heroCard {
+    border-radius: 24px;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .downloadButton {
+    width: 100%;
+  }
+
+  .heroMediaFrame {
+    width: min(380px, 100%);
+  }
+
+  .guideCTAInner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .guideButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1200px) {
+  .page {
+    overflow: hidden;
+  }
+
+  .content {
+    min-height: calc(100vh - clamp(48px, 5vw, 72px) * 2);
+    justify-content: space-between;
+    gap: clamp(18px, 2vw, 28px);
+  }
+
+  .heroInner {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    align-items: center;
+  }
+
+  .heroMedia {
+    justify-content: flex-end;
+  }
+
+  .heroMediaFrame {
+    width: 320px;
+  }
+}
+
+.page[data-theme="light"] {
+  background:
+    radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 82% 18%, rgba(14, 165, 233, 0.12) 0%, transparent 40%),
+    linear-gradient(180deg, #f7f9fc 0%, #edf1f7 100%);
+  color: #0f172a;
+}
+
+.heroCard[data-theme="light"] {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(148, 163, 184, 0.35);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.1);
+}
+
+.subtitle[data-theme="light"],
+.guideText[data-theme="light"] {
+  color: #475569;
+}
+
+.fact[data-theme="light"] {
+  background: rgba(148, 163, 184, 0.12);
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
+.factLabel[data-theme="light"] {
+  color: rgba(71, 85, 105, 0.8);
+}
+
+.factValue[data-theme="light"] {
+  color: #0f172a;
+}
+
+.downloadButton[data-theme="light"] {
+  color: #0f172a;
+  background: linear-gradient(115deg, rgba(124, 106, 255, 0.9) 0%, rgba(99, 170, 255, 0.85) 45%, rgba(45, 212, 191, 0.85) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 14px 32px rgba(99, 102, 241, 0.2);
+}
+
+.downloadButton[data-theme="light"]:hover {
+  box-shadow: 0 18px 40px rgba(99, 102, 241, 0.3);
+}
+
+.heroMediaFrame[data-theme="light"] {
+  border-color: rgba(203, 213, 225, 0.65);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.15);
+}
+
+.guideCTAInner[data-theme="light"] {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(148, 163, 184, 0.35);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+.guideCTAHeading[data-theme="light"] {
+  color: #0f172a;
+}
+
+.guideHint[data-theme="light"] {
+  color: rgba(71, 85, 105, 0.8);
+}
+
+.guideButton[data-theme="light"] {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: transparent;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.35);
+}
+
+.guideButton[data-theme="light"]:hover {
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.4);
+}
+
+.featureIcon[data-theme="light"] {
+  background: rgba(99, 102, 241, 0.18);
+  color: #6d28d9;
+}
+
