@@ -21,7 +21,7 @@ const installGuide = [
   "Готово! Откройте GraphON и находите мероприятия без ограничений.",
 ];
 
-export default function InstallPage() {
+export default function DownloadAppPage() {
   const [isGuideOpen, setGuideOpen] = useState(false);
 
   return (
