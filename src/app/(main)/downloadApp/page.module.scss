@@ -39,9 +39,7 @@
 .heroAccent {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 20% 25%, rgba(129, 87, 241, 0.3), transparent 45%),
-    radial-gradient(circle at 80% 30%, rgba(79, 70, 229, 0.24), transparent 55%);
+  background: transparent;
   z-index: 0;
 }
 
@@ -93,7 +91,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 16px 26px;
+  padding: 18px clamp(28px, 3vw, 48px);
   border-radius: 18px;
   font-size: 16px;
   font-weight: 600;
@@ -274,11 +272,15 @@
 
   .actions {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
+    gap: 14px;
   }
 
   .downloadButton {
     width: 100%;
+    max-width: 360px;
+    justify-content: center;
+    text-align: center;
   }
 
   .heroMediaFrame {
@@ -293,6 +295,17 @@
   .guideButton {
     width: 100%;
     justify-content: center;
+  }
+
+  .quickFacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    justify-items: stretch;
+  }
+
+  .fact {
+    width: 100%;
   }
 }
 
@@ -323,9 +336,9 @@
 
 :global([data-theme="light"]) .page {
   background:
-    radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 82% 18%, rgba(14, 165, 233, 0.12) 0%, transparent 40%),
-    linear-gradient(180deg, #f7f9fc 0%, #edf1f7 100%);
+    radial-gradient(circle at 12% 15%, rgba(79, 70, 229, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(45, 212, 191, 0.12) 0%, transparent 45%),
+    linear-gradient(180deg, #fdfdff 0%, #f2f6ff 45%, #eaf2ff 100%);
   color: #0f172a;
 }
 

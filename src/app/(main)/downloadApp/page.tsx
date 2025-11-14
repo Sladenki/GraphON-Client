@@ -44,7 +44,6 @@ export default function DownloadAppPage() {
                   <Download size={18} />
                   Скачать APK
                 </Link>
-                <span className={styles.version}>Версия 1.0 beta</span>
               </div>
               <div className={styles.quickFacts}>
                 {quickFacts.map((fact) => (
