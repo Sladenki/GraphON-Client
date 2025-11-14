@@ -1,260 +1,421 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, Suspense } from "react";
+import { Filter, List } from "lucide-react";
 import styles from "./page.module.scss";
-import "leaflet/dist/leaflet.css";
+import { mockEvents, type CityEvent } from "./mockEvents";
+import { useAuth } from "@/providers/AuthProvider";
+import { useImperativeEventLayers } from "./hooks/useImperativeEventLayers";
+import { useMapSetup } from "./hooks/useMapSetup";
+import { useMapTheme } from "./hooks/useMapTheme";
+import { useMapInteraction } from "./hooks/useMapInteraction";
+import { createLocalMapStyle } from "./config/mapStyleConfig";
 
-type ThemeMode = "light" | "dark";
+// Динамическая загрузка тяжелых компонентов
+const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
 
-type EventCategory = "concert" | "exhibit" | "lecture" | "festival" | "meetup";
+// Lazy loading для попапов - загружаются только при открытии
+const EventFilter = dynamic(() => import("./EventFilter/EventFilter"), {
+  loading: () => <div className={styles.popupLoader}>Загрузка...</div>,
+  ssr: false
+});
 
-interface CityEvent {
-  id: string;
-  name: string;
-  place: string;
-  description: string;
-  category: EventCategory;
-  lat: number;
-  lng: number;
-  eventDate: string; // ISO date
-  isDateTbd: boolean;
-  timeFrom?: string;
-  timeTo?: string;
-  regedUsers: number;
-}
+const EventPopup = dynamic(() => import("./EventPopup/EventPopup"), {
+  loading: () => <div className={styles.popupLoader}>Загрузка...</div>,
+  ssr: false
+});
 
-const KalCenter = { lat: 54.7104, lng: 20.4522 };
+const EventsList = dynamic(() => import("./EventsList"), {
+  loading: () => <div className={styles.popupLoader}>Загрузка...</div>,
+  ssr: false
+});
 
-const mockEvents: CityEvent[] = [
-  {
-    id: "1",
-    name: "Концерт камерной музыки",
-    place: "Кафедральный собор",
-    description: "Вечер органной и камерной музыки",
-    category: "concert",
-    lat: 54.7064,
-    lng: 20.5146,
-    eventDate: "2025-11-05",
-    isDateTbd: false,
-    timeFrom: "19:00",
-    timeTo: "21:00",
-    regedUsers: 134,
-  },
-  {
-    id: "2",
-    name: "Выставка современного искусства",
-    place: "Музей изобразительных искусств",
-    description: "Экспозиция молодых художников",
-    category: "exhibit",
-    lat: 54.7202,
-    lng: 20.5065,
-    eventDate: "2025-11-12",
-    isDateTbd: false,
-    timeFrom: "11:00",
-    timeTo: "19:00",
-    regedUsers: 89,
-  },
-  {
-    id: "3",
-    name: "Лекция по урбанистике",
-    place: "КГТУ",
-    description: "Публичная лекция о трансформации городских пространств",
-    category: "lecture",
-    lat: 54.7168,
-    lng: 20.5069,
-    eventDate: "2025-11-15",
-    isDateTbd: false,
-    timeFrom: "17:30",
-    timeTo: "19:00",
-    regedUsers: 57,
-  },
-  {
-    id: "4",
-    name: "Городской фестиваль еды",
-    place: "Центральная площадь",
-    description: "Фудкорты, музыка, мастер-классы",
-    category: "festival",
-    lat: 54.7072,
-    lng: 20.5101,
-    eventDate: "2025-11-20",
-    isDateTbd: false,
-    timeFrom: "12:00",
-    timeTo: "22:00",
-    regedUsers: 403,
-  },
-  {
-    id: "5",
-    name: "IT-митап",
-    place: "Коворкинг " + "Kaliningrad Tech",
-    description: "Встреча разработчиков: доклады и networking",
-    category: "meetup",
-    lat: 54.731,
-    lng: 20.499,
-    eventDate: "2025-11-09",
-    isDateTbd: false,
-    timeFrom: "18:30",
-    timeTo: "21:00",
-    regedUsers: 152,
-  },
-  {
-    id: "6",
-    name: "Арт-лекция: Кандинский",
-    place: "Дом искусств",
-    description: "О языках абстракции и композиции",
-    category: "lecture",
-    lat: 54.6985,
-    lng: 20.4875,
-    eventDate: "2025-11-17",
-    isDateTbd: true,
-    regedUsers: 61,
-  },
-];
 
-const MapContainer = dynamic(async () => (await import("react-leaflet")).MapContainer, { ssr: false });
-const TileLayer = dynamic(async () => (await import("react-leaflet")).TileLayer, { ssr: false });
-const Marker = dynamic(async () => (await import("react-leaflet")).Marker, { ssr: false });
-const Popup = dynamic(async () => (await import("react-leaflet")).Popup, { ssr: false });
-import { useMap } from "react-leaflet";
-
-// Leaflet icon fix: we'll use DivIcon for glow
-import L from "leaflet";
-import { useEffect } from "react";
-
-function buildGlowIcon(category: EventCategory, hovered: boolean) {
-  const colorClass =
-    category === "concert" ? styles.c_concert :
-    category === "exhibit" ? styles.c_exhibit :
-    category === "lecture" ? styles.c_lecture :
-    category === "festival" ? styles.c_festival :
-    styles.c_meetup;
-
-  const klass = `${styles.glowMarker} ${colorClass} ${hovered ? styles.markerHover : ""}`;
-  const html = `<div class="${klass}"><div class="${styles.pulseRing}" style="color:inherit"></div></div>`;
-  return L.divIcon({ className: "", html, iconSize: [18, 18], iconAnchor: [9, 9] });
-}
-
-function HideLeafletAttribution() {
-  const map = useMap();
-  useEffect(() => {
-    try { map.attributionControl.setPrefix(""); } catch {}
-  }, [map]);
-  return null;
-}
+// ===== КОМПОНЕНТ =====
 
 export default function CityPage() {
-  const [theme, setTheme] = useState<ThemeMode>("light");
-  const [active, setActive] = useState<Record<EventCategory, boolean>>({
-    concert: true,
-    exhibit: true,
-    lecture: true,
-    festival: true,
-    meetup: true,
+  // Инициализация карты, темы и адаптивности
+  const { isLight, isMobile, isVerySmallScreen } = useMapSetup();
+  
+  // Состояние карты
+  const [mapRef, setMapRef] = useState<any>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  
+  // Auth
+  const { isLoggedIn } = useAuth();
+  
+  // Состояние UI
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isListOpen, setIsListOpen] = useState(false);
+  
+  // Состояние выбранного события
+  const [selectedEvent, setSelectedEvent] = useState<CityEvent | null>(null);
+  const [eventOpenedFromList, setEventOpenedFromList] = useState(false);
+  
+  // Состояние фильтров
+  const [selectedCategories, setSelectedCategories] = useState<Record<string, boolean>>({
+    music: false,
+    art: false,
+    education: false,
+    business: false,
+    sport: false,
+    humor: false,
+    gastro: false,
+    family: false,
+    city: false,
+    party: false,
+    meetup: false,
+    cinema: false,
+    theater: false,
   });
-  const [hoverId, setHoverId] = useState<string | null>(null);
+  const [datePreset, setDatePreset] = useState<"today" | "tomorrow" | "weekend" | "custom" | null>(null);
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
+  
+  // Проверка наличия активных фильтров
+  const hasActiveFilters = useMemo(() => {
+    const activeCategories = Object.entries(selectedCategories)
+      .filter(([_, selected]) => selected)
+      .map(([key]) => key);
+    
+    return activeCategories.length > 0 || datePreset !== null;
+  }, [selectedCategories, datePreset]);
 
-  const filtered = useMemo(() =>
-    mockEvents.filter(e => active[e.category])
-  , [active]);
+  // Фильтрация событий по категориям и датам
+  const filteredEvents = useMemo(() => {
+    let result = [...mockEvents];
+    
+    // Фильтрация по категориям
+    const activeCategories = Object.entries(selectedCategories)
+      .filter(([_, selected]) => selected)
+      .map(([key]) => key);
+    
+    if (activeCategories.length > 0) {
+      result = result.filter(event => activeCategories.includes(event.category));
+    }
+    
+    // Фильтрация по датам
+    if (datePreset === "today") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      result = result.filter(event => {
+        if (event.isDateTbd) return false;
+        const eventDate = new Date(event.eventDate);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= today && eventDate < tomorrow;
+      });
+    } else if (datePreset === "tomorrow") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const dayAfterTomorrow = new Date(tomorrow);
+      dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+      result = result.filter(event => {
+        if (event.isDateTbd) return false;
+        const eventDate = new Date(event.eventDate);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= tomorrow && eventDate < dayAfterTomorrow;
+      });
+    } else if (datePreset === "weekend") {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const dayOfWeek = today.getDay();
+      let weekendStart = new Date(today);
+      
+      // Если сегодня понедельник-четверг, берем ближайшие выходные
+      // Если пятница-воскресенье, берем текущие выходные
+      if (dayOfWeek >= 5) {
+        // Уже выходные или пятница
+        weekendStart = new Date(today);
+      } else {
+        // Найти следующую субботу
+        const daysUntilSaturday = 6 - dayOfWeek;
+        weekendStart.setDate(today.getDate() + daysUntilSaturday);
+      }
+      
+      const weekendEnd = new Date(weekendStart);
+      weekendEnd.setDate(weekendEnd.getDate() + 2); // Выходные: суббота + воскресенье
+      
+      result = result.filter(event => {
+        if (event.isDateTbd) return false;
+        const eventDate = new Date(event.eventDate);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= weekendStart && eventDate <= weekendEnd;
+      });
+    } else if (datePreset === "custom" && (dateFrom || dateTo)) {
+      result = result.filter(event => {
+        if (event.isDateTbd) return false;
+        const eventDate = new Date(event.eventDate);
+        eventDate.setHours(0, 0, 0, 0);
+        
+        if (dateFrom) {
+          const fromDate = new Date(dateFrom);
+          fromDate.setHours(0, 0, 0, 0);
+          if (eventDate < fromDate) return false;
+        }
+        
+        if (dateTo) {
+          const toDate = new Date(dateTo);
+          toDate.setHours(23, 59, 59, 999);
+          if (eventDate > toDate) return false;
+        }
+        
+        return true;
+      });
+    }
+    
+    return result;
+  }, [selectedCategories, datePreset, dateFrom, dateTo]);
 
-  const url = theme === "dark"
-    ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-    : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  // GeoJSON данные для карты (используем отфильтрованные события)
+  const eventGeoJSON = useMemo(() => ({
+    type: "FeatureCollection" as const,
+    features: filteredEvents.map(ev => ({
+      type: "Feature" as const,
+      geometry: {
+        type: "Point" as const,
+        coordinates: [ev.lng, ev.lat] as [number, number]
+      },
+      properties: {
+        id: ev.id,
+        name: ev.name,
+        place: ev.place,
+        description: ev.description,
+        category: ev.category,
+        eventDate: ev.eventDate,
+        isDateTbd: ev.isDateTbd,
+        timeFrom: ev.timeFrom || "",
+        timeTo: ev.timeTo || "",
+        regedUsers: ev.regedUsers
+      }
+    }))
+  }), [filteredEvents]);
+  
+  // Обработка взаимодействия с картой
+  const { handleMapClick } = useMapInteraction({
+    mapRef,
+    selectedEvent,
+    setSelectedEvent,
+    setEventOpenedFromList
+  });
+  
+  // Управление темой карты
+  const { handleMapLoad } = useMapTheme({ mapRef, mapLoaded, isLight });
+  
+  // Стиль карты
+  const mapStyle = useMemo(() => {
+    try {
+      return createLocalMapStyle(isLight) as any;
+    } catch (error) {
+      console.error('❌ Ошибка при создании mapStyle:', error);
+      return null;
+    }
+  }, [isLight]);
+  
+  // Добавление слоев событий на карту
+  useImperativeEventLayers(mapRef, eventGeoJSON, isLight, mapLoaded);
+  
+  // Обработчик загрузки карты с применением стилей
+  const onMapLoad = useCallback((e: any) => {
+    const map = e?.target;
+    if (!map) return;
+    setMapRef(map);
+    setMapLoaded(true);
+    handleMapLoad(e); // Применяем стили темы
+  }, [handleMapLoad]);
+
+  // Мемоизированный обработчик открытия фильтра
+  const handleFilterOpen = useCallback(() => {
+    setIsFilterOpen(true);
+  }, []);
+
+  // Функция сброса позиции карты к начальному состоянию с уменьшенным зумом
+  const resetMapView = useCallback(() => {
+    if (!mapRef || !mapLoaded) return;
+    
+    try {
+      mapRef.flyTo({
+        center: [20.5103, 54.7068],
+        zoom: isVerySmallScreen ? 11.0 : (isMobile ? 11.5 : 13.5), // Более отдалённый вид
+        pitch: 40,
+        bearing: -12,
+        duration: 1500, // Плавная анимация
+        essential: true
+      });
+    } catch (error) {
+      console.error('Ошибка при сбросе позиции карты:', error);
+    }
+  }, [mapRef, mapLoaded, isMobile, isVerySmallScreen]);
+
+  // Мемоизированный обработчик закрытия фильтра (без сброса позиции)
+  const handleFilterClose = useCallback(() => {
+    setIsFilterOpen(false);
+  }, []);
+
+  // Мемоизированный обработчик применения фильтров (с сбросом позиции)
+  const handleFilterApply = useCallback(() => {
+    setIsFilterOpen(false);
+    // Сбрасываем позицию карты к начальному состоянию с уменьшенным зумом
+    resetMapView();
+  }, [resetMapView]);
+  
+  const handleListOpen = useCallback(() => {
+    setIsListOpen(true);
+  }, []);
+  
+  const handleListClose = useCallback(() => {
+    setIsListOpen(false);
+  }, []);
+
+  // Обработчик выбора события из списка
+  const handleEventSelectFromList = useCallback((event: CityEvent) => {
+    setSelectedEvent(event);
+    setEventOpenedFromList(true); // Открыто из списка
+    setIsListOpen(false); // Закрываем список
+  }, []);
+
+  // Обработчик возврата к списку из EventPopup
+  const handleBackToList = useCallback(() => {
+    setSelectedEvent(null);
+    setEventOpenedFromList(false);
+    setIsListOpen(true); // Открываем список обратно
+  }, []);
+
+  // Обработчик открытия фильтра из EventsList
+  const handleFilterOpenFromList = useCallback(() => {
+    setIsListOpen(false);
+    setIsFilterOpen(true);
+  }, []);
+
+  // Обработчик открытия списка из EventFilter
+  const handleListOpenFromFilter = useCallback(() => {
+    setIsFilterOpen(false);
+    setIsListOpen(true);
+  }, []);
 
   return (
-    <section className={styles.page}>
-      <div className={styles.header}>
-        <div className={styles.title}>Карта событий — Калининград</div>
-        <div className={styles.filters}>
-          {(["concert","exhibit","lecture","festival","meetup"] as EventCategory[]).map(c => (
-            <button
-              key={c}
-              type="button"
-              className={styles.chip}
-              data-active={active[c]}
-              onClick={() => setActive(prev => ({ ...prev, [c]: !prev[c] }))}
-              aria-pressed={active[c]}
-            >
-              {c === "concert" && "Концерты"}
-              {c === "exhibit" && "Выставки"}
-              {c === "lecture" && "Лекции"}
-              {c === "festival" && "Фестивали"}
-              {c === "meetup" && "Митапы"}
-            </button>
-          ))}
-        </div>
-        <div className={styles.filters}>
-          <button
-            type="button"
-            className={styles.chip}
-            data-active={theme === "light"}
-            onClick={() => setTheme("light")}
-          >Светлая</button>
-          <button
-            type="button"
-            className={styles.chip}
-            data-active={theme === "dark"}
-            onClick={() => setTheme("dark")}
-          >Тёмная</button>
-        </div>
-      </div>
-
+    <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`} data-swipe-enabled="false">
       <div className={styles.content}>
-        <div className={`${styles.mapWrap} ${styles.tilt}`}>
-          <div className={styles.tiltInner}>
-            <MapContainer
-              center={[KalCenter.lat, KalCenter.lng]}
-              zoom={13}
-              className={`${styles.map} ${styles.neonMap}`}
-              preferCanvas
-              maxBounds={L.latLngBounds([54.62, 20.36], [54.78, 20.58])}
-              maxBoundsViscosity={0.8}
-            >
-              <HideLeafletAttribution />
-              {/* Slightly brightened base */}
-              <TileLayer className={styles.baseBoost} url={"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"} opacity={0.9} />
-              {/* Blend light tiles to reduce overall darkness without tokens */}
-              <TileLayer className={styles.lightMix} url={"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"} opacity={0.22} />
-              {/* Labels glow overlay - upper layer for neon labels */}
-              <TileLayer className={styles.labelsGlow} url={"https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png"} opacity={0.9} />
-              {/* Soft blur underlay for stronger glow */}
-              <TileLayer className={styles.labelsBlur} url={"https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png"} opacity={0.6} />
-              {filtered.map(ev => (
-                <Marker
-                  key={ev.id}
-                  position={[ev.lat, ev.lng]}
-                  icon={buildGlowIcon(ev.category, hoverId === ev.id)}
-                  eventHandlers={{
-                    mouseover: () => setHoverId(ev.id),
-                    mouseout: () => setHoverId(curr => (curr === ev.id ? null : curr)),
-                  }}
-                >
-                  <Popup>
-                    <strong>{ev.name}</strong>
-                    <div>{ev.place}</div>
-                    <div>
-                      {ev.isDateTbd ? "Дата уточняется" : ev.eventDate}
-                      {ev.timeFrom ? ` • ${ev.timeFrom}${ev.timeTo ? "–" + ev.timeTo : ""}` : ""}
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
+        <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''} ${isMobile ? styles.mobileMap : ''}`}>
+          <div className={styles.map}>
+          <ReactMapGL
+            initialViewState={{ 
+              longitude: 20.5103, 
+              latitude: 54.7068, 
+              zoom: isVerySmallScreen ? 12.5 : (isMobile ? 13.0 : 15.0), 
+              pitch: 40, 
+              bearing: -12 
+            }}
+            mapStyle={mapStyle || undefined}
+            attributionControl={false}
+            dragRotate={!isMobile}
+            maxBounds={[[20.36, 54.62], [20.62, 54.78]]}
+            onLoad={onMapLoad}
+            onClick={handleMapClick}
+            interactiveLayerIds={mapLoaded ? ['event-points', 'clusters'] : []}
+            cursor="pointer"
+          >
+            {/* Маркеры событий добавляются императивно через useImperativeEventLayers */}
+          </ReactMapGL>
           </div>
+
+          {/* Мягкая градиентная подложка для светлой темы */}
+          {isLight && <div className={styles.lightGradientOverlay} />}
+
+          {/* Неоновый пост-обработка для темной темы */}
+          {!isLight && <div className={styles.neonBoost} />}
+          
+          {/* Cyberpunk Effects - только для темной темы */}
+          {!isLight && (
+            <>
+              {/* Неоновый виньетка (радиальное свечение по краям) */}
+              <div className={styles.cyberpunkVignette} />
+              
+              {/* Неоновое свечение по углам */}
+              <div className={styles.edgeGlow} />
+              
+              {/* Шум текстура */}
+              <div className={styles.noiseOverlay} />
+            </>
+          )}
+            
+          {/* Кнопки фильтра и списка */}
+          {!isFilterOpen && !isListOpen && (
+            <>
+              <button 
+                className={`${styles.listButton} ${isLoggedIn ? styles.listButtonWithMenu : ''}`}
+                onClick={handleListOpen}
+                aria-label="Список мероприятий"
+              >
+                <List size={20} />
+              </button>
+              <button 
+                className={`${styles.filterButton} ${isLoggedIn ? styles.filterButtonWithMenu : ''} ${hasActiveFilters ? styles.filterButtonActive : ''}`}
+                onClick={handleFilterOpen}
+                aria-label="Открыть фильтры"
+              >
+                <Filter size={20} />
+                {hasActiveFilters && <span className={styles.filterBadge} />}
+              </button>
+            </>
+          )}
+
+          {/* Pop-up фильтра - загружается только при открытии */}
+          {isFilterOpen && (
+            <Suspense fallback={<div className={styles.popupLoader}>Загрузка фильтров...</div>}>
+              <EventFilter 
+                isOpen={isFilterOpen} 
+                onClose={handleFilterClose}
+                onApply={handleFilterApply}
+                resultsCount={filteredEvents.length}
+                selectedCategories={selectedCategories}
+                onCategoriesChange={setSelectedCategories}
+                datePreset={datePreset}
+                onDatePresetChange={setDatePreset}
+                dateFrom={dateFrom}
+                onDateFromChange={setDateFrom}
+                dateTo={dateTo}
+                onDateToChange={setDateTo}
+                onOpenList={handleListOpenFromFilter}
+              />
+            </Suspense>
+          )}
+          
+          {/* Pop-up списка мероприятий - загружается только при открытии */}
+          {isListOpen && (
+            <Suspense fallback={<div className={styles.popupLoader}>Загрузка списка...</div>}>
+              <EventsList
+                isOpen={isListOpen}
+                onClose={handleListClose}
+                events={filteredEvents}
+                onEventClick={handleEventSelectFromList}
+                onOpenFilter={handleFilterOpenFromList}
+                hasActiveFilters={hasActiveFilters}
+              />
+            </Suspense>
+          )}
+          
+          {/* Pop-up события - загружается только при открытии */}
+          {selectedEvent && (
+            <Suspense fallback={<div className={styles.popupLoader}>Загрузка события...</div>}>
+              <EventPopup
+                event={selectedEvent}
+                isOpen={!!selectedEvent}
+                onClose={() => {
+                  setSelectedEvent(null);
+                  setEventOpenedFromList(false);
+                }}
+                isLight={isLight}
+                showBackButton={eventOpenedFromList}
+                onBack={handleBackToList}
+              />
+            </Suspense>
+          )}
         </div>
-        <aside className={styles.sidebar}>
-          {filtered.map(ev => (
-            <div key={ev.id} className={styles.card} onClick={() => {
-              const maps = (L as any)?.map?.instances || [];
-              const map = maps?.[0];
-              if (map) map.flyTo([ev.lat, ev.lng], 15, { duration: 0.8 });
-            }}>
-              <div className={styles.cardTitle}>{ev.name}</div>
-              <div className={styles.cardMeta}>{ev.place}</div>
-              <div className={styles.cardMeta}>{ev.isDateTbd ? "Дата уточняется" : ev.eventDate} {ev.timeFrom ? `• ${ev.timeFrom}${ev.timeTo ? "–" + ev.timeTo : ""}` : ""}</div>
-            </div>
-          ))}
-        </aside>
       </div>
     </section>
   );

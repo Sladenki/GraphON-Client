@@ -44,8 +44,8 @@ export const useMobileDrawerOptimization = ({
 
   // Функция для проверки, можно ли использовать свайп
   const canUseSwipe = useCallback(() => {
-    // Отключаем свайп на странице cyberCityFour (проверяем разные варианты pathname)
-    if (pathname === '/cyberCityFour' || pathname?.includes('cyberCityFour')) {
+    // Отключаем свайп на странице city (проверяем разные варианты pathname)
+    if (pathname === '/city' || pathname?.includes('city')) {
       return false;
     }
     
@@ -70,8 +70,8 @@ export const useMobileDrawerOptimization = ({
 
   // Обработчик начала касания
   const handleTouchStart = useCallback((event: TouchEvent) => {
-    // ВАЖНО: Блокируем свайп на странице cyberCityFour (проверяем разные варианты pathname)
-    if (pathname === '/cyberCityFour' || pathname?.includes('cyberCityFour')) {
+    // ВАЖНО: Блокируем свайп на странице city (проверяем разные варианты pathname)
+    if (pathname === '/city' || pathname?.includes('city')) {
       touchStartRef.current = null;
       touchMoveRef.current = null;
       return;
@@ -141,8 +141,8 @@ export const useMobileDrawerOptimization = ({
 
   // Обработчик движения касания
   const handleTouchMove = useCallback((event: TouchEvent) => {
-    // ВАЖНО: Блокируем свайп на странице cyberCityFour (проверяем разные варианты pathname)
-    if (pathname === '/cyberCityFour' || pathname?.includes('cyberCityFour')) {
+    // ВАЖНО: Блокируем свайп на странице city (проверяем разные варианты pathname)
+    if (pathname === '/city' || pathname?.includes('city')) {
       return;
     }
     
@@ -224,8 +224,8 @@ export const useMobileDrawerOptimization = ({
 
   // Обработчик окончания касания
   const handleTouchEnd = useCallback(() => {
-    // ВАЖНО: Блокируем свайп на странице cyberCityFour (проверяем разные варианты pathname)
-    if (pathname === '/cyberCityFour' || pathname?.includes('cyberCityFour')) {
+    // ВАЖНО: Блокируем свайп на странице city (проверяем разные варианты pathname)
+    if (pathname === '/city' || pathname?.includes('city')) {
       touchStartRef.current = null;
       touchMoveRef.current = null;
       return;
