@@ -125,6 +125,7 @@
   font-weight: 600;
   color: var(--color-text, #111827);
   margin: 0 0 16px 0;
+  transition: color 0.2s ease;
 }
 
 /* Сетка метрик */
@@ -258,6 +259,12 @@
   
   .metricValue {
     color: #a78bfa;
+  }
+}
+
+[data-theme="light"] {
+  .sectionTitle {
+    color: #0f172a;
   }
 }
 
