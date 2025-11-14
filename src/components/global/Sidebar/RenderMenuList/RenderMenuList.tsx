@@ -6,6 +6,7 @@ import styles from './RenderMenuList.module.scss'
 import { IArrayItem } from "@/types/sidebar.interface";
 import { useAuth } from "@/providers/AuthProvider";
 import { UserRole } from "@/types/user.interface";
+import { CITY_ROUTE, GRAPHS_ROUTE } from "@/constants/sidebar";
 
 
 const RenderMenuList: React.FC<{arrayItems: IArrayItem[], small: boolean}> = ({ arrayItems, small }) => {
@@ -15,7 +16,8 @@ const RenderMenuList: React.FC<{arrayItems: IArrayItem[], small: boolean}> = ({ 
   const menuWidth = small ? 85 : 200;
 
   // Группируем элементы по требованию
-  const group1 = arrayItems.filter(({ path }) => ['/', '/groups/', '/events/', '/graphs/'].includes(path));
+  const primaryPaths = new Set(['/', '/groups/', '/events/', GRAPHS_ROUTE, CITY_ROUTE]);
+  const group1 = arrayItems.filter(({ path }) => primaryPaths.has(path));
   const group2 = arrayItems.filter(({ path }) => ['/profile', '/schedule/', '/subs/'].includes(path))
     .sort((a, b) => {
       const order = ['/profile', '/schedule/', '/subs/'];

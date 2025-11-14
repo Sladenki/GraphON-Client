@@ -3,16 +3,30 @@
 import React, { useMemo } from "react";
 import styles from "./BottomMenu.module.scss";
 import Link from "next/link";
-import { bottomMenuItems } from "@/constants/sidebar";
+import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, bottomMenuItems } from "@/constants/sidebar";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { UserRole } from "@/types/user.interface";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useSelectedGraphId } from "@/stores/useUIStore";
 
 const BottomMenu: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 1000px)');
+  const storeSelectedGraphId = useSelectedGraphId();
+
+  const normalizeGraphId = (raw: any): string | null => {
+    if (!raw) return null;
+    if (typeof raw === 'string') return raw;
+    if (typeof raw === 'object') {
+      return raw._id ?? raw.$oid ?? null;
+    }
+    return null;
+  };
+
+  const effectiveGraphId = storeSelectedGraphId || normalizeGraphId(user?.selectedGraphId);
+  const isCityGraph = effectiveGraphId === CITY_GRAPH_ID;
 
   // Определяем доступ к управлению
   const hasManageAccess = (() => {
@@ -22,8 +36,19 @@ const BottomMenu: React.FC = () => {
     return Array.isArray(managedIds) && managedIds.length > 0
   })()
 
+  const graphAwareItems = useMemo(() => {
+    return bottomMenuItems.map((item) => {
+      if (item.path !== GRAPHS_ROUTE) return item;
+      return {
+        ...item,
+        title: isCityGraph ? 'Город' : 'Графы',
+        path: isCityGraph ? CITY_ROUTE : GRAPHS_ROUTE,
+      };
+    });
+  }, [isCityGraph]);
+
   const menuItems = useMemo(() => {
-    return bottomMenuItems.filter(({ forAuthUsers, path }) => {
+    return graphAwareItems.filter(({ forAuthUsers, path }) => {
       // Базовая проверка авторизации
       let shouldInclude = !forAuthUsers || isLoggedIn;
 
@@ -34,7 +59,7 @@ const BottomMenu: React.FC = () => {
 
       return shouldInclude;
     });
-  }, [isLoggedIn, user]);
+  }, [graphAwareItems, isLoggedIn, user]);
 
   if (isMobile && !isLoggedIn) return null;
 

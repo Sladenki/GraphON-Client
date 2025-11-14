@@ -1,23 +1,37 @@
 "use client";
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import Link from 'next/link'
 import styles from './Sidebar.module.scss'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { sidebar } from '@/constants/sidebar';
+import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, sidebar } from '@/constants/sidebar';
 import { useAuth } from '@/providers/AuthProvider';
 import { Settings, User } from 'lucide-react';
 
 import RenderMenuList from './RenderMenuList/RenderMenuList';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import { Logo } from '../Logo';
+import { useSelectedGraphId } from '@/stores/useUIStore';
 
 
 const Sidebar: React.FC<{}> = ({}) => {
 
   const small = useMediaQuery('(max-width: 1000px)')
   const { user, isLoggedIn } = useAuth();
+  const storeSelectedGraphId = useSelectedGraphId();
+
+  const normalizeGraphId = (raw: any): string | null => {
+    if (!raw) return null;
+    if (typeof raw === 'string') return raw;
+    if (typeof raw === 'object') {
+      return raw._id ?? raw.$oid ?? null;
+    }
+    return null;
+  };
+
+  const effectiveGraphId = storeSelectedGraphId || normalizeGraphId(user?.selectedGraphId);
+  const isCityGraph = effectiveGraphId === CITY_GRAPH_ID;
   // Определяем доступ к управлению: если у пользователя есть непустой список managed_graph_id
   const hasManageAccess = (() => {
     if (!user) return false;
@@ -26,8 +40,19 @@ const Sidebar: React.FC<{}> = ({}) => {
     return Array.isArray(managedIds) && managedIds.length > 0;
   })();
 
-  const computedItems = (() => {
-    const items = [...sidebar];
+  const baseNavigationItems = useMemo(() => {
+    return sidebar.map((item) => {
+      if (item.path !== GRAPHS_ROUTE) return item;
+      return {
+        ...item,
+        title: isCityGraph ? 'Город' : 'Графы',
+        path: isCityGraph ? CITY_ROUTE : GRAPHS_ROUTE,
+      };
+    });
+  }, [isCityGraph]);
+
+  const computedItems = useMemo(() => {
+    const items = [...baseNavigationItems];
     
     // Добавляем профиль для авторизованных пользователей
     if (isLoggedIn) {
@@ -57,7 +82,7 @@ const Sidebar: React.FC<{}> = ({}) => {
       }
     }
     return items;
-  })();
+  }, [baseNavigationItems, hasManageAccess, isLoggedIn]);
 
   return (
     <div className={styles.sidebar}>

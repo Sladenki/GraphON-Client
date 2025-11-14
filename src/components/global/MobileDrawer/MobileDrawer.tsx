@@ -1,11 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { X } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
-import { mobileDrawerItems } from '@/constants/sidebar'
+import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, mobileDrawerItems } from '@/constants/sidebar'
 import { Settings } from 'lucide-react'
-import { useUIStore } from '@/stores/useUIStore'
+import { useSelectedGraphId, useUIStore } from '@/stores/useUIStore'
 import Link from 'next/link'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import { Logo } from '../Logo'
@@ -19,6 +19,19 @@ interface MobileDrawerProps {
 const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
   const { user, isLoggedIn } = useAuth()
   const { isMobileNavOpen, setMobileNavOpen } = useUIStore()
+  const storeSelectedGraphId = useSelectedGraphId()
+
+  const normalizeGraphId = (raw: any): string | null => {
+    if (!raw) return null
+    if (typeof raw === 'string') return raw
+    if (typeof raw === 'object') {
+      return raw._id ?? raw.$oid ?? null
+    }
+    return null
+  }
+
+  const effectiveGraphId = storeSelectedGraphId || normalizeGraphId(user?.selectedGraphId)
+  const isCityGraph = effectiveGraphId === CITY_GRAPH_ID;
 
   // Используем оптимизированный хук с состоянием из store
   const { handleOpenDrawer, handleCloseDrawer, handleBackdropClick } = 
@@ -32,9 +45,20 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
     return Array.isArray(managedIds) && managedIds.length > 0
   })()
 
+  const graphAwareItems = useMemo(() => {
+    return mobileDrawerItems.map((item) => {
+      if (item.path !== GRAPHS_ROUTE) return item
+      return {
+        ...item,
+        title: isCityGraph ? 'Город' : 'Графы',
+        path: isCityGraph ? CITY_ROUTE : GRAPHS_ROUTE,
+      }
+    })
+  }, [isCityGraph])
+
   // Создаем мобильное меню с учетом доступа к управлению
-  const mobileMenuItems = (() => {
-    const items = [...mobileDrawerItems]
+  const mobileMenuItems = useMemo(() => {
+    const items = [...graphAwareItems]
     
     if (hasManageAccess) {
       const manageItem = {
@@ -47,7 +71,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
       items.splice(4, 0, manageItem) // Вставляем перед "Графы"
     }
     return items
-  })()
+  }, [graphAwareItems, hasManageAccess])
 
   return (
     <>
