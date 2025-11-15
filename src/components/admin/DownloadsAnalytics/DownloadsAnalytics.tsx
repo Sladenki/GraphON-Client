@@ -25,12 +25,9 @@ export function DownloadsAnalytics() {
         {isError ? (
           <p className={styles.error}>Не удалось загрузить данные</p>
         ) : (
-          <>
-            <p className={styles.value}>
-              {isLoading || typeof data !== "number" ? "—" : data.toLocaleString("ru-RU")}
-            </p>
-            <p className={styles.hint}>Суммарное число установок приложения</p>
-          </>
+          <p className={styles.value}>
+            {isLoading || typeof data !== "number" ? "—" : data.toLocaleString("ru-RU")}
+          </p>
         )}
       </div>
     </div>
