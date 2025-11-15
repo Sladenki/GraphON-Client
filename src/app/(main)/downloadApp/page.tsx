@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import Link from "next/link";
 import Image from "next/image";
 import styles from "./page.module.scss";
 import { Download, Shield } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp/FooterPopUp";
 import { useAuth } from "@/providers/AuthProvider";
-import { notifyError } from "@/lib/notifications";
 import { useRouter } from "next/navigation";
+import { notifyError } from "@/lib/notifications";
+import { DownloadsService } from "@/services/downloads.service";
 
 const APK_PATH = "/GraphON-App.apk";
 
@@ -28,8 +28,30 @@ const installGuide = [
 export default function DownloadAppPage() {
   const [isGuideOpen, setGuideOpen] = useState(false);
   const { theme } = useTheme();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const router = useRouter();
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (!isLoggedIn) {
+      notifyError("Скачивание доступно только авторизованным пользователям");
+      router.push("/signIn");
+      return;
+    }
+
+    try {
+      setIsDownloading(true);
+      await DownloadsService.createRecord(user?._id ?? null);
+    } catch (error) {
+      console.error("Failed to register download", error);
+      notifyError("Не удалось зафиксировать скачивание, попробуйте позже");
+    } finally {
+      setIsDownloading(false);
+      if (typeof window !== "undefined") {
+        window.location.href = APK_PATH;
+      }
+    }
+  };
 
   return (
     <main className={styles.page} data-theme={theme ?? undefined}>
@@ -45,24 +67,15 @@ export default function DownloadAppPage() {
                 </p>
               </div>
               <div className={styles.actions}>
-                {isLoggedIn ? (
-                  <Link href={APK_PATH} className={styles.downloadButton} prefetch={false} download>
-                    <Download size={18} />
-                    Скачать APK
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    className={styles.downloadButton}
-                    onClick={() => {
-                      notifyError("Скачивание доступно только авторизованным пользователям");
-                      router.push("/signIn");
-                    }}
-                  >
-                    <Download size={18} />
-                    Скачать APK
-                  </button>
-                )}
+                <button
+                  type="button"
+                  className={styles.downloadButton}
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                >
+                  <Download size={18} />
+                  {isDownloading ? "Подготовка..." : "Скачать APK"}
+                </button>
               </div>
               <div className={styles.quickFacts}>
                 {quickFacts.map((fact) => (
