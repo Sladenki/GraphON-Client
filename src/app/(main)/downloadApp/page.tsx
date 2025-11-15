@@ -7,6 +7,9 @@ import Image from "next/image";
 import styles from "./page.module.scss";
 import { Download, Shield } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp/FooterPopUp";
+import { useAuth } from "@/providers/AuthProvider";
+import { notifyError } from "@/lib/notifications";
+import { useRouter } from "next/navigation";
 
 const APK_PATH = "/GraphON-App.apk";
 
@@ -25,6 +28,8 @@ const installGuide = [
 export default function DownloadAppPage() {
   const [isGuideOpen, setGuideOpen] = useState(false);
   const { theme } = useTheme();
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
 
   return (
     <main className={styles.page} data-theme={theme ?? undefined}>
@@ -40,10 +45,24 @@ export default function DownloadAppPage() {
                 </p>
               </div>
               <div className={styles.actions}>
-                <Link href={APK_PATH} className={styles.downloadButton} prefetch={false} download>
-                  <Download size={18} />
-                  Скачать APK
-                </Link>
+                {isLoggedIn ? (
+                  <Link href={APK_PATH} className={styles.downloadButton} prefetch={false} download>
+                    <Download size={18} />
+                    Скачать APK
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.downloadButton}
+                    onClick={() => {
+                      notifyError("Скачивание доступно только авторизованным пользователям");
+                      router.push("/signIn");
+                    }}
+                  >
+                    <Download size={18} />
+                    Скачать APK
+                  </button>
+                )}
               </div>
               <div className={styles.quickFacts}>
                 {quickFacts.map((fact) => (

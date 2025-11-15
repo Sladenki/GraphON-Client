@@ -100,6 +100,11 @@
   box-shadow: 0 15px 30px rgba(99, 102, 241, 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-decoration: none;
+
+  &[type="button"] {
+    border: none;
+    cursor: pointer;
+  }
 }
 
 .downloadButton:hover {
