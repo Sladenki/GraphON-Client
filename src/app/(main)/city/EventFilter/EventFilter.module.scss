@@ -60,6 +60,21 @@
   }
 }
 
+@media (max-width: 520px) {
+  .dateGroup {
+    flex-wrap: wrap;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .dateButton {
+    flex: 1 1 calc(50% - 6px);
+    min-width: auto;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
 /* Categories */
 .categoriesGrid {
   display: grid;
