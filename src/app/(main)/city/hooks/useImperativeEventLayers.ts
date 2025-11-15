@@ -68,8 +68,8 @@ export const useImperativeEventLayers = (
             type: 'geojson',
             data: eventGeoJSON,
             cluster: true,
-            clusterMaxZoom: 14,
-            clusterRadius: 50
+            clusterMaxZoom: 13,
+            clusterRadius: 48
           });
         } else {
           // Обновляем данные источника при изменении eventGeoJSON (например, при фильтрации)
