@@ -17,6 +17,7 @@ import { AdminSection } from '@/components/admin/AdminSection/AdminSection';
 import { UserStats } from '@/components/admin/UserStats/UserStats';
 import { ServerStats } from '@/components/admin/ServerStats/ServerStats';
 import { VisitorAnalytics } from '@/components/admin/VisitorAnalytics/VisitorAnalytics';
+import { DownloadsAnalytics } from '@/components/admin/DownloadsAnalytics/DownloadsAnalytics';
 import { CreateGlobalGraphForm } from '@/components/admin/CreateGlobalGraphForm/CreateGlobalGraphForm';
 import { CreateTopicGraphForm } from '@/components/admin/CreateTopicGraphForm/CreateTopicGraphForm';
 import { GetWeeklySchedule } from '@/components/admin/GetWeeklySchedule/GetWeeklySchedule';
@@ -57,6 +58,16 @@ const Admin = () => {
                     role={UserRole.Create}
                 >
                     <VisitorAnalytics />
+                </AdminSection>
+            )}
+
+            {canAccessCreate && (
+                <AdminSection
+                    title="Аналитика скачиваний"
+                    emoji="📥"
+                    role={UserRole.Create}
+                >
+                    <DownloadsAnalytics />
                 </AdminSection>
             )}
 
