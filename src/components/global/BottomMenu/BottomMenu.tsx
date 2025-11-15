@@ -9,6 +9,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { UserRole } from "@/types/user.interface";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useSelectedGraphId } from "@/stores/useUIStore";
+import { MapPinned } from "lucide-react";
 
 const BottomMenu: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
@@ -43,6 +44,9 @@ const BottomMenu: React.FC = () => {
         ...item,
         title: isCityGraph ? 'Город' : 'Графы',
         path: isCityGraph ? CITY_ROUTE : GRAPHS_ROUTE,
+        icon: isCityGraph
+          ? <MapPinned color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />
+          : item.icon,
       };
     });
   }, [isCityGraph]);

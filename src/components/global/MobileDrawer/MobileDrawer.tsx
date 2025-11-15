@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { X } from 'lucide-react'
+import { MapPinned, X } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, mobileDrawerItems } from '@/constants/sidebar'
 import { Settings } from 'lucide-react'
@@ -52,6 +52,9 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
         ...item,
         title: isCityGraph ? 'Город' : 'Графы',
         path: isCityGraph ? CITY_ROUTE : GRAPHS_ROUTE,
+        icon: isCityGraph
+          ? <MapPinned color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />
+          : item.icon,
       }
     })
   }, [isCityGraph])

@@ -7,7 +7,7 @@ import styles from './Sidebar.module.scss'
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, sidebar } from '@/constants/sidebar';
 import { useAuth } from '@/providers/AuthProvider';
-import { Settings, User } from 'lucide-react';
+import { MapPinned, Settings, User } from 'lucide-react';
 
 import RenderMenuList from './RenderMenuList/RenderMenuList';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
@@ -47,6 +47,9 @@ const Sidebar: React.FC<{}> = ({}) => {
         ...item,
         title: isCityGraph ? 'Город' : 'Графы',
         path: isCityGraph ? CITY_ROUTE : GRAPHS_ROUTE,
+        icon: isCityGraph
+          ? <MapPinned color="rgb(var(--main-Color))" size={21} strokeWidth={1} />
+          : item.icon,
       };
     });
   }, [isCityGraph]);
