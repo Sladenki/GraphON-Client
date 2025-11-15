@@ -99,7 +99,7 @@ export default function EventFilter({
             <button
               type="button"
               onClick={handleOpenList}
-              className={styles.actionButton}
+              className={`${styles.actionButton} ${styles.listButton}`}
               aria-label="Список мероприятий"
             >
               <List size={18} className={styles.actionIcon} />
