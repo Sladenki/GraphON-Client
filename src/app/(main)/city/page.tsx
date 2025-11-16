@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import React, { useCallback, useMemo, useState, Suspense } from "react";
+import React, { useCallback, useMemo, useRef, useState, Suspense } from "react";
 import { Filter, List } from "lucide-react";
 import styles from "./page.module.scss";
 import { mockEvents, type CityEvent } from "./mockEvents";
@@ -41,6 +41,7 @@ export default function CityPage() {
   // Состояние карты
   const [mapRef, setMapRef] = useState<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const mapHostRef = useRef<HTMLDivElement | null>(null);
   
   // Auth
   const { isLoggedIn } = useAuth();
@@ -300,7 +301,7 @@ export default function CityPage() {
   return (
     <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`} data-swipe-enabled="false">
       <div className={styles.content}>
-        <div className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''} ${isMobile ? styles.mobileMap : ''}`}>
+        <div ref={mapHostRef} className={`${styles.mapHost} ${mapLoaded ? styles.mapLoaded : ''} ${isMobile ? styles.mobileMap : ''}`}>
           <div className={styles.map}>
           <ReactMapGL
             initialViewState={{ 
@@ -344,7 +345,7 @@ export default function CityPage() {
           )}
             
           {/* Кнопки фильтра и списка */}
-          {!isFilterOpen && !isListOpen && (
+          {!isFilterOpen && !isListOpen && !selectedEvent && (
             <>
               <button 
                 className={`${styles.listButton} ${isLoggedIn ? styles.listButtonWithMenu : ''}`}
@@ -381,6 +382,7 @@ export default function CityPage() {
                 dateTo={dateTo}
                 onDateToChange={setDateTo}
                 onOpenList={handleListOpenFromFilter}
+                portalContainer={mapHostRef.current || undefined}
               />
             </Suspense>
           )}
@@ -395,6 +397,7 @@ export default function CityPage() {
                 onEventClick={handleEventSelectFromList}
                 onOpenFilter={handleFilterOpenFromList}
                 hasActiveFilters={hasActiveFilters}
+                portalContainer={mapHostRef.current || undefined}
               />
             </Suspense>
           )}
@@ -412,6 +415,7 @@ export default function CityPage() {
                 isLight={isLight}
                 showBackButton={eventOpenedFromList}
                 onBack={handleBackToList}
+                portalContainer={mapHostRef.current || undefined}
               />
             </Suspense>
           )}
