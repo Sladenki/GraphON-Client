@@ -2,14 +2,8 @@
   position: relative;
   min-height: 100vh;
   padding: clamp(48px, 4vw, 72px) clamp(12px, 5vw, 64px) clamp(48px, 5vw, 72px);
-  background:
-    radial-gradient(circle at 12% 15%, rgba(129, 87, 241, 0.34) 0%, transparent 54%),
-    radial-gradient(circle at 82% 18%, rgba(14, 165, 233, 0.3) 0%, transparent 47%),
-    radial-gradient(circle at 88% 85%, rgba(59, 130, 246, 0.28) 0%, transparent 42%),
-    radial-gradient(circle at 50% 40%, rgba(79, 70, 229, 0.26) 0%, transparent 48%),
-    linear-gradient(180deg, rgba(22, 28, 46, 0.85) 0%, rgba(16, 22, 38, 0.83) 55%, rgba(12, 18, 32, 0.88) 100%);
-  background-color: var(--color-background, #101631);
-  color: var(--color-text, #f8fafc);
+  background: var(--color-background, #0f172a);
+  color: var(--color-text, #e5e7eb);
 }
 
 .content {
@@ -25,13 +19,9 @@
   position: relative;
   padding: clamp(22px, 3.5vw, 40px);
   border-radius: 32px;
-  background: linear-gradient(135deg, rgba(25, 23, 44, 0.7), rgba(16, 18, 34, 0.7));
-  box-shadow:
-    0 30px 60px rgba(5, 6, 12, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(129, 87, 241, 0.4);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: var(--color-background-secondary, #111827);
+  border: 1px solid var(--color-border, #1f2937);
+  box-shadow: none;
   overflow: hidden;
   margin-top: clamp(-32px, -5vw, -12px);
 }
@@ -95,10 +85,10 @@
   border-radius: 18px;
   font-size: 16px;
   font-weight: 600;
-  color: #05060a;
-  background: linear-gradient(120deg, #a855f7 0%, #6366f1 55%, #14b8a6 100%);
-  box-shadow: 0 15px 30px rgba(99, 102, 241, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: #ffffff;
+  background: var(--color-primary, #6a57e8);
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, opacity 0.2s ease;
   text-decoration: none;
 
   &[type="button"] {
@@ -109,7 +99,7 @@
 
 .downloadButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 35px rgba(99, 102, 241, 0.45);
+  opacity: 0.95;
 }
 
 .version {
@@ -127,8 +117,8 @@
 .fact {
   padding: 12px 14px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(129, 87, 241, 0.18), rgba(14, 165, 233, 0.1));
-  border: 1px solid rgba(129, 87, 241, 0.35);
+  background: var(--color-background, #0f172a);
+  border: 1px solid var(--color-border, #1f2937);
 }
 
 .factLabel {
@@ -155,10 +145,10 @@
   width: min(320px, 80%);
   aspect-ratio: 3 / 4;
   border-radius: 24px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.08), transparent 60%), rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--color-border, #1f2937);
+  background: var(--color-background-secondary, #111827);
   overflow: hidden;
-  box-shadow: 0 25px 45px rgba(2, 6, 23, 0.5);
+  box-shadow: none;
 }
 
 .heroMediaFrame img {
@@ -180,8 +170,8 @@
   gap: 16px;
   padding: 16px;
   border-radius: 18px;
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: var(--color-background-secondary, #111827);
+  border: 1px solid var(--color-border, #1f2937);
 }
 
 .guideItem::before {
@@ -190,8 +180,8 @@
   width: 32px;
   height: 32px;
   border-radius: 10px;
-  background: rgba(99, 102, 241, 0.25);
-  color: #c4b5fd;
+  background: var(--color-primary, #6a57e8);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -214,17 +204,13 @@
   width: 100%;
   padding: 28px;
   border-radius: 24px;
-  border: 1px solid rgba(129, 87, 241, 0.35);
-  background: linear-gradient(120deg, rgba(15, 20, 34, 0.65), rgba(10, 15, 28, 0.65));
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--color-border, #1f2937);
+  background: var(--color-background-secondary, #111827);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  box-shadow:
-    0 18px 45px rgba(3, 5, 12, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: none;
 }
 
 .guideHint {
@@ -253,17 +239,16 @@
   border-radius: 999px;
   font-size: 15px;
   font-weight: 600;
-  border: 1px solid rgba(94, 234, 212, 0.35);
-  background: rgba(45, 212, 191, 0.15);
-  color: #5eead4;
+  border: 1px solid transparent;
+  background: var(--color-primary, #6a57e8);
+  color: #ffffff;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .guideButton:hover {
   transform: translateY(-1px);
-  border-color: rgba(94, 234, 212, 0.55);
-  box-shadow: 0 12px 25px rgba(15, 118, 110, 0.35);
+  opacity: 0.95;
 }
 
 @media (max-width: 768px) {
