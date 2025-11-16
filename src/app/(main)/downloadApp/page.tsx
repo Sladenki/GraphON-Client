@@ -14,8 +14,8 @@ import { DownloadsService } from "@/services/downloads.service";
 const APK_PATH = "/GraphON-App.apk";
 
 const quickFacts = [
-  { label: "Размер", value: "10 МБ" },
-  { label: "Совместимость", value: "Android 8.0 +" },
+  { label: "Размер", value: "9.6 МБ" },
+  { label: "Совместимость", value: "Android 7.0 +" },
 ];
 
 const installGuide = [
