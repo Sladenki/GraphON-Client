@@ -11,6 +11,12 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
+/* Вариант, когда попап монтируется внутри конкретного контейнера (например, карты) */
+.inContainer {
+  position: absolute;
+  inset: 0;
+}
+
 /* Bottom Sheet */
 .sheet {
   position: fixed;
@@ -34,6 +40,11 @@
 
 .sheetOpen {
   transform: translateY(0%);
+}
+
+/* Лист внутри контейнера (центрирование по карте) */
+.inContainerSheet {
+  position: absolute;
 }
 
 .sheetHandleArea {
@@ -107,13 +118,24 @@
     left: 50%;
     right: auto;
     bottom: 0; /* На десктопе внизу экрана */
-    width: 55vw;
-    max-width: 1200px;
+    width: 55vw; /* Базовая ширина на десктопе как раньше */
+    max-width: 1200px; /* дефолт, может быть переопределён инлайновым стилем */
     border-radius: 20px 20px 0 0;
     transform: translate(-50%, 100%);
   }
   
   .sheetOpen {
+    transform: translate(-50%, 0%);
+  }
+
+  .inContainerSheet {
+    left: 50%;
+    right: auto;
+    bottom: 0;
+    width: 55vw;
+    transform: translate(-50%, 100%);
+  }
+  .inContainerSheet.sheetOpen {
     transform: translate(-50%, 0%);
   }
 }
@@ -128,6 +150,16 @@
   }
   
   .sheetOpen {
+    transform: translateY(0%);
+  }
+
+  .inContainerSheet {
+    left: 0;
+    right: 0;
+    width: 100%;
+    transform: translateY(100%);
+  }
+  .inContainerSheet.sheetOpen {
     transform: translateY(0%);
   }
 }

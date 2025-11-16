@@ -14,6 +14,7 @@ interface FooterPopUpProps {
   maxHeight?: string;
   maxWidth?: string;
   className?: string;
+  container?: HTMLElement | null;
 }
 
 /**
@@ -29,6 +30,7 @@ export default function FooterPopUp({
   maxHeight = "70vh",
   maxWidth,
   className = "",
+  container = null,
 }: FooterPopUpProps) {
   const [isDragging, setIsDragging] = useState(false);
   const dragStartYRef = useRef<number | null>(null);
@@ -36,6 +38,7 @@ export default function FooterPopUp({
   const [animateOpen, setAnimateOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const isInContainer = typeof window !== "undefined" && container && container !== document.body;
 
   // Монтируем компонент для Portal
   useEffect(() => {
@@ -148,11 +151,11 @@ export default function FooterPopUp({
 
   const content = (
     <div 
-      className={`${styles.overlay} ${animateOpen ? styles.overlayVisible : ""}`} 
+      className={`${styles.overlay} ${animateOpen ? styles.overlayVisible : ""} ${isInContainer ? styles.inContainer : ""}`} 
       onClick={onClose}
     >
       <div
-        className={`${styles.sheet} ${animateOpen ? styles.sheetOpen : ""} ${className}`}
+        className={`${styles.sheet} ${animateOpen ? styles.sheetOpen : ""} ${className} ${isInContainer ? styles.inContainerSheet : ""}`}
         style={sheetStyle}
         onClick={(e) => e.stopPropagation()}
       >
@@ -189,6 +192,6 @@ export default function FooterPopUp({
   );
 
   // Рендерим через Portal в document.body
-  return createPortal(content, document.body);
+  return createPortal(content, isInContainer ? (container as HTMLElement) : document.body);
 }
 

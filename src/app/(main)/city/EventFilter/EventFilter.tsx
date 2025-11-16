@@ -22,6 +22,7 @@ interface EventFilterProps {
   dateTo: string;
   onDateToChange: (date: string) => void;
   onOpenList?: () => void;
+  portalContainer?: HTMLElement | null;
 }
 
 export default function EventFilter({ 
@@ -38,6 +39,7 @@ export default function EventFilter({
   dateTo,
   onDateToChange,
   onOpenList,
+  portalContainer,
 }: EventFilterProps) {
   const toggleCategory = useCallback((key: string) => {
     onCategoriesChange({ ...selectedCategories, [key]: !selectedCategories[key] });
@@ -91,6 +93,7 @@ export default function EventFilter({
       title="Фильтры мероприятий"
       footer={footer}
       maxHeight="90vh"
+      container={portalContainer}
     >
       {/* Кнопки управления фильтрами */}
       {(onOpenList || hasActiveFilters) && (

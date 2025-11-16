@@ -14,6 +14,7 @@ interface EventsListProps {
   onEventClick: (event: CityEvent) => void;
   onOpenFilter?: () => void;
   hasActiveFilters?: boolean;
+  portalContainer?: HTMLElement | null;
 }
 
 // Функция форматирования даты в формат "6 ноября 2025г."
@@ -40,7 +41,7 @@ const formatEventDate = (dateString: string): string => {
   }
 };
 
-export default function EventsList({ isOpen, onClose, events, onEventClick, onOpenFilter, hasActiveFilters = false }: EventsListProps) {
+export default function EventsList({ isOpen, onClose, events, onEventClick, onOpenFilter, hasActiveFilters = false, portalContainer }: EventsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleEventClick = (event: CityEvent) => {
@@ -80,6 +81,7 @@ export default function EventsList({ isOpen, onClose, events, onEventClick, onOp
       onClose={onClose} 
       title={`Мероприятия (${filteredEvents.length})`}
       maxHeight="90vh"
+      container={portalContainer}
     >
       {/* Поисковая строка и фильтр */}
       <div className={styles.searchContainer}>

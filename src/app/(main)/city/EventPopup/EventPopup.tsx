@@ -15,6 +15,7 @@ interface EventPopupProps {
   isLight?: boolean;
   showBackButton?: boolean;
   onBack?: () => void;
+  portalContainer?: HTMLElement | null;
 }
 
 // Функция форматирования даты в формат "6 ноября 2025г."
@@ -47,7 +48,8 @@ export default function EventPopup({
   onClose, 
   isLight = false,
   showBackButton = false,
-  onBack 
+  onBack,
+  portalContainer
 }: EventPopupProps) {
 
   // Функция открытия маршрута в Яндекс.Картах
@@ -160,7 +162,7 @@ export default function EventPopup({
       onClose={onClose} 
       title={event?.name || ""}
       footer={footer}
-      maxWidth="680px"
+      container={portalContainer}
     >
       {event && (
         <>
