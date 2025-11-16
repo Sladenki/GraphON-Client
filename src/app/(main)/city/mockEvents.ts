@@ -41,6 +41,21 @@ const places = [
   "пр. Ленинский 24 (Галерея)",
   "ул. Тельмана 3 (Парк Юности)",
   "пр. Мира 4 (Драмтеатр)",
+  "ул. Фрунзе 5 (Библиотека им. Чехова)",
+  "пр. Победы 1 (ТЦ Европа)",
+  "ул. Октябрьская 3 (Кинотеатр Заря)",
+  "ул. Багратиона 2 (Рыбная деревня)",
+  "пр. Мира 26 (Центральный парк)",
+  "ул. Ленинский проспект 30 (Спорткомплекс)",
+  "ул. Генерала Галицкого 1 (Музей Мирового океана)",
+  "пр. Мира 9 (Дворец культуры)",
+  "ул. Шевченко 5 (Парк культуры)",
+  "пр. Ленинский 65 (Торговый центр)",
+  "ул. Красная 1 (Площадь Победы)",
+  "ул. Комсомольская 4 (Культурный центр)",
+  "пр. Мира 12 (Выставочный зал)",
+  "ул. Багратиона 8 (Набережная Преголи)",
+  "ул. Октябрьская 10 (Парк скульптур)",
 ];
 
 const namesByCategory: Record<EventCategory, string[]> = {
@@ -141,7 +156,7 @@ const namesByCategory: Record<EventCategory, string[]> = {
 const baseLat = 54.71;
 const baseLng = 20.51;
 
-function randomInRange(base: number, range = 0.03) {
+function randomInRange(base: number, range = 0.08) {
   return +(base + (Math.random() - 0.5) * range).toFixed(5);
 }
 
@@ -153,7 +168,7 @@ function randomDate() {
   return date.toISOString().split("T")[0];
 }
 
-export const mockEvents: CityEvent[] = Array.from({ length: 50 }, (_, i) => {
+export const mockEvents: CityEvent[] = Array.from({ length: 30 }, (_, i) => {
   const category = categories[Math.floor(Math.random() * categories.length)];
   const name =
     namesByCategory[category][

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import React, { useCallback, useMemo, useRef, useState, Suspense } from "react";
+import React, { useCallback, useMemo, useRef, useState, Suspense, useEffect } from "react";
 import { Filter, List } from "lucide-react";
 import styles from "./page.module.scss";
 import { mockEvents, type CityEvent } from "./mockEvents";
@@ -257,12 +257,108 @@ export default function CityPage() {
     setIsFilterOpen(false);
   }, []);
 
-  // Мемоизированный обработчик применения фильтров (с сбросом позиции)
+  // Функция вычисления расстояния между двумя точками (формула гаверсинуса)
+  const calculateDistance = useCallback((lat1: number, lng1: number, lat2: number, lng2: number): number => {
+    const R = 6371; // Радиус Земли в километрах
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }, []);
+
+  // Функция поиска ближайшего мероприятия на выбранную дату
+  const findNearestEventForDate = useCallback((): CityEvent | null => {
+    if (!mapRef || !mapLoaded || filteredEvents.length === 0) return null;
+    
+    try {
+      // Получаем текущий центр карты
+      const center = mapRef.getCenter();
+      if (!center) return null;
+      
+      const currentLat = center.lat;
+      const currentLng = center.lng;
+      
+      // Находим ближайшее мероприятие
+      let nearestEvent: CityEvent | null = null;
+      let minDistance = Infinity;
+      
+      filteredEvents.forEach(event => {
+        const distance = calculateDistance(currentLat, currentLng, event.lat, event.lng);
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestEvent = event;
+        }
+      });
+      
+      return nearestEvent;
+    } catch (error) {
+      console.error('Ошибка при поиске ближайшего мероприятия:', error);
+      return null;
+    }
+  }, [mapRef, mapLoaded, filteredEvents, calculateDistance]);
+
+  // Перемещение карты к ближайшему мероприятию при выборе даты
+  useEffect(() => {
+    // Срабатывает только если выбрана дата (не null) и есть отфильтрованные события
+    if (!datePreset || filteredEvents.length === 0 || !mapRef || !mapLoaded) return;
+    
+    // Небольшая задержка для завершения фильтрации
+    const timer = setTimeout(() => {
+      const nearestEvent = findNearestEventForDate();
+      if (nearestEvent) {
+        try {
+          mapRef.flyTo({
+            center: [nearestEvent.lng, nearestEvent.lat],
+            zoom: isVerySmallScreen ? 13.0 : (isMobile ? 14.0 : 15.5),
+            pitch: 40,
+            bearing: mapRef.getBearing() || -12,
+            duration: 1500,
+            essential: true
+          });
+        } catch (error) {
+          console.error('Ошибка при перемещении карты к мероприятию:', error);
+        }
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [datePreset, filteredEvents.length, mapRef, mapLoaded, findNearestEventForDate, isMobile, isVerySmallScreen]);
+
+  // Перемещение карты при изменении custom даты
+  useEffect(() => {
+    // Срабатывает только если выбрана custom дата и есть отфильтрованные события
+    if (datePreset !== "custom" || !dateFrom || filteredEvents.length === 0 || !mapRef || !mapLoaded) return;
+    
+    // Небольшая задержка для завершения фильтрации
+    const timer = setTimeout(() => {
+      const nearestEvent = findNearestEventForDate();
+      if (nearestEvent) {
+        try {
+          mapRef.flyTo({
+            center: [nearestEvent.lng, nearestEvent.lat],
+            zoom: isVerySmallScreen ? 13.0 : (isMobile ? 14.0 : 15.5),
+            pitch: 40,
+            bearing: mapRef.getBearing() || -12,
+            duration: 1500,
+            essential: true
+          });
+        } catch (error) {
+          console.error('Ошибка при перемещении карты к мероприятию:', error);
+        }
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [datePreset, dateFrom, filteredEvents.length, mapRef, mapLoaded, findNearestEventForDate, isMobile, isVerySmallScreen]);
+
+  // Мемоизированный обработчик применения фильтров (без сброса позиции, карта уже переместилась)
   const handleFilterApply = useCallback(() => {
     setIsFilterOpen(false);
-    // Сбрасываем позицию карты к начальному состоянию с уменьшенным зумом
-    resetMapView();
-  }, [resetMapView]);
+  }, []);
   
   const handleListOpen = useCallback(() => {
     setIsListOpen(true);
