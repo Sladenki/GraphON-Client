@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import styles from "./page.module.scss";
@@ -31,6 +31,7 @@ export default function DownloadAppPage() {
   const { isLoggedIn, user } = useAuth();
   const router = useRouter();
   const [isDownloading, setIsDownloading] = useState(false);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   const handleDownload = async () => {
     if (!isLoggedIn) {
@@ -55,7 +56,7 @@ export default function DownloadAppPage() {
 
   return (
     <main className={styles.page} data-theme={theme ?? undefined}>
-      <div className={styles.content}>
+      <div ref={contentRef} className={styles.content}>
         <section className={styles.heroCard}>
           <div className={styles.heroAccent} />
           <div className={styles.heroInner}>
@@ -123,6 +124,7 @@ export default function DownloadAppPage() {
         onClose={() => setGuideOpen(false)}
         title="Как установить GraphON"
         maxHeight="80vh"
+        container={contentRef.current || undefined}
       >
         <div className={styles.themeScope} data-theme={theme ?? undefined}>
           <ol className={styles.guideList}>
