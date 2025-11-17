@@ -64,7 +64,7 @@ export default function DownloadAppPage() {
               <div className={styles.heroHeader}>
                 <h1 className={styles.title}>
                   <span className={styles.titleBrand}>GraphON Mobile</span>
-                  <span className={styles.titleRest}>— лучшее приложение для поиска мероприятий</span>
+                  <span className={styles.titleRest}> - лучшее приложение для поиска мероприятий</span>
                 </h1>
                 <p className={styles.subtitle}>
                   Подписывайтесь на любимые графы, следи за мероприятиями и держи расписание в одном месте.
@@ -94,7 +94,7 @@ export default function DownloadAppPage() {
             <div className={styles.heroMedia}>
               <div className={styles.heroMediaFrame}>
                 <Image
-                  src="/noImage.png"
+                  src="/appPhone.svg"
                   alt="Предпросмотр GraphON Mobile"
                   fill
                   sizes="(max-width: 768px) 60vw, 320px"
