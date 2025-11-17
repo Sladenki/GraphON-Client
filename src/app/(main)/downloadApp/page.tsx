@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import { useTheme } from "next-themes";
-import Image from "next/image";
 import styles from "./page.module.scss";
 import { Download, Shield } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp/FooterPopUp";
@@ -93,12 +92,10 @@ export default function DownloadAppPage() {
 
             <div className={styles.heroMedia}>
               <div className={styles.heroMediaFrame}>
-                <Image
+                <img
                   src="/appPhone.svg"
                   alt="Предпросмотр GraphON Mobile"
-                  fill
-                  sizes="(max-width: 768px) 60vw, 320px"
-                  priority
+                  className={styles.heroImage}
                 />
               </div>
             </div>
