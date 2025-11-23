@@ -162,6 +162,15 @@
   .inContainerSheet.sheetOpen {
     transform: translateY(0%);
   }
+
+  /* Учитываем высоту BottomMenu для footer и content */
+  .footer {
+    padding-bottom: calc(12px + 50px + env(safe-area-inset-bottom, 0));
+  }
+
+  .content {
+    padding-bottom: calc(16px + 70px + env(safe-area-inset-bottom, 0));
+  }
 }
 
 @media (max-width: 480px) {
