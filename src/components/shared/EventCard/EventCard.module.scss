@@ -233,6 +233,30 @@
   }
 }
 
+.readMoreButton {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  color: rgb(var(--main-Color));
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-inter);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  
+  &:hover {
+    color: rgba(var(--main-Color), 0.8);
+    text-decoration: underline;
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
 // Important Info - время и место (выделены)
 .importantInfo {
   padding: 20px 24px;

@@ -100,6 +100,7 @@ const EventCard: React.FC<EventProps> = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isAttendeesOpen, setIsAttendeesOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   
   // Хуки
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
@@ -161,6 +162,18 @@ const EventCard: React.FC<EventProps> = ({
     
     return eventDate < now;
   }, [event.eventDate, event.timeTo, event.isDateTbd]);
+
+  // Логика для "Читать дальше" в описании
+  const descriptionText = useMemo(() => {
+    if (!event.description) return '';
+    return event.description;
+  }, [event.description]);
+
+  const shouldTruncate = descriptionText.length > 300;
+  const truncatedText = useMemo(() => {
+    if (!shouldTruncate || isDescriptionExpanded) return descriptionText;
+    return descriptionText.slice(0, 300);
+  }, [descriptionText, shouldTruncate, isDescriptionExpanded]);
 
   // Значение для HTML input[type="date"] в формате YYYY-MM-DD
   const dateInputValue = useMemo(() => {
@@ -450,7 +463,16 @@ const EventCard: React.FC<EventProps> = ({
             </div>
         ) : (
             <div className={styles.description}>
-            {linkifyText(event.description)}
+              {linkifyText(truncatedText)}
+              {shouldTruncate && (
+                <button
+                  className={styles.readMoreButton}
+                  onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                  type="button"
+                >
+                  {isDescriptionExpanded ? 'Свернуть' : 'Читать дальше'}
+                </button>
+              )}
             </div>
           )}
         </div>
