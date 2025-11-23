@@ -214,7 +214,7 @@ export default function MongoPage() {
   }, [selectedCollection, importFile, refetch, handleFind]);
 
   return (
-    <main style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
+    <main style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16, overflowX: 'hidden', maxWidth: '100vw' }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <h1 style={{ margin: 0 }}>Mongo</h1>
         {collectionsLoading && <Spinner size="sm" />}
@@ -239,7 +239,7 @@ export default function MongoPage() {
         </div>
       </div>
 
-      <section style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 16 }}>
+      <section style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 16, minWidth: 0, overflow: 'hidden' }}>
         <CollectionsSidebar
           dbName={DB_NAME}
           collections={collections}
@@ -253,7 +253,7 @@ export default function MongoPage() {
           canImport={canImport}
         />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0, overflow: 'hidden' }}>
           <div style={{ display: "flex", gap: 12, alignItems: "end" }}>
             <div style={{ flex: 1 }}>
               <Input
@@ -321,23 +321,25 @@ export default function MongoPage() {
             </div>
           )}
 
-          <div style={{ border: "1px solid var(--border-color, #e5e7eb)", borderRadius: 8, padding: 12, minHeight: 160 }}>
+          <div style={{ border: "1px solid var(--border-color, #e5e7eb)", borderRadius: 8, padding: 12, minHeight: 160, overflow: 'hidden' }}>
             {searching ? (
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <Spinner size="sm" /> Загрузка...
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, maxHeight: '70vh', overflow: "auto" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, maxHeight: '70vh', overflow: "auto", minWidth: 0 }}>
                 {(docs ?? []).map((doc, i) => {
                   const id = extractId((doc as any)?._id) || String((doc as any)?._id || '');
                   return (
-                    <div key={i} style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: 8 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                        <strong style={{ flex: 1 }}>#{i + 1} {id && `— ${id}`}</strong>
+                    <div key={i} style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: 8, minWidth: 0, overflow: 'hidden' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                        <strong style={{ flex: 1, minWidth: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>#{i + 1} {id && `— ${id}`}</strong>
                         {id && <Button size="sm" variant="flat" onPress={() => handleAskPatch(id)}>Изменить</Button>}
                         {id && <Button size="sm" color="danger" variant="flat" onPress={() => handleAskDelete(id)}>Удалить</Button>}
                       </div>
-                      <JsonPretty value={doc} />
+                      <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                        <JsonPretty value={doc} />
+                      </div>
                     </div>
                   );
                 })}

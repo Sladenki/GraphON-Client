@@ -119,13 +119,37 @@ export default function JsonPretty({ value, compact = true }: Props) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: compact ? 6 : 8 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+        <button
+          onClick={() => setWrap(!wrap)}
+          style={{
+            padding: '4px 8px',
+            fontSize: '11px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '4px',
+            background: wrap ? '#f3f4f6' : 'transparent',
+            cursor: 'pointer',
+            color: '#374151',
+          }}
+          type="button"
+        >
+          {wrap ? 'Не переносить' : 'Переносить строки'}
+        </button>
+      </div>
       <div style={{
-        border: '1px solid #e5e7eb', borderRadius: radius, overflow: 'auto',
+        border: '1px solid #e5e7eb', 
+        borderRadius: radius, 
+        overflow: 'auto',
+        maxWidth: '100%',
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
         fontSize,
         lineHeight,
       }}>
-        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'auto' }}>
+          <colgroup>
+            <col style={{ width: '40px', minWidth: '40px' }} />
+            <col style={{ width: 'auto' }} />
+          </colgroup>
           <tbody>
             {lines.map((line, idx) => (
               <tr key={idx}>
@@ -136,13 +160,15 @@ export default function JsonPretty({ value, compact = true }: Props) {
                   padding: cellPad,
                   color: '#6b7280',
                   borderRight: '1px solid #e5e7eb',
-                  width: 1,
                   whiteSpace: 'nowrap',
                 }}>{idx + 1}</td>
                 <td style={{
                   padding: cellPad,
                   whiteSpace: wrap ? 'pre-wrap' : 'pre',
-                  wordBreak: wrap ? 'break-word' : 'normal',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  wordWrap: 'break-word',
+                  maxWidth: '100%',
                 }}>
                   {highlightLine(line)}
                 </td>
