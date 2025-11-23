@@ -47,8 +47,8 @@ interface EventProps {
     description: string;
     place: string;
     eventDate: string;
-    timeFrom: string;
-    timeTo: string;
+    timeFrom?: string;
+    timeTo?: string;
     regedUsers: number;
     isAttended: boolean;
     isDateTbd?: boolean;
@@ -127,7 +127,13 @@ const EventCard: React.FC<EventProps> = ({
       year: 'numeric'
     });
     
-    return `${dateStr}, ${event.timeFrom} - ${event.timeTo}`;
+    if (event.timeFrom && event.timeTo) {
+      return `${dateStr}, ${event.timeFrom} - ${event.timeTo}`;
+    } else if (event.timeFrom) {
+      return `${dateStr}, ${event.timeFrom}`;
+    } else {
+      return dateStr;
+    }
   }, [event.eventDate, event.timeFrom, event.timeTo, event.isDateTbd]);
 
   // Проверка, прошло ли мероприятие
@@ -136,8 +142,15 @@ const EventCard: React.FC<EventProps> = ({
     
     // Создаем дату события, используя дату и время окончания
     const eventDate = new Date(event.eventDate);
-    const [hours, minutes] = event.timeTo.split(':').map(Number);
-    eventDate.setHours(hours, minutes, 0, 0);
+    
+    // Если есть время окончания, используем его, иначе проверяем только дату
+    if (event.timeTo) {
+      const [hours, minutes] = event.timeTo.split(':').map(Number);
+      eventDate.setHours(hours, minutes, 0, 0);
+    } else {
+      // Если времени нет, считаем событие прошедшим, если дата меньше сегодняшней
+      eventDate.setHours(23, 59, 59, 999);
+    }
     
     const now = new Date();
     
@@ -200,8 +213,8 @@ const EventCard: React.FC<EventProps> = ({
         isDateTbd: editedEvent.isDateTbd,
         ...(editedEvent.isDateTbd ? {} : {
           eventDate: editedEvent.eventDate,
-          timeFrom: editedEvent.timeFrom,
-          timeTo: editedEvent.timeTo,
+          ...(editedEvent.timeFrom && { timeFrom: editedEvent.timeFrom }),
+          ...(editedEvent.timeTo && { timeTo: editedEvent.timeTo }),
         })
       };
 
@@ -477,13 +490,13 @@ const EventCard: React.FC<EventProps> = ({
                     <div className={styles.timeInputs}>
                       <input
                         type="time"
-                        value={editedEvent.timeFrom}
+                        value={editedEvent.timeFrom || ''}
                         onChange={(e) => updateEditedEvent('timeFrom', e.target.value)}
                         className={styles.timeInput}
                       />
                       <input
                         type="time"
-                        value={editedEvent.timeTo}
+                        value={editedEvent.timeTo || ''}
                         onChange={(e) => updateEditedEvent('timeTo', e.target.value)}
                         className={styles.timeInput}
                       />
