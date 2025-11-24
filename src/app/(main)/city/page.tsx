@@ -12,12 +12,31 @@ import { useMapTheme } from "./hooks/useMapTheme";
 import { useMapInteraction } from "./hooks/useMapInteraction";
 import { createLocalMapStyle } from "./config/mapStyleConfig";
 import { EventService } from "@/services/event.service";
+import { GraphService } from "@/services/graph.service";
 import { useQuery } from "@tanstack/react-query";
 import { useCityEventsWithGeocoding } from "./hooks/useCityEvents";
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
+import type { EventCategory } from "./constants/categories";
 
 // Константа ID графа города
 const CITY_GRAPH_ID = "690bfec3f371d05b325be7ad";
+
+// Маппинг названий тем на категории
+const TOPIC_NAME_TO_CATEGORY: Record<string, EventCategory> = {
+  "Бизнес": "business",
+  "Вечеринки": "party",
+  "Встречи": "meetup",
+  "Гастро": "gastro",
+  "Город": "city",
+  "Искусство": "art",
+  "Кино": "cinema",
+  "Музыка": "music",
+  "Образование": "education",
+  "Семья": "family",
+  "Спорт": "sport",
+  "Театр": "theater",
+  "Юмор": "humor",
+};
 
 // Динамическая загрузка тяжелых компонентов
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
@@ -42,13 +61,40 @@ const EventsList = dynamic(() => import("./EventsList"), {
 // ===== КОМПОНЕНТ =====
 
 // Функция преобразования данных из API в CityEventAPI
-function transformApiEventToCityEvent(apiEvent: any): CityEventAPI {
+function transformApiEventToCityEvent(apiEvent: any, topicMap: Map<string, string>): CityEventAPI {
+  // Определяем категорию на основе parentGraphId
+  let category: EventCategory = "city"; // Дефолтная категория
+  
+  // Получаем parentGraphId из события
+  // Может быть в разных местах: apiEvent.parentGraphId или apiEvent.graphId?.parentGraphId
+  const parentGraphId = apiEvent.parentGraphId 
+    ? String(apiEvent.parentGraphId) 
+    : (apiEvent.graphId?.parentGraphId ? String(apiEvent.graphId.parentGraphId) : null);
+  
+  if (parentGraphId) {
+    // Проверяем точное совпадение
+    if (topicMap.has(parentGraphId)) {
+      const topicName = topicMap.get(parentGraphId)!;
+      category = TOPIC_NAME_TO_CATEGORY[topicName] || "city";
+    } else {
+      // Пробуем найти по частичному совпадению (на случай разных форматов)
+      const foundTopic = Array.from(topicMap.entries()).find(([id]) => 
+        id === parentGraphId || String(id) === String(parentGraphId) || id.includes(parentGraphId) || parentGraphId.includes(id)
+      );
+      
+      if (foundTopic) {
+        const [, topicName] = foundTopic;
+        category = TOPIC_NAME_TO_CATEGORY[topicName] || "city";
+      }
+    }
+  }
+  
   return {
     id: apiEvent._id,
     name: apiEvent.name,
     place: apiEvent.place,
     description: apiEvent.description,
-    category: "city" as const, // Дефолтная категория, так как в API нет поля category
+    category: category,
     eventDate: apiEvent.eventDate,
     isDateTbd: apiEvent.isDateTbd || false,
     timeFrom: apiEvent.timeFrom,
@@ -77,6 +123,36 @@ export default function CityPage() {
   const [selectedEvent, setSelectedEvent] = useState<CityEvent | null>(null);
   const [eventOpenedFromList, setEventOpenedFromList] = useState(false);
 
+  // Загрузка тем города
+  const { data: topicsResponse } = useQuery({
+    queryKey: ['cityTopics', CITY_GRAPH_ID],
+    queryFn: async () => {
+      const response = await GraphService.getGraphsByTopic(CITY_GRAPH_ID);
+      return response;
+    },
+    staleTime: 10 * 60 * 1000, // 10 минут
+    gcTime: 30 * 60 * 1000, // 30 минут
+  });
+
+  // Создаем маппинг parentGraphId -> название темы
+  const topicMap = useMemo(() => {
+    const map = new Map<string, string>();
+    
+    // Структура ответа: { data: IGraphList[] } согласно CreateGraphForm
+    // axios возвращает response.data, поэтому topicsResponse уже содержит { data: [...] }
+    const topicsData = topicsResponse?.data?.data || (Array.isArray(topicsResponse?.data) ? topicsResponse.data : []);
+    
+    if (Array.isArray(topicsData)) {
+      topicsData.forEach((topic: any) => {
+        if (topic._id && topic.name) {
+          map.set(String(topic._id), String(topic.name));
+        }
+      });
+    }
+    
+    return map;
+  }, [topicsResponse]);
+
   // Загрузка мероприятий из API
   const { data: eventsResponse, isLoading: isLoadingEvents, error: eventsError } = useQuery({
     queryKey: ['cityEvents', CITY_GRAPH_ID],
@@ -91,20 +167,12 @@ export default function CityPage() {
   // Преобразование данных из API в CityEventAPI
   const eventsFromAPI = useMemo(() => {
     if (!eventsResponse?.data) return [];
-    return (eventsResponse.data as any[]).map(transformApiEventToCityEvent);
-  }, [eventsResponse]);
+    return (eventsResponse.data as any[]).map(event => transformApiEventToCityEvent(event, topicMap));
+  }, [eventsResponse, topicMap]);
 
   // Геокодирование адресов для получения координат
   const { events: allEvents, isGeocoding } = useCityEventsWithGeocoding(eventsFromAPI);
   
-  // Отладочная информация
-  useEffect(() => {
-    console.log('📊 Events data:', {
-      eventsFromAPI: eventsFromAPI.length,
-      allEvents: allEvents.length,
-      isGeocoding,
-    });
-  }, [eventsFromAPI.length, allEvents.length, isGeocoding]);
   
   // Состояние фильтров
   const [selectedCategories, setSelectedCategories] = useState<Record<string, boolean>>({
@@ -249,10 +317,6 @@ export default function CityPage() {
       }))
     };
     
-    console.log('🗺️ GeoJSON created:', {
-      featuresCount: geoJSON.features.length,
-      sampleFeature: geoJSON.features[0]
-    });
     
     return geoJSON;
   }, [filteredEvents]);

@@ -15,6 +15,10 @@ const loadEventIcons = async (mapRef: any, isLight: boolean) => {
     "icon-gastro": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M10 6v8a4 4 0 0 0 4 4v8" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round"/><path d="M18 6v20" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round"/><line x1="8" y1="6" x2="8" y2="12" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round"/><line x1="12" y1="6" x2="12" y2="12" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round"/></svg>`,
     "icon-family": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M8 26V13l8-7 8 7v13" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="12" y="18" width="8" height="8" stroke="${iconColor}" stroke-width="2.5" fill="none"/></svg>`,
     "icon-city": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="12" width="8" height="14" stroke="${iconColor}" stroke-width="2.5" fill="none"/><rect x="18" y="8" width="8" height="18" stroke="${iconColor}" stroke-width="2.5" fill="none"/><line x1="8" y1="16" x2="12" y2="16" stroke="${iconColor}" stroke-width="1.5"/><line x1="8" y1="20" x2="12" y2="20" stroke="${iconColor}" stroke-width="1.5"/><line x1="20" y1="12" x2="24" y2="12" stroke="${iconColor}" stroke-width="1.5"/><line x1="20" y1="16" x2="24" y2="16" stroke="${iconColor}" stroke-width="1.5"/></svg>`,
+    "icon-party": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="8" stroke="${iconColor}" stroke-width="2.5" fill="none"/><path d="M16 8v4M16 20v4M8 16h4M20 16h4" stroke="${iconColor}" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="1.5" fill="${iconColor}"/><circle cx="20" cy="12" r="1.5" fill="${iconColor}"/><circle cx="12" cy="20" r="1.5" fill="${iconColor}"/><circle cx="20" cy="20" r="1.5" fill="${iconColor}"/></svg>`,
+    "icon-meetup": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="12" r="4" stroke="${iconColor}" stroke-width="2.5" fill="none"/><path d="M8 26c0-4 3.5-6 8-6s8 2 8 6" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="10" cy="8" r="2" fill="${iconColor}"/><circle cx="22" cy="8" r="2" fill="${iconColor}"/></svg>`,
+    "icon-cinema": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="8" width="20" height="16" rx="2" stroke="${iconColor}" stroke-width="2.5" fill="none"/><path d="M6 14l8-4 8 4v6l-8 4-8-4v-6z" stroke="${iconColor}" stroke-width="2" fill="none"/><circle cx="12" cy="17" r="1.5" fill="${iconColor}"/><circle cx="20" cy="17" r="1.5" fill="${iconColor}"/></svg>`,
+    "icon-theater": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M6 10l10-2 10 2v14l-10 2-10-2V10z" stroke="${iconColor}" stroke-width="2.5" fill="none"/><path d="M10 14h12M10 18h12M10 22h8" stroke="${iconColor}" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="16" r="1.5" fill="${iconColor}"/><circle cx="18" cy="16" r="1.5" fill="${iconColor}"/></svg>`,
     "icon-default": `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M24 13c0 6-8 13-8 13s-8-7-8-13a8 8 0 0 1 16 0z" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="16" cy="13" r="3" fill="${iconColor}"/></svg>`
   };
   
@@ -207,6 +211,10 @@ export const useImperativeEventLayers = (
                 'gastro', CATEGORY_COLORS.gastro.pulseGlow,
                 'family', CATEGORY_COLORS.family.pulseGlow,
                 'city', CATEGORY_COLORS.city.pulseGlow,
+                'party', CATEGORY_COLORS.party.pulseGlow,
+                'meetup', CATEGORY_COLORS.meetup.pulseGlow,
+                'cinema', CATEGORY_COLORS.cinema.pulseGlow,
+                'theater', CATEGORY_COLORS.theater.pulseGlow,
                 CATEGORY_COLORS.default.pulseGlow
               ],
               'circle-opacity': isLight ? 0.35 : 0.5,
@@ -244,6 +252,10 @@ export const useImperativeEventLayers = (
                 'gastro', CATEGORY_COLORS.gastro.glow,
                 'family', CATEGORY_COLORS.family.glow,
                 'city', CATEGORY_COLORS.city.glow,
+                'party', CATEGORY_COLORS.party.glow,
+                'meetup', CATEGORY_COLORS.meetup.glow,
+                'cinema', CATEGORY_COLORS.cinema.glow,
+                'theater', CATEGORY_COLORS.theater.glow,
                 CATEGORY_COLORS.default.glow
               ],
               'circle-opacity': isLight ? 0.6 : 0.8,
@@ -334,6 +346,10 @@ export const useImperativeEventLayers = (
                 'gastro', isLight ? CATEGORY_COLORS.gastro.light : CATEGORY_COLORS.gastro.dark,
                 'family', isLight ? CATEGORY_COLORS.family.light : CATEGORY_COLORS.family.dark,
                 'city', isLight ? CATEGORY_COLORS.city.light : CATEGORY_COLORS.city.dark,
+                'party', isLight ? CATEGORY_COLORS.party.light : CATEGORY_COLORS.party.dark,
+                'meetup', isLight ? CATEGORY_COLORS.meetup.light : CATEGORY_COLORS.meetup.dark,
+                'cinema', isLight ? CATEGORY_COLORS.cinema.light : CATEGORY_COLORS.cinema.dark,
+                'theater', isLight ? CATEGORY_COLORS.theater.light : CATEGORY_COLORS.theater.dark,
                 isLight ? CATEGORY_COLORS.default.light : CATEGORY_COLORS.default.dark
               ],
               'circle-stroke-opacity': 1
@@ -378,6 +394,10 @@ export const useImperativeEventLayers = (
                 'gastro', 'icon-gastro',
                 'family', 'icon-family',
                 'city', 'icon-city',
+                'party', 'icon-party',
+                'meetup', 'icon-meetup',
+                'cinema', 'icon-cinema',
+                'theater', 'icon-theater',
                 'icon-default'
               ],
               'icon-size': [
@@ -393,6 +413,26 @@ export const useImperativeEventLayers = (
               'icon-opacity': 1
             }
           });
+        } else {
+          // Обновляем маппинг иконок при изменении данных
+          mapRef.setLayoutProperty('event-icons', 'icon-image', [
+            'match',
+            ['get', 'category'],
+            'music', 'icon-music',
+            'art', 'icon-art',
+            'education', 'icon-education',
+            'business', 'icon-business',
+            'sport', 'icon-sport',
+            'humor', 'icon-humor',
+            'gastro', 'icon-gastro',
+            'family', 'icon-family',
+            'city', 'icon-city',
+            'party', 'icon-party',
+            'meetup', 'icon-meetup',
+            'cinema', 'icon-cinema',
+            'theater', 'icon-theater',
+            'icon-default'
+          ]);
         }
         
         // Названия событий (подписи)
