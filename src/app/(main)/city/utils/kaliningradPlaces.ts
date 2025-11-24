@@ -51,16 +51,25 @@ export const KALININGRAD_PLACES: PlaceCoordinates[] = [
   // Культурные объекты
   { lat: 54.7040, lng: 20.5000, name: "Драмтеатр", aliases: ["драмтеатр", "драматический театр", "театр"] },
   { lat: 54.7070, lng: 20.5050, name: "Дворец культуры", aliases: ["дворец культуры", "дк"] },
-  { lat: 54.7060, lng: 20.5120, name: "Кинотеатр Заря", aliases: ["кинотеатр заря", "заря"] },
+  { lat: 54.7060, lng: 20.5120, name: "Кинотеатр Заря", aliases: ["кинотеатр заря", "заря", "кинотеатр"] },
   { lat: 54.7080, lng: 20.5080, name: "Библиотека им. Чехова", aliases: ["библиотека", "библиотека чехова", "чехова"] },
   { lat: 54.7100, lng: 20.5030, name: "Выставочный зал", aliases: ["выставочный зал", "выставка"] },
   { lat: 54.7110, lng: 20.5000, name: "Культурный центр", aliases: ["культурный центр", "кц"] },
   { lat: 54.7090, lng: 20.5150, name: "Музей Мирового океана", aliases: ["музей мирового океана", "океан", "мировой океан"] },
   { lat: 54.7050, lng: 20.5180, name: "Бункер", aliases: ["бункер", "музей бункер"] },
+  { lat: 54.7064, lng: 20.5146, name: "Кафедральный собор", aliases: ["собор", "кафедральный", "кафедральный собор"] },
+  { lat: 54.7045, lng: 20.5120, name: "Историко-художественный музей", aliases: ["историко-художественный музей", "исторический музей", "художественный музей"] },
+  { lat: 54.6990, lng: 20.4900, name: "Филармония", aliases: ["филармония", "калининградская филармония"] },
+  { lat: 54.7020, lng: 20.4950, name: "Музыкальный театр", aliases: ["музыкальный театр", "музтеатр"] },
+  { lat: 54.7030, lng: 20.4980, name: "Театр Николая Захарова", aliases: ["театр николая захарова", "театр захарова", "захарова"] },
+  { lat: 54.7085, lng: 20.5090, name: "Дом книжного наследия XX века имени Н. С. Гумилёва", aliases: ["дом книжного наследия", "гумилёва", "дом гумилёва", "книжное наследие"] },
+  { lat: 54.7120, lng: 20.5000, name: "Центр культуры молодёжи на Московском пр-кте", aliases: ["центр культуры молодёжи", "цкм", "московский проспект", "центр культуры"] },
+  { lat: 54.7100, lng: 20.5020, name: "ДК железнодорожников", aliases: ["дк железнодорожников", "дворец культуры железнодорожников", "ж/д дк"] },
   
   // Спортивные объекты
   { lat: 54.7130, lng: 20.5080, name: "Спорткомплекс", aliases: ["спорткомплекс", "спорт", "спортивный комплекс"] },
-  { lat: 54.7140, lng: 20.5120, name: "Дворец спорта Янтарный", aliases: ["дворец спорта", "янтарный", "дворец янтарный"] },
+  { lat: 54.7140, lng: 20.5120, name: "Дворец спорта Янтарный", aliases: ["дворец спорта", "янтарный", "дворец янтарный", "дс янтарный", "дс \"янтарный\""] },
+  { lat: 54.7150, lng: 20.5150, name: "Ростех Арена", aliases: ["ростех арена", "арена", "ростех"] },
   
   // Торговые центры
   { lat: 54.7070, lng: 20.5100, name: "ТЦ Европа", aliases: ["тц европа", "европа", "торговый центр европа"] },
@@ -74,6 +83,19 @@ export const KALININGRAD_PLACES: PlaceCoordinates[] = [
   { lat: 54.7150, lng: 20.5050, name: "Центральный район", aliases: ["центр", "центральный"] },
   { lat: 54.7000, lng: 20.5200, name: "Ленинградский район", aliases: ["ленинградский"] },
   { lat: 54.7200, lng: 20.4950, name: "Московский район", aliases: ["московский район"] },
+  
+  // Концертные залы и клубы
+  { lat: 54.7000, lng: 20.4900, name: "Янтарь-Холл", aliases: ["янтарь-холл", "янтарь холл", "холл"] },
+  { lat: 54.7050, lng: 20.4950, name: "Резиденция Королей", aliases: ["резиденция королей", "резиденция", "королей"] },
+  { lat: 54.7070, lng: 20.5030, name: "Бастион", aliases: ["бастион", "клуб бастион"] },
+  { lat: 54.7040, lng: 20.4970, name: "Yalta Club", aliases: ["yalta club", "yalta", "клуб yalta"] },
+  { lat: 54.7060, lng: 20.5010, name: "Клуб Fiji", aliases: ["клуб fiji", "fiji", "fiji club"] },
+  { lat: 54.7080, lng: 20.5040, name: "Лаунж-бар «Pravda»", aliases: ["лаунж-бар pravda", "pravda", "лаунж бар", "правда"] },
+  { lat: 54.7090, lng: 20.5060, name: "Бар Советов", aliases: ["бар советов", "советов", "бар"] },
+  { lat: 54.7100, lng: 20.5070, name: "Вагонка", aliases: ["вагонка", "клуб вагонка"] },
+  
+  // Кафе и рестораны
+  { lat: 54.7055, lng: 20.4995, name: "Кафе «Солёная ворона»", aliases: ["кафе солёная ворона", "солёная ворона", "солевая ворона", "ворона"] },
 ];
 
 /**
@@ -84,6 +106,7 @@ function normalizeText(text: string): string {
     .toLowerCase()
     .replace(/[ё]/g, 'е')
     .replace(/[ъь]/g, '')
+    .replace(/["«»„“]/g, '') // Удаляем кавычки
     .replace(/[.,\-()]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -95,10 +118,12 @@ function normalizeText(text: string): string {
 export function findPlaceInDatabase(address: string): PlaceCoordinates | null {
   const normalizedAddress = normalizeText(address);
   
-  // Прямое совпадение
+  // Прямое совпадение (приоритет)
   for (const place of KALININGRAD_PLACES) {
     const normalizedName = normalizeText(place.name);
-    if (normalizedAddress.includes(normalizedName) || normalizedName.includes(normalizedAddress)) {
+    if (normalizedAddress === normalizedName || 
+        normalizedAddress.includes(normalizedName) || 
+        normalizedName.includes(normalizedAddress)) {
       return place;
     }
     
@@ -106,28 +131,49 @@ export function findPlaceInDatabase(address: string): PlaceCoordinates | null {
     if (place.aliases) {
       for (const alias of place.aliases) {
         const normalizedAlias = normalizeText(alias);
-        if (normalizedAddress.includes(normalizedAlias) || normalizedAlias.includes(normalizedAddress)) {
+        if (normalizedAddress === normalizedAlias ||
+            normalizedAddress.includes(normalizedAlias) || 
+            normalizedAlias.includes(normalizedAddress)) {
           return place;
         }
       }
     }
   }
   
-  // Поиск по ключевым словам в адресе
-  const addressWords = normalizedAddress.split(' ');
-  for (const word of addressWords) {
-    if (word.length < 3) continue; // Пропускаем короткие слова
-    
+  // Поиск по ключевым словам в адресе (вторичный поиск)
+  const addressWords = normalizedAddress.split(' ').filter(word => word.length >= 3);
+  
+  // Сначала ищем по длинным фразам (2+ слова)
+  for (let i = 0; i < addressWords.length - 1; i++) {
+    const phrase = `${addressWords[i]} ${addressWords[i + 1]}`;
     for (const place of KALININGRAD_PLACES) {
       const normalizedName = normalizeText(place.name);
-      if (normalizedName.includes(word)) {
+      if (normalizedName.includes(phrase)) {
+        return place;
+      }
+      if (place.aliases) {
+        for (const alias of place.aliases) {
+          const normalizedAlias = normalizeText(alias);
+          if (normalizedAlias.includes(phrase)) {
+            return place;
+          }
+        }
+      }
+    }
+  }
+  
+  // Затем ищем по отдельным словам
+  for (const word of addressWords) {
+    for (const place of KALININGRAD_PLACES) {
+      const normalizedName = normalizeText(place.name);
+      if (normalizedName.includes(word) && word.length >= 4) { // Только для слов длиной >= 4
         return place;
       }
       
       if (place.aliases) {
         for (const alias of place.aliases) {
           const normalizedAlias = normalizeText(alias);
-          if (normalizedAlias.includes(word)) {
+          if (normalizedAlias.includes(word) && word.length >= 4) {
             return place;
           }
         }
