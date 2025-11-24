@@ -88,8 +88,7 @@ export const Footer = () => {
             © 2024 GraphON. Все права защищены.
           </div>
           <div className={styles.legalLinks}>
-            <Link href="/privacy">Политика конфиденциальности</Link>
-            <Link href="/terms">Условия использования</Link>
+            <Link href="/legal">Юридические документы</Link>
           </div>
         </motion.div>
       </div>
