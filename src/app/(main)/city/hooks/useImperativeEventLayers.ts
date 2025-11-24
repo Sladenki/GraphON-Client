@@ -481,7 +481,8 @@ export const useImperativeEventLayers = (
           mapRef.setPaintProperty('event-labels', 'text-halo-color', isLight ? '#ffffff' : '#0a0a0a');
         }
         
-        // Интерактивный слой для кликов
+        // Интерактивный слой для кликов (должен быть последним, чтобы перехватывать клики)
+        // Используем больший радиус для лучшего перехвата кликов
         if (!mapRef.getLayer('event-points')) {
           mapRef.addLayer({
             id: 'event-points',
@@ -493,10 +494,10 @@ export const useImperativeEventLayers = (
                 'interpolate',
                 ['linear'],
                 ['zoom'],
-                10, 20, 15, 26, 18, 32
+                10, 30, 15, 40, 18, 50
               ],
               'circle-color': 'transparent',
-              'circle-opacity': 0
+              'circle-opacity': 0.01 // Минимальная прозрачность для перехвата событий
             }
           });
         }

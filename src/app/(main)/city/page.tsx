@@ -326,7 +326,8 @@ export default function CityPage() {
     mapRef,
     selectedEvent,
     setSelectedEvent,
-    setEventOpenedFromList
+    setEventOpenedFromList,
+    allEvents
   });
   
   // Управление темой карты
@@ -572,7 +573,7 @@ export default function CityPage() {
             maxBounds={[[20.36, 54.62], [20.62, 54.78]]}
             onLoad={onMapLoad}
             onClick={handleMapClick}
-            interactiveLayerIds={mapLoaded ? ['event-points', 'clusters'] : []}
+            interactiveLayerIds={mapLoaded ? ['event-points', 'event-icons', 'event-labels', 'event-border-circle', 'clusters'] : []}
             cursor="pointer"
           >
             {/* Маркеры событий добавляются императивно через useImperativeEventLayers */}

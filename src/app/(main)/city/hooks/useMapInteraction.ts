@@ -5,13 +5,13 @@
 
 import { useCallback, useEffect } from 'react';
 import type { CityEvent } from '../mockEvents';
-import { mockEvents } from '../mockEvents';
 
 interface UseMapInteractionParams {
   mapRef: any;
   selectedEvent: CityEvent | null;
   setSelectedEvent: (event: CityEvent | null) => void;
   setEventOpenedFromList: (opened: boolean) => void;
+  allEvents: CityEvent[]; // Реальные события
 }
 
 interface UseMapInteractionResult {
@@ -25,7 +25,8 @@ export function useMapInteraction({
   mapRef,
   selectedEvent,
   setSelectedEvent,
-  setEventOpenedFromList
+  setEventOpenedFromList,
+  allEvents
 }: UseMapInteractionParams): UseMapInteractionResult {
   
   // Обработчик клика по карте для открытия popup
@@ -58,9 +59,11 @@ export function useMapInteraction({
     }
     
     // Обработка клика по отдельному событию
-    if (feature.layer.id === 'event-points') {
+    // Проверяем все возможные слои событий
+    const eventLayers = ['event-points', 'event-icons', 'event-labels', 'event-border-circle'];
+    if (eventLayers.includes(feature.layer.id)) {
       const eventId = feature.properties.id;
-      const clickedEvent = mockEvents.find(ev => ev.id === eventId);
+      const clickedEvent = allEvents.find(ev => ev.id === eventId);
       if (clickedEvent) {
         setSelectedEvent(clickedEvent);
         setEventOpenedFromList(false); // Открыто с карты
@@ -68,7 +71,7 @@ export function useMapInteraction({
     } else {
       setSelectedEvent(null);
     }
-  }, [mapRef, setSelectedEvent, setEventOpenedFromList]);
+  }, [mapRef, setSelectedEvent, setEventOpenedFromList, allEvents]);
 
   // Приближение камеры к выбранному событию
   useEffect(() => {
