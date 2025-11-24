@@ -2,96 +2,84 @@
  * Утилиты для геокодирования адресов
  * 
  * Преобразует адрес в координаты для отображения на карте
+ * Использует только локальную базу известных мест Калининграда
  */
 
 import type { CityEventAPI, CityEvent } from "../mockEvents";
+import { findPlaceInDatabase, geocodeByParsing } from "./kaliningradPlaces";
 
 /**
  * Кеш координат для адресов
- * Чтобы не делать повторные запросы к API геокодирования
+ * Для ускорения повторных поисков
  */
 const geocodeCache = new Map<string, { lat: number; lng: number }>();
 
 /**
- * Геокодирование одного адреса через Яндекс.Карты API
- * 
- * TODO: Заменить на реальный API ключ перед продакшеном
+ * Синхронное геокодирование через локальную базу известных мест
  * 
  * @param address - Адрес для геокодирования
  * @returns Координаты {lat, lng} или null если не найдено
  */
-export async function geocodeAddress(address: string): Promise<{ lat: number; lng: number } | null> {
+export function geocodeAddressSync(address: string): { lat: number; lng: number } | null {
   // Проверяем кеш
   if (geocodeCache.has(address)) {
-    console.log('📍 Geocode from cache:', address);
     return geocodeCache.get(address)!;
   }
 
-  try {
-    // TODO: Добавить реальный API ключ Яндекс.Карт
-    const API_KEY = 'YOUR_YANDEX_GEOCODING_API_KEY';
-    
-    // Добавляем "Калининград" к адресу для точности
-    const fullAddress = `${address}, Калининград, Россия`;
-    
-    const response = await fetch(
-      `https://geocode-maps.yandex.ru/1.x/?geocode=${encodeURIComponent(fullAddress)}&format=json&apikey=${API_KEY}`
-    );
-
-    if (!response.ok) {
-      console.error('❌ Geocoding API error:', response.status);
-      return null;
-    }
-
-    const data = await response.json();
-    const geoObject = data.response?.GeoObjectCollection?.featureMember?.[0]?.GeoObject;
-
-    if (!geoObject) {
-      console.warn('⚠️ Address not found:', address);
-      return null;
-    }
-
-    // Парсим координаты (формат: "lng lat")
-    const [lng, lat] = geoObject.Point.pos.split(' ').map(parseFloat);
-
-    const coords = { lat, lng };
-    
-    // Сохраняем в кеш
+  // 1. Пробуем найти в локальной базе известных мест (синхронно, мгновенно)
+  const placeFromDB = findPlaceInDatabase(address);
+  if (placeFromDB) {
+    const coords = { lat: placeFromDB.lat, lng: placeFromDB.lng };
     geocodeCache.set(address, coords);
-    
-    console.log('✅ Geocoded:', address, '→', coords);
     return coords;
-
-  } catch (error) {
-    console.error('❌ Geocoding error for', address, ':', error);
-    return null;
   }
+
+  // 2. Пробуем парсинг адреса (синхронно, мгновенно)
+  const parsedCoords = geocodeByParsing(address);
+  if (parsedCoords) {
+    geocodeCache.set(address, parsedCoords);
+    return parsedCoords;
+  }
+
+  return null;
+}
+
+/**
+ * Асинхронная обертка для синхронного геокодирования (для совместимости)
+ */
+export async function geocodeAddress(address: string): Promise<{ lat: number; lng: number } | null> {
+  return geocodeAddressSync(address);
 }
 
 /**
  * Геокодирование массива событий
  * 
+ * Использует только локальную базу известных мест (синхронно, мгновенно)
+ * 
  * @param events - События из API (без координат)
  * @returns События с координатами
  */
 export async function geocodeEvents(events: CityEventAPI[]): Promise<CityEvent[]> {
-  console.log(`🗺️ Geocoding ${events.length} events...`);
+  console.log(`🗺️ Geocoding ${events.length} events using local database...`);
   
   const eventsWithCoords: CityEvent[] = [];
-
+  let foundCount = 0;
+  let notFoundCount = 0;
+  
+  // Обрабатываем все события локально (синхронно, мгновенно)
   for (const event of events) {
-    const coords = await geocodeAddress(event.place);
+    const coords = geocodeAddressSync(event.place);
     
     if (coords) {
-      // Добавляем координаты к событию
+      foundCount++;
       eventsWithCoords.push({
         ...event,
         lat: coords.lat,
         lng: coords.lng,
       });
     } else {
-      // Если геокодирование не удалось, используем координаты центра Калининграда
-      console.warn('⚠️ Using default coords for:', event.place);
+      notFoundCount++;
+      // Если не найдено локально, используем дефолтные координаты центра Калининграда
       eventsWithCoords.push({
         ...event,
         lat: 54.7068,
@@ -99,7 +87,8 @@ export async function geocodeEvents(events: CityEventAPI[]): Promise<CityEvent[]
       });
     }
   }
-
+  
+  console.log(`📦 Local DB: ${foundCount} found, ${notFoundCount} using default coords`);
   console.log(`✅ Geocoded ${eventsWithCoords.length} events`);
   return eventsWithCoords;
 }

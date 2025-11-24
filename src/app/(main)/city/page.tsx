@@ -4,13 +4,20 @@ import dynamic from "next/dynamic";
 import React, { useCallback, useMemo, useRef, useState, Suspense, useEffect } from "react";
 import { Filter, List } from "lucide-react";
 import styles from "./page.module.scss";
-import { mockEvents, type CityEvent } from "./mockEvents";
+import { type CityEvent, type CityEventAPI } from "./mockEvents";
 import { useAuth } from "@/providers/AuthProvider";
 import { useImperativeEventLayers } from "./hooks/useImperativeEventLayers";
 import { useMapSetup } from "./hooks/useMapSetup";
 import { useMapTheme } from "./hooks/useMapTheme";
 import { useMapInteraction } from "./hooks/useMapInteraction";
 import { createLocalMapStyle } from "./config/mapStyleConfig";
+import { EventService } from "@/services/event.service";
+import { useQuery } from "@tanstack/react-query";
+import { useCityEventsWithGeocoding } from "./hooks/useCityEvents";
+import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
+
+// Константа ID графа города
+const CITY_GRAPH_ID = "690bfec3f371d05b325be7ad";
 
 // Динамическая загрузка тяжелых компонентов
 const ReactMapGL = dynamic(() => import("react-map-gl/maplibre").then(m => m.Map), { ssr: false });
@@ -34,6 +41,22 @@ const EventsList = dynamic(() => import("./EventsList"), {
 
 // ===== КОМПОНЕНТ =====
 
+// Функция преобразования данных из API в CityEventAPI
+function transformApiEventToCityEvent(apiEvent: any): CityEventAPI {
+  return {
+    id: apiEvent._id,
+    name: apiEvent.name,
+    place: apiEvent.place,
+    description: apiEvent.description,
+    category: "city" as const, // Дефолтная категория, так как в API нет поля category
+    eventDate: apiEvent.eventDate,
+    isDateTbd: apiEvent.isDateTbd || false,
+    timeFrom: apiEvent.timeFrom,
+    timeTo: apiEvent.timeTo,
+    regedUsers: apiEvent.regedUsers || 0,
+  };
+}
+
 export default function CityPage() {
   // Инициализация карты, темы и адаптивности
   const { isLight, isMobile, isVerySmallScreen } = useMapSetup();
@@ -53,6 +76,35 @@ export default function CityPage() {
   // Состояние выбранного события
   const [selectedEvent, setSelectedEvent] = useState<CityEvent | null>(null);
   const [eventOpenedFromList, setEventOpenedFromList] = useState(false);
+
+  // Загрузка мероприятий из API
+  const { data: eventsResponse, isLoading: isLoadingEvents, error: eventsError } = useQuery({
+    queryKey: ['cityEvents', CITY_GRAPH_ID],
+    queryFn: async () => {
+      const response = await EventService.getUpcomingEvents(CITY_GRAPH_ID);
+      return response;
+    },
+    staleTime: 5 * 60 * 1000, // 5 минут
+    gcTime: 10 * 60 * 1000, // 10 минут
+  });
+
+  // Преобразование данных из API в CityEventAPI
+  const eventsFromAPI = useMemo(() => {
+    if (!eventsResponse?.data) return [];
+    return (eventsResponse.data as any[]).map(transformApiEventToCityEvent);
+  }, [eventsResponse]);
+
+  // Геокодирование адресов для получения координат
+  const { events: allEvents, isGeocoding } = useCityEventsWithGeocoding(eventsFromAPI);
+  
+  // Отладочная информация
+  useEffect(() => {
+    console.log('📊 Events data:', {
+      eventsFromAPI: eventsFromAPI.length,
+      allEvents: allEvents.length,
+      isGeocoding,
+    });
+  }, [eventsFromAPI.length, allEvents.length, isGeocoding]);
   
   // Состояние фильтров
   const [selectedCategories, setSelectedCategories] = useState<Record<string, boolean>>({
@@ -85,7 +137,7 @@ export default function CityPage() {
 
   // Фильтрация событий по категориям и датам
   const filteredEvents = useMemo(() => {
-    let result = [...mockEvents];
+    let result = [...allEvents];
     
     // Фильтрация по категориям
     const activeCategories = Object.entries(selectedCategories)
@@ -170,31 +222,40 @@ export default function CityPage() {
     }
     
     return result;
-  }, [selectedCategories, datePreset, dateFrom, dateTo]);
+  }, [allEvents, selectedCategories, datePreset, dateFrom, dateTo]);
 
   // GeoJSON данные для карты (используем отфильтрованные события)
-  const eventGeoJSON = useMemo(() => ({
-    type: "FeatureCollection" as const,
-    features: filteredEvents.map(ev => ({
-      type: "Feature" as const,
-      geometry: {
-        type: "Point" as const,
-        coordinates: [ev.lng, ev.lat] as [number, number]
-      },
-      properties: {
-        id: ev.id,
-        name: ev.name,
-        place: ev.place,
-        description: ev.description,
-        category: ev.category,
-        eventDate: ev.eventDate,
-        isDateTbd: ev.isDateTbd,
-        timeFrom: ev.timeFrom || "",
-        timeTo: ev.timeTo || "",
-        regedUsers: ev.regedUsers
-      }
-    }))
-  }), [filteredEvents]);
+  const eventGeoJSON = useMemo(() => {
+    const geoJSON = {
+      type: "FeatureCollection" as const,
+      features: filteredEvents.map(ev => ({
+        type: "Feature" as const,
+        geometry: {
+          type: "Point" as const,
+          coordinates: [ev.lng, ev.lat] as [number, number]
+        },
+        properties: {
+          id: ev.id,
+          name: ev.name,
+          place: ev.place,
+          description: ev.description,
+          category: ev.category,
+          eventDate: ev.eventDate,
+          isDateTbd: ev.isDateTbd,
+          timeFrom: ev.timeFrom || "",
+          timeTo: ev.timeTo || "",
+          regedUsers: ev.regedUsers
+        }
+      }))
+    };
+    
+    console.log('🗺️ GeoJSON created:', {
+      featuresCount: geoJSON.features.length,
+      sampleFeature: geoJSON.features[0]
+    });
+    
+    return geoJSON;
+  }, [filteredEvents]);
   
   // Обработка взаимодействия с картой
   const { handleMapClick } = useMapInteraction({
@@ -393,6 +454,40 @@ export default function CityPage() {
     setIsFilterOpen(false);
     setIsListOpen(true);
   }, []);
+
+  // Показываем загрузку только пока получаем данные из API
+  // Геокодирование происходит в фоне, карта уже отображается с дефолтными координатами
+  if (isLoadingEvents) {
+    return (
+      <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`}>
+        <div className={styles.content}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: 12, flexDirection: 'column' }}>
+            <SpinnerLoader />
+            <span>Загрузка мероприятий...</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Обработка ошибки загрузки
+  if (eventsError) {
+    return (
+      <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`}>
+        <div className={styles.content}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: 12, flexDirection: 'column' }}>
+            <span style={{ color: 'var(--error-color, #ef4444)' }}>Ошибка загрузки мероприятий</span>
+            <button 
+              onClick={() => window.location.reload()} 
+              style={{ padding: '8px 16px', borderRadius: '8px', border: '1px solid', cursor: 'pointer' }}
+            >
+              Обновить страницу
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className={`${styles.page} ${isMobile ? styles.mobile : ''}`} data-swipe-enabled="false">
