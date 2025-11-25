@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import { ErrorState } from '@/components/global/ErrorState/ErrorState'
 import EventCard from '@/components/shared/EventCard/EventCard'
-import { useQueryWithRetry } from '@/hooks/useQueryWithRetry'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useSearchQuery, useSelectedGraphId, useSetSearchQuery } from '@/stores/useUIStore'
 import { EventService } from '@/services/event.service'
@@ -14,6 +14,8 @@ import { notifySuccess, notifyError } from '@/lib/notifications'
 import styles from './EventsList.module.scss'
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
 import { CalendarX, Search } from 'lucide-react'
+
+const EVENTS_PER_PAGE = 20
 
 export default function EventsList() {
   const searchQuery = useSearchQuery()
@@ -24,30 +26,70 @@ export default function EventsList() {
   const [dateFrom, setDateFrom] = useState<string>('')
   const [dateTo, setDateTo] = useState<string>('')
   const [includeTbd, setIncludeTbd] = useState<boolean>(true)
+  const queryClient = useQueryClient()
+  const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  // Загрузка данных
-  const { 
-    data: allEvents, 
-    isLoading, 
-    isSuccess, 
+  // Бесконечная загрузка данных
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isSuccess,
     error,
-    handleRetry,
-    handleOptimisticUpdate
-  } = useQueryWithRetry({
+    refetch
+  } = useInfiniteQuery({
     queryKey: ['eventsList', selectedGraphId],
-    queryFn: async () => {
+    queryFn: async ({ pageParam = 0 }) => {
       if (!selectedGraphId) {
         return { data: [] }
       }
-      return await EventService.getUpcomingEvents(selectedGraphId)
+      return await EventService.getUpcomingEvents(selectedGraphId, pageParam, EVENTS_PER_PAGE)
     },
     enabled: !!selectedGraphId,
+    getNextPageParam: (lastPage, allPages) => {
+      const events = lastPage?.data || []
+      // Если вернулось меньше событий, чем запрашивали, значит это последняя страница
+      if (events.length < EVENTS_PER_PAGE) {
+        return undefined
+      }
+      // Возвращаем следующий skip
+      return allPages.length * EVENTS_PER_PAGE
+    },
+    initialPageParam: 0,
     gcTime: 15 * 60 * 1000, // 15 минут
     staleTime: 10 * 60 * 1000, // 10 минут
   })
 
-  // Получение событий
-  const events = useMemo(() => allEvents?.data || [], [allEvents?.data])
+  // Объединение всех страниц в один массив событий
+  const events = useMemo(() => {
+    if (!data?.pages) return []
+    return data.pages.flatMap(page => page?.data || [])
+  }, [data?.pages])
+
+  // IntersectionObserver для автоматической загрузки следующей страницы
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage()
+        }
+      },
+      { rootMargin: '200px' }
+    )
+
+    const currentRef = loadMoreRef.current
+    if (currentRef) {
+      observer.observe(currentRef)
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef)
+      }
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   // Доступные теги: используем graphId и parentGraphId (если приходит)
   const availableTags: SearchTag[] = useMemo(() => {
@@ -119,12 +161,15 @@ export default function EventsList() {
   const handleDelete = useCallback(async (eventId: string) => {
     try {
       // Оптимистичное обновление UI
-      handleOptimisticUpdate((old: any) => {
-        if (!old?.data) return old
+      queryClient.setQueryData(['eventsList', selectedGraphId], (old: any) => {
+        if (!old?.pages) return old
         
         return {
           ...old,
-          data: old.data.filter((event: EventItem) => event._id !== eventId)
+          pages: old.pages.map((page: any) => ({
+            ...page,
+            data: (page?.data || []).filter((event: EventItem) => event._id !== eventId)
+          }))
         }
       })
 
@@ -137,12 +182,12 @@ export default function EventsList() {
       console.error('Ошибка при удалении мероприятия:', error)
       
       // Откат оптимистичного обновления при ошибке
-      handleRetry()
+      refetch()
       
       // Уведомление об ошибке
       notifyError('Не удалось удалить мероприятие. Попробуйте еще раз.')
     }
-  }, [handleOptimisticUpdate, handleRetry])
+  }, [queryClient, selectedGraphId, refetch])
 
   // Состояния
   const hasError = !!error
@@ -155,7 +200,7 @@ export default function EventsList() {
       <ErrorState
         message="Ошибка загрузки данных"
         subMessage="Не удалось загрузить список мероприятий"
-        onRetry={handleRetry}
+        onRetry={() => refetch()}
       />
     )
   }
@@ -208,23 +253,36 @@ export default function EventsList() {
 
       {/* Список событий */}
       {isSuccess && !noSearchResults && (
-        <div className={styles.eventsList} data-swipe-enabled="true">
-          {filteredEvents.map((event: EventItem, index: number) => (
-            <div 
-              key={event._id} 
-              className={styles.eventCard}
-              style={{ 
-                '--delay': `${Math.min(index * 0.05, 0.5)}s`
-              } as React.CSSProperties}
-            >
-              <EventCard 
-                event={event} 
-                isAttended={event.isAttended} 
-                onDelete={handleDelete}
-              />
+        <>
+          <div className={styles.eventsList} data-swipe-enabled="true">
+            {filteredEvents.map((event: EventItem, index: number) => (
+              <div 
+                key={event._id} 
+                className={styles.eventCard}
+                style={{ 
+                  '--delay': `${Math.min(index * 0.05, 0.5)}s`
+                } as React.CSSProperties}
+              >
+                <EventCard 
+                  event={event} 
+                  isAttended={event.isAttended} 
+                  onDelete={handleDelete}
+                />
+              </div>
+            ))}
+          </div>
+          
+          {/* Индикатор загрузки следующей страницы */}
+          {hasNextPage && (
+            <div ref={loadMoreRef} className={styles.loadMoreTrigger}>
+              {isFetchingNextPage && (
+                <div className={styles.loader}>
+                  <SpinnerLoader />
+                </div>
+              )}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   )

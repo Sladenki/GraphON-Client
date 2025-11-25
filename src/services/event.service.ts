@@ -16,8 +16,12 @@ export const EventService = {
     },
 
     // --- Получение всех мероприятий ---
-    async getUpcomingEvents(selectedGraphId: string) {
-        return axiosAuth.get(`/event/upcoming/${selectedGraphId}`);
+    async getUpcomingEvents(selectedGraphId: string, skip?: number, limit?: number) {
+        const params = new URLSearchParams();
+        if (skip !== undefined) params.append('skip', skip.toString());
+        if (limit !== undefined) params.append('limit', limit.toString());
+        const queryString = params.toString();
+        return axiosAuth.get(`/event/upcoming/${selectedGraphId}${queryString ? `?${queryString}` : ''}`);
     },
 
     // --- Получение мероприятия по ID ---
