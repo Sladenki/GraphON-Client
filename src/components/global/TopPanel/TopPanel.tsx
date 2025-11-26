@@ -5,6 +5,7 @@ import { TextAlignStart, User } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useUIStore } from '@/stores/useUIStore';
 import Link from 'next/link';
+import GraphSwitcher from '../GraphSwitcher/GraphSwitcher';
 import styles from './TopPanel.module.scss';
 
 const TopPanel: React.FC = () => {
@@ -24,6 +25,9 @@ const TopPanel: React.FC = () => {
       >
         <TextAlignStart size={24} />
       </button>
+
+      {/* Центральная часть - переключатель университетов */}
+      <GraphSwitcher />
 
       {/* Правая часть - аватарка пользователя */}
       <div className={styles.userSection}>
