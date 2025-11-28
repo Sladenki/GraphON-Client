@@ -142,7 +142,7 @@ const GraphSwitcher: React.FC = () => {
           {currentGraph?.name || 'Выберите университет'}
         </span>
         <ChevronDown 
-          size={16} 
+          size={18} 
           className={`${styles.chevron} ${isOpen ? styles.rotated : ''}`}
         />
       </button>
@@ -173,7 +173,7 @@ const GraphSwitcher: React.FC = () => {
                   )}
                   <span className={styles.itemName}>{graph.name}</span>
                   {isSelected && (
-                    <Check size={16} className={styles.checkIcon} />
+                    <Check size={20} className={styles.checkIcon} />
                   )}
                 </button>
               )
