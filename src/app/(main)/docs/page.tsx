@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import { FileText, Download, Shield, Cookie, Lock, FileCheck } from 'lucide-react';
+import { FileText, Download, Shield, Cookie, Lock, FileCheck, FileSignature } from 'lucide-react';
 import styles from './page.module.scss';
 import ButtonBack from '@/components/global/ButtonBack/ButtonBack';
 
@@ -38,6 +38,14 @@ const documents: Document[] = [
     filePath: '/docs/Положение по работе с ПД.docx',
     icon: <Lock size={24} />,
     color: '#3b82f6'
+  },
+  {
+    id: 'pd-consent',
+    title: 'Согласие на обработку персональных данных',
+    description: 'Документ содержит форму согласия пользователя на обработку его персональных данных оператором в соответствии с требованиями Федерального закона № 152-ФЗ «О персональных данных».',
+    filePath: '/docs/Согласие на обработку ПД.docx',
+    icon: <FileSignature size={24} />,
+    color: '#f59e0b'
   }
 ];
 
@@ -81,7 +89,6 @@ export default function DocsPage() {
           <div className={styles.legalInfo}>
             <p><strong>Оператор персональных данных:</strong> GraphON</p>
             <p><strong>Юридическая база:</strong> Федеральный закон № 152-ФЗ «О персональных данных»</p>
-            <p><strong>Дата последнего обновления:</strong> {new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
         </div>
 
