@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   margin-top: auto;
   flex-shrink: 0; // Предотвращаем сжатие футера
@@ -133,9 +133,46 @@
 .themeToggleContainer {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   padding: 8px 0;
+}
+
+.docsLink {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  width: auto;
+  margin-top: 4px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--main-text);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+  align-self: flex-start;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.05);
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.8;
+    width: 14px;
+    height: 14px;
+  }
 }
 
 // Темная тема для футера
@@ -154,6 +191,17 @@ html[data-theme="dark"] {
     background: rgba(var(--main-Color), 0.08);
     border-color: rgba(var(--main-Color), 0.15);
     color: var(--main-text);
+  }
+
+  .docsLink {
+    border-color: rgba(var(--main-Color), 0.2);
+    opacity: 0.8;
+
+    &:hover {
+      background: rgba(var(--main-Color), 0.08);
+      border-color: rgba(var(--main-Color), 0.3);
+      opacity: 1;
+    }
   }
 }
 

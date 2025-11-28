@@ -10,10 +10,6 @@
   position: relative;
 }
 
-.backButton {
-  margin-bottom: 20px;
-}
-
 .headerContent {
   display: flex;
   flex-direction: column;
@@ -229,6 +225,23 @@
       font-weight: bold;
       font-size: 18px;
     }
+  }
+}
+
+.emailLink {
+  color: rgb(var(--main-Color));
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+  
+  &:hover {
+    border-bottom-color: rgb(var(--main-Color));
+    opacity: 0.8;
+  }
+  
+  &:active {
+    opacity: 0.6;
   }
 }
 
