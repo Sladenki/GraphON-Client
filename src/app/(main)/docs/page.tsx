@@ -71,7 +71,6 @@ export default function DocsPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <ButtonBack className={styles.backButton} />
         <div className={styles.headerContent}>
           <div className={styles.iconWrapper}>
             <FileCheck size={32} />

@@ -7,7 +7,7 @@ import styles from './Sidebar.module.scss'
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, sidebar } from '@/constants/sidebar';
 import { useAuth } from '@/providers/AuthProvider';
-import { MapPinned, Settings, User } from 'lucide-react';
+import { MapPinned, Settings, User, FileText } from 'lucide-react';
 
 import RenderMenuList from './RenderMenuList/RenderMenuList';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
@@ -112,6 +112,10 @@ const Sidebar: React.FC<{}> = ({}) => {
           <div className={styles.themeToggleContainer}>
             <ThemeToggle size="sm" />
           </div>
+          <Link href="/docs" className={styles.docsLink}>
+            <FileText size={14} />
+            <span>Документы</span>
+          </Link>
         </div>
       )}
 
