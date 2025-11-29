@@ -167,21 +167,3 @@ export async function geocodeEvents(events: CityEventAPI[]): Promise<CityEvent[]
   return spreadEvents;
 }
 
-/**
- * Очистить кеш геокодирования
- */
-export function clearGeocodeCache() {
-  geocodeCache.clear();
-  console.log('🗑️ Geocode cache cleared');
-}
-
-/**
- * Получить размер кеша
- */
-export function getGeocodeStatistics() {
-  return {
-    cached: geocodeCache.size,
-    entries: Array.from(geocodeCache.entries()),
-  };
-}
-

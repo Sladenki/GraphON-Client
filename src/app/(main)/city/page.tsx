@@ -360,24 +360,6 @@ export default function CityPage() {
     setIsFilterOpen(true);
   }, []);
 
-  // Функция сброса позиции карты к начальному состоянию с уменьшенным зумом
-  const resetMapView = useCallback(() => {
-    if (!mapRef || !mapLoaded) return;
-    
-    try {
-      mapRef.flyTo({
-        center: [20.5103, 54.7068],
-        zoom: isVerySmallScreen ? 11.0 : (isMobile ? 11.5 : 13.5), // Более отдалённый вид
-        pitch: 40,
-        bearing: -12,
-        duration: 1500, // Плавная анимация
-        essential: true
-      });
-    } catch (error) {
-      console.error('Ошибка при сбросе позиции карты:', error);
-    }
-  }, [mapRef, mapLoaded, isMobile, isVerySmallScreen]);
-
   // Мемоизированный обработчик закрытия фильтра (без сброса позиции)
   const handleFilterClose = useCallback(() => {
     setIsFilterOpen(false);
