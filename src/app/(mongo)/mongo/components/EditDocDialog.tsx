@@ -21,9 +21,12 @@ type Props = {
 export default function EditDocDialog({ open, doc, loading, onClose, onSave }: Props) {
   const [rows, setRows] = useState<Row[]>([]);
   const UNIVERSITIES = useMemo(() => ([
+    { id: '690bfec3f371d05b325be7ad', name: 'Калининград' },
     { id: '67a499dd08ac3c0df94d6ab7', name: 'КГТУ' },
     { id: '6896447465255a1c4ed48eaf', name: 'КБК' },
   ]), []);
+  
+  const DEFAULT_GRAPH_ID = '690bfec3f371d05b325be7ad'; // Калининград
 
   const hasSelectedGraphField = useMemo(() => Boolean(doc && typeof doc === 'object' && 'selectedGraphId' in (doc as any)), [doc]);
   const originalSelectedGraphId: string = useMemo(() => extractIdLoose((doc as any)?.selectedGraphId), [doc]);
@@ -44,11 +47,11 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
     const next: Row[] = Object.entries(original).map(([k, v]) => ({ key: k, valueText: safeStringify(v), isNew: false, error: null }));
     setRows(next);
     if (hasSelectedGraphField) {
-      setSelectedGraphId(originalSelectedGraphId || "");
+      setSelectedGraphId(originalSelectedGraphId || DEFAULT_GRAPH_ID);
     } else {
-      setSelectedGraphId("");
+      setSelectedGraphId(DEFAULT_GRAPH_ID);
     }
-  }, [original, open]);
+  }, [original, open, hasSelectedGraphField, originalSelectedGraphId]);
 
   const handleChangeKey = (idx: number, key: string) => {
     setRows((r) => r.map((row, i) => i === idx ? { ...row, key } : row));
@@ -99,11 +102,26 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
       if (!keySet.has(key)) unsetObj[key] = "";
     }
 
+    // Обработка selectedGraphId
+    const currentSelectedGraphId = selectedGraphId || "";
+    
     if (hasSelectedGraphField) {
-      if ((selectedGraphId || "") !== (originalSelectedGraphId || "")) {
-        if (selectedGraphId) setObj['selectedGraphId'] = selectedGraphId;
-        else unsetObj['selectedGraphId'] = "";
+      // Поле существует в документе
+      if (currentSelectedGraphId !== (originalSelectedGraphId || "")) {
+        if (currentSelectedGraphId && currentSelectedGraphId !== "") {
+          setObj['selectedGraphId'] = currentSelectedGraphId;
+        } else {
+          // Поле очищено - удаляем из документа
+          unsetObj['selectedGraphId'] = "";
+        }
       }
+    } else {
+      // Поле не существует в документе
+      // Добавляем только если выбрано значение отличное от дефолтного
+      if (currentSelectedGraphId && currentSelectedGraphId !== "" && currentSelectedGraphId !== DEFAULT_GRAPH_ID) {
+        setObj['selectedGraphId'] = currentSelectedGraphId;
+      }
+      // Если значение = DEFAULT, поле не добавляем в документ
     }
 
     const hasSet = Object.keys(setObj).length > 0;
@@ -136,29 +154,37 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
               <div style={{ color: '#6b7280', fontSize: 12, marginBottom: 8 }}>
                 Значения вводите как валидный JSON (строки в кавычках, числа без). Изменение <b>_id</b> недоступно.
               </div>
-              {hasSelectedGraphField && (
-                <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 8, alignItems: 'center', marginBottom: 8 }}>
-                  <div style={{ color: '#6b7280', fontSize: 12 }}>Университет (selectedGraphId)</div>
-                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                    <select
-                      value={selectedGraphId}
-                      onChange={(e) => setSelectedGraphId(e.target.value)}
-                      style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: '6px 8px' }}
-                    >
-                      {!selectedGraphId && <option value="">— Не выбрано —</option>}
-                      {(!UNIVERSITIES.find(u => u.id === selectedGraphId) && selectedGraphId) && (
-                        <option value={selectedGraphId}>{selectedGraphId}</option>
-                      )}
-                      {UNIVERSITIES.map(u => (
-                        <option key={u.id} value={u.id}>{u.name}</option>
-                      ))}
-                    </select>
-                    {selectedGraphId && (
-                      <Chip variant="flat">{UNIVERSITIES.find(u => u.id === selectedGraphId)?.name || selectedGraphId}</Chip>
+              <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr auto', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                <div style={{ color: '#6b7280', fontSize: 12 }}>Университет (selectedGraphId)</div>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <select
+                    value={selectedGraphId}
+                    onChange={(e) => setSelectedGraphId(e.target.value)}
+                    style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: '6px 8px', flex: 1 }}
+                  >
+                    {!selectedGraphId && <option value="">— Не выбрано —</option>}
+                    {(!UNIVERSITIES.find(u => u.id === selectedGraphId) && selectedGraphId) && (
+                      <option value={selectedGraphId}>{selectedGraphId}</option>
                     )}
-                  </div>
+                    {UNIVERSITIES.map(u => (
+                      <option key={u.id} value={u.id}>{u.name}</option>
+                    ))}
+                  </select>
+                  {selectedGraphId && (
+                    <Chip variant="flat">{UNIVERSITIES.find(u => u.id === selectedGraphId)?.name || selectedGraphId}</Chip>
+                  )}
                 </div>
-              )}
+                {hasSelectedGraphField && (
+                  <Button 
+                    size="sm" 
+                    variant="flat" 
+                    color="danger" 
+                    onPress={() => setSelectedGraphId("")}
+                  >
+                    Удалить поле
+                  </Button>
+                )}
+              </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {rows.map((row, idx) => (
                   <div key={idx} style={{ display: 'grid', gridTemplateColumns: '180px 1fr auto', gap: 8, alignItems: 'start' }}>
