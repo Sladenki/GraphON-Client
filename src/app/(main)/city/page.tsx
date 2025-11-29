@@ -365,20 +365,9 @@ export default function CityPage() {
     setIsFilterOpen(false);
   }, []);
 
-  // Функция вычисления расстояния между двумя точками (формула гаверсинуса)
-  const calculateDistance = useCallback((lat1: number, lng1: number, lat2: number, lng2: number): number => {
-    const R = 6371; // Радиус Земли в километрах
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }, []);
-
-  // Функция поиска ближайшего мероприятия на выбранную дату
+  // Оптимизированная функция поиска ближайшего мероприятия
+  // Использует квадрат расстояния для быстрого сравнения (избегает Math.sqrt)
+  // Для Калининграда (небольшая территория) достаточно простой плоской проекции
   const findNearestEventForDate = useCallback((): CityEvent | null => {
     if (!mapRef || !mapLoaded || filteredEvents.length === 0) return null;
     
@@ -390,24 +379,33 @@ export default function CityPage() {
       const currentLat = center.lat;
       const currentLng = center.lng;
       
-      // Находим ближайшее мероприятие
-      let nearestEvent: CityEvent | null = null;
-      let minDistance = Infinity;
+      // Константы для преобразования градусов в метры (для широты Калининграда ~54.7°)
+      // 1° широты ≈ 111 км, 1° долготы ≈ 65.5 км на широте 54.7°
+      const LAT_TO_M = 111000; // метры на градус широты
+      const LNG_TO_M = 65500;  // метры на градус долготы на широте ~54.7°
       
-      filteredEvents.forEach(event => {
-        const distance = calculateDistance(currentLat, currentLng, event.lat, event.lng);
-        if (distance < minDistance) {
-          minDistance = distance;
+      // Находим ближайшее мероприятие, используя квадрат расстояния (быстрее)
+      let nearestEvent: CityEvent | null = null;
+      let minDistanceSquared = Infinity;
+      
+      for (const event of filteredEvents) {
+        // Вычисляем квадрат расстояния (избегаем Math.sqrt для сравнения)
+        const dLat = (event.lat - currentLat) * LAT_TO_M;
+        const dLng = (event.lng - currentLng) * LNG_TO_M;
+        const distanceSquared = dLat * dLat + dLng * dLng;
+        
+        if (distanceSquared < minDistanceSquared) {
+          minDistanceSquared = distanceSquared;
           nearestEvent = event;
         }
-      });
+      }
       
       return nearestEvent;
     } catch (error) {
       console.error('Ошибка при поиске ближайшего мероприятия:', error);
       return null;
     }
-  }, [mapRef, mapLoaded, filteredEvents, calculateDistance]);
+  }, [mapRef, mapLoaded, filteredEvents]);
 
   // Перемещение карты к ближайшему мероприятию при выборе даты
   useEffect(() => {
