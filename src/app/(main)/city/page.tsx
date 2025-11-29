@@ -411,35 +411,11 @@ export default function CityPage() {
 
   // Перемещение карты к ближайшему мероприятию при выборе даты
   useEffect(() => {
-    // Срабатывает только если выбрана дата (не null) и есть отфильтрованные события
+    // Проверяем базовые условия
     if (!datePreset || filteredEvents.length === 0 || !mapRef || !mapLoaded) return;
     
-    // Небольшая задержка для завершения фильтрации
-    const timer = setTimeout(() => {
-      const nearestEvent = findNearestEventForDate();
-      if (nearestEvent) {
-        try {
-          mapRef.flyTo({
-            center: [nearestEvent.lng, nearestEvent.lat],
-            zoom: isVerySmallScreen ? 13.0 : (isMobile ? 14.0 : 15.5),
-            pitch: 40,
-            bearing: mapRef.getBearing() || -12,
-            duration: 1500,
-            essential: true
-          });
-        } catch (error) {
-          console.error('Ошибка при перемещении карты к мероприятию:', error);
-        }
-      }
-    }, 100);
-    
-    return () => clearTimeout(timer);
-  }, [datePreset, filteredEvents.length, mapRef, mapLoaded, findNearestEventForDate, isMobile, isVerySmallScreen]);
-
-  // Перемещение карты при изменении custom даты
-  useEffect(() => {
-    // Срабатывает только если выбрана custom дата и есть отфильтрованные события
-    if (datePreset !== "custom" || !dateFrom || filteredEvents.length === 0 || !mapRef || !mapLoaded) return;
+    // Для custom даты также проверяем наличие dateFrom
+    if (datePreset === "custom" && !dateFrom) return;
     
     // Небольшая задержка для завершения фильтрации
     const timer = setTimeout(() => {
