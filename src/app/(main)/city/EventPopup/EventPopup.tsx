@@ -133,7 +133,6 @@ export default function EventPopup({
         variant="primary"
         onClick={() => {
           // TODO: Implement registration logic
-          console.log('Register for event:', event.id);
         }}
         className={styles.registerButton}
       />

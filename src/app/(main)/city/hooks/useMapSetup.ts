@@ -54,8 +54,6 @@ export function useMapSetup(): MapSetupResult {
         (maplibregl as any).addProtocol('pmtiles', (request: any, callback: any) => {
           return protocol!.tile(request, callback);
         });
-        
-        console.log('✅ PMTiles протокол зарегистрирован');
       } catch (e) {
         console.error("❌ Ошибка регистрации PMTiles протокола:", e);
       }

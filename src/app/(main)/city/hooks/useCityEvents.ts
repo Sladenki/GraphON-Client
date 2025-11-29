@@ -41,13 +41,11 @@ export function useCityEventsWithGeocoding(eventsFromAPI: CityEventAPI[]) {
 
     // Проверяем, не обрабатываем ли мы уже эти данные
     if (lastProcessedKeyRef.current === eventsKey) {
-      console.log('⏸️ Same events, skipping geocoding');
       return;
     }
 
     // Предотвращаем параллельные запуски
     if (processingRef.current) {
-      console.log('⏸️ Geocoding already in progress, skipping...');
       return;
     }
 
@@ -67,7 +65,6 @@ export function useCityEventsWithGeocoding(eventsFromAPI: CityEventAPI[]) {
       setError(null);
       
       try {
-        console.log('🗺️ Starting geocoding for', eventsFromAPI.length, 'events');
         // Геокодируем адреса используя локальную базу известных мест
         const eventsWithCoords = await geocodeEvents(eventsFromAPI);
         
@@ -75,9 +72,6 @@ export function useCityEventsWithGeocoding(eventsFromAPI: CityEventAPI[]) {
         if (lastProcessedKeyRef.current === eventsKey) {
           // Обновляем события с реальными координатами
           setEvents(eventsWithCoords);
-          console.log('✅ Geocoding completed');
-        } else {
-          console.log('⚠️ Events changed during geocoding, skipping update');
         }
       } catch (err) {
         console.error('❌ Error geocoding events:', err);
