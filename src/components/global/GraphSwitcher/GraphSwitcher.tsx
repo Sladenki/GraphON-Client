@@ -108,7 +108,7 @@ const GraphSwitcher: React.FC = () => {
   if (isLoading) {
     return (
       <div className={styles.loader}>
-        <SpinnerLoader size={16} />
+        <SpinnerLoader />
       </div>
     )
   }
