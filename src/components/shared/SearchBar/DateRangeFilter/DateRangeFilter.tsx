@@ -36,7 +36,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
     <div className={classNames.section} role="group" aria-label={ariaLabel}>
       <div className={classNames.row}>
         <label className={classNames.field}>
-          <span>От</span>
+          <span>С</span>
           <DatePickerField
             ariaLabel="От даты"
             size="sm"
@@ -46,7 +46,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
           />
         </label>
         <label className={classNames.field}>
-          <span>До</span>
+          <span>По</span>
           <DatePickerField
             ariaLabel="До даты"
             size="sm"
