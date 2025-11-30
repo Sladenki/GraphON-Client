@@ -113,6 +113,11 @@ const GraphSwitcher: React.FC = () => {
     )
   }
 
+  // Скрываем компонент если пользователь не студент
+  if (user && (user as any).isStudent === false) {
+    return null
+  }
+
   // Скрываем компонент если нет графов или если список состоит только из одного элемента
   if (globalGraphs.length === 0 || globalGraphs.length === 1) {
     return null
