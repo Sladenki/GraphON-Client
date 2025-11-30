@@ -10,19 +10,50 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
 import { UniversitySelect } from '@/components/global/UniversitySelect/UniversitySelect';
-import { useSelectedGraphId } from '@/stores/useUIStore';
+import { useSelectedGraphId, useSetSelectedGraphId } from '@/stores/useUIStore';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
   const small = useMediaQuery('(max-width: 1000px)')
   const selectedGraphId = useSelectedGraphId();
+  const setSelectedGraphId = useSetSelectedGraphId();
+  const { user } = useAuth();
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Ждем пока Zustand загрузит данные из localStorage
   useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  // Синхронизируем selectedGraphId из данных пользователя
+  useEffect(() => {
+    if (!isHydrated) return;
+    
+    // Нормализуем selectedGraphId из объекта пользователя
+    const normalizeGraphId = (raw: any): string | null => {
+      if (!raw) return null;
+      if (typeof raw === 'string') return raw;
+      if (typeof raw === 'object') {
+        return raw._id ?? raw.$oid ?? null;
+      }
+      return null;
+    };
+
+    const userSelectedGraphId = normalizeGraphId(user?.selectedGraphId);
+
+    // Если пользователь авторизован и у него нет selectedGraphId в объекте, 
+    // но в store есть старое значение - очищаем store, чтобы показать окно выбора
+    if (user && !userSelectedGraphId && selectedGraphId) {
+      setSelectedGraphId(null);
+    } 
+    // Если в объекте пользователя есть selectedGraphId, но в store нет или отличается - обновляем store
+    else if (user && userSelectedGraphId && userSelectedGraphId !== selectedGraphId) {
+      setSelectedGraphId(userSelectedGraphId);
+    }
+    // Если пользователь не авторизован, ничего не делаем - полагаемся на значение из localStorage
+  }, [user, selectedGraphId, setSelectedGraphId, isHydrated]);
 
   // Показываем лоадер пока загружаются данные из localStorage
   if (!isHydrated) {

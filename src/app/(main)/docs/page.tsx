@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import { FileText, Download, Shield, Cookie, Lock, FileCheck, FileSignature } from 'lucide-react';
+import { FileText, Eye, Shield, Cookie, Lock, FileCheck, FileSignature } from 'lucide-react';
 import styles from './page.module.scss';
 import ButtonBack from '@/components/global/ButtonBack/ButtonBack';
 
@@ -9,7 +9,7 @@ interface Document {
   id: string;
   title: string;
   description: string;
-  filePath: string;
+  viewUrl: string;
   icon: React.ReactNode;
   color: string;
 }
@@ -19,7 +19,7 @@ const documents: Document[] = [
     id: 'cookie',
     title: 'Политика использования cookie файлов',
     description: 'Документ определяет порядок использования файлов cookie на сайте, типы используемых cookie, цели их использования и права пользователей в отношении cookie.',
-    filePath: '/docs/Политика использования cooki файлов.docx',
+    viewUrl: 'https://disk.yandex.ru/i/eHCFzpNTJ5QeKQ',
     icon: <Cookie size={24} />,
     color: '#8b5cf6'
   },
@@ -27,7 +27,7 @@ const documents: Document[] = [
     id: 'pd-protection',
     title: 'Положение о защите персональных данных',
     description: 'Документ устанавливает порядок обработки, хранения и защиты персональных данных пользователей в соответствии с требованиями Федерального закона № 152-ФЗ «О персональных данных».',
-    filePath: '/docs/Положение о защите ПД.docx',
+    viewUrl: 'https://disk.yandex.ru/i/TB3hQtwYU1OWdA',
     icon: <Shield size={24} />,
     color: '#22c55e'
   },
@@ -35,7 +35,7 @@ const documents: Document[] = [
     id: 'pd-work',
     title: 'Положение по работе с персональными данными',
     description: 'Документ регламентирует внутренние процедуры работы с персональными данными, права и обязанности оператора, меры по обеспечению безопасности персональных данных.',
-    filePath: '/docs/Положение по работе с ПД.docx',
+    viewUrl: 'https://disk.yandex.ru/i/B9YfmiOuQOHKow',
     icon: <Lock size={24} />,
     color: '#3b82f6'
   },
@@ -43,28 +43,23 @@ const documents: Document[] = [
     id: 'pd-consent',
     title: 'Согласие на обработку персональных данных',
     description: 'Документ содержит форму согласия пользователя на обработку его персональных данных оператором в соответствии с требованиями Федерального закона № 152-ФЗ «О персональных данных».',
-    filePath: '/docs/Согласие на обработку ПД.docx',
+    viewUrl: 'https://disk.yandex.ru/i/LbRa22U5_ExG8w',
     icon: <FileSignature size={24} />,
     color: '#f59e0b'
   }
 ];
 
 export default function DocsPage() {
-  const [downloading, setDownloading] = useState<string | null>(null);
+  const [viewing, setViewing] = useState<string | null>(null);
 
-  const handleDownload = (doc: Document) => {
-    setDownloading(doc.id);
+  const handleView = (doc: Document) => {
+    setViewing(doc.id);
     
-    // Создаем ссылку для скачивания
-    const link = document.createElement('a');
-    link.href = doc.filePath;
-    link.download = doc.filePath.split('/').pop() || '';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Открываем документ для просмотра в новой вкладке
+    window.open(doc.viewUrl, '_blank', 'noopener,noreferrer');
     
     setTimeout(() => {
-      setDownloading(null);
+      setViewing(null);
     }, 500);
   };
 
@@ -107,23 +102,23 @@ export default function DocsPage() {
               <p className={styles.documentDescription}>{doc.description}</p>
               
               <button
-                className={styles.downloadButton}
-                onClick={() => handleDownload(doc)}
-                disabled={downloading === doc.id}
+                className={styles.viewButton}
+                onClick={() => handleView(doc)}
+                disabled={viewing === doc.id}
                 style={{ 
                   backgroundColor: doc.color,
                   '--hover-color': doc.color
                 } as React.CSSProperties}
               >
-                {downloading === doc.id ? (
+                {viewing === doc.id ? (
                   <>
                     <div className={styles.spinner} />
-                    <span>Загрузка...</span>
+                    <span>Открытие...</span>
                   </>
                 ) : (
                   <>
-                    <Download size={18} />
-                    <span>Скачать документ</span>
+                    <Eye size={18} />
+                    <span>Открыть для просмотра</span>
                   </>
                 )}
               </button>

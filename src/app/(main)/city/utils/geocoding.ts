@@ -131,25 +131,19 @@ function spreadEventsAtSameLocation(events: CityEvent[]): CityEvent[] {
  * @returns События с координатами
  */
 export async function geocodeEvents(events: CityEventAPI[]): Promise<CityEvent[]> {
-  console.log(`🗺️ Geocoding ${events.length} events using local database...`);
-  
   const eventsWithCoords: CityEvent[] = [];
-  let foundCount = 0;
-  let notFoundCount = 0;
   
   // Обрабатываем все события локально (синхронно, мгновенно)
   for (const event of events) {
     const coords = geocodeAddressSync(event.place);
     
     if (coords) {
-      foundCount++;
       eventsWithCoords.push({
         ...event,
         lat: coords.lat,
         lng: coords.lng,
       });
     } else {
-      notFoundCount++;
       // Если не найдено локально, используем дефолтные координаты центра Калининграда
       eventsWithCoords.push({
         ...event,
@@ -162,26 +156,6 @@ export async function geocodeEvents(events: CityEventAPI[]): Promise<CityEvent[]
   // Разбрасываем события с одинаковым местом
   const spreadEvents = spreadEventsAtSameLocation(eventsWithCoords);
   
-  console.log(`📦 Local DB: ${foundCount} found, ${notFoundCount} using default coords`);
-  console.log(`✅ Geocoded ${spreadEvents.length} events`);
   return spreadEvents;
-}
-
-/**
- * Очистить кеш геокодирования
- */
-export function clearGeocodeCache() {
-  geocodeCache.clear();
-  console.log('🗑️ Geocode cache cleared');
-}
-
-/**
- * Получить размер кеша
- */
-export function getGeocodeStatistics() {
-  return {
-    cached: geocodeCache.size,
-    entries: Array.from(geocodeCache.entries()),
-  };
 }
 

@@ -360,43 +360,14 @@ export default function CityPage() {
     setIsFilterOpen(true);
   }, []);
 
-  // Функция сброса позиции карты к начальному состоянию с уменьшенным зумом
-  const resetMapView = useCallback(() => {
-    if (!mapRef || !mapLoaded) return;
-    
-    try {
-      mapRef.flyTo({
-        center: [20.5103, 54.7068],
-        zoom: isVerySmallScreen ? 11.0 : (isMobile ? 11.5 : 13.5), // Более отдалённый вид
-        pitch: 40,
-        bearing: -12,
-        duration: 1500, // Плавная анимация
-        essential: true
-      });
-    } catch (error) {
-      console.error('Ошибка при сбросе позиции карты:', error);
-    }
-  }, [mapRef, mapLoaded, isMobile, isVerySmallScreen]);
-
   // Мемоизированный обработчик закрытия фильтра (без сброса позиции)
   const handleFilterClose = useCallback(() => {
     setIsFilterOpen(false);
   }, []);
 
-  // Функция вычисления расстояния между двумя точками (формула гаверсинуса)
-  const calculateDistance = useCallback((lat1: number, lng1: number, lat2: number, lng2: number): number => {
-    const R = 6371; // Радиус Земли в километрах
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }, []);
-
-  // Функция поиска ближайшего мероприятия на выбранную дату
+  // Оптимизированная функция поиска ближайшего мероприятия
+  // Использует квадрат расстояния для быстрого сравнения (избегает Math.sqrt)
+  // Для Калининграда (небольшая территория) достаточно простой плоской проекции
   const findNearestEventForDate = useCallback((): CityEvent | null => {
     if (!mapRef || !mapLoaded || filteredEvents.length === 0) return null;
     
@@ -408,56 +379,41 @@ export default function CityPage() {
       const currentLat = center.lat;
       const currentLng = center.lng;
       
-      // Находим ближайшее мероприятие
-      let nearestEvent: CityEvent | null = null;
-      let minDistance = Infinity;
+      // Константы для преобразования градусов в метры (для широты Калининграда ~54.7°)
+      // 1° широты ≈ 111 км, 1° долготы ≈ 65.5 км на широте 54.7°
+      const LAT_TO_M = 111000; // метры на градус широты
+      const LNG_TO_M = 65500;  // метры на градус долготы на широте ~54.7°
       
-      filteredEvents.forEach(event => {
-        const distance = calculateDistance(currentLat, currentLng, event.lat, event.lng);
-        if (distance < minDistance) {
-          minDistance = distance;
+      // Находим ближайшее мероприятие, используя квадрат расстояния (быстрее)
+      let nearestEvent: CityEvent | null = null;
+      let minDistanceSquared = Infinity;
+      
+      for (const event of filteredEvents) {
+        // Вычисляем квадрат расстояния (избегаем Math.sqrt для сравнения)
+        const dLat = (event.lat - currentLat) * LAT_TO_M;
+        const dLng = (event.lng - currentLng) * LNG_TO_M;
+        const distanceSquared = dLat * dLat + dLng * dLng;
+        
+        if (distanceSquared < minDistanceSquared) {
+          minDistanceSquared = distanceSquared;
           nearestEvent = event;
         }
-      });
+      }
       
       return nearestEvent;
     } catch (error) {
       console.error('Ошибка при поиске ближайшего мероприятия:', error);
       return null;
     }
-  }, [mapRef, mapLoaded, filteredEvents, calculateDistance]);
+  }, [mapRef, mapLoaded, filteredEvents]);
 
   // Перемещение карты к ближайшему мероприятию при выборе даты
   useEffect(() => {
-    // Срабатывает только если выбрана дата (не null) и есть отфильтрованные события
+    // Проверяем базовые условия
     if (!datePreset || filteredEvents.length === 0 || !mapRef || !mapLoaded) return;
     
-    // Небольшая задержка для завершения фильтрации
-    const timer = setTimeout(() => {
-      const nearestEvent = findNearestEventForDate();
-      if (nearestEvent) {
-        try {
-          mapRef.flyTo({
-            center: [nearestEvent.lng, nearestEvent.lat],
-            zoom: isVerySmallScreen ? 13.0 : (isMobile ? 14.0 : 15.5),
-            pitch: 40,
-            bearing: mapRef.getBearing() || -12,
-            duration: 1500,
-            essential: true
-          });
-        } catch (error) {
-          console.error('Ошибка при перемещении карты к мероприятию:', error);
-        }
-      }
-    }, 100);
-    
-    return () => clearTimeout(timer);
-  }, [datePreset, filteredEvents.length, mapRef, mapLoaded, findNearestEventForDate, isMobile, isVerySmallScreen]);
-
-  // Перемещение карты при изменении custom даты
-  useEffect(() => {
-    // Срабатывает только если выбрана custom дата и есть отфильтрованные события
-    if (datePreset !== "custom" || !dateFrom || filteredEvents.length === 0 || !mapRef || !mapLoaded) return;
+    // Для custom даты также проверяем наличие dateFrom
+    if (datePreset === "custom" && !dateFrom) return;
     
     // Небольшая задержка для завершения фильтрации
     const timer = setTimeout(() => {
