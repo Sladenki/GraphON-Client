@@ -199,6 +199,8 @@
   // Улучшаем производительность
   will-change: transform;
   transform: translateZ(0);
+  // Плавная прокрутка
+  scroll-behavior: smooth;
   
   // Для ПК версии
   @media (min-width: 1001px) {
@@ -219,9 +221,6 @@
     background: rgba(var(--main-Color), 0.2);
     border-radius: 2px;
   }
-
-  // Плавная прокрутка
-  scroll-behavior: smooth;
 }
 
 .dropdownItem {
