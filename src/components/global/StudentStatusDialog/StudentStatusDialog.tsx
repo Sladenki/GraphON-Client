@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PopUpWrapper from '../PopUpWrapper/PopUpWrapper'
 import { UserService } from '@/services/user.service'
 import { useAuth } from '@/providers/AuthProvider'
@@ -21,6 +21,13 @@ const StudentStatusDialog: React.FC<StudentStatusDialogProps> = ({ isOpen, onClo
   const setSelectedGraphId = useSetSelectedGraphId()
   const [selectedStatus, setSelectedStatus] = useState<boolean | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedStatus(null)
+      setIsSubmitting(false)
+    }
+  }, [isOpen])
 
   const handleSelect = (isStudent: boolean) => {
     setSelectedStatus(isStudent)

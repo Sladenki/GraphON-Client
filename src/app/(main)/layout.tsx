@@ -53,6 +53,22 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
     }
   }, [isHydrated, user, localIsStudent, selectedGraphId, setSelectedGraphId]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleStatusReset = () => {
+      setLocalIsStudent(undefined);
+      setShowStudentDialog(true);
+      setSelectedGraphId(null);
+    };
+
+    window.addEventListener('studentStatus:reset', handleStatusReset);
+
+    return () => {
+      window.removeEventListener('studentStatus:reset', handleStatusReset);
+    };
+  }, [setSelectedGraphId]);
+
   // Синхронизируем selectedGraphId из данных пользователя
   useEffect(() => {
     if (!isHydrated) return;

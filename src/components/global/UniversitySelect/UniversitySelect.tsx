@@ -47,6 +47,7 @@ export const UniversitySelect: React.FC = () => {
   const [requestSelection, setRequestSelection] = useState<string>('');
   const [isRequestSubmitting, setIsRequestSubmitting] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isResettingStatus, setIsResettingStatus] = useState(false);
   const flatInstitutions = useMemo(() => {
     return kaliningradInstitutions.flatMap((group) =>
       group.items.map((option) => ({
@@ -102,6 +103,36 @@ export const UniversitySelect: React.FC = () => {
     }
   };
 
+  const handleStatusReset = async () => {
+    if (isResettingStatus) return;
+    setIsResettingStatus(true);
+
+    try {
+      if (user) {
+        await UserService.updateProfile({ isStudent: null });
+        setUser({ ...user, isStudent: undefined } as any);
+      }
+
+      setSelectedGraphId(null);
+      setSelectedUniversity('');
+      setIsOtherSelected(false);
+      setRequestSelection('');
+      setIsDropdownOpen(false);
+
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('isStudent');
+        localStorage.removeItem('selectedGraphId');
+      }
+
+      window.dispatchEvent(new Event('studentStatus:reset'));
+    } catch (error) {
+      console.error('Error resetting student status:', error);
+      notifyError('Не удалось вернуться к выбору статуса', 'Попробуйте еще раз');
+    } finally {
+      setIsResettingStatus(false);
+    }
+  };
+
   const handleRequestSubmit = async () => {
     if (!requestSelection || isRequestSubmitting) return;
 
@@ -144,6 +175,18 @@ export const UniversitySelect: React.FC = () => {
       <p className={styles.subtitle}>
         Выберите ваш университет, чтобы начать работу
       </p>
+
+      <div className={styles.statusReset}>
+        <span>Ошиблись со статусом?</span>
+        <button
+          type="button"
+          className={styles.statusResetButton}
+          onClick={handleStatusReset}
+          disabled={isResettingStatus}
+        >
+          {isResettingStatus ? 'Возврат...' : 'Вернуться к выбору'}
+        </button>
+      </div>
 
       <div className={styles.benefits}>
         <div className={styles.benefit}>
