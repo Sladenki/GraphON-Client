@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 import { UserService } from '@/services/user.service';
 import { useSetSelectedGraphId } from '@/stores/useUIStore';
-import { BookOpen, Calendar, Clock, Check, GraduationCap } from 'lucide-react';
+import { BookOpen, Calendar, Clock, Check, GraduationCap, ChevronDown } from 'lucide-react';
 import styles from './UniversitySelect.module.scss';
 import { RequestConnectedGraphService } from '@/services/requestConnectedGraph.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
@@ -229,7 +229,7 @@ export const UniversitySelect: React.FC = () => {
       }
 
       setTimeout(() => {
-        router.push('/');
+        router.push('/events');
       }, 100);
     } catch (error) {
       console.error('Error sending request:', error);
@@ -338,55 +338,55 @@ export const UniversitySelect: React.FC = () => {
             Выберите ваш университет или колледж Калининграда. Мы уведомим вас, когда подключим его к GraphON.
           </p>
 
-          {kaliningradInstitutions.map((group) => (
-            <div key={group.title} className={styles.requestGroup}>
-              <p className={styles.groupTitle}>{group.title}</p>
-
-              <div className={styles.requestOptions}>
-                {group.items.map((option) => {
-                  const value = formatInstitutionValue(option);
-                  const isSelected = requestSelection === value;
-
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      className={`${styles.requestOptionCard} ${isSelected ? styles.selected : ''}`}
-                      onClick={() => setRequestSelection(value)}
-                    >
-                      <div className={styles.optionContent}>
-                        <span className={styles.optionTitle}>{option.title}</span>
-                        {option.description && (
-                          <span className={styles.optionDescription}>{option.description}</span>
-                        )}
-                      </div>
-                      {isSelected && (
-                        <div className={styles.optionCheck}>
-                          <Check size={16} />
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+          <div className={styles.dropdownWrapper}>
+            <label htmlFor="request-university" className={styles.dropdownLabel}>
+              Выберите учебное заведение
+            </label>
+            <div className={styles.selectWrapper}>
+              <select
+                id="request-university"
+                className={styles.requestSelect}
+                value={requestSelection}
+                onChange={(event) => setRequestSelection(event.target.value)}
+              >
+                <option value="">Выберите из списка</option>
+                {kaliningradInstitutions.map((group) => (
+                  <optgroup label={group.title} key={group.title}>
+                    {group.items.map((option) => {
+                      const value = formatInstitutionValue(option);
+                      return (
+                        <option key={option.id} value={value}>
+                          {option.description ? `${option.title} — ${option.description}` : option.title}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                ))}
+              </select>
+              <ChevronDown size={18} className={styles.selectChevron} />
             </div>
-          ))}
+          </div>
 
-          <button
-            type="button"
-            className={styles.requestSubmit}
-            disabled={!requestSelection || isRequestSubmitting}
-            onClick={handleRequestSubmit}
-          >
-            {isRequestSubmitting ? (
-              <>
-                <div className={styles.requestSpinner} />
-                <span>Отправляем запрос...</span>
-              </>
-            ) : (
-              'Отправить запрос на подключение'
-            )}
-          </button>
+          <div className={styles.requestActions}>
+            <button
+              type="button"
+              className={styles.requestSubmit}
+              disabled={!requestSelection || isRequestSubmitting}
+              onClick={handleRequestSubmit}
+            >
+              {isRequestSubmitting ? (
+                <>
+                  <div className={styles.requestSpinner} />
+                  <span>Отправляем запрос...</span>
+                </>
+              ) : (
+                'Отправить запрос'
+              )}
+            </button>
+            <span className={styles.requestInfo}>
+              После подключения мы автоматически уведомим вас и дадим доступ к разделам вуза.
+            </span>
+          </div>
         </div>
       )}
     </div>

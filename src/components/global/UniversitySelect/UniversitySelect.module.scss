@@ -283,84 +283,74 @@
   text-align: left;
 }
 
-.requestGroup {
+.dropdownWrapper {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
-.groupTitle {
-  margin: 0;
+.dropdownLabel {
+  font-size: 14px;
   font-weight: 600;
-  font-size: 15px;
   color: var(--main-text);
-}
-
-.requestOptions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.requestOptionCard {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(var(--main-Color), 0.16);
-  background: rgba(var(--main-Color), 0.02);
-  cursor: pointer;
-  transition: all 0.2s ease;
   text-align: left;
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.requestSelect {
   width: 100%;
-
-  &:hover {
-    border-color: rgba(var(--main-Color), 0.4);
-  }
-
-  &.selected {
-    border-color: rgb(var(--main-Color));
-    background: rgba(var(--main-Color), 0.08);
-  }
-}
-
-.optionContent {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.optionTitle {
+  padding: 14px 16px;
+  padding-right: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(var(--main-Color), 0.2);
+  background: rgba(var(--main-Color), 0.02);
+  color: var(--main-text);
   font-size: 15px;
-  font-weight: 600;
-  color: var(--main-text);
+  font-weight: 500;
+  appearance: none;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    border-color: rgb(var(--main-Color));
+    box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.15);
+  }
+
+  option {
+    color: var(--main-text);
+  }
+
+  optgroup {
+    font-weight: 600;
+  }
 }
 
-.optionDescription {
-  font-size: 13px;
-  color: var(--main-text);
-  opacity: 0.7;
+.selectChevron {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(var(--main-text), 0.7);
+  pointer-events: none;
 }
 
-.optionCheck {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgb(var(--main-Color));
-  color: #fff;
+.requestActions {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  text-align: left;
 }
 
 .requestSubmit {
-  width: 100%;
-  padding: 12px 20px;
-  border-radius: 12px;
+  padding: 12px 24px;
+  border-radius: 14px;
   border: none;
-  background: rgba(var(--main-Color), 0.12);
-  color: var(--main-text);
+  background: rgb(var(--main-Color));
+  color: #fff;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -370,13 +360,21 @@
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
-    background: rgba(var(--main-Color), 0.2);
+    background: rgba(var(--main-Color), 0.9);
+    box-shadow: 0 6px 14px rgba(var(--main-Color), 0.25);
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
+}
+
+.requestInfo {
+  font-size: 13px;
+  color: var(--main-text);
+  opacity: 0.8;
+  max-width: 320px;
 }
 
 .requestSpinner {
@@ -478,6 +476,11 @@
   .requestSection {
     padding: 16px;
   }
+
+  .requestActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 @media (max-width: 480px) {
@@ -526,15 +529,5 @@
     width: 26px;
     height: 26px;
     min-width: 26px;
-  }
-
-  .requestOptionCard {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .optionCheck {
-    align-self: flex-end;
   }
 }
