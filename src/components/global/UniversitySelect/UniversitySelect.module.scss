@@ -223,118 +223,27 @@
   }
 }
 
-// Блок с альтернативным вариантом
-.outOfListBox {
-  margin-top: 24px;
-  padding: 16px 20px;
+// Блок альтернативного выбора
+.otherOptionCard {
+  border-style: dashed;
+  border-color: rgba(var(--main-Color), 0.4);
+  background: rgba(var(--main-Color), 0.03);
+  align-items: flex-start;
+}
+
+.requestPanel {
+  margin-top: 12px;
+  padding: 18px;
   border-radius: 16px;
-  background: rgba(var(--main-Color), 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.outOfListInfo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
-  color: var(--main-text);
-  opacity: 0.85;
-}
-
-.outOfListButton {
-  border: 1px solid rgba(var(--main-Color), 0.3);
-  background: transparent;
-  color: rgb(var(--main-Color));
-  font-weight: 600;
-  border-radius: 12px;
-  padding: 10px 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.08);
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-}
-
-.requestSection {
-  margin-top: 18px;
-  padding: 20px;
-  border-radius: 18px;
-  background: var(--background-color);
-  border: 1px solid rgba(var(--main-Color), 0.12);
+  border: 1px solid rgba(var(--main-Color), 0.18);
+  background: rgba(var(--main-Color), 0.06);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
-.requestHint {
-  margin: 0;
-  font-size: 14px;
-  color: var(--main-text);
-  opacity: 0.8;
-  text-align: left;
-}
-
-.dropdownWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.dropdownLabel {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--main-text);
-  text-align: left;
-}
-
-.selectWrapper {
-  position: relative;
-}
-
-.requestSelect {
+.dropdownControl {
   width: 100%;
-  padding: 14px 16px;
-  padding-right: 42px;
-  border-radius: 14px;
-  border: 1px solid rgba(var(--main-Color), 0.2);
-  background: rgba(var(--main-Color), 0.02);
-  color: var(--main-text);
-  font-size: 15px;
-  font-weight: 500;
-  appearance: none;
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-  &:focus {
-    border-color: rgb(var(--main-Color));
-    box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.15);
-  }
-
-  option {
-    color: var(--main-text);
-  }
-
-  optgroup {
-    font-weight: 600;
-  }
-}
-
-.selectChevron {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgba(var(--main-text), 0.7);
-  pointer-events: none;
 }
 
 .requestActions {
@@ -464,17 +373,8 @@
     padding: 12px 20px;
   }
 
-  .outOfListBox {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .outOfListButton {
-    width: 100%;
-  }
-
-  .requestSection {
-    padding: 16px;
+  .requestPanel {
+    padding: 14px;
   }
 
   .requestActions {

@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 import { UserService } from '@/services/user.service';
 import { useSetSelectedGraphId } from '@/stores/useUIStore';
-import { BookOpen, Calendar, Clock, Check, GraduationCap, ChevronDown } from 'lucide-react';
+import { BookOpen, Calendar, Clock, Check } from 'lucide-react';
 import styles from './UniversitySelect.module.scss';
 import { RequestConnectedGraphService } from '@/services/requestConnectedGraph.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { NON_STUDENT_DEFAULT_GRAPH_ID } from '@/constants/nonStudentDefaults';
 import { kaliningradInstitutions, InstitutionOption } from './kaliningradInstitutions';
+import DropdownSelect, { DropdownOption } from '@/components/ui/DropdownSelect/DropdownSelect';
 
 interface University {
   name: string;
@@ -29,18 +30,51 @@ const universities: University[] = [
   },
 ];
 
+const formatInstitutionValue = (option: InstitutionOption) => {
+  if (option.description) {
+    return `${option.title} — ${option.description}`;
+  }
+  return option.title;
+};
+
 export const UniversitySelect: React.FC = () => {
   const { user, setUser } = useAuth();
   const router = useRouter();
   const setSelectedGraphId = useSetSelectedGraphId();
   const [selectedUniversity, setSelectedUniversity] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showRequestSection, setShowRequestSection] = useState(false);
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
   const [requestSelection, setRequestSelection] = useState<string>('');
   const [isRequestSubmitting, setIsRequestSubmitting] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const flatInstitutions = useMemo(() => {
+    return kaliningradInstitutions.flatMap((group) =>
+      group.items.map((option) => ({
+        ...option,
+        group: group.title,
+        value: formatInstitutionValue(option),
+      }))
+    );
+  }, []);
+
+  const dropdownOptions = useMemo<DropdownOption[]>(() => {
+    return flatInstitutions.map((option) => ({
+      value: option.value,
+      label: option.value,
+    }));
+  }, [flatInstitutions]);
 
   const handleUniversityClick = (graphId: string) => {
     setSelectedUniversity(graphId);
+    setIsOtherSelected(false);
+    setRequestSelection('');
+    setIsDropdownOpen(false);
+  };
+
+  const handleOtherUniversitySelect = () => {
+    setIsOtherSelected(true);
+    setSelectedUniversity('');
+    setTimeout(() => setIsDropdownOpen(true), 0);
   };
 
   const handleSubmit = async () => {
@@ -68,15 +102,6 @@ export const UniversitySelect: React.FC = () => {
     }
   };
 
-  const handleRequestToggle = () => {
-    setShowRequestSection((prev) => {
-      if (prev) {
-        setRequestSelection('');
-      }
-      return !prev;
-    });
-  };
-
   const handleRequestSubmit = async () => {
     if (!requestSelection || isRequestSubmitting) return;
 
@@ -86,7 +111,8 @@ export const UniversitySelect: React.FC = () => {
       await RequestConnectedGraphService.createRequest(user?._id ?? null, requestSelection);
       notifySuccess('Запрос отправлен', 'Мы сообщим, как только добавим ваш вуз');
       setRequestSelection('');
-      setShowRequestSection(false);
+      setIsOtherSelected(false);
+      setIsDropdownOpen(false);
 
       // Перенаправляем пользователя в общий (калининградский) граф
       setSelectedGraphId(NON_STUDENT_DEFAULT_GRAPH_ID);
@@ -109,13 +135,6 @@ export const UniversitySelect: React.FC = () => {
     } finally {
       setIsRequestSubmitting(false);
     }
-  };
-
-  const formatInstitutionValue = (option: InstitutionOption) => {
-    if (option.description) {
-      return `${option.title} — ${option.description}`;
-    }
-    return option.title;
   };
 
   return (
@@ -173,6 +192,70 @@ export const UniversitySelect: React.FC = () => {
             )}
           </button>
         ))}
+
+        <button
+          type="button"
+          className={`${styles.universityCard} ${isOtherSelected ? styles.selected : ''} ${styles.otherOptionCard}`}
+          onClick={handleOtherUniversitySelect}
+        >
+          <div className={styles.radioIndicator}>
+            <div className={styles.radioInner} />
+          </div>
+          
+          <div className={styles.cardContent}>
+            <h3 className={styles.universityName}>Другой вуз или колледж</h3>
+            <p className={styles.universityDescription}>
+              Выберите учебное заведение из списка и отправьте заявку на подключение
+            </p>
+          </div>
+
+          {isOtherSelected && (
+            <div className={styles.checkIcon}>
+              <Check size={18} />
+            </div>
+          )}
+        </button>
+
+        {isOtherSelected && (
+          <div className={styles.requestPanel}>
+            <DropdownSelect
+              options={dropdownOptions}
+              placeholder="Выберите учебное заведение Калининграда"
+              label="Список учебных заведений"
+              searchable
+              searchPlaceholder="Поиск по названию"
+              noResultsLabel="Ничего не найдено"
+              value={requestSelection}
+              onChange={(value) => setRequestSelection(value as string)}
+              className={styles.dropdownControl}
+              isOpen={isDropdownOpen}
+              onOpenChange={setIsDropdownOpen}
+              autoFocus
+            />
+
+            <div className={styles.requestActions}>
+              <button
+                type="button"
+                className={styles.requestSubmit}
+                disabled={!requestSelection || isRequestSubmitting}
+                onClick={handleRequestSubmit}
+              >
+                {isRequestSubmitting ? (
+                  <>
+                    <div className={styles.requestSpinner} />
+                    <span>Отправляем запрос...</span>
+                  </>
+                ) : (
+                  'Отправить заявку'
+                )}
+              </button>
+
+              <p className={styles.requestInfo}>
+                После подключения мы уведомим, а пока покажем события Калининграда.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       <button 
@@ -190,77 +273,6 @@ export const UniversitySelect: React.FC = () => {
         )}
       </button>
 
-      <div className={styles.outOfListBox}>
-        <div className={styles.outOfListInfo}>
-          <GraduationCap size={18} />
-          <span>Не нашли свой вуз в списке?</span>
-        </div>
-        <button 
-          type="button" 
-          className={styles.outOfListButton}
-          onClick={handleRequestToggle}
-        >
-          {showRequestSection ? 'Свернуть список' : 'Моего вуза тут нет'}
-        </button>
-      </div>
-
-      {showRequestSection && (
-        <div className={styles.requestSection}>
-          <p className={styles.requestHint}>
-            Выберите ваш университет или колледж Калининграда. Мы уведомим вас, когда подключим его к GraphON.
-          </p>
-
-          <div className={styles.dropdownWrapper}>
-            <label htmlFor="request-university" className={styles.dropdownLabel}>
-              Выберите учебное заведение
-            </label>
-            <div className={styles.selectWrapper}>
-              <select
-                id="request-university"
-                className={styles.requestSelect}
-                value={requestSelection}
-                onChange={(event) => setRequestSelection(event.target.value)}
-              >
-                <option value="">Выберите из списка</option>
-                {kaliningradInstitutions.map((group) => (
-                  <optgroup label={group.title} key={group.title}>
-                    {group.items.map((option) => {
-                      const value = formatInstitutionValue(option);
-                      return (
-                        <option key={option.id} value={value}>
-                          {option.description ? `${option.title} — ${option.description}` : option.title}
-                        </option>
-                      );
-                    })}
-                  </optgroup>
-                ))}
-              </select>
-              <ChevronDown size={18} className={styles.selectChevron} />
-            </div>
-          </div>
-
-          <div className={styles.requestActions}>
-            <button
-              type="button"
-              className={styles.requestSubmit}
-              disabled={!requestSelection || isRequestSubmitting}
-              onClick={handleRequestSubmit}
-            >
-              {isRequestSubmitting ? (
-                <>
-                  <div className={styles.requestSpinner} />
-                  <span>Отправляем запрос...</span>
-                </>
-              ) : (
-                'Отправить запрос'
-              )}
-            </button>
-            <span className={styles.requestInfo}>
-              После подключения мы автоматически уведомим вас и дадим доступ к разделам вуза.
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
