@@ -8,22 +8,12 @@ import styles from './UniversitySelect.module.scss';
 import { RequestConnectedGraphService } from '@/services/requestConnectedGraph.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { NON_STUDENT_DEFAULT_GRAPH_ID } from '@/constants/nonStudentDefaults';
+import { kaliningradInstitutions, InstitutionOption } from './kaliningradInstitutions';
 
 interface University {
   name: string;
   graphId: string;
   description: string;
-}
-
-interface InstitutionOption {
-  id: string;
-  title: string;
-  description: string;
-}
-
-interface InstitutionGroup {
-  title: string;
-  items: InstitutionOption[];
 }
 
 const universities: University[] = [
@@ -37,124 +27,6 @@ const universities: University[] = [
     graphId: '6896447465255a1c4ed48eaf',
     description: 'Калининградский бизнес колледж'
   },
-];
-
-const kaliningradInstitutions: InstitutionGroup[] = [
-  {
-    title: '🎓 Вузы',
-    items: [
-      {
-        id: 'bfu',
-        title: 'БФУ им. И. Канта',
-        description: 'Балтийский федеральный университет'
-      },
-      {
-        id: 'bgarf',
-        title: 'БГАРФ',
-        description: 'Балтийская государственная академия рыбопромыслового флота'
-      },
-      {
-        id: 'bvmw',
-        title: 'БВМУ / ВМУ им. Ушакова',
-        description: 'Балтийское высшее военно-морское училище им. Ф. Ф. Ушакова'
-      },
-      {
-        id: 'kpifsb',
-        title: 'КПИ ФСБ',
-        description: 'Калининградский пограничный институт ФСБ России'
-      },
-      {
-        id: 'ranhigs',
-        title: 'РАНХиГС (филиал)',
-        description: 'Российская академия народного хозяйства и госслужбы'
-      },
-      {
-        id: 'mvd',
-        title: 'Московский университет МВД (филиал)',
-        description: ''
-      },
-      {
-        id: 'miit',
-        title: 'МИИТ / РУТ (филиал)',
-        description: 'Российский университет транспорта'
-      },
-      {
-        id: 'mpgu',
-        title: 'МПГУ (филиал)',
-        description: 'Московский педагогический государственный университет'
-      },
-      {
-        id: 'rgsu',
-        title: 'РГСУ (филиал)',
-        description: 'Российский государственный социальный университет'
-      }
-    ]
-  },
-  {
-    title: '🎓 Колледжи и техникумы (СПО)',
-    items: [
-      {
-        id: 'ktk',
-        title: 'КТК',
-        description: 'Калининградский технический колледж'
-      },
-      {
-        id: 'kmk',
-        title: 'КМК',
-        description: 'Калининградский морской колледж'
-      },
-      {
-        id: 'kpt',
-        title: 'КПТ',
-        description: 'Калининградский политехнический техникум'
-      },
-      {
-        id: 'kgmk',
-        title: 'КГМК',
-        description: 'Калининградский городской многопрофильный колледж'
-      },
-      {
-        id: 'ket',
-        title: 'КЭТ',
-        description: 'Калининградский экономический техникум'
-      },
-      {
-        id: 'kteis',
-        title: 'КТЭиС',
-        description: 'Колледж торговли, экономики и сервиса'
-      },
-      {
-        id: 'kki',
-        title: 'ККИ',
-        description: 'Калининградский колледж индустрии'
-      },
-      {
-        id: 'bmk',
-        title: 'БМК',
-        description: 'Балтийский морской колледж'
-      },
-      {
-        id: 'muz',
-        title: 'МузКолледж',
-        description: 'Калининградский областной музыкальный колледж'
-      },
-      {
-        id: 'ped',
-        title: 'ПедКолледж',
-        description: 'Калининградский педагогический колледж'
-      },
-      {
-        id: 'med',
-        title: 'МедКолледж',
-        description: 'Калининградский медицинский колледж'
-      },
-      {
-        id: 'kst',
-        title: 'Строительный техникум (КСТ)',
-        description: ''
-      }
-    ]
-  }
 ];
 
 export const UniversitySelect: React.FC = () => {
