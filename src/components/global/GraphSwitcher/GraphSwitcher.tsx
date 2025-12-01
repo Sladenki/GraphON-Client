@@ -22,7 +22,31 @@ const GraphSwitcher: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isChanging, setIsChanging] = useState(false)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
+  const [isGuestNonStudent, setIsGuestNonStudent] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Синхронизируем статус гостя (не студент) с localStorage
+  useEffect(() => {
+    if (user) {
+      setIsGuestNonStudent(false)
+      return
+    }
+
+    if (typeof window === 'undefined') return
+
+    const updateGuestStatus = () => {
+      const stored = window.localStorage.getItem('isStudent')
+      setIsGuestNonStudent(stored === 'false')
+    }
+
+    updateGuestStatus()
+
+    window.addEventListener('storage', updateGuestStatus)
+
+    return () => {
+      window.removeEventListener('storage', updateGuestStatus)
+    }
+  }, [user, selectedGraphId])
 
   // Загружаем список глобальных графов
   const { data: globalGraphsResp, isLoading } = useQuery<IGraphList[]>({
@@ -105,17 +129,19 @@ const GraphSwitcher: React.FC = () => {
     }
   }
 
+  const isUserNonStudent = Boolean(user && (user as any).isStudent === false)
+  const shouldHideForGuest = !user && isGuestNonStudent
+
+  if (isUserNonStudent || shouldHideForGuest) {
+    return null
+  }
+
   if (isLoading) {
     return (
       <div className={styles.loader}>
         <SpinnerLoader />
       </div>
     )
-  }
-
-  // Скрываем компонент если пользователь не студент
-  if (user && (user as any).isStudent === false) {
-    return null
   }
 
   // Скрываем компонент если нет графов или если список состоит только из одного элемента

@@ -42,6 +42,7 @@ export interface IUser {
     managedGraphIds?: Array<{ _id: string; name: string }>; 
     gender?: 'male' | 'female';
     birthDate?: string; // ISO date string YYYY-MM-DD
+    isStudent?: boolean;
 }
 
 export interface IUpdateUserDto {
@@ -50,4 +51,5 @@ export interface IUpdateUserDto {
     username?: string;
     gender?: 'male' | 'female';
     birthDate?: string; // ISO date string YYYY-MM-DD
+    isStudent?: boolean;
 }
