@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 import { UserService } from '@/services/user.service';
 import { useSetSelectedGraphId } from '@/stores/useUIStore';
-import { BookOpen, Calendar, Clock, Check } from 'lucide-react';
+import { BookOpen, Calendar, Clock, Check, RefreshCw } from 'lucide-react';
 import styles from './UniversitySelect.module.scss';
 import { RequestConnectedGraphService } from '@/services/requestConnectedGraph.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
@@ -177,14 +177,17 @@ export const UniversitySelect: React.FC = () => {
       </p>
 
       <div className={styles.statusReset}>
-        <span>Ошиблись со статусом?</span>
+        <div className={styles.statusResetIcon}>
+          <RefreshCw size={16} />
+        </div>
+        <span className={styles.statusResetLabel}>Я не студент</span>
         <button
           type="button"
           className={styles.statusResetButton}
           onClick={handleStatusReset}
           disabled={isResettingStatus}
         >
-          {isResettingStatus ? 'Возврат...' : 'Вернуться к выбору'}
+          {isResettingStatus ? 'Возврат...' : 'Вернуться'}
         </button>
       </div>
 
