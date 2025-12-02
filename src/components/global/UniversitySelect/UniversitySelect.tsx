@@ -109,8 +109,9 @@ export const UniversitySelect: React.FC = () => {
 
     try {
       if (user) {
-        await UserService.updateProfile({ isStudent: null });
-        setUser({ ...user, isStudent: undefined } as any);
+        // Используем правильный endpoint для обновления статуса студента
+        await UserService.updateIsStudent(false);
+        setUser({ ...user, isStudent: false } as any);
       }
 
       setSelectedGraphId(null);
@@ -120,7 +121,7 @@ export const UniversitySelect: React.FC = () => {
       setIsDropdownOpen(false);
 
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('isStudent');
+        localStorage.setItem('isStudent', 'false');
         localStorage.removeItem('selectedGraphId');
       }
 
