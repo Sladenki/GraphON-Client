@@ -5,6 +5,7 @@ import { AuthProvider } from "@/providers/AuthProvider";
 import { ThemeProviders } from "@/providers/ThemeProvider";
 import { ReactQueryProvider } from './ReactQueryProvider';
 import { I18nProvider } from '@react-aria/i18n';
+import MaintenanceWrapper from '@/components/global/MaintenanceWrapper/MaintenanceWrapper';
 
 /**
  * Главный провайдер приложения, объединяющий все контекстные провайдеры.
@@ -13,6 +14,7 @@ import { I18nProvider } from '@react-aria/i18n';
  * 2. ThemeProviders - для темы (должен быть рано для предотвращения FOUC)
  * 3. I18nProvider - для локализации
  * 4. AuthProvider - для аутентификации (внутри может использовать другие провайдеры)
+ * 5. MaintenanceWrapper - проверка технических работ (после AuthProvider для доступа к user)
  */
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -20,7 +22,9 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
       <ThemeProviders>
         <I18nProvider locale="ru-RU">
           <AuthProvider>
-            {children}
+            <MaintenanceWrapper>
+              {children}
+            </MaintenanceWrapper>
           </AuthProvider>
         </I18nProvider>
       </ThemeProviders>
