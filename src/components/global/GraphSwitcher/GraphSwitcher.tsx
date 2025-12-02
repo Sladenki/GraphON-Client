@@ -130,7 +130,8 @@ const GraphSwitcher: React.FC = () => {
   }
 
   const isUserNonStudent = Boolean(user && (user as any).isStudent === false)
-  const shouldHideForGuest = !user && isGuestNonStudent
+  // Для неавторизованных пользователей: скрываем только если НЕ студент И НЕ выбран университет
+  const shouldHideForGuest = !user && isGuestNonStudent && !selectedGraphId
 
   if (isUserNonStudent || shouldHideForGuest) {
     return null
