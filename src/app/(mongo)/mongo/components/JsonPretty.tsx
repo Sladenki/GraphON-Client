@@ -7,8 +7,16 @@ type Props = {
   compact?: boolean; // если true, используем более плотное отображение
 };
 
+// Маппинг ID университетов на их названия
+const UNIVERSITY_NAMES: Record<string, string> = {
+  '690bfec3f371d05b325be7ad': 'Калининград',
+  '67a499dd08ac3c0df94d6ab7': 'КГТУ',
+  '6896447465255a1c4ed48eaf': 'КБК',
+};
+
 export default function JsonPretty({ value, compact = true }: Props) {
   const [wrap, setWrap] = useState<boolean>(false);
+  
   const text = useMemo(() => {
     try {
       return JSON.stringify(value, null, 2);
@@ -30,6 +38,31 @@ export default function JsonPretty({ value, compact = true }: Props) {
     const nodes: React.ReactNode[] = [];
     const isDigit = (ch: string) => /[0-9]/.test(ch);
     const isWhitespace = (ch: string) => ch === ' ' || ch === '\t' || ch === '\r' || ch === '\n';
+    
+    // Проверяем, содержит ли строка selectedGraphId или universityGraphId
+    let universityName: string | null = null;
+    
+    // Вариант 1: Простой формат с ID строкой
+    // "selectedGraphId": "67a499dd08ac3c0df94d6ab7"
+    // "universityGraphId": "67a499dd08ac3c0df94d6ab7"
+    const simpleMatch = line.match(/("selectedGraphId"|"universityGraphId"):\s*"([^"]+)"/);
+    
+    // Вариант 2: Если это строка с "name" внутри объекта selectedGraphId/universityGraphId
+    // "name": "КГТУ" (в контексте selectedGraphId/universityGraphId объекта)
+    const nameMatch = line.match(/"name":\s*"([^"]+)"/);
+    
+    if (simpleMatch && simpleMatch[2]) {
+      const id = simpleMatch[2];
+      universityName = UNIVERSITY_NAMES[id] || null;
+    } else if (nameMatch && nameMatch[1]) {
+      // Проверяем, является ли это название одним из университетов
+      const name = nameMatch[1];
+      if (Object.values(UNIVERSITY_NAMES).includes(name)) {
+        // Не добавляем дубликат, так как name уже отображается
+        universityName = null;
+      }
+    }
+    
     let i = 0;
     while (i < line.length) {
       const ch = line[i];
@@ -109,6 +142,16 @@ export default function JsonPretty({ value, compact = true }: Props) {
       nodes.push(<span key={i}>{ch}</span>);
       i++;
     }
+    
+    // Добавляем название университета в конец строки, если оно найдено
+    if (universityName) {
+      nodes.push(
+        <span key="university-name" style={{ color: '#059669', marginLeft: '8px', fontWeight: 600 }}>
+          // {universityName}
+        </span>
+      );
+    }
+    
     return nodes;
   };
 

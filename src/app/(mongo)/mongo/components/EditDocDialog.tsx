@@ -32,11 +32,20 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
   const originalSelectedGraphId: string = useMemo(() => extractIdLoose((doc as any)?.selectedGraphId), [doc]);
   const [selectedGraphId, setSelectedGraphId] = useState<string>("");
 
+  // Добавляем состояние для universityGraphId
+  const hasUniversityGraphField = useMemo(() => Boolean(doc && typeof doc === 'object' && 'universityGraphId' in (doc as any)), [doc]);
+  const originalUniversityGraphId: string = useMemo(() => extractIdLoose((doc as any)?.universityGraphId), [doc]);
+  const [universityGraphId, setUniversityGraphId] = useState<string>("");
+
+  // Добавляем состояние для _id
+  const originalDocId: string = useMemo(() => extractIdLoose((doc as any)?._id), [doc]);
+  const [docId, setDocId] = useState<string>("");
+
   const original = useMemo(() => {
     const obj: Record<string, unknown> = {};
     if (doc && typeof doc === 'object') {
       for (const [k, v] of Object.entries(doc)) {
-        if (k === '_id' || k === 'selectedGraphId') continue;
+        if (k === '_id' || k === 'selectedGraphId' || k === 'universityGraphId') continue;
         obj[k] = v as unknown;
       }
     }
@@ -51,7 +60,15 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
     } else {
       setSelectedGraphId(DEFAULT_GRAPH_ID);
     }
-  }, [original, open, hasSelectedGraphField, originalSelectedGraphId]);
+    // Инициализируем universityGraphId
+    if (hasUniversityGraphField) {
+      setUniversityGraphId(originalUniversityGraphId || DEFAULT_GRAPH_ID);
+    } else {
+      setUniversityGraphId(DEFAULT_GRAPH_ID);
+    }
+    // Инициализируем docId
+    setDocId(originalDocId || "");
+  }, [original, open, hasSelectedGraphField, originalSelectedGraphId, hasUniversityGraphField, originalUniversityGraphId, originalDocId]);
 
   const handleChangeKey = (idx: number, key: string) => {
     setRows((r) => r.map((row, i) => i === idx ? { ...row, key } : row));
@@ -102,6 +119,13 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
       if (!keySet.has(key)) unsetObj[key] = "";
     }
 
+    // Обработка _id
+    const currentDocId = docId.trim();
+    if (currentDocId && currentDocId !== originalDocId) {
+      // _id изменен - добавляем в $set
+      setObj['_id'] = currentDocId;
+    }
+
     // Обработка selectedGraphId
     const currentSelectedGraphId = selectedGraphId || "";
     
@@ -120,6 +144,28 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
       // Добавляем только если выбрано значение отличное от дефолтного
       if (currentSelectedGraphId && currentSelectedGraphId !== "" && currentSelectedGraphId !== DEFAULT_GRAPH_ID) {
         setObj['selectedGraphId'] = currentSelectedGraphId;
+      }
+      // Если значение = DEFAULT, поле не добавляем в документ
+    }
+
+    // Обработка universityGraphId
+    const currentUniversityGraphId = universityGraphId || "";
+    
+    if (hasUniversityGraphField) {
+      // Поле существует в документе
+      if (currentUniversityGraphId !== (originalUniversityGraphId || "")) {
+        if (currentUniversityGraphId && currentUniversityGraphId !== "") {
+          setObj['universityGraphId'] = currentUniversityGraphId;
+        } else {
+          // Поле очищено - удаляем из документа
+          unsetObj['universityGraphId'] = "";
+        }
+      }
+    } else {
+      // Поле не существует в документе
+      // Добавляем только если выбрано значение отличное от дефолтного
+      if (currentUniversityGraphId && currentUniversityGraphId !== "" && currentUniversityGraphId !== DEFAULT_GRAPH_ID) {
+        setObj['universityGraphId'] = currentUniversityGraphId;
       }
       // Если значение = DEFAULT, поле не добавляем в документ
     }
@@ -152,8 +198,26 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
             <ModalHeader style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1, borderBottom: '1px solid #e5e7eb' }}>Редактирование документа</ModalHeader>
             <ModalBody style={{ flex: '1 1 auto', overflow: 'auto' }}>
               <div style={{ color: '#6b7280', fontSize: 12, marginBottom: 8 }}>
-                Значения вводите как валидный JSON (строки в кавычках, числа без). Изменение <b>_id</b> недоступно.
+                Значения вводите как валидный JSON (строки в кавычках, числа без). 
+                <span style={{ color: '#ef4444', fontWeight: 600 }}> Изменение _id может привести к созданию нового документа!</span>
               </div>
+              
+              {/* Поле для редактирования _id */}
+              <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 8, alignItems: 'center', marginBottom: 12, padding: '8px', background: '#fef2f2', borderRadius: 8, border: '1px solid #fecaca' }}>
+                <div style={{ color: '#dc2626', fontSize: 12, fontWeight: 600 }}>_id</div>
+                <Input
+                  value={docId}
+                  onValueChange={(v) => setDocId(v)}
+                  placeholder="ID документа"
+                  variant="bordered"
+                  size="sm"
+                  classNames={{
+                    input: "text-sm",
+                    inputWrapper: "border-red-300 bg-white"
+                  }}
+                />
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr auto', gap: 8, alignItems: 'center', marginBottom: 8 }}>
                 <div style={{ color: '#6b7280', fontSize: 12 }}>Университет (selectedGraphId)</div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -180,6 +244,38 @@ export default function EditDocDialog({ open, doc, loading, onClose, onSave }: P
                     variant="flat" 
                     color="danger" 
                     onPress={() => setSelectedGraphId("")}
+                  >
+                    Удалить поле
+                  </Button>
+                )}
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr auto', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                <div style={{ color: '#6b7280', fontSize: 12 }}>Университет (universityGraphId)</div>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <select
+                    value={universityGraphId}
+                    onChange={(e) => setUniversityGraphId(e.target.value)}
+                    style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: '6px 8px', flex: 1 }}
+                  >
+                    {!universityGraphId && <option value="">— Не выбрано —</option>}
+                    {(!UNIVERSITIES.find(u => u.id === universityGraphId) && universityGraphId) && (
+                      <option value={universityGraphId}>{universityGraphId}</option>
+                    )}
+                    {UNIVERSITIES.map(u => (
+                      <option key={u.id} value={u.id}>{u.name}</option>
+                    ))}
+                  </select>
+                  {universityGraphId && (
+                    <Chip variant="flat">{UNIVERSITIES.find(u => u.id === universityGraphId)?.name || universityGraphId}</Chip>
+                  )}
+                </div>
+                {hasUniversityGraphField && (
+                  <Button 
+                    size="sm" 
+                    variant="flat" 
+                    color="danger" 
+                    onPress={() => setUniversityGraphId("")}
                   >
                     Удалить поле
                   </Button>
