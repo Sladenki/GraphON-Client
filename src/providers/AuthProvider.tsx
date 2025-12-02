@@ -213,15 +213,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     );
                 }
 
-                // Обновляем universityGraphId через updateProfile
-                if (shouldUpdateUniversity) {
+                // Обновляем universityGraphId через отдельный endpoint
+                if (shouldUpdateUniversity && normalizedLocalGraphId) {
                     promises.push(
-                        UserService.updateProfile({
-                            universityGraphId: normalizedLocalGraphId ?? null,
-                        })
+                        UserService.updateUniversityGraph(normalizedLocalGraphId)
                             .then(() => {
-                                (nextUser as any).universityGraphId =
-                                    normalizedLocalGraphId ?? null;
+                                (nextUser as any).universityGraphId = normalizedLocalGraphId;
                                 userChanged = true;
                             })
                             .catch((error) => {
