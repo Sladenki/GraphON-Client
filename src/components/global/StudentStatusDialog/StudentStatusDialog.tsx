@@ -41,7 +41,7 @@ const StudentStatusDialog: React.FC<StudentStatusDialogProps> = ({ isOpen, onClo
     try {
       // Если пользователь авторизован - сохраняем на сервере
       if (user) {
-        await UserService.updateProfile({ isStudent: selectedStatus })
+        await UserService.updateIsStudent(selectedStatus)
         setUser({ ...user, isStudent: selectedStatus } as any)
         notifySuccess('Статус сохранен')
       } else {

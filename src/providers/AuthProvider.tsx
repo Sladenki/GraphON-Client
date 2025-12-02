@@ -196,21 +196,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     normalizedLocalGraphId &&
                     (nextUser as any).universityGraphId !== normalizedLocalGraphId;
 
-                if (shouldUpdateStudentFlag || shouldUpdateUniversity) {
+                // Обновляем isStudent через отдельный endpoint
+                if (shouldUpdateStudentFlag) {
+                    promises.push(
+                        UserService.updateIsStudent(true)
+                            .then(() => {
+                                (nextUser as any).isStudent = true;
+                                userChanged = true;
+                            })
+                            .catch((error) => {
+                                console.error(
+                                    'Failed to sync student status from localStorage:',
+                                    error
+                                );
+                            })
+                    );
+                }
+
+                // Обновляем universityGraphId через updateProfile
+                if (shouldUpdateUniversity) {
                     promises.push(
                         UserService.updateProfile({
-                            isStudent: true,
                             universityGraphId: normalizedLocalGraphId ?? null,
                         })
                             .then(() => {
-                                (nextUser as any).isStudent = true;
                                 (nextUser as any).universityGraphId =
                                     normalizedLocalGraphId ?? null;
                                 userChanged = true;
                             })
                             .catch((error) => {
                                 console.error(
-                                    'Failed to sync student status/university from localStorage:',
+                                    'Failed to sync university from localStorage:',
                                     error
                                 );
                             })
@@ -218,9 +234,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             } else if (shouldUpdateStudentFlag) {
                 promises.push(
-                    UserService.updateProfile({
-                        isStudent: false,
-                    })
+                    UserService.updateIsStudent(false)
                         .then(() => {
                             (nextUser as any).isStudent = false;
                             (nextUser as any).universityGraphId = undefined;
