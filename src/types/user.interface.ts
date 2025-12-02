@@ -39,6 +39,7 @@ export interface IUser {
     postsNum: number;
     attentedEventsNum: number;
     selectedGraphId: string | null;
+    universityGraphId?: string | null;
     managedGraphIds?: Array<{ _id: string; name: string }>; 
     gender?: 'male' | 'female';
     birthDate?: string; // ISO date string YYYY-MM-DD
@@ -52,4 +53,5 @@ export interface IUpdateUserDto {
     gender?: 'male' | 'female';
     birthDate?: string; // ISO date string YYYY-MM-DD
     isStudent?: boolean | null;
+    universityGraphId?: string | null;
 }
