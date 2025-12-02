@@ -5,8 +5,7 @@
   // Для мобильной версии в TopPanel
   @media (max-width: 1000px) {
     flex: 1;
-    max-width: calc(100vw - 180px);
-    margin: 0 12px;
+    min-width: 0; // Позволяет flex элементу сжиматься
   }
 }
 
@@ -404,11 +403,6 @@
 
 // Мобильные оптимизации
 @media (max-width: 480px) {
-  .switcher {
-    max-width: calc(100vw - 160px);
-    margin: 0 8px;
-  }
-
   .currentGraph {
     padding: 8px 12px;
     gap: 8px;
