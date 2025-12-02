@@ -147,7 +147,7 @@ export default function JsonPretty({ value, compact = true }: Props) {
     if (universityName) {
       nodes.push(
         <span key="university-name" style={{ color: '#059669', marginLeft: '8px', fontWeight: 600 }}>
-          // {universityName}
+          {'// '}{universityName}
         </span>
       );
     }
