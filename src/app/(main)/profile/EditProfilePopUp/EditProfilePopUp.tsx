@@ -28,15 +28,28 @@ const EditProfilePopUp: React.FC<EditProfilePopUpProps> = ({ isOpen, onClose }) 
 
     useEffect(() => {
         if (typedUser) {
+            // Преобразуем дату из ISO формата (2004-09-18T00:00:00.000Z) в формат YYYY-MM-DD
+            let birthDateFormatted = '';
+            if (typedUser.birthDate) {
+                try {
+                    // Если это ISO строка с временем, извлекаем только дату
+                    birthDateFormatted = typedUser.birthDate.split('T')[0];
+                } catch {
+                    birthDateFormatted = typedUser.birthDate;
+                }
+            }
+            
             setFormState({
                 firstName: typedUser.firstName || '',
                 lastName: typedUser.lastName || '',
-                username: typedUser.username || ''
+                username: typedUser.username || '',
+                gender: typedUser.gender || undefined,
+                birthDate: birthDateFormatted
             });
         } else {
             setFormState({ firstName: '', lastName: '', username: '', gender: undefined, birthDate: '' });
         }
-    }, [typedUser?.firstName, typedUser?.lastName, typedUser?.username, isOpen]);
+    }, [typedUser?.firstName, typedUser?.lastName, typedUser?.username, typedUser?.gender, typedUser?.birthDate, isOpen]);
 
     return (
         <PopUpWrapper 
