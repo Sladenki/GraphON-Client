@@ -109,12 +109,21 @@ export const UniversitySelect: React.FC = () => {
 
     try {
       if (user) {
-        // Используем правильный endpoint для обновления статуса студента
-        await UserService.updateIsStudent(false);
-        setUser({ ...user, isStudent: false } as any);
+        // Отправляем оба запроса параллельно
+        await Promise.all([
+          UserService.updateIsStudent(false),
+          UserService.updateSelectedGraph(NON_STUDENT_DEFAULT_GRAPH_ID)
+        ]);
+        
+        setUser({ 
+          ...user, 
+          isStudent: false,
+          selectedGraphId: NON_STUDENT_DEFAULT_GRAPH_ID 
+        } as any);
       }
 
-      setSelectedGraphId(null);
+      // Устанавливаем дефолтный граф для неавторизованных
+      setSelectedGraphId(NON_STUDENT_DEFAULT_GRAPH_ID);
       setSelectedUniversity('');
       setIsOtherSelected(false);
       setRequestSelection('');
@@ -122,10 +131,15 @@ export const UniversitySelect: React.FC = () => {
 
       if (typeof window !== 'undefined') {
         localStorage.setItem('isStudent', 'false');
-        localStorage.removeItem('selectedGraphId');
+        localStorage.setItem('selectedGraphId', NON_STUDENT_DEFAULT_GRAPH_ID);
       }
 
       window.dispatchEvent(new Event('studentStatus:reset'));
+      
+      // Переходим на главную страницу
+      setTimeout(() => {
+        router.push('/events');
+      }, 100);
     } catch (error) {
       console.error('Error resetting student status:', error);
       notifyError('Не удалось вернуться к выбору статуса', 'Попробуйте еще раз');
