@@ -14,6 +14,10 @@ import { IGraphList } from '@/types/graph.interface'
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL
 
+// ID университетов для фильтрации
+const KBKK_ID = '6896447465255a1c4ed48eaf'
+const KGTU_ID = '67a499dd08ac3c0df94d6ab7'
+
 const GraphSwitcher: React.FC = () => {
   const { user, setUser } = useAuth()
   const router = useRouter()
@@ -57,7 +61,26 @@ const GraphSwitcher: React.FC = () => {
     }
   })
 
-  const globalGraphs = globalGraphsResp || []
+  // Фильтруем графы в зависимости от universityGraphId пользователя
+  const globalGraphs = useMemo(() => {
+    const graphs = globalGraphsResp || []
+    const universityGraphId = user?.universityGraphId
+
+    if (!universityGraphId) return graphs
+
+    // Если пользователь из КБК - скрываем КГТУ
+    if (universityGraphId === KBKK_ID) {
+      return graphs.filter(g => g._id !== KGTU_ID)
+    }
+
+    // Если пользователь из КГТУ - скрываем КБК
+    if (universityGraphId === KGTU_ID) {
+      return graphs.filter(g => g._id !== KBKK_ID)
+    }
+
+    return graphs
+  }, [globalGraphsResp, user?.universityGraphId])
+
   const currentGraph = globalGraphs.find(g => g._id === selectedGraphId)
 
   // Формируем полный URL изображения
