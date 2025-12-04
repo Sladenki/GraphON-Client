@@ -363,8 +363,37 @@
   }
 
   .statusReset {
-    flex-direction: column;
-    align-items: stretch;
+    width: 100%;
+    max-width: none;
+    padding: 12px 16px;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .statusResetIcon {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  .statusResetLabel {
+    font-size: 14px;
+    flex: 1;
+  }
+
+  .statusResetButton {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(var(--main-Color), 0.08);
+    
+    &:active:not(:disabled) {
+      background: rgba(var(--main-Color), 0.15);
+    }
   }
 
   .benefits {
@@ -451,6 +480,30 @@
 
   .subtitle {
     font-size: 14px;
+  }
+
+  .statusReset {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .statusResetIcon {
+    width: 22px;
+    height: 22px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .statusResetLabel {
+    font-size: 13px;
+  }
+
+  .statusResetButton {
+    font-size: 13px;
+    padding: 5px 10px;
   }
 
   .benefits {
