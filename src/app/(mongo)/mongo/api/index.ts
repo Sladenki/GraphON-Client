@@ -84,3 +84,18 @@ export async function postImport(dbName: string, collection: string, file: File)
   return res.json();
 }
 
+export async function postInsertOne(dbName: string, collection: string, doc: Record<string, unknown>): Promise<{ insertedId: string; message: string }> {
+  const res = await fetch(`${API_BASE}/mongo/insertOne/${dbName}/${encodeURIComponent(collection)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(doc),
+  });
+  
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`${res.status} ${res.statusText}${text ? `: ${text}` : ''}`);
+  }
+  
+  return res.json();
+}
+
