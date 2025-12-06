@@ -12,11 +12,13 @@ type Props = {
   onExportJson?: () => void;
   onExportNdjson?: () => void;
   onImportJson?: () => void;
+  onAddDoc?: () => void;
   canExport?: boolean;
   canImport?: boolean;
+  canAddDoc?: boolean;
 };
 
-export default function CollectionsSidebar({ dbName, collections, loading, selectedCollection, onSelect, onExportJson, onExportNdjson, onImportJson, canExport, canImport }: Props) {
+export default function CollectionsSidebar({ dbName, collections, loading, selectedCollection, onSelect, onExportJson, onExportNdjson, onImportJson, onAddDoc, canExport, canImport, canAddDoc }: Props) {
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <h3 style={{ margin: 0 }}>Коллекции (DB: {dbName})</h3>
@@ -41,8 +43,19 @@ export default function CollectionsSidebar({ dbName, collections, loading, selec
           </div>
         )}
       </div>
-      {(onExportJson || onExportNdjson || onImportJson) && (
+      {(onExportJson || onExportNdjson || onImportJson || onAddDoc) && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {onAddDoc && (
+            <Button 
+              variant="solid" 
+              color="primary" 
+              onPress={onAddDoc} 
+              isDisabled={!canAddDoc}
+              fullWidth
+            >
+              ➕ Добавить документ
+            </Button>
+          )}
           {onImportJson && canImport && (
             <Button 
               variant="solid" 

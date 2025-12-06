@@ -14,6 +14,7 @@ import { notifySuccess, notifyError } from '@/lib/notifications'
 import styles from './EventsList.module.scss'
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
 import { CalendarX, Search } from 'lucide-react'
+import GraphSwitcher from '@/components/global/GraphSwitcher/GraphSwitcher'
 
 const EVENTS_PER_PAGE = 20
 
@@ -233,6 +234,11 @@ export default function EventsList() {
           onDateToChange={setDateTo}
           onIncludeTbdChange={setIncludeTbd}
         />
+      </div>
+      
+      {/* Переключатель графов - только для ПК */}
+      <div className={styles.graphSwitcherWrapper}>
+        <GraphSwitcher />
       </div>
       
       {/* Загрузка */}

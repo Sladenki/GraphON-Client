@@ -57,6 +57,10 @@ const EventsList = dynamic(() => import("./EventsList"), {
   ssr: false
 });
 
+const WelcomeNotice = dynamic(() => import("./components/WelcomeNotice"), {
+  ssr: false
+});
+
 
 // ===== КОМПОНЕНТ =====
 
@@ -633,6 +637,9 @@ export default function CityPage() {
           )}
         </div>
       </div>
+      
+      {/* Информационное сообщение при первом посещении */}
+      <WelcomeNotice />
     </section>
   );
 }

@@ -26,6 +26,57 @@
   line-height: 1.5;
 }
 
+.statusReset {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(var(--main-Color), 0.08);
+  border: 1px solid rgba(var(--main-Color), 0.15);
+  margin-bottom: 28px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.statusResetIcon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(var(--main-Color), 0.15);
+  color: rgb(var(--main-Color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statusResetLabel {
+  font-size: 13px;
+  color: rgba(var(--main-text), 0.8);
+  font-weight: 500;
+}
+
+.statusResetButton {
+  border: none;
+  background: transparent;
+  color: rgb(var(--main-Color));
+  font-weight: 600;
+  font-size: 13px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: rgba(var(--main-Color), 0.8);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 // Преимущества
 .benefits {
   display: flex;
@@ -223,6 +274,78 @@
   }
 }
 
+// Блок альтернативного выбора
+.otherOptionCard {
+  border-style: dashed;
+  border-color: rgba(var(--main-Color), 0.4);
+  background: rgba(var(--main-Color), 0.03);
+  align-items: flex-start;
+}
+
+.requestPanel {
+  margin-top: 12px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(var(--main-Color), 0.18);
+  background: rgba(var(--main-Color), 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dropdownControl {
+  width: 100%;
+}
+
+.requestActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  text-align: left;
+}
+
+.requestSubmit {
+  padding: 12px 24px;
+  border-radius: 14px;
+  border: none;
+  background: rgb(var(--main-Color));
+  color: #fff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(var(--main-Color), 0.9);
+    box-shadow: 0 6px 14px rgba(var(--main-Color), 0.25);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.requestInfo {
+  font-size: 13px;
+  color: var(--main-text);
+  opacity: 0.8;
+  max-width: 320px;
+}
+
+.requestSpinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--main-text), 0.2);
+  border-top-color: var(--main-text);
+  animation: spin 0.8s linear infinite;
+}
+
 // Мобильная адаптация
 @media (max-width: 640px) {
   .container {
@@ -237,6 +360,40 @@
   .subtitle {
     font-size: 15px;
     margin-bottom: 28px;
+  }
+
+  .statusReset {
+    width: 100%;
+    max-width: none;
+    padding: 12px 16px;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .statusResetIcon {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  .statusResetLabel {
+    font-size: 14px;
+    flex: 1;
+  }
+
+  .statusResetButton {
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(var(--main-Color), 0.08);
+    
+    &:active:not(:disabled) {
+      background: rgba(var(--main-Color), 0.15);
+    }
   }
 
   .benefits {
@@ -300,6 +457,15 @@
     font-size: 15px;
     padding: 12px 20px;
   }
+
+  .requestPanel {
+    padding: 14px;
+  }
+
+  .requestActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 @media (max-width: 480px) {
@@ -314,6 +480,30 @@
 
   .subtitle {
     font-size: 14px;
+  }
+
+  .statusReset {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .statusResetIcon {
+    width: 22px;
+    height: 22px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .statusResetLabel {
+    font-size: 13px;
+  }
+
+  .statusResetButton {
+    font-size: 13px;
+    padding: 5px 10px;
   }
 
   .benefits {

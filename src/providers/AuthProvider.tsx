@@ -1,7 +1,8 @@
 'use client';
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext, useRef } from 'react';
 import { IUser } from '@/types/user.interface';
 import { useUserData } from '@/hooks/useUserData';
+import { UserService } from '@/services/user.service';
 
 interface User extends IUser {
     email: string;
@@ -38,6 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [error, setError] = useState<string | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
+    const hasSyncedLocalDataRef = useRef(false);
 
     // Используем React Query для получения данных пользователя
     const { data: userData, isLoading: userLoading, error: userError, refetch: refetchUser } = useUserData(userId, accessToken);
@@ -161,6 +163,123 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             refetchUser();
         }
     };
+
+    // Синхронизируем выбор из localStorage после авторизации
+    useEffect(() => {
+        if (!user || !isLoggedIn) {
+            hasSyncedLocalDataRef.current = false;
+            return;
+        }
+
+        if (hasSyncedLocalDataRef.current) return;
+        if (typeof window === 'undefined') return;
+
+        const localIsStudentRaw = localStorage.getItem('isStudent');
+        const localSelectedGraphId = localStorage.getItem('selectedGraphId');
+
+        const promises: Promise<void>[] = [];
+        const nextUser = { ...user };
+        let userChanged = false;
+        const userIsStudent = (user as any).isStudent;
+        const normalizedLocalIsStudent =
+            localIsStudentRaw === null ? null : localIsStudentRaw === 'true';
+        const normalizedLocalGraphId = localSelectedGraphId ?? null;
+
+        if (normalizedLocalIsStudent !== null) {
+            const shouldUpdateStudentFlag =
+                userIsStudent === undefined ||
+                userIsStudent === null ||
+                userIsStudent !== normalizedLocalIsStudent;
+
+            if (normalizedLocalIsStudent === true) {
+                const shouldUpdateUniversity =
+                    normalizedLocalGraphId &&
+                    (nextUser as any).universityGraphId !== normalizedLocalGraphId;
+
+                // Обновляем isStudent через отдельный endpoint
+                if (shouldUpdateStudentFlag) {
+                    promises.push(
+                        UserService.updateIsStudent(true)
+                            .then(() => {
+                                (nextUser as any).isStudent = true;
+                                userChanged = true;
+                            })
+                            .catch((error) => {
+                                console.error(
+                                    'Failed to sync student status from localStorage:',
+                                    error
+                                );
+                            })
+                    );
+                }
+
+                // Обновляем universityGraphId через отдельный endpoint
+                if (shouldUpdateUniversity && normalizedLocalGraphId) {
+                    promises.push(
+                        UserService.updateUniversityGraph(normalizedLocalGraphId)
+                            .then(() => {
+                                (nextUser as any).universityGraphId = normalizedLocalGraphId;
+                                userChanged = true;
+                            })
+                            .catch((error) => {
+                                console.error(
+                                    'Failed to sync university from localStorage:',
+                                    error
+                                );
+                            })
+                    );
+                }
+            } else if (shouldUpdateStudentFlag) {
+                promises.push(
+                    UserService.updateIsStudent(false)
+                        .then(() => {
+                            (nextUser as any).isStudent = false;
+                            (nextUser as any).universityGraphId = undefined;
+                            userChanged = true;
+                        })
+                        .catch((error) => {
+                            console.error('Failed to sync non-student status:', error);
+                        })
+                );
+            }
+        }
+
+        const userSelectedGraphId =
+            typeof user.selectedGraphId === 'string'
+                ? user.selectedGraphId
+                : (user.selectedGraphId as any)?._id ?? null;
+
+        if (
+            normalizedLocalGraphId &&
+            normalizedLocalGraphId !== userSelectedGraphId
+        ) {
+            promises.push(
+                UserService.updateSelectedGraph(normalizedLocalGraphId)
+                    .then(() => {
+                        (nextUser as any).selectedGraphId = normalizedLocalGraphId;
+                        userChanged = true;
+                    })
+                    .catch((error) => {
+                        console.error('Failed to sync selectedGraphId from localStorage:', error);
+                    })
+            );
+        }
+
+        if (promises.length === 0) {
+            hasSyncedLocalDataRef.current = true;
+            return;
+        }
+
+        Promise.all(promises)
+            .then(() => {
+                if (userChanged) {
+                    setUser(nextUser);
+                }
+            })
+            .finally(() => {
+                hasSyncedLocalDataRef.current = true;
+            });
+    }, [user, isLoggedIn, setUser]);
 
     const value = { isLoggedIn, user, setUser, login, logout, loading: isLoading, error, refreshUser }; // Передаем loading в контекст
 

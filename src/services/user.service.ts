@@ -35,6 +35,18 @@ export const UserService = {
         return data;
     },
 
+    // Обновление статуса студента
+    async updateIsStudent(isStudent: boolean) {
+        const { data } = await axiosAuth.patch(`/user/is-student`, { isStudent });
+        return data;
+    },
+
+    // Обновление университетского графа
+    async updateUniversityGraph(universityGraphId: string) {
+        const { data } = await axiosAuth.patch(`/user/university-graph`, { universityGraphId });
+        return data;
+    },
+
     // Обновление профиля
     async updateProfile(dto: IUpdateUserDto) {
         const { data } = await axiosAuth.patch(`/user/profile`, dto);
