@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --main-Color: 150, 130, 238;  /* Тёплый фиолетовый */
