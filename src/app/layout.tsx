@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { inter, orbitron } from './fonts';
+import '../styles/tailwind.css';
 import '../styles/globals.scss';
 import { Providers } from '@/providers/main';
 
