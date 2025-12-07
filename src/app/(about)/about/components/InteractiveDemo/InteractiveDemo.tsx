@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, type Variants } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ParallaxSection } from '../ParallaxSection/ParallaxSection';
 import styles from './InteractiveDemo.module.scss';
@@ -43,7 +43,7 @@ export const InteractiveDemo = () => {
   const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0]);
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -54,14 +54,14 @@ export const InteractiveDemo = () => {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
-        ease: 'easeOut'
+        ease: 'easeOut' as const
       }
     }
   };
@@ -137,7 +137,7 @@ export const InteractiveDemo = () => {
                   transition={{
                     duration: 4,
                     repeat: Infinity,
-                    ease: 'easeInOut'
+                    ease: 'easeInOut' as const
                   }}
                 />
                 <motion.div
@@ -149,7 +149,7 @@ export const InteractiveDemo = () => {
                   transition={{
                     duration: 3,
                     repeat: Infinity,
-                    ease: 'easeInOut',
+                    ease: 'easeInOut' as const,
                     delay: 1
                   }}
                 />
@@ -162,7 +162,7 @@ export const InteractiveDemo = () => {
                   transition={{
                     duration: 5,
                     repeat: Infinity,
-                    ease: 'easeInOut',
+                    ease: 'easeInOut' as const,
                     delay: 2
                   }}
                 />
@@ -175,7 +175,7 @@ export const InteractiveDemo = () => {
                   transition={{
                     duration: 2,
                     repeat: Infinity,
-                    ease: 'easeInOut'
+                    ease: 'easeInOut' as const
                   }}
                 />
               </div>

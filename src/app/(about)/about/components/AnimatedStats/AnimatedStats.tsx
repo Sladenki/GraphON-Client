@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, type Variants } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { ParallaxSection } from '../ParallaxSection/ParallaxSection';
 import styles from './AnimatedStats.module.scss';
@@ -52,7 +52,7 @@ const AnimatedCounter = ({ value, suffix, color }: { value: number; suffix: stri
       style={{ color }}
       initial={{ opacity: 0, scale: 0.5 }}
       animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
-      transition={{ duration: 0.8, ease: 'easeOut' }}
+      transition={{ duration: 0.8, ease: 'easeOut' as const }}
     >
       <span className={styles.counterValue}>
         {count.toLocaleString()}
@@ -66,7 +66,7 @@ export const AnimatedStats = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: '-100px' });
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -77,14 +77,14 @@ export const AnimatedStats = () => {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.8,
-        ease: 'easeOut'
+        ease: 'easeOut' as const
       }
     }
   };
@@ -136,7 +136,7 @@ export const AnimatedStats = () => {
                     transition={{
                       duration: 4,
                       repeat: Infinity,
-                      ease: 'linear'
+                      ease: 'linear' as const
                     }}
                   />
                 </div>

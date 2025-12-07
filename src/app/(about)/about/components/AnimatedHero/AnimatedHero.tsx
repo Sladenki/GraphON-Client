@@ -1,12 +1,12 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { ParallaxSection, FloatingElement } from '../ParallaxSection/ParallaxSection';
 import { HologramEarth } from '../HologramEarth/HologramEarth';
 import styles from './AnimatedHero.module.scss';
 
 export const AnimatedHero = () => {
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -18,7 +18,7 @@ export const AnimatedHero = () => {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 60, scale: 0.95 },
     visible: {
       opacity: 1,
@@ -26,18 +26,18 @@ export const AnimatedHero = () => {
       scale: 1,
       transition: {
         duration: 1,
-        ease: [0.4, 0, 0.2, 1]
+        ease: [0.4, 0, 0.2, 1] as const
       }
     }
   };
 
-  const floatingVariants = {
+  const floatingVariants: Variants = {
     animate: {
       y: [-10, 10, -10],
       transition: {
         duration: 4,
         repeat: Infinity,
-        ease: 'easeInOut'
+        ease: 'easeInOut' as const
       }
     }
   };
@@ -100,7 +100,7 @@ export const AnimatedHero = () => {
             transition={{ 
               duration: 1.2, 
               delay: 0.5,
-              ease: [0.4, 0, 0.2, 1]
+              ease: [0.4, 0, 0.2, 1] as const
             }}
           >
             <HologramEarth />

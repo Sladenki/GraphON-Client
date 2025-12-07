@@ -6,6 +6,9 @@ const poppins = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
   variable: '--font-poppins',
   display: 'swap',
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+  adjustFontFallback: true,
+  preload: true,
 });
 
 const montserrat = Montserrat({ 
@@ -13,6 +16,9 @@ const montserrat = Montserrat({
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-montserrat',
   display: 'swap',
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+  adjustFontFallback: true,
+  preload: true,
 });
 
 const playfair = Playfair_Display({ 
@@ -20,6 +26,9 @@ const playfair = Playfair_Display({
   weight: ['400', '500', '600', '700'],
   variable: '--font-playfair',
   display: 'swap',
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
+  adjustFontFallback: true,
+  preload: true,
 });
 
 export const metadata: Metadata = {

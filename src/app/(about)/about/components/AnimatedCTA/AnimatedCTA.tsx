@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { ParallaxSection } from '../ParallaxSection/ParallaxSection';
@@ -10,7 +10,7 @@ export const AnimatedCTA = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: '-100px' });
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -21,19 +21,19 @@ export const AnimatedCTA = () => {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.8,
-        ease: 'easeOut'
+        ease: 'easeOut' as const
       }
     }
   };
 
-  const buttonVariants = {
+  const buttonVariants: Variants = {
     hover: {
       scale: 1.05,
       boxShadow: '0 20px 40px rgba(102, 126, 234, 0.4)',

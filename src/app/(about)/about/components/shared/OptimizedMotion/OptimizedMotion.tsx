@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, MotionProps } from 'framer-motion';
+import { motion, MotionProps, type Variants, type Easing } from 'framer-motion';
 import { ReactNode } from 'react';
 import { useAboutPageOptimization } from '../../../hooks/useAboutPageOptimization';
 
@@ -10,6 +10,14 @@ interface OptimizedMotionProps extends MotionProps {
   reducedMotion?: boolean;
   mobileOptimized?: boolean;
 }
+
+// Helper функция для преобразования easing строки в валидный тип для framer-motion
+const normalizeEasing = (easing: string): Easing => {
+  if (easing === 'cubic-bezier(0.4, 0, 0.2, 1)') {
+    return [0.4, 0, 0.2, 1] as const;
+  }
+  return easing as Easing;
+};
 
 export const OptimizedMotion = ({
   children,
@@ -25,11 +33,15 @@ export const OptimizedMotion = ({
   const isMobile = config.isMobile;
 
   // Оптимизированные настройки анимации
+  const easeValue = shouldDisableAnimations 
+    ? ('linear' as const)
+    : normalizeEasing(componentConfig.animations.easing);
+  
   const optimizedProps = {
     ...motionProps,
     transition: {
       duration: shouldDisableAnimations ? 0 : componentConfig.animations.duration,
-      ease: shouldDisableAnimations ? 'linear' : componentConfig.animations.easing,
+      ease: easeValue,
       ...motionProps.transition
     },
     // Отключаем сложные анимации на мобильных
@@ -76,7 +88,7 @@ export const FadeInMotion = ({ children, className = '', delay = 0 }: {
       animate={{ opacity: 1, y: 0 }}
       transition={{
         duration: componentConfig.animations.duration,
-        ease: componentConfig.animations.easing,
+        ease: normalizeEasing(componentConfig.animations.easing),
         delay
       }}
     >
@@ -97,7 +109,7 @@ export const SlideInMotion = ({ children, className = '', direction = 'up', dela
     return <div className={className}>{children}</div>;
   }
 
-  const variants = {
+  const variants: Variants = {
     hidden: {
       opacity: 0,
       x: direction === 'left' ? -50 : direction === 'right' ? 50 : 0,
@@ -118,7 +130,7 @@ export const SlideInMotion = ({ children, className = '', direction = 'up', dela
       animate="visible"
       transition={{
         duration: componentConfig.animations.duration,
-        ease: componentConfig.animations.easing,
+        ease: normalizeEasing(componentConfig.animations.easing),
         delay
       }}
     >
@@ -145,7 +157,7 @@ export const ScaleMotion = ({ children, className = '', delay = 0 }: {
       animate={{ opacity: 1, scale: 1 }}
       transition={{
         duration: componentConfig.animations.duration,
-        ease: componentConfig.animations.easing,
+        ease: normalizeEasing(componentConfig.animations.easing),
         delay
       }}
     >

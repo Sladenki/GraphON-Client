@@ -41,10 +41,6 @@ const nextConfig = {
   },
 
   experimental: {
-    turbo: {
-      enabled: true, // Включаем Turbopack
-    },
-    
     // --- Время сборки ---
 
     // Параллельная компиляция для ускорения сборки
