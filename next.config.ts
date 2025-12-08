@@ -1,6 +1,12 @@
 const nextConfig = {
   trailingSlash: true,
 
+  // Явно отключаем Turbopack для избежания WASM ошибок
+  // Turbopack будет использоваться только если явно указан флаг --turbopack
+  webpack: (config: any, { isServer }: { isServer: boolean }) => {
+    return config;
+  },
+
   // Разрешаем загрузку изображений с любого домена 
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
