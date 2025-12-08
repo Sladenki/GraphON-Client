@@ -42,15 +42,9 @@ const nextConfig = {
 
   experimental: {
     // --- Время сборки ---
-
-    // Параллельная компиляция для ускорения сборки
-    webpackBuildWorker: true,
     
     // Оптимизация памяти при сборке
     memoryBasedWorkersCount: true,
-
-    // Оптимизация CSS (минификация, удаление дубликатов)
-    optimizeCss: true,
     
     // Автоматическая оптимизация импортов из больших библиотек
     optimizePackageImports: [
