@@ -1,3 +1,5 @@
+'use client';
+
 import { toast } from "sonner";
 
 export const notifySuccess = (title: string, description?: string) =>

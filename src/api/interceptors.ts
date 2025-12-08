@@ -1,3 +1,5 @@
+'use client';
+
 import axios from "axios";
 import { notifyError } from "@/lib/notifications";
 
@@ -45,6 +47,11 @@ axiosAuth.interceptors.request.use(
 
 // Функция для обработки 401 ошибки
 const handle401Error = () => {
+    // Работаем только на клиенте
+    if (typeof window === 'undefined') {
+        return;
+    }
+    
     // Предотвращаем множественные редиректы
     if (isRedirecting) {
         return;
@@ -55,12 +62,18 @@ const handle401Error = () => {
     // Токен хранится в HTTP-only cookie, сервер сам его очистит при logout
     // Не нужно очищать localStorage/sessionStorage
     
-    // Показываем уведомление пользователю
-    notifyError('Вы не авторизованы или токен истёк', 'Пожалуйста, войдите снова');
+    // Показываем уведомление пользователю (только на клиенте)
+    try {
+        notifyError('Вы не авторизованы или токен истёк', 'Пожалуйста, войдите снова');
+    } catch (e) {
+        // Игнорируем ошибки уведомлений
+    }
     
     // Перенаправляем на страницу входа
     setTimeout(() => {
-        window.location.href = '/signIn';
+        if (typeof window !== 'undefined') {
+            window.location.href = '/signIn';
+        }
     }, 100); // Небольшая задержка для отображения уведомления
 };
 
