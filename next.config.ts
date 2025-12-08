@@ -1,12 +1,6 @@
 const nextConfig = {
   trailingSlash: true,
 
-  // Явно отключаем Turbopack для избежания WASM ошибок
-  // Turbopack будет использоваться только если явно указан флаг --turbopack
-  webpack: (config: any, { isServer }: { isServer: boolean }) => {
-    return config;
-  },
-
   // Разрешаем загрузку изображений с любого домена 
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -48,15 +42,9 @@ const nextConfig = {
 
   experimental: {
     // --- Время сборки ---
-
-    // Параллельная компиляция для ускорения сборки
-    webpackBuildWorker: true,
     
     // Оптимизация памяти при сборке
     memoryBasedWorkersCount: true,
-
-    // Оптимизация CSS (минификация, удаление дубликатов)
-    optimizeCss: true,
     
     // Автоматическая оптимизация импортов из больших библиотек
     optimizePackageImports: [
