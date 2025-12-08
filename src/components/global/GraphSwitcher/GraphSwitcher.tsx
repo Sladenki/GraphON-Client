@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { ChevronDown, Check } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { GraphService } from '@/services/graph.service'
-import { useSelectedGraphId, useSetSelectedGraphId } from '@/stores/useUIStore'
+import { useSelectedGraphId, useSetSelectedGraphId, useUIStore } from '@/stores/useUIStore'
 import { UserService } from '@/services/user.service'
 import { useAuth } from '@/providers/AuthProvider'
 import { useRouter } from 'next/navigation'
@@ -81,7 +81,10 @@ const GraphSwitcher: React.FC = () => {
     return graphs
   }, [globalGraphsResp, user?.universityGraphId])
 
-  const currentGraph = globalGraphs.find(g => g._id === selectedGraphId)
+  // Мемоизируем currentGraph для правильной реактивности
+  const currentGraph = useMemo(() => {
+    return globalGraphs.find(g => g._id === selectedGraphId)
+  }, [globalGraphs, selectedGraphId])
 
   // Формируем полный URL изображения
   const getImageUrl = (imgPath: string | undefined) => {
@@ -128,25 +131,74 @@ const GraphSwitcher: React.FC = () => {
   }, [isOpen])
 
   const handleGraphSelect = async (graphId: string) => {
-    if (graphId === selectedGraphId || isChanging) return
+    if (graphId === selectedGraphId || isChanging) {
+      console.log('GraphSwitcher: Early return', { graphId, selectedGraphId, isChanging })
+      return
+    }
 
+    console.log('GraphSwitcher: handleGraphSelect called', { 
+      graphId, 
+      currentSelectedGraphId: selectedGraphId, 
+      user: !!user,
+      storeState: useUIStore.getState().selectedGraphId
+    })
+    
     setIsChanging(true)
     setIsOpen(false)
 
+    const previousGraphId = selectedGraphId
+
     try {
-      // Обновляем состояние в Zustand store
-      setSelectedGraphId(graphId)
+      // Обновляем состояние в Zustand store (сохранится в localStorage)
+      console.log('GraphSwitcher: Calling setSelectedGraphId with', graphId)
+      
+      // Вызываем функцию напрямую из store для гарантии
+      const store = useUIStore.getState()
+      console.log('GraphSwitcher: Store before update', { selectedGraphId: store.selectedGraphId })
+      
+      // Используем функцию напрямую из store, а не из хука
+      useUIStore.getState().setSelectedGraphId(graphId)
+      
+      // Проверяем сразу после вызова
+      const storeAfter = useUIStore.getState()
+      console.log('GraphSwitcher: Store after setSelectedGraphId call', { 
+        selectedGraphId: storeAfter.selectedGraphId,
+        success: storeAfter.selectedGraphId === graphId
+      })
+      
+      // Дополнительная проверка через таймаут
+      setTimeout(() => {
+        const finalState = useUIStore.getState()
+        console.log('GraphSwitcher: Final store state after timeout', { 
+          selectedGraphId: finalState.selectedGraphId,
+          expected: graphId,
+          match: finalState.selectedGraphId === graphId
+        })
+        
+        if (finalState.selectedGraphId !== graphId) {
+          console.error('GraphSwitcher: State was not updated correctly!', {
+            expected: graphId,
+            actual: finalState.selectedGraphId
+          })
+        }
+      }, 100)
 
       // Если пользователь авторизован, обновляем на сервере
       if (user) {
         await UserService.updateSelectedGraph(graphId)
         setUser({ ...user, selectedGraphId: graphId })
+        // Для авторизованных пользователей обновляем страницу
+        router.refresh()
+      } else {
+        // Для неавторизованных пользователей НЕ вызываем router.refresh(),
+        // так как это может сбросить состояние из-за логики в layout.tsx
+        // Zustand автоматически обновит все подписанные компоненты
+        console.log('GraphSwitcher: Guest user - state updated in store, no refresh needed')
       }
-
-      // Перезагружаем страницу для обновления данных
-      router.refresh()
     } catch (error) {
-      console.error('Error updating selected graph:', error)
+      console.error('GraphSwitcher: Error updating selected graph:', error)
+      // В случае ошибки возвращаем предыдущее значение
+      setSelectedGraphId(previousGraphId)
     } finally {
       setTimeout(() => setIsChanging(false), 300)
     }

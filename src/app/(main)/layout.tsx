@@ -40,18 +40,21 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
   }, []);
 
   // Назначаем дефолтный selectedGraphId для гостей, выбравших статус "не студент"
+  // ТОЛЬКО если граф еще не выбран (null)
   useEffect(() => {
     if (!isHydrated) return;
     if (user) return;
     if (localIsStudent !== false) return;
-    if (selectedGraphId === NON_STUDENT_DEFAULT_GRAPH_ID) return;
+    // Важно: устанавливаем дефолт ТОЛЬКО если selectedGraphId === null
+    // Если пользователь уже выбрал граф вручную, не перезаписываем его выбор
+    if (selectedGraphId !== null) return;
 
     setSelectedGraphId(NON_STUDENT_DEFAULT_GRAPH_ID);
 
     if (typeof window !== 'undefined') {
       localStorage.setItem('selectedGraphId', NON_STUDENT_DEFAULT_GRAPH_ID);
     }
-  }, [isHydrated, user, localIsStudent, selectedGraphId, setSelectedGraphId]);
+  }, [isHydrated, user, localIsStudent, setSelectedGraphId]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
