@@ -37,84 +37,51 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [userId, setUserId] = useState<string | null>(null);
-    const [accessToken, setAccessToken] = useState<string | null>(null);
     const hasSyncedLocalDataRef = useRef(false);
 
     // Используем React Query для получения данных пользователя
-    const { data: userData, isLoading: userLoading, error: userError, refetch: refetchUser } = useUserData(userId, accessToken);
+    // useUserData автоматически проверяет авторизацию через API
+    const { data: userData, isLoading: userLoading, error: userError, refetch: refetchUser } = useUserData();
 
     useEffect(() => {
-        const checkAuth = async () => {
-            setLoading(true);
-            try {
-                if (typeof window !== 'undefined') {
-                    const params = new URLSearchParams(window.location.search);
-                    const accessTokenParam = params.get('accessToken');
+        // Обрабатываем code из URL (если есть) - токен уже в cookie
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
 
-                    if (accessTokenParam) {
-                        localStorage.setItem('accessToken', accessTokenParam);
-                        sessionStorage.setItem('accessToken', accessTokenParam);
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    }
-
-                    // Проверяем токен в localStorage и sessionStorage
-                    const localStorageToken = localStorage.getItem('accessToken');
-                    const sessionStorageToken = sessionStorage.getItem('accessToken');
-                    const storedToken = localStorageToken || sessionStorageToken;
-
-                    if (storedToken) {
-                        try {
-                            const decodedToken = JSON.parse(atob(storedToken.split('.')[1]));
-                            if (decodedToken && decodedToken.sub) {
-                                setUserId(decodedToken.sub);
-                                setAccessToken(storedToken);
-                                setIsLoggedIn(true);
-                            } else {
-                                // Очищаем токен из обоих хранилищ
-                                localStorage.removeItem('accessToken');
-                                sessionStorage.removeItem('accessToken');
-                                setIsLoggedIn(false);
-                            }
-                        } catch (decodeError) {
-                            console.error("Ошибка декодирования токена:", decodeError);
-                            localStorage.removeItem('accessToken');
-                            sessionStorage.removeItem('accessToken');
-                            setIsLoggedIn(false);
-                        }
-                    } else {
-                        setIsLoggedIn(false);
-                    }
-                }
-            } catch (error: any) {
-                setError(error.message);
-                console.error("Ошибка при проверке авторизации:", error);
-                setIsLoggedIn(false);
-            } finally {
-                setLoading(false);
+            if (code) {
+                // Код пришел, токен уже в cookie
+                // Очищаем URL от кода
+                window.history.replaceState({}, document.title, window.location.pathname);
+                // Обновляем данные пользователя после авторизации
+                refetchUser();
             }
-        };
+        }
+    }, [refetchUser]);
 
-        checkAuth();
-    }, []);
-
-    // Обновляем пользователя когда данные загружены
+    // Обновляем пользователя и состояние авторизации когда данные загружены
     useEffect(() => {
         if (userData) {
             setUser(userData);
+            setIsLoggedIn(true);
+            setError(null);
         }
     }, [userData]);
 
     // Обновляем состояние ошибки
     useEffect(() => {
         if (userError) {
+            // Если ошибка 401 или подобная - пользователь не авторизован
             setError(userError.message);
-            localStorage.removeItem('accessToken');
-            sessionStorage.removeItem('accessToken');
             setIsLoggedIn(false);
             setUser(null);
         }
     }, [userError]);
+
+    // Обновляем состояние загрузки
+    useEffect(() => {
+        setLoading(userLoading);
+    }, [userLoading]);
 
     const login = (userData: { sub: string; email: string }) => {
         setIsLoggedIn(true);
@@ -146,7 +113,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 throw new Error(errorData.message || 'Ошибка при выходе из системы');
             }
 
-            localStorage.removeItem('accessToken');
             setUser(null); // Очистка состояния пользователя
             setIsLoggedIn(false); // Обновление состояния логина
         } catch (err: any) {
@@ -159,7 +125,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const isLoading = loading || (isLoggedIn && userLoading);
 
     const refreshUser = () => {
-        if (userId && accessToken) {
+        if (isLoggedIn) {
             refetchUser();
         }
     };

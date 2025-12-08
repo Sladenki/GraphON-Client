@@ -28,14 +28,8 @@ export const axiosAuth = axios.create({
 
 axiosAuth.interceptors.request.use(
     async (config) => {
-        // Получаем токен из localStorage
-        const localStorageToken = localStorage.getItem('accessToken');
-        const sessionStorageToken = sessionStorage.getItem('accessToken');
-        const storedToken = localStorageToken || sessionStorageToken;
-
-        if (storedToken) {
-            config.headers.Authorization = `Bearer ${storedToken}`;
-        }
+        // Токен автоматически отправляется в cookie (withCredentials: true)
+        // Не нужно добавлять Authorization заголовок
 
         // Если отправляем FormData, не устанавливаем Content-Type
         if (config.data instanceof FormData) {
@@ -58,9 +52,8 @@ const handle401Error = () => {
     
     isRedirecting = true;
     
-    // Очищаем токены из обоих хранилищ
-    localStorage.removeItem('accessToken');
-    sessionStorage.removeItem('accessToken');
+    // Токен хранится в HTTP-only cookie, сервер сам его очистит при logout
+    // Не нужно очищать localStorage/sessionStorage
     
     // Показываем уведомление пользователю
     notifyError('Вы не авторизованы или токен истёк', 'Пожалуйста, войдите снова');

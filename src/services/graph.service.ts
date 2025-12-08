@@ -5,12 +5,10 @@ export const GraphService = {
 
     // --- Получение графа по id ---
     async getGraphById(graphId: string): Promise<GraphInfo> {
-        // Если пользователь авторизован (есть токен), запрашиваем через axiosAuth,
-        // чтобы сервер вернул поле isSubscribed; иначе используем публичный клиент
-        const hasWindow = typeof window !== 'undefined';
-        const token = hasWindow ? (localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')) : null;
-        const client = token ? axiosAuth : axiosClassic;
-        const response = await client.get<GraphInfo>(`/graph/getById/${graphId}`);
+        // Используем axiosAuth - токен автоматически отправляется в cookie
+        // Если пользователь авторизован, сервер вернет поле isSubscribed
+        // Если не авторизован, сервер вернет данные без isSubscribed
+        const response = await axiosAuth.get<GraphInfo>(`/graph/getById/${graphId}`);
         return response.data;
     },
 
