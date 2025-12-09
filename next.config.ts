@@ -85,6 +85,9 @@ const nextConfig = {
     return config;
   },
   
+  // Добавляем пустой turbopack конфиг для совместимости с Next.js 16
+  turbopack: {},
+  
 };
 
 export default nextConfig;
