@@ -285,13 +285,7 @@ export default function MongoPage() {
           onSelect={setSelectedCollection}
           onExportJson={() => handleExport('json')}
           onExportNdjson={() => handleExport('ndjson')}
-          onImportJson={() => {
-            console.log('onImportJson button clicked, current importOpen:', importOpen);
-            if (!importOpen) {
-              setImportOpen(true);
-              console.log('setImportOpen(true) called');
-            }
-          }}
+          onImportJson={() => setImportOpen(true)}
           onAddDoc={() => setAddDocOpen(true)}
           canExport={canSearch}
           canImport={canImport}
@@ -421,10 +415,7 @@ export default function MongoPage() {
           />
           <ImportDialog
             isOpen={importOpen}
-            onClose={() => {
-              console.log('ImportDialog onClose called, current importOpen:', importOpen);
-              setImportOpen(false);
-            }}
+            onClose={() => setImportOpen(false)}
             onImport={handleImport}
             loading={importing}
             collection={selectedCollection || ''}
