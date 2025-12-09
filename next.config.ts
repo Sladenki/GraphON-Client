@@ -44,10 +44,12 @@ const nextConfig = {
     // --- Время сборки ---
 
     // Параллельная компиляция для ускорения сборки
-    webpackBuildWorker: true,
+    // Отключено из-за проблем с Inspector API в production
+    // webpackBuildWorker: true,
     
     // Оптимизация памяти при сборке
-    memoryBasedWorkersCount: true,
+    // Отключено из-за проблем с Inspector API в production
+    // memoryBasedWorkersCount: true,
 
     // Оптимизация CSS (минификация, удаление дубликатов)
     optimizeCss: true,
@@ -59,6 +61,17 @@ const nextConfig = {
       'lodash',
       'date-fns',
     ],
+  },
+  
+  // Отключаем Inspector API для предотвращения ошибок в production
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        inspector: false,
+      };
+    }
+    return config;
   },
   
 };
