@@ -64,13 +64,24 @@ const nextConfig = {
   },
   
   // Отключаем Inspector API для предотвращения ошибок в production
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        inspector: false,
-      };
+  webpack: (config: any, { isServer }: { isServer: boolean }) => {
+    // Игнорируем ошибки Inspector
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings || []),
+      { module: /inspector/ },
+      /Inspector/,
+      /ERR_INSPECTOR_NOT_AVAILABLE/,
+    ];
+    
+    // Отключаем Inspector для всех окружений
+    if (typeof config.resolve === 'undefined') {
+      config.resolve = {};
     }
+    if (typeof config.resolve.fallback === 'undefined') {
+      config.resolve.fallback = {};
+    }
+    config.resolve.fallback.inspector = false;
+    
     return config;
   },
   

@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "NODE_OPTIONS='--no-warnings' next build",
+		"build": "cross-env NODE_OPTIONS=--no-warnings NODE_ENV=production next build",
 		"start": "next start",
 		"lint": "next lint",
 		"static": "next build && next export"
