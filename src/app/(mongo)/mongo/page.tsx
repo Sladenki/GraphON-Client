@@ -47,7 +47,7 @@ export default function MongoPage() {
   const [addDocOpen, setAddDocOpen] = useState(false);
 
   const canSearch = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
-  const canImport = useMemo(() => selectedCollection === "Event", [selectedCollection]);
+  const canImport = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
   const canAddDoc = useMemo(() => Boolean(selectedCollection), [selectedCollection]);
 
   useEffect(() => {
@@ -237,7 +237,14 @@ export default function MongoPage() {
   }, [selectedCollection, insertOne, refetch, handleFind]);
 
   return (
-    <main style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16, overflowX: 'hidden', maxWidth: '100vw' }}>
+    <main className="w-full min-h-screen bg-background text-foreground" style={{ 
+      padding: 16, 
+      display: "flex", 
+      flexDirection: "column", 
+      gap: 16, 
+      overflowX: 'hidden', 
+      maxWidth: '100vw'
+    }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <h1 style={{ margin: 0 }}>Mongo</h1>
         {collectionsLoading && <Spinner size="sm" />}
@@ -262,7 +269,14 @@ export default function MongoPage() {
         </div>
       </div>
 
-      <section style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 16, minWidth: 0, overflow: 'hidden' }}>
+      <section className="grid gap-4 min-w-0 overflow-hidden w-full" style={{ 
+        display: "grid", 
+        gridTemplateColumns: "minmax(280px, 320px) 1fr", 
+        gap: 16, 
+        minWidth: 0, 
+        overflow: 'hidden',
+        width: '100%'
+      }}>
         <CollectionsSidebar
           dbName={DB_NAME}
           collections={collections}
@@ -271,14 +285,26 @@ export default function MongoPage() {
           onSelect={setSelectedCollection}
           onExportJson={() => handleExport('json')}
           onExportNdjson={() => handleExport('ndjson')}
-          onImportJson={() => setImportOpen(true)}
+          onImportJson={() => {
+            console.log('onImportJson button clicked, current importOpen:', importOpen);
+            if (!importOpen) {
+              setImportOpen(true);
+              console.log('setImportOpen(true) called');
+            }
+          }}
           onAddDoc={() => setAddDocOpen(true)}
           canExport={canSearch}
           canImport={canImport}
           canAddDoc={canAddDoc}
         />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, minWidth: 0, overflow: 'hidden' }}>
+        <div className="flex flex-col gap-3 min-w-0 overflow-hidden" style={{ 
+          display: "flex", 
+          flexDirection: "column", 
+          gap: 12, 
+          minWidth: 0, 
+          overflow: 'hidden'
+        }}>
           <div style={{ display: "flex", gap: 12, alignItems: "end" }}>
             <div style={{ flex: 1 }}>
               <Input
@@ -395,10 +421,13 @@ export default function MongoPage() {
           />
           <ImportDialog
             isOpen={importOpen}
-            onClose={() => setImportOpen(false)}
+            onClose={() => {
+              console.log('ImportDialog onClose called, current importOpen:', importOpen);
+              setImportOpen(false);
+            }}
             onImport={handleImport}
             loading={importing}
-            collection={selectedCollection}
+            collection={selectedCollection || ''}
           />
           <AddDocDialog
             isOpen={addDocOpen}
