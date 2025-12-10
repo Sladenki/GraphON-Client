@@ -50,7 +50,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const code = params.get('code');
 
             if (code) {
+                console.log('Code found in URL, exchanging for token...');
                 exchangeCodeForToken(code);
+            } else {
+                console.log('No code in URL, checking existing auth...');
             }
         }
     }, []);
@@ -160,18 +163,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     postsNum: 0,
                     attentedEventsNum: 0,
                 };
+                console.log('=== SETTING USER FROM EXCHANGE-CODE ===');
+                console.log('User object:', user);
+                console.log('Calling setUser(user)...');
                 setUser(user);
+                console.log('Calling setIsLoggedIn(true)...');
                 setIsLoggedIn(true);
+                console.log('Calling setError(null)...');
                 setError(null);
-                console.log('User data set from exchange-code response, skipping /user/profile request');
-                // Не нужно делать запрос на /user/profile, данные уже есть
-                // Но можно сделать запрос в фоне для получения полных данных (со статистикой и т.д.)
-                // Это опционально, если нужны полные данные
-                refetchUser(); // Получаем полные данные в фоне (со статистикой и т.д.)
+                
+                // Проверяем состояние сразу после установки
+                console.log('State should be updated now');
+                console.log('localStorage accessToken:', localStorage.getItem('accessToken') ? 'EXISTS' : 'MISSING');
+                
+                // Делаем запрос в фоне для получения полных данных (со статистикой и т.д.)
+                // Используем setTimeout чтобы дать время токену сохраниться в localStorage
+                setTimeout(() => {
+                    console.log('Fetching full user profile in background...');
+                    const tokenCheck = localStorage.getItem('accessToken');
+                    console.log('Token check before refetch:', tokenCheck ? 'EXISTS' : 'MISSING');
+                    refetchUser().catch((err) => {
+                        console.warn('Background profile fetch failed (non-critical):', err);
+                        // Не устанавливаем ошибку, так как основные данные уже есть
+                    });
+                }, 200);
             } else {
                 console.log('No user data in response, fetching from /user/profile');
                 // Обновляем данные пользователя после авторизации
-                refetchUser();
+                setTimeout(() => {
+                    refetchUser();
+                }, 100);
             }
         } catch (error) {
             console.error('Error exchanging code:', error);
@@ -182,23 +203,42 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     // Обновляем пользователя и состояние авторизации когда данные загружены
+    // НО только если пользователь еще не установлен из exchange-code
     useEffect(() => {
         if (userData) {
-            setUser(userData);
-            setIsLoggedIn(true);
-            setError(null);
+            // Если пользователь уже установлен из exchange-code, обновляем только данные
+            // (например, статистика, selectedGraphId и т.д.)
+            if (isLoggedIn && user) {
+                console.log('Updating user data from useUserData hook (user already logged in)');
+                // Объединяем существующие данные с новыми (приоритет новым данным)
+                setUser({ ...user, ...userData });
+            } else if (!isLoggedIn) {
+                // Если пользователь не авторизован, устанавливаем данные из useUserData
+                console.log('Setting user from useUserData hook (user not logged in)');
+                setUser(userData);
+                setIsLoggedIn(true);
+                setError(null);
+            }
         }
     }, [userData]);
 
     // Обновляем состояние ошибки
     useEffect(() => {
         if (userError) {
-            // Если ошибка 401 или подобная - пользователь не авторизован
-            setError(userError.message);
-            setIsLoggedIn(false);
-            setUser(null);
+            console.log('User error from useUserData:', userError);
+            // Если пользователь уже авторизован через exchange-code, не сбрасываем состояние
+            // Ошибка может быть временной (например, токен еще не сохранился)
+            if (!isLoggedIn) {
+                console.log('User not logged in, setting error state');
+                setError(userError.message);
+                setIsLoggedIn(false);
+                setUser(null);
+            } else {
+                console.log('User already logged in, ignoring error (may be temporary)');
+                // Не сбрасываем состояние, если пользователь уже авторизован
+            }
         }
-    }, [userError]);
+    }, [userError, isLoggedIn]);
 
     // Обновляем состояние загрузки
     useEffect(() => {
@@ -388,9 +428,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const value = { isLoggedIn, user, setUser, login, logout, loading: isLoading, error, refreshUser }; // Передаем loading в контекст
 
+    // Не скрываем children во время загрузки, если пользователь уже авторизован
+    // Это позволяет UI обновиться сразу после установки пользователя из exchange-code
+    const shouldShowChildren = !isLoading || isLoggedIn;
+    
     return (
         <AuthContext value={value}>
-            {!isLoading && children} {/* Отображаем индикатор загрузки */}
+            {shouldShowChildren ? children : null}
         </AuthContext>
     );
 };

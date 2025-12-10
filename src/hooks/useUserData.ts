@@ -29,9 +29,13 @@ const fetchUserData = async () => {
 };
 
 export const useUserData = () => {
+  // Проверяем наличие токена перед выполнением запроса
+  const hasToken = typeof window !== 'undefined' ? !!localStorage.getItem('accessToken') : false;
+  
   return useQuery({
     queryKey: ['user', 'profile'],
     queryFn: fetchUserData,
+    enabled: hasToken, // Запрос выполняется только если есть токен
     staleTime: 5 * 60 * 1000, // 5 минут
     gcTime: 10 * 60 * 1000, // 10 минут
     retry: (failureCount, error: any) => {
@@ -42,5 +46,6 @@ export const useUserData = () => {
       // Повторяем до 2 раз для других ошибок
       return failureCount < 2;
     },
+    refetchOnWindowFocus: false, // Не обновляем при фокусе окна
   });
 }; 
