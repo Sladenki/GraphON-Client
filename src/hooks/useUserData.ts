@@ -3,8 +3,21 @@ import { useQuery } from '@tanstack/react-query';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const fetchUserData = async () => {
+  // Получаем токен из localStorage (для мобильных приложений)
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+  
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+  
+  // Добавляем токен в заголовок, если он есть
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  
   const res = await fetch(`${apiUrl}/user/profile`, {
-    credentials: 'include',
+    credentials: 'include', // Для веб-приложений (cookie)
+    headers,
   });
 
   if (!res.ok) {

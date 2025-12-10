@@ -30,8 +30,16 @@ export const axiosAuth = axios.create({
 
 axiosAuth.interceptors.request.use(
     async (config) => {
-        // Токен автоматически отправляется в cookie (withCredentials: true)
-        // Не нужно добавлять Authorization заголовок
+        // Проверяем наличие токена в localStorage (для мобильных приложений)
+        if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+        }
+        
+        // Токен также автоматически отправляется в cookie (withCredentials: true)
+        // Это для веб-приложений
 
         // Если отправляем FormData, не устанавливаем Content-Type
         if (config.data instanceof FormData) {
@@ -59,8 +67,10 @@ const handle401Error = () => {
     
     isRedirecting = true;
     
-    // Токен хранится в HTTP-only cookie, сервер сам его очистит при logout
-    // Не нужно очищать localStorage/sessionStorage
+    // Очищаем токен из localStorage при 401 ошибке
+    localStorage.removeItem('accessToken');
+    
+    // Токен также хранится в HTTP-only cookie, сервер сам его очистит при logout
     
     // Показываем уведомление пользователю (только на клиенте)
     try {

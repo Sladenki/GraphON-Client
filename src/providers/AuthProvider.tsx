@@ -44,20 +44,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: userData, isLoading: userLoading, error: userError, refetch: refetchUser } = useUserData();
 
     useEffect(() => {
-        // Обрабатываем code из URL (если есть) - токен уже в cookie
+        // Обрабатываем code из URL и обмениваем на токен
         if (typeof window !== 'undefined') {
             const params = new URLSearchParams(window.location.search);
             const code = params.get('code');
 
             if (code) {
-                // Код пришел, токен уже в cookie
-                // Очищаем URL от кода
-                window.history.replaceState({}, document.title, window.location.pathname);
-                // Обновляем данные пользователя после авторизации
-                refetchUser();
+                exchangeCodeForToken(code);
             }
         }
-    }, [refetchUser]);
+    }, []);
+
+    const exchangeCodeForToken = async (code: string) => {
+        try {
+            const response = await fetch(`${apiUrl}/auth/exchange-code`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code }),
+                credentials: 'include', // Важно! Для работы с cookies
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to exchange code');
+            }
+
+            const data = await response.json();
+            const { accessToken } = data;
+
+            // Сохранить токен в localStorage для мобильных приложений
+            if (accessToken) {
+                localStorage.setItem('accessToken', accessToken);
+            }
+
+            // Убрать code из URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            // Обновляем данные пользователя после авторизации
+            refetchUser();
+        } catch (error) {
+            console.error('Error exchanging code:', error);
+            setError(error instanceof Error ? error.message : 'Ошибка при обмене кода');
+            // Убрать code из URL даже при ошибке
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    };
 
     // Обновляем пользователя и состояние авторизации когда данные загружены
     useEffect(() => {
@@ -103,14 +136,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
+            // Получаем токен из localStorage для отправки в заголовке
+            const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+            
+            const headers: HeadersInit = {
+                'Content-Type': 'application/json',
+            };
+            
+            if (token) {
+                headers.Authorization = `Bearer ${token}`;
+            }
+            
             const res = await fetch(`${apiUrl}/auth/logout`, {
                 method: 'POST',
                 credentials: 'include',
+                headers,
             });
 
             if (!res.ok) {
                 const errorData = await res.json();
                 throw new Error(errorData.message || 'Ошибка при выходе из системы');
+            }
+
+            // Очищаем токен из localStorage
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('accessToken');
             }
 
             setUser(null); // Очистка состояния пользователя
