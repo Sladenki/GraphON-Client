@@ -72,18 +72,107 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
 
             const data = await response.json();
-            const { accessToken } = data;
+            console.log('Exchange code response:', data);
+            
+            // Извлекаем токен
+            const accessToken = data?.accessToken || data?.token || data?.access_token;
+            console.log('Extracted accessToken:', accessToken ? `Token exists (length: ${accessToken.length})` : 'Token is missing');
+            
+            // Извлекаем данные пользователя из ответа
+            const userDataFromResponse = data?.user;
+            console.log('User data in response:', userDataFromResponse ? 'Yes' : 'No');
+            if (userDataFromResponse) {
+                console.log('User data:', userDataFromResponse);
+            }
 
             // Сохранить токен в localStorage для мобильных приложений
-            if (accessToken) {
-                localStorage.setItem('accessToken', accessToken);
+            if (accessToken && typeof window !== 'undefined') {
+                try {
+                    // Проверяем доступность localStorage
+                    if (typeof Storage === 'undefined') {
+                        console.error('localStorage is not available');
+                        setError('localStorage недоступен');
+                        return;
+                    }
+                    
+                    // Пробуем сохранить тестовое значение
+                    try {
+                        localStorage.setItem('__test__', 'test');
+                        localStorage.removeItem('__test__');
+                    } catch (testError) {
+                        console.error('localStorage is blocked or unavailable:', testError);
+                        setError('localStorage заблокирован');
+                        return;
+                    }
+                    
+                    // Сохраняем токен
+                    console.log('Attempting to save token to localStorage...');
+                    localStorage.setItem('accessToken', accessToken);
+                    console.log('localStorage.setItem called');
+                    
+                    // Небольшая задержка перед проверкой
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                    
+                    // Проверяем, что токен действительно сохранился
+                    const savedToken = localStorage.getItem('accessToken');
+                    console.log('Verification - token in localStorage:', savedToken ? `Saved successfully (length: ${savedToken.length})` : 'NOT SAVED!');
+                    
+                    if (!savedToken || savedToken !== accessToken) {
+                        console.error('Token was not saved correctly!');
+                        console.error('Expected:', accessToken);
+                        console.error('Got:', savedToken);
+                        setError('Токен не был сохранен');
+                    } else {
+                        console.log('Token successfully saved and verified!');
+                    }
+                } catch (storageError: any) {
+                    console.error('Error saving token to localStorage:', storageError);
+                    console.error('Error name:', storageError?.name);
+                    console.error('Error message:', storageError?.message);
+                    setError(`Ошибка при сохранении токена: ${storageError?.message || 'Неизвестная ошибка'}`);
+                }
+            } else {
+                console.warn('Cannot save token: accessToken is missing or window is undefined');
+                console.warn('accessToken:', accessToken);
+                console.warn('window:', typeof window);
             }
 
             // Убрать code из URL
             window.history.replaceState({}, document.title, window.location.pathname);
 
-            // Обновляем данные пользователя после авторизации
-            refetchUser();
+            // Если данные пользователя пришли вместе с токеном, используем их
+            // Иначе делаем отдельный запрос на /user/profile
+            if (userDataFromResponse) {
+                console.log('Using user data from exchange-code response');
+                // Преобразуем данные пользователя в формат, ожидаемый приложением
+                // Добавляем значения по умолчанию для полей, которые могут отсутствовать
+                const user: User = {
+                    _id: userDataFromResponse._id,
+                    role: userDataFromResponse.role as any, // Преобразуем строку в UserRole
+                    firstName: userDataFromResponse.firstName || '',
+                    lastName: userDataFromResponse.lastName || '',
+                    username: userDataFromResponse.username || '',
+                    avaPath: userDataFromResponse.avaPath || '',
+                    telegramId: userDataFromResponse.telegramId || '',
+                    email: '', // Email может отсутствовать в данных от Telegram
+                    selectedGraphId: null,
+                    graphSubsNum: 0,
+                    postsNum: 0,
+                    attentedEventsNum: 0,
+                };
+                setUser(user);
+                setIsLoggedIn(true);
+                setError(null);
+                console.log('User data set from exchange-code response, skipping /user/profile request');
+                // Не нужно делать запрос на /user/profile, данные уже есть
+                // Но можно сделать запрос в фоне для получения полных данных (со статистикой и т.д.)
+                // Это опционально, если нужны полные данные
+                refetchUser(); // Получаем полные данные в фоне (со статистикой и т.д.)
+            } else {
+                console.log('No user data in response, fetching from /user/profile');
+                // Обновляем данные пользователя после авторизации
+                refetchUser();
+            }
         } catch (error) {
             console.error('Error exchanging code:', error);
             setError(error instanceof Error ? error.message : 'Ошибка при обмене кода');
