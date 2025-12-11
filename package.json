@@ -65,5 +65,8 @@
 		"eslint": "^9.39.1",
 		"eslint-config-next": "15.1.2",
 		"typescript": "^5.9.3"
+	},
+	"overrides": {
+		"glob": "^10.5.0"
 	}
 }
