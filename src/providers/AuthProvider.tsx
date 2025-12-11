@@ -113,6 +113,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     localStorage.setItem('accessToken', accessToken);
                     console.log('localStorage.setItem called');
                     
+                    // Сохраняем userId если он есть в ответе
+                    if (userDataFromResponse?._id) {
+                        localStorage.setItem('userId', userDataFromResponse._id);
+                        console.log('UserId saved to localStorage:', userDataFromResponse._id);
+                    }
+                    
                     // Небольшая задержка перед проверкой
                     await new Promise(resolve => setTimeout(resolve, 10));
                     
@@ -144,7 +150,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             window.history.replaceState({}, document.title, window.location.pathname);
 
             // Если данные пользователя пришли вместе с токеном, используем их
-            // Иначе делаем отдельный запрос на /user/profile
             if (userDataFromResponse) {
                 console.log('Using user data from exchange-code response');
                 // Преобразуем данные пользователя в формат, ожидаемый приложением
@@ -176,23 +181,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 console.log('State should be updated now');
                 console.log('localStorage accessToken:', localStorage.getItem('accessToken') ? 'EXISTS' : 'MISSING');
                 
-                // Делаем запрос в фоне для получения полных данных (со статистикой и т.д.)
+                // Делаем запрос для получения полных данных пользователя по ID
                 // Используем setTimeout чтобы дать время токену сохраниться в localStorage
-                setTimeout(() => {
-                    console.log('Fetching full user profile in background...');
+                const userId = userDataFromResponse._id;
+                setTimeout(async () => {
+                    console.log('Fetching full user data by ID in background...');
                     const tokenCheck = localStorage.getItem('accessToken');
-                    console.log('Token check before refetch:', tokenCheck ? 'EXISTS' : 'MISSING');
-                    refetchUser().catch((err) => {
-                        console.warn('Background profile fetch failed (non-critical):', err);
-                        // Не устанавливаем ошибку, так как основные данные уже есть
-                    });
+                    console.log('Token check before getById:', tokenCheck ? 'EXISTS' : 'MISSING');
+                    
+                    if (userId) {
+                        try {
+                            const fullUserData = await UserService.getById(userId);
+                            console.log('Full user data received:', fullUserData);
+                            // Обновляем пользователя полными данными (со статистикой и т.д.)
+                            setUser((prevUser) => ({ ...prevUser, ...fullUserData } as User));
+                        } catch (err) {
+                            console.warn('Background getById fetch failed (non-critical):', err);
+                            // Не устанавливаем ошибку, так как основные данные уже есть
+                        }
+                    }
                 }, 200);
             } else {
-                console.log('No user data in response, fetching from /user/profile');
-                // Обновляем данные пользователя после авторизации
-                setTimeout(() => {
-                    refetchUser();
-                }, 100);
+                console.log('No user data in response from exchange-code');
+                // Если нет данных пользователя в ответе, но есть токен, 
+                // попробуем получить userId из токена или использовать другой метод
+                // В этом случае пользователь должен быть авторизован через другой метод
             }
         } catch (error) {
             console.error('Error exchanging code:', error);
@@ -206,6 +219,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // НО только если пользователь еще не установлен из exchange-code
     useEffect(() => {
         if (userData) {
+            // Сохраняем userId в localStorage если его еще нет
+            if (userData._id && typeof window !== 'undefined') {
+                const currentUserId = localStorage.getItem('userId');
+                if (currentUserId !== userData._id) {
+                    localStorage.setItem('userId', userData._id);
+                }
+            }
+            
             // Если пользователь уже установлен из exchange-code, обновляем только данные
             // (например, статистика, selectedGraphId и т.д.)
             if (isLoggedIn && user) {
@@ -287,9 +308,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 throw new Error(errorData.message || 'Ошибка при выходе из системы');
             }
 
-            // Очищаем токен из localStorage
+            // Очищаем токен и userId из localStorage
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('accessToken');
+                localStorage.removeItem('userId');
             }
 
             setUser(null); // Очистка состояния пользователя
@@ -303,9 +325,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Объединяем состояния загрузки
     const isLoading = loading || (isLoggedIn && userLoading);
 
-    const refreshUser = () => {
-        if (isLoggedIn) {
-            refetchUser();
+    const refreshUser = async () => {
+        if (isLoggedIn && user?._id) {
+            try {
+                const fullUserData = await UserService.getById(user._id);
+                setUser((prevUser) => ({ ...prevUser, ...fullUserData } as User));
+            } catch (err) {
+                console.error('Failed to refresh user data:', err);
+            }
         }
     };
 

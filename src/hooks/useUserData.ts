@@ -1,41 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import { UserService } from '@/services/user.service';
 
 const fetchUserData = async () => {
-  // Получаем токен из localStorage (для мобильных приложений)
-  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+  // Получаем userId из localStorage
+  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
   
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-  };
-  
-  // Добавляем токен в заголовок, если он есть
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
+  if (!userId) {
+    throw new Error('User ID not found');
   }
   
-  const res = await fetch(`${apiUrl}/user/profile`, {
-    credentials: 'include', // Для веб-приложений (cookie)
-    headers,
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.message || 'Ошибка при получении данных пользователя');
-  }
-  
-  return res.json();
+  // Используем getById вместо /user/profile
+  const data = await UserService.getById(userId);
+  return data;
 };
 
 export const useUserData = () => {
-  // Проверяем наличие токена перед выполнением запроса
+  // Проверяем наличие токена и userId перед выполнением запроса
   const hasToken = typeof window !== 'undefined' ? !!localStorage.getItem('accessToken') : false;
+  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
   
   return useQuery({
-    queryKey: ['user', 'profile'],
+    queryKey: ['user', 'getById', userId],
     queryFn: fetchUserData,
-    enabled: hasToken, // Запрос выполняется только если есть токен
+    enabled: hasToken && !!userId, // Запрос выполняется только если есть токен и userId
     staleTime: 5 * 60 * 1000, // 5 минут
     gcTime: 10 * 60 * 1000, // 10 минут
     retry: (failureCount, error: any) => {

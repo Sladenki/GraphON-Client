@@ -51,5 +51,11 @@ export const UserService = {
     async updateProfile(dto: IUpdateUserDto) {
         const { data } = await axiosAuth.patch(`/user/profile`, dto);
         return data;
+    },
+
+    // Получение пользователя по ID
+    async getById(id: string) {
+        const { data } = await axiosAuth.get(`/user/getById/${id}`);
+        return data;
     }
 }
