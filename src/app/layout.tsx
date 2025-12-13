@@ -35,6 +35,12 @@ export default function RootLayout({
                   var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                   var appliedTheme = theme === 'system' || !theme ? systemTheme : theme;
                   document.documentElement.setAttribute('data-theme', appliedTheme);
+                  // Синхронизируем с классом .dark для HeroUI
+                  if (appliedTheme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
                 } catch (e) {}
               })();
             `,

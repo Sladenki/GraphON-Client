@@ -93,7 +93,8 @@ html[data-theme="light"] {
   --main-text: #333333;  /* Более тёмный текст */
 }
 
-html[data-theme="dark"] {
+html[data-theme="dark"],
+html.dark {
   // --background-color: #2A2D33;  /* Немного светлее */
   // --block-color: #383B40;
   --background-color: #383B40;  /* Немного светлее */
@@ -110,6 +111,14 @@ html[data-theme="dark"] {
   --border-color: #4a4d53;
   --node-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   --node-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+  /* Глобальные стили для текста в темной теме */
+  color: #ffffff;
+  
+  /* Убеждаемся, что все текстовые элементы имеют белый цвет */
+  p, span, div, h1, h2, h3, h4, h5, h6, a, li, td, th, label {
+    color: inherit;
+  }
 }
 
 html,
@@ -120,6 +129,13 @@ body {
   box-sizing: border-box;
   background-color: var(--background-color);
   scroll-behavior: smooth;
+  color: var(--main-text);
+}
+
+/* Убеждаемся, что в темной теме весь текст белый */
+html[data-theme="dark"] *,
+html.dark * {
+  color: inherit;
 }
 
 *{
