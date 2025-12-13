@@ -1,6 +1,4 @@
 // tailwind.config.js
-const { heroui } = require("@heroui/react");
-
 module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
@@ -132,7 +130,6 @@ module.exports = {
     },
   },
   plugins: [
-    heroui(),
     function({ addUtilities }) {
       const newUtilities = {
         '.glass-effect': {
