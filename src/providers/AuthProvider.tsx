@@ -193,8 +193,82 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         try {
                             const fullUserData = await UserService.getById(userId);
                             console.log('Full user data received:', fullUserData);
-                            // Обновляем пользователя полными данными (со статистикой и т.д.)
-                            setUser((prevUser) => ({ ...prevUser, ...fullUserData } as User));
+                            
+                            // Проверяем и устанавливаем дефолтные значения для новых пользователей
+                            const needsUpdate: { selectedGraphId?: string; universityGraphId?: string } = {};
+                            
+                            // Если selectedGraphId отсутствует, устанавливаем дефолтный
+                            const currentSelectedGraphId = fullUserData.selectedGraphId 
+                                ? (typeof fullUserData.selectedGraphId === 'string' 
+                                    ? fullUserData.selectedGraphId 
+                                    : (fullUserData.selectedGraphId as any)?._id)
+                                : null;
+                            
+                            if (!currentSelectedGraphId) {
+                                // Проверяем localStorage для дефолтного значения
+                                const localSelectedGraphId = typeof window !== 'undefined' 
+                                    ? localStorage.getItem('selectedGraphId') 
+                                    : null;
+                                
+                                if (localSelectedGraphId) {
+                                    needsUpdate.selectedGraphId = localSelectedGraphId;
+                                } else {
+                                    // Устанавливаем дефолтный граф для не-студентов
+                                    const { NON_STUDENT_DEFAULT_GRAPH_ID } = await import('@/constants/nonStudentDefaults');
+                                    needsUpdate.selectedGraphId = NON_STUDENT_DEFAULT_GRAPH_ID;
+                                }
+                            }
+                            
+                            // Если universityGraphId отсутствует и пользователь студент
+                            const currentUniversityGraphId = (fullUserData as any).universityGraphId;
+                            if (!currentUniversityGraphId && (fullUserData as any).isStudent === true) {
+                                // Проверяем localStorage
+                                const localSelectedGraphId = typeof window !== 'undefined' 
+                                    ? localStorage.getItem('selectedGraphId') 
+                                    : null;
+                                
+                                if (localSelectedGraphId) {
+                                    needsUpdate.universityGraphId = localSelectedGraphId;
+                                }
+                            }
+                            
+                            // Обновляем на сервере, если нужно
+                            if (Object.keys(needsUpdate).length > 0) {
+                                const updatePromises: Promise<void>[] = [];
+                                
+                                if (needsUpdate.selectedGraphId) {
+                                    updatePromises.push(
+                                        UserService.updateSelectedGraph(needsUpdate.selectedGraphId)
+                                            .then(() => {
+                                                console.log('Default selectedGraphId set:', needsUpdate.selectedGraphId);
+                                            })
+                                            .catch((err) => {
+                                                console.error('Failed to set default selectedGraphId:', err);
+                                            })
+                                    );
+                                }
+                                
+                                if (needsUpdate.universityGraphId) {
+                                    updatePromises.push(
+                                        UserService.updateUniversityGraph(needsUpdate.universityGraphId)
+                                            .then(() => {
+                                                console.log('Default universityGraphId set:', needsUpdate.universityGraphId);
+                                            })
+                                            .catch((err) => {
+                                                console.error('Failed to set default universityGraphId:', err);
+                                            })
+                                    );
+                                }
+                                
+                                await Promise.all(updatePromises);
+                                
+                                // Получаем обновленные данные
+                                const updatedUserData = await UserService.getById(userId);
+                                setUser((prevUser) => ({ ...prevUser, ...updatedUserData } as User));
+                            } else {
+                                // Обновляем пользователя полными данными (со статистикой и т.д.)
+                                setUser((prevUser) => ({ ...prevUser, ...fullUserData } as User));
+                            }
                         } catch (err) {
                             console.warn('Background getById fetch failed (non-critical):', err);
                             // Не устанавливаем ошибку, так как основные данные уже есть
