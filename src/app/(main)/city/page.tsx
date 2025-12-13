@@ -5,6 +5,7 @@ import React, { useCallback, useMemo, useRef, useState, Suspense, useEffect } fr
 import { Filter, List } from "lucide-react";
 import styles from "./page.module.scss";
 import { type CityEvent, type CityEventAPI } from "./mockEvents";
+import type { EventCategory } from "./constants/categories";
 import { useAuth } from "@/providers/AuthProvider";
 import { useImperativeEventLayers } from "./hooks/useImperativeEventLayers";
 import { useMapSetup } from "./hooks/useMapSetup";
@@ -16,7 +17,6 @@ import { GraphService } from "@/services/graph.service";
 import { useQuery } from "@tanstack/react-query";
 import { useCityEventsWithGeocoding } from "./hooks/useCityEvents";
 import { SpinnerLoader } from "@/components/global/SpinnerLoader/SpinnerLoader";
-import type { EventCategory } from "./constants/categories";
 
 // Константа ID графа города
 const CITY_GRAPH_ID = "690bfec3f371d05b325be7ad";
@@ -36,6 +36,7 @@ const TOPIC_NAME_TO_CATEGORY: Record<string, EventCategory> = {
   "Спорт": "sport",
   "Театр": "theater",
   "Юмор": "humor",
+  "Экскурсии": "excursion",
 };
 
 // Динамическая загрузка тяжелых компонентов

@@ -215,6 +215,7 @@ export const useImperativeEventLayers = (
                 'meetup', CATEGORY_COLORS.meetup.pulseGlow,
                 'cinema', CATEGORY_COLORS.cinema.pulseGlow,
                 'theater', CATEGORY_COLORS.theater.pulseGlow,
+                'excursion', CATEGORY_COLORS.excursion.pulseGlow,
                 CATEGORY_COLORS.default.pulseGlow
               ],
               'circle-opacity': isLight ? 0.35 : 0.5,
@@ -256,6 +257,7 @@ export const useImperativeEventLayers = (
                 'meetup', CATEGORY_COLORS.meetup.glow,
                 'cinema', CATEGORY_COLORS.cinema.glow,
                 'theater', CATEGORY_COLORS.theater.glow,
+                'excursion', CATEGORY_COLORS.excursion.glow,
                 CATEGORY_COLORS.default.glow
               ],
               'circle-opacity': isLight ? 0.6 : 0.8,
@@ -294,6 +296,7 @@ export const useImperativeEventLayers = (
                   'gastro', CATEGORY_COLORS.gastro.glow,
                   'family', CATEGORY_COLORS.family.glow,
                   'city', CATEGORY_COLORS.city.glow,
+                  'excursion', CATEGORY_COLORS.excursion.glow,
                   CATEGORY_COLORS.default.glow
                 ],
                 'circle-opacity': 0.9,
@@ -370,6 +373,7 @@ export const useImperativeEventLayers = (
             'gastro', isLight ? CATEGORY_COLORS.gastro.light : CATEGORY_COLORS.gastro.dark,
             'family', isLight ? CATEGORY_COLORS.family.light : CATEGORY_COLORS.family.dark,
             'city', isLight ? CATEGORY_COLORS.city.light : CATEGORY_COLORS.city.dark,
+            'excursion', isLight ? CATEGORY_COLORS.excursion.light : CATEGORY_COLORS.excursion.dark,
             isLight ? CATEGORY_COLORS.default.light : CATEGORY_COLORS.default.dark
           ]);
         }

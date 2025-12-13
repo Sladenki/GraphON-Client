@@ -12,11 +12,12 @@ import {
   PartyPopper,
   Users,
   Film,
-  Theater
+  Theater,
+  Map
 } from "lucide-react";
 
 // Тип категории
-export type EventCategory = "music" | "art" | "education" | "business" | "sport" | "humor" | "gastro" | "family" | "city" | "party" | "meetup" | "cinema" | "theater";
+export type EventCategory = "music" | "art" | "education" | "business" | "sport" | "humor" | "gastro" | "family" | "city" | "party" | "meetup" | "cinema" | "theater" | "excursion";
 
 /**
  * Получить иконку по категории
@@ -49,6 +50,8 @@ export function getCategoryIcon(category: string, size: number = 18) {
       return <Film size={size} />;
     case 'theater':
       return <Theater size={size} />;
+    case 'excursion':
+      return <Map size={size} />;
     default:
       return <MapPin size={size} />;
   }
@@ -72,6 +75,7 @@ export function getCategoryColor(category: string): string {
     meetup: '#14b8a6',     // Бирюзовый
     cinema: '#0ea5e9',     // Небесно-голубой
     theater: '#d946ef',    // Фуксия
+    excursion: '#10b981',  // Изумрудный
   };
   return colors[category] || '#3b82f6';
 }
@@ -93,6 +97,7 @@ export const CATEGORIES = [
   { key: "meetup", label: "Встречи", Icon: Users },
   { key: "cinema", label: "Кино", Icon: Film },
   { key: "theater", label: "Театр", Icon: Theater },
+  { key: "excursion", label: "Экскурсии", Icon: Map },
 ];
 
 /**
@@ -189,6 +194,13 @@ export const CATEGORY_COLORS = {
     stroke: { light: "#c026d3", dark: "#f0abfc" }, 
     glow: "rgba(217, 70, 239, 0.5)",
     pulseGlow: "rgba(217, 70, 239, 0.25)"
+  },
+  excursion: { 
+    light: "#10b981", 
+    dark: "#34d399", 
+    stroke: { light: "#059669", dark: "#6ee7b7" }, 
+    glow: "rgba(16, 185, 129, 0.5)",
+    pulseGlow: "rgba(16, 185, 129, 0.25)"
   },
   default: { 
     light: "#3b82f6", 
