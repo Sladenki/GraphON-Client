@@ -426,7 +426,8 @@
 }
 
 // Dark theme for select
-@media (prefers-color-scheme: dark) {
+[data-theme="dark"],
+html.dark {
     .modernSelect {
         background-color: rgba(var(--main-Color), 0.03);
         border-color: rgba(var(--main-Color), 0.15);
@@ -548,7 +549,8 @@
 }
 
 // Dark theme for checkbox
-@media (prefers-color-scheme: dark) {
+[data-theme="dark"],
+html.dark {
     .checkboxRow {
         background: rgba(var(--main-Color), 0.05);
         border-color: rgba(var(--main-Color), 0.15);

@@ -189,7 +189,8 @@
 }
 
 // Dark theme
-@media (prefers-color-scheme: dark) {
+[data-theme="dark"],
+html.dark {
     .section {
         border-color: rgba(var(--main-Color), 0.15);
 

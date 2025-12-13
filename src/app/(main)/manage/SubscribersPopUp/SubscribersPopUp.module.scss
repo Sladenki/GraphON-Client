@@ -187,7 +187,8 @@
 }
 
 // Dark theme
-@media (prefers-color-scheme: dark) {
+[data-theme="dark"],
+html.dark {
   .container {
     background: var(--block-color);
   }

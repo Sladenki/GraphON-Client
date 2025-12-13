@@ -280,7 +280,8 @@ html[data-theme="dark"] {
   }
 }
 
-@media (prefers-color-scheme: dark) {
+[data-theme="dark"],
+html.dark {
   .graphCard {
     background: var(--block-color);
     border-color: rgba(var(--main-Color), 0.15);

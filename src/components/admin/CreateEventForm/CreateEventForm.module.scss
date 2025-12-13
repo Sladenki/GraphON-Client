@@ -218,7 +218,8 @@
 }
 
 // Dark theme
-@media (prefers-color-scheme: dark) {
+[data-theme="dark"],
+html.dark {
     .checkboxRow {
         background: rgba(var(--main-Color), 0.06);
         border-color: rgba(var(--main-Color), 0.18);

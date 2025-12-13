@@ -62,7 +62,8 @@
     border-radius: 20px;
   }
   
-  @media (prefers-color-scheme: dark) {
+  [data-theme="dark"],
+  html.dark & {
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     box-shadow: 
       0 20px 60px rgba(0, 0, 0, 0.6),
@@ -114,7 +115,8 @@
     border-radius: 10px;
   }
   
-  @media (prefers-color-scheme: dark) {
+  [data-theme="dark"],
+  html.dark & {
     background: rgba(192, 132, 252, 0.12);
     color: #cbd5e1;
     
@@ -182,7 +184,8 @@
     font-size: 20px;
   }
   
-  @media (prefers-color-scheme: dark) {
+  [data-theme="dark"],
+  html.dark & {
     background: linear-gradient(135deg, #c084fc 0%, #e9d5ff 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -220,7 +223,8 @@
     -webkit-text-fill-color: transparent;
   }
   
-  @media (prefers-color-scheme: dark) {
+  [data-theme="dark"],
+  html.dark & {
     p {
       color: #cbd5e1;
     }
@@ -247,7 +251,8 @@
   justify-content: center;
   gap: 8px;
   
-  @media (prefers-color-scheme: dark) {
+  [data-theme="dark"],
+  html.dark & {
     border-top-color: rgba(192, 132, 252, 0.2);
     color: #cbd5e1 !important;
   }
@@ -307,7 +312,8 @@
     border-radius: 14px;
   }
   
-  @media (prefers-color-scheme: dark) {
+  [data-theme="dark"],
+  html.dark & {
     background: linear-gradient(135deg, #c084fc 0%, #e9d5ff 100%);
     box-shadow: 
       0 8px 20px rgba(192, 132, 252, 0.4),

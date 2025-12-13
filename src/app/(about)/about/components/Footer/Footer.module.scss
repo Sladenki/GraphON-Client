@@ -162,7 +162,8 @@
 }
 
 // Темная тема
-@media (prefers-color-scheme: dark) {
+[data-theme="dark"],
+html.dark {
   .footer {
     background: #1a1a1a;
   }
