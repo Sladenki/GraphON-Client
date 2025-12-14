@@ -507,6 +507,18 @@ html.dark {
     border-color: rgba(var(--main-Color), 0.2);
   }
   
+  .groupName {
+    color: rgb(var(--main-Color));
+  }
+  
+  .readMoreButton {
+    color: rgb(var(--main-Color));
+    
+    &:hover {
+      color: rgba(var(--main-Color), 0.8);
+    }
+  }
+  
   .shareButton {
     background: rgba(var(--main-Color), 0.08);
     color: rgba(var(--main-Color), 0.5);
