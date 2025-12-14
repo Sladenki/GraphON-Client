@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Shield, Zap, CheckCircle, Code } from 'lucide-react'
 import styles from './signIn.module.scss'
@@ -10,21 +10,27 @@ import { useAuth } from '@/providers/AuthProvider'
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isDevLoading, setIsDevLoading] = useState(false)
+  const [isDev, setIsDev] = useState(false)
   const { devLogin } = useAuth()
   
-  // Проверяем dev статус из переменной окружения
-  // Кнопка показывается ТОЛЬКО если NEXT_PUBLIC_CLIENT_STATUS === 'dev'
-  const clientStatus = process.env.NEXT_PUBLIC_CLIENT_STATUS
-  const isDev = clientStatus === 'dev'
-  
-  // Отладочный вывод (можно убрать после проверки)
-  if (typeof window !== 'undefined') {
-    console.log('🔍 Dev login check:', {
-      NEXT_PUBLIC_CLIENT_STATUS: clientStatus,
-      isDev: isDev,
-      willShowButton: isDev
-    })
-  }
+  // Безопасная проверка dev статуса через API route (на сервере)
+  // Клиентская проверка через env переменную НЕ безопасна, так как
+  // NEXT_PUBLIC_ переменные встраиваются в бандл и могут быть изменены
+  useEffect(() => {
+    const checkDevStatus = async () => {
+      try {
+        const response = await fetch('/api/check-dev-status')
+        if (response.ok) {
+          const data = await response.json()
+          setIsDev(data.isDev || false)
+        }
+      } catch (error) {
+        console.error('Failed to check dev status:', error)
+        setIsDev(false) // По умолчанию скрываем кнопку при ошибке
+      }
+    }
+    checkDevStatus()
+  }, [])
 
   const ENV_CONFIG = {
     TELEGRAM_BOT_URL: process.env.NEXT_PUBLIC_TELEGRAM_BOT_URL || 'https://t.me/Graph_ON_bot',

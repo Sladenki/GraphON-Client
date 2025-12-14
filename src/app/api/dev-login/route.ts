@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
-  const status = process.env.NEXT_PUBLIC_CLIENT_STATUS;
+  // Используем NEXT_CLIENT_STATUS (без NEXT_PUBLIC_) - она доступна только на сервере
+  // и НЕ встраивается в клиентский бандл. Это безопасная проверка.
+  const status = process.env.NEXT_CLIENT_STATUS;
   
   // Разрешаем только в dev режиме
   if (status !== 'dev') {
