@@ -17,7 +17,7 @@ interface AuthContextType {
     loading: boolean;
     error: string | null;
     refreshUser: () => void;
-    devLogin: () => Promise<void>;
+    devLogin: (options?: { isStudent?: boolean; selectedGraphId?: string; universityGraphId?: string }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -60,14 +60,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, []);
 
-    const devLogin = async () => {
+    const devLogin = async (options?: { isStudent?: boolean; selectedGraphId?: string; universityGraphId?: string }) => {
         try {
-            const response = await fetch('/api/dev-login', {
+            // Пробуем сначала новый dev-auth endpoint
+            let response = await fetch('/api/dev-auth', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({ 
+                    role: 'user',
+                    ...options,
+                }),
             });
+
+            // Если новый endpoint не работает, пробуем старый
+            if (!response.ok) {
+                response = await fetch('/api/dev-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            }
 
             if (!response.ok) {
                 const error = await response.json();
@@ -101,29 +116,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     username: userDataFromResponse.username || '',
                     avaPath: userDataFromResponse.avaPath || '',
                     telegramId: userDataFromResponse.telegramId || '',
-                    email: '',
-                    selectedGraphId: null,
-                    graphSubsNum: 0,
-                    postsNum: 0,
-                    attentedEventsNum: 0,
+                    email: userDataFromResponse.email || '',
+                    selectedGraphId: userDataFromResponse.selectedGraphId || null,
+                    universityGraphId: userDataFromResponse.universityGraphId || null,
+                    isStudent: userDataFromResponse.isStudent ?? null,
+                    graphSubsNum: userDataFromResponse.graphSubsNum || 0,
+                    postsNum: userDataFromResponse.postsNum || 0,
+                    attentedEventsNum: userDataFromResponse.attentedEventsNum || 0,
                 };
                 
                 setUser(user);
                 setIsLoggedIn(true);
                 setError(null);
                 
-                // Получаем полные данные пользователя
-                const userId = userDataFromResponse._id;
-                setTimeout(async () => {
-                    if (userId) {
-                        try {
-                            const fullUserData = await UserService.getById(userId);
-                            setUser((prevUser) => ({ ...prevUser, ...fullUserData } as User));
-                        } catch (err) {
-                            console.warn('Failed to fetch full user data:', err);
-                        }
+                // Сохраняем выбор в localStorage для синхронизации
+                if (typeof window !== 'undefined') {
+                    if (userDataFromResponse.selectedGraphId) {
+                        localStorage.setItem('selectedGraphId', userDataFromResponse.selectedGraphId);
                     }
-                }, 200);
+                    if (userDataFromResponse.isStudent !== undefined && userDataFromResponse.isStudent !== null) {
+                        localStorage.setItem('isStudent', String(userDataFromResponse.isStudent));
+                    }
+                }
+                
+                // Для dev режима не делаем запрос к реальному API
+                // Используем данные напрямую
             } else {
                 // Если нет данных пользователя, пробуем получить их через useUserData
                 // Это произойдет автоматически через хук

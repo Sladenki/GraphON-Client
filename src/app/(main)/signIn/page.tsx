@@ -6,6 +6,7 @@ import { Shield, Zap, CheckCircle, Code } from 'lucide-react'
 import styles from './signIn.module.scss'
 import { Logo } from '@/components/global/Logo'
 import { useAuth } from '@/providers/AuthProvider'
+import { DevAuthPanel } from '@/components/dev/DevAuthPanel/DevAuthPanel'
 
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -62,6 +63,9 @@ const SignIn = () => {
 
   return (
     <div className={styles.signInPage}>
+      {/* Dev Auth Panel - показывается только в dev режиме */}
+      {isDev && <DevAuthPanel />}
+      
       <div className={styles.container}>
         {/* Заголовок с логотипом */}
         <div className={styles.header}>
@@ -137,6 +141,11 @@ const SignIn = () => {
 
         {/* Футер */}
         <div className={styles.footer}>
+          {isDev && (
+            <Link href="/signUp" className={styles.registerLink}>
+              Регистрация (Dev)
+            </Link>
+          )}
           <Link href="/events" className={styles.backLink}>
             Вернуться на главную
           </Link>
