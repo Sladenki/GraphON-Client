@@ -17,24 +17,6 @@ export default function SignUp() {
   const [isStudent, setIsStudent] = useState<boolean | null>(null)
   const [selectedGraphId, setSelectedGraphId] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isDev, setIsDev] = useState(false)
-
-  // Проверяем dev статус
-  useEffect(() => {
-    const checkDevStatus = async () => {
-      try {
-        const response = await fetch('/api/check-dev-status')
-        if (response.ok) {
-          const data = await response.json()
-          setIsDev(data.isDev || false)
-        }
-      } catch (error) {
-        console.error('Failed to check dev status:', error)
-        setIsDev(false)
-      }
-    }
-    checkDevStatus()
-  }, [])
 
   // Загружаем список глобальных графов (университетов)
   const { data: globalGraphsResp, isLoading: isLoadingGraphs } = useQuery<{ data: IGraphList[] }>({
@@ -62,11 +44,6 @@ export default function SignUp() {
 
     if (isStudent === true && !selectedGraphId) {
       notifyError('Выберите университет', 'Необходимо выбрать университет для студентов')
-      return
-    }
-
-    if (!isDev) {
-      notifyError('Регистрация недоступна', 'Эта функция доступна только в режиме разработки')
       return
     }
 
@@ -125,22 +102,6 @@ export default function SignUp() {
     }
   }
 
-  // Не показываем страницу, если не dev режим
-  if (!isDev) {
-    return (
-      <div className={styles.signUpPage}>
-        <div className={styles.container}>
-          <div className={styles.errorMessage}>
-            <h2>Регистрация недоступна</h2>
-            <p>Эта страница доступна только в режиме разработки</p>
-            <Link href="/signIn" className={styles.backLink}>
-              Вернуться на страницу входа
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className={styles.signUpPage}>
@@ -231,8 +192,8 @@ export default function SignUp() {
                         </div>
                         <div className={styles.graphContent}>
                           <h3 className={styles.graphName}>{graph.name}</h3>
-                          {graph.description && (
-                            <p className={styles.graphDescription}>{graph.description}</p>
+                          {graph.about && (
+                            <p className={styles.graphDescription}>{graph.about}</p>
                           )}
                         </div>
                         {selectedGraphId === graph._id && (
