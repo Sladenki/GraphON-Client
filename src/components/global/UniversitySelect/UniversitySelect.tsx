@@ -89,8 +89,41 @@ export const UniversitySelect: React.FC = () => {
 
       // Если пользователь авторизован, обновляем на сервере
       if (user) {
-        await UserService.updateSelectedGraph(selectedUniversity);
-        setUser({ ...user, selectedGraphId: selectedUniversity });
+        const updatePromises: Promise<void>[] = [];
+        
+        // Всегда обновляем selectedGraphId
+        updatePromises.push(
+          UserService.updateSelectedGraph(selectedUniversity)
+            .then(() => {
+              console.log('SelectedGraphId updated:', selectedUniversity);
+            })
+            .catch((error) => {
+              console.error('Error updating selectedGraphId:', error);
+            })
+        );
+        
+        // Если пользователь студент, также обновляем universityGraphId
+        if ((user as any).isStudent === true) {
+          updatePromises.push(
+            UserService.updateUniversityGraph(selectedUniversity)
+              .then(() => {
+                console.log('UniversityGraphId updated:', selectedUniversity);
+              })
+              .catch((error) => {
+                console.error('Error updating universityGraphId:', error);
+              })
+          );
+        }
+        
+        // Ждем завершения всех обновлений
+        await Promise.all(updatePromises);
+        
+        // Обновляем объект пользователя с новыми значениями
+        setUser({ 
+          ...user, 
+          selectedGraphId: selectedUniversity,
+          universityGraphId: (user as any).isStudent === true ? selectedUniversity : (user as any).universityGraphId
+        } as any);
       }
 
       // Переходим на страницу событий

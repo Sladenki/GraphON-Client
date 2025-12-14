@@ -385,7 +385,7 @@ export default function Profile() {
             ) : null}
             
             {/* Выбор ВУЗа - показываем всем пользователям */}
-            {typedUser && (
+            {typedUser?.role === 'create' && (
                 <div className={styles.universitySelector}>
                     <h2 className={styles.sectionTitle}>Выбор университета</h2>
                     <p className={styles.sectionDescription}>

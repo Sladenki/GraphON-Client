@@ -206,16 +206,6 @@ export default function EventsList() {
     )
   }
 
-  if (isEmpty) {
-    return (
-      <EmptyState
-        message="Нет предстоящих мероприятий"
-        subMessage="Следите за обновлениями, чтобы не пропустить новые события"
-        icon={CalendarX}
-      />
-    )
-  }
-
   return (
     <div className={styles.container}>
       {/* Панель поиска и фильтров */}
@@ -248,8 +238,17 @@ export default function EventsList() {
         </div>
       )}
 
+      {/* Пустое состояние - нет мероприятий вообще */}
+      {isEmpty && !isLoading && (
+        <EmptyState
+          message="Нет предстоящих мероприятий"
+          subMessage="Следите за обновлениями, чтобы не пропустить новые события"
+          icon={CalendarX}
+        />
+      )}
+
       {/* Пустой результат поиска */}
-      {noSearchResults && !isLoading && (
+      {noSearchResults && !isEmpty && !isLoading && (
         <EmptyState
           message="Ничего не найдено"
           subMessage="Измените текст, даты или теги"
@@ -258,7 +257,7 @@ export default function EventsList() {
       )}
 
       {/* Список событий */}
-      {isSuccess && !noSearchResults && (
+      {isSuccess && !noSearchResults && !isEmpty && (
         <>
           <div className={styles.eventsList} data-swipe-enabled="true">
             {filteredEvents.map((event: EventItem, index: number) => (

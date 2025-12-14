@@ -42,7 +42,25 @@ const StudentStatusDialog: React.FC<StudentStatusDialogProps> = ({ isOpen, onClo
       // Если пользователь авторизован - сохраняем на сервере
       if (user) {
         await UserService.updateIsStudent(selectedStatus)
-        setUser({ ...user, isStudent: selectedStatus } as any)
+        
+        // Если выбрал статус студента - сбрасываем selectedGraphId, чтобы показать выбор университета
+        if (selectedStatus === true) {
+          // Обновляем объект пользователя, убирая selectedGraphId
+          console.log('[StudentStatusDialog] Setting student status to true, clearing selectedGraphId');
+          setUser({ ...user, isStudent: selectedStatus, selectedGraphId: null } as any)
+          setSelectedGraphId(null)
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('selectedGraphId')
+          }
+        } else {
+          // Если не студент - устанавливаем дефолтный граф
+          setUser({ ...user, isStudent: selectedStatus, selectedGraphId: NON_STUDENT_DEFAULT_GRAPH_ID } as any)
+          setSelectedGraphId(NON_STUDENT_DEFAULT_GRAPH_ID)
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('selectedGraphId', NON_STUDENT_DEFAULT_GRAPH_ID)
+          }
+        }
+        
         notifySuccess('Статус сохранен')
       } else {
         // Если неавторизован - сохраняем в localStorage

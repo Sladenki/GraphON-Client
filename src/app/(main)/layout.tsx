@@ -87,6 +87,25 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
     };
 
     const userSelectedGraphId = normalizeGraphId(user?.selectedGraphId);
+    const userIsStudent = user ? (user as any).isStudent : undefined;
+    const userUniversityGraphId = user 
+      ? normalizeGraphId((user as any).universityGraphId)
+      : null;
+
+    // Если пользователь студент и у него нет selectedGraphId - не перезаписываем null в store
+    // Это позволяет показать окно выбора университета
+    // Также проверяем universityGraphId - если он пустой, оставляем null для показа выбора
+    if (user && userIsStudent === true && !userSelectedGraphId && selectedGraphId === null) {
+      // Не делаем ничего - оставляем null для показа UniversitySelect
+      return;
+    }
+    
+    // Если пользователь студент, но нет universityGraphId - не перезаписываем null в store
+    // Это позволяет показать окно выбора университета даже если selectedGraphId есть
+    if (user && userIsStudent === true && !userUniversityGraphId && selectedGraphId === null) {
+      // Не делаем ничего - оставляем null для показа UniversitySelect
+      return;
+    }
 
     // Если пользователь авторизован и у него нет selectedGraphId в объекте, 
     // но в store есть старое значение - очищаем store, чтобы показать окно выбора
@@ -154,6 +173,19 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
               localStorage.removeItem('selectedGraphId');
               setSelectedGraphId(null);
             }
+          } else if (user) {
+            // Для авторизованных пользователей обновляем localIsStudent для корректной логики показа UniversitySelect
+            // Это важно, так как user.isStudent может обновляться асинхронно через setUser
+            setLocalIsStudent(isStudent);
+            
+            // Убеждаемся, что selectedGraphId сброшен для студентов
+            if (isStudent === true) {
+              console.log('[Layout] onStatusSelected: Student selected, clearing selectedGraphId');
+              setSelectedGraphId(null);
+              if (typeof window !== 'undefined') {
+                localStorage.removeItem('selectedGraphId');
+              }
+            }
           }
         }}
       />
@@ -164,8 +196,10 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
           {/* Определяем статус студента */}
           {(() => {
             // Определяем isStudent: из объекта пользователя (если авторизован) или из localStorage (если неавторизован)
+            // Если localIsStudent определен (только что выбрали статус), используем его как приоритетное значение
+            // Это нужно, чтобы сразу показать UniversitySelect после выбора статуса студента
             const isStudentFromUser = user ? (user as any).isStudent : undefined;
-            const isStudent = isStudentFromUser !== undefined ? isStudentFromUser : localIsStudent;
+            const isStudent = localIsStudent !== undefined ? localIsStudent : (isStudentFromUser !== undefined ? isStudentFromUser : undefined);
             
             // Если пользователь не студент - показываем контент без выбора университета
             if (isStudent === false) {
@@ -209,7 +243,27 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
             // Если пользователь студент (isStudent === true) или не авторизован - проверяем selectedGraphId
             // Если университет не выбран - показываем экран выбора
             // Но для неавторизованных не-студентов тоже показываем контент
-            if (!selectedGraphId && isStudent !== false) {
+            // ВАЖНО: Для студентов также проверяем universityGraphId - если он пустой, показываем выбор
+            const userUniversityGraphId = user 
+              ? (typeof (user as any).universityGraphId === 'string' 
+                  ? (user as any).universityGraphId 
+                  : ((user as any).universityGraphId as any)?._id ?? null)
+              : null;
+            
+            const needsUniversitySelection = !selectedGraphId && isStudent !== false;
+            const isStudentWithoutUniversity = isStudent === true && !userUniversityGraphId && !selectedGraphId;
+            
+            if (needsUniversitySelection || isStudentWithoutUniversity) {
+              console.log('[Layout] Showing UniversitySelect', {
+                selectedGraphId,
+                isStudent,
+                isStudentFromUser,
+                localIsStudent,
+                user: !!user,
+                userUniversityGraphId,
+                needsUniversitySelection,
+                isStudentWithoutUniversity
+              });
               return (
                 <div className={styles.universitySelectWrapper}>
                   <UniversitySelect />
