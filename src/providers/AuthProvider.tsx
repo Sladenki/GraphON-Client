@@ -17,6 +17,7 @@ interface AuthContextType {
     loading: boolean;
     error: string | null;
     refreshUser: () => void;
+    devLogin: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -28,6 +29,7 @@ const AuthContext = createContext<AuthContextType>({
     loading: true,
     error: null,
     refreshUser: () => {},
+    devLogin: async () => {},
 });
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL; 
@@ -57,6 +59,80 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
         }
     }, []);
+
+    const devLogin = async () => {
+        try {
+            const response = await fetch('/api/dev-login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to login');
+            }
+
+            const data = await response.json();
+            
+            // Извлекаем токен
+            const accessToken = data?.accessToken || data?.token || data?.access_token;
+            
+            // Извлекаем данные пользователя из ответа
+            const userDataFromResponse = data?.user;
+
+            // Сохранить токен в localStorage
+            if (accessToken && typeof window !== 'undefined') {
+                localStorage.setItem('accessToken', accessToken);
+                
+                if (userDataFromResponse?._id) {
+                    localStorage.setItem('userId', userDataFromResponse._id);
+                }
+            }
+
+            // Если данные пользователя пришли вместе с токеном, используем их
+            if (userDataFromResponse) {
+                const user: User = {
+                    _id: userDataFromResponse._id,
+                    role: userDataFromResponse.role as any,
+                    firstName: userDataFromResponse.firstName || '',
+                    lastName: userDataFromResponse.lastName || '',
+                    username: userDataFromResponse.username || '',
+                    avaPath: userDataFromResponse.avaPath || '',
+                    telegramId: userDataFromResponse.telegramId || '',
+                    email: '',
+                    selectedGraphId: null,
+                    graphSubsNum: 0,
+                    postsNum: 0,
+                    attentedEventsNum: 0,
+                };
+                
+                setUser(user);
+                setIsLoggedIn(true);
+                setError(null);
+                
+                // Получаем полные данные пользователя
+                const userId = userDataFromResponse._id;
+                setTimeout(async () => {
+                    if (userId) {
+                        try {
+                            const fullUserData = await UserService.getById(userId);
+                            setUser((prevUser) => ({ ...prevUser, ...fullUserData } as User));
+                        } catch (err) {
+                            console.warn('Failed to fetch full user data:', err);
+                        }
+                    }
+                }, 200);
+            } else {
+                // Если нет данных пользователя, пробуем получить их через useUserData
+                // Это произойдет автоматически через хук
+            }
+        } catch (error) {
+            console.error('Dev login error:', error);
+            setError(error instanceof Error ? error.message : 'Ошибка при локальном входе');
+        }
+    };
 
     const exchangeCodeForToken = async (code: string) => {
         try {
@@ -574,7 +650,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             });
     }, [user, isLoggedIn, setUser]);
 
-    const value = { isLoggedIn, user, setUser, login, logout, loading: isLoading, error, refreshUser }; // Передаем loading в контекст
+    const value = { isLoggedIn, user, setUser, login, logout, loading: isLoading, error, refreshUser, devLogin }; // Передаем loading в контекст
 
     // Не скрываем children во время загрузки, если пользователь уже авторизован
     // Это позволяет UI обновиться сразу после установки пользователя из exchange-code

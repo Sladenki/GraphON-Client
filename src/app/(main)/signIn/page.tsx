@@ -2,12 +2,29 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { Shield, Zap, CheckCircle } from 'lucide-react'
+import { Shield, Zap, CheckCircle, Code } from 'lucide-react'
 import styles from './signIn.module.scss'
 import { Logo } from '@/components/global/Logo'
+import { useAuth } from '@/providers/AuthProvider'
 
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
+  const [isDevLoading, setIsDevLoading] = useState(false)
+  const { devLogin } = useAuth()
+  
+  // Проверяем dev статус из переменной окружения
+  // Кнопка показывается ТОЛЬКО если NEXT_PUBLIC_CLIENT_STATUS === 'dev'
+  const clientStatus = process.env.NEXT_PUBLIC_CLIENT_STATUS
+  const isDev = clientStatus === 'dev'
+  
+  // Отладочный вывод (можно убрать после проверки)
+  if (typeof window !== 'undefined') {
+    console.log('🔍 Dev login check:', {
+      NEXT_PUBLIC_CLIENT_STATUS: clientStatus,
+      isDev: isDev,
+      willShowButton: isDev
+    })
+  }
 
   const ENV_CONFIG = {
     TELEGRAM_BOT_URL: process.env.NEXT_PUBLIC_TELEGRAM_BOT_URL || 'https://t.me/Graph_ON_bot',
@@ -21,6 +38,19 @@ const SignIn = () => {
     } catch (error) {
       console.error('Telegram login error:', error)
       setIsLoading(false)
+    }
+  }
+
+  const handleDevLogin = async () => {
+    setIsDevLoading(true)
+    try {
+      await devLogin()
+      // После успешного входа перенаправляем на главную
+      window.location.href = '/events'
+    } catch (error) {
+      console.error('Dev login error:', error)
+    } finally {
+      setIsDevLoading(false)
     }
   }
 
@@ -55,6 +85,27 @@ const SignIn = () => {
             </>
           )}
         </button>
+
+        {/* Кнопка локального входа для разработки */}
+        {isDev && (
+          <button
+            onClick={handleDevLogin}
+            className={`${styles.devButton} ${isDevLoading ? styles.loading : ''}`}
+            disabled={isDevLoading}
+          >
+            {isDevLoading ? (
+              <>
+                <div className={styles.spinner}></div>
+                <span>Вход...</span>
+              </>
+            ) : (
+              <>
+                <Code size={18} />
+                <span className={styles.buttonText}>Войти локально (Dev)</span>
+              </>
+            )}
+          </button>
+        )}
 
         {/* Преимущества */}
         <div className={styles.features}>

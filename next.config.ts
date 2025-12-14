@@ -28,7 +28,7 @@ const nextConfig = {
 
   // Удаляем console.log в production (оставляем error и warn)
   compiler: {
-    removeConsole: process.env.NEXT_CLIENT_STATUS === 'prod' ? {
+    removeConsole: process.env.NEXT_PUBLIC_CLIENT_STATUS === 'prod' ? {
       exclude: ['error', 'warn']
     } : false,
   },

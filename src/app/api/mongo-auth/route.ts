@@ -4,7 +4,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const password = String(body?.password ?? '');
 
-  const status = process.env.NEXT_CLIENT_STATUS;
+  const status = process.env.NEXT_PUBLIC_CLIENT_STATUS;
   const expected = process.env.NEXT_MONGO_ACCESS_PASSWORD;
 
   if (status !== 'prod') {
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const status = process.env.NEXT_CLIENT_STATUS;
+  const status = process.env.NEXT_PUBLIC_CLIENT_STATUS;
   const hasCookie = req.cookies.get('mongo_auth')?.value === '1';
   const mustAskPassword = status === 'prod' && !hasCookie;
   return NextResponse.json({ mustAskPassword });

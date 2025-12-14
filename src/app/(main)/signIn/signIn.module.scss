@@ -136,6 +136,74 @@
   }
 }
 
+// Кнопка локального входа (Dev)
+.devButton {
+  width: 100%;
+  padding: 18px 24px;
+  margin-top: 16px;
+  background: linear-gradient(135deg, rgb(var(--main-Color)) 0%, rgba(var(--main-Color), 0.8) 100%);
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 
+    0 8px 16px rgba(var(--main-Color), 0.25),
+    0 4px 8px rgba(var(--main-Color), 0.15);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 24px rgba(var(--main-Color), 0.3),
+      0 6px 12px rgba(var(--main-Color), 0.2);
+    background: linear-gradient(135deg, rgba(var(--main-Color), 0.9) 0%, rgba(var(--main-Color), 0.7) 100%);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 
+      0 6px 12px rgba(var(--main-Color), 0.25),
+      0 3px 6px rgba(var(--main-Color), 0.15);
+  }
+
+  &:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+
+  &.loading {
+    pointer-events: none;
+  }
+}
+
 .telegramIcon {
   flex-shrink: 0;
 }
