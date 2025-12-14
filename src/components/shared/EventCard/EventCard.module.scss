@@ -519,6 +519,17 @@ html.dark {
     }
   }
   
+  .description {
+    a {
+      color: rgb(var(--main-Color));
+      
+      &:hover {
+        color: rgba(var(--main-Color), 0.8);
+        text-decoration: underline;
+      }
+    }
+  }
+  
   .shareButton {
     background: rgba(var(--main-Color), 0.08);
     color: rgba(var(--main-Color), 0.5);
