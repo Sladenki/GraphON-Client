@@ -194,45 +194,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             const fullUserData = await UserService.getById(userId);
                             console.log('Full user data received:', fullUserData);
                             
-                            // Проверяем и устанавливаем дефолтные значения для новых пользователей
-                            const needsUpdate: { selectedGraphId?: string; universityGraphId?: string } = {};
+                            // Получаем данные из localStorage для синхронизации
+                            const localSelectedGraphId = typeof window !== 'undefined' 
+                                ? localStorage.getItem('selectedGraphId') 
+                                : null;
+                            const localIsStudent = typeof window !== 'undefined'
+                                ? localStorage.getItem('isStudent')
+                                : null;
+                            const isStudent = localIsStudent === 'true' || (fullUserData as any).isStudent === true;
                             
-                            // Если selectedGraphId отсутствует, устанавливаем дефолтный
+                            // Нормализуем текущие значения из БД
                             const currentSelectedGraphId = fullUserData.selectedGraphId 
                                 ? (typeof fullUserData.selectedGraphId === 'string' 
                                     ? fullUserData.selectedGraphId 
                                     : (fullUserData.selectedGraphId as any)?._id)
                                 : null;
+                            const currentUniversityGraphId = (fullUserData as any).universityGraphId
+                                ? (typeof (fullUserData as any).universityGraphId === 'string'
+                                    ? (fullUserData as any).universityGraphId
+                                    : ((fullUserData as any).universityGraphId as any)?._id)
+                                : null;
                             
-                            if (!currentSelectedGraphId) {
-                                // Проверяем localStorage для дефолтного значения
-                                const localSelectedGraphId = typeof window !== 'undefined' 
-                                    ? localStorage.getItem('selectedGraphId') 
-                                    : null;
+                            // Определяем, что нужно обновить
+                            const needsUpdate: { selectedGraphId?: string; universityGraphId?: string } = {};
+                            
+                            // Если есть selectedGraphId в localStorage, используем его
+                            if (localSelectedGraphId) {
+                                // Всегда обновляем selectedGraphId из localStorage при авторизации
+                                needsUpdate.selectedGraphId = localSelectedGraphId;
+                            } else if (!currentSelectedGraphId) {
+                                // Если нет в localStorage и нет в БД, устанавливаем дефолтный
+                                const { NON_STUDENT_DEFAULT_GRAPH_ID } = await import('@/constants/nonStudentDefaults');
+                                needsUpdate.selectedGraphId = NON_STUDENT_DEFAULT_GRAPH_ID;
+                            }
+                            
+                            // Если пользователь студент, должны быть заполнены оба графа
+                            if (isStudent) {
+                                // Определяем, какой selectedGraphId использовать для universityGraphId
+                                const graphIdForUniversity = localSelectedGraphId || currentSelectedGraphId;
                                 
-                                if (localSelectedGraphId) {
-                                    needsUpdate.selectedGraphId = localSelectedGraphId;
-                                } else {
-                                    // Устанавливаем дефолтный граф для не-студентов
-                                    const { NON_STUDENT_DEFAULT_GRAPH_ID } = await import('@/constants/nonStudentDefaults');
-                                    needsUpdate.selectedGraphId = NON_STUDENT_DEFAULT_GRAPH_ID;
+                                if (graphIdForUniversity) {
+                                    // Если есть selectedGraphId (в localStorage или БД), используем его для universityGraphId
+                                    if (!currentUniversityGraphId || currentUniversityGraphId !== graphIdForUniversity) {
+                                        needsUpdate.universityGraphId = graphIdForUniversity;
+                                    }
                                 }
                             }
                             
-                            // Если universityGraphId отсутствует и пользователь студент
-                            const currentUniversityGraphId = (fullUserData as any).universityGraphId;
-                            if (!currentUniversityGraphId && (fullUserData as any).isStudent === true) {
-                                // Проверяем localStorage
-                                const localSelectedGraphId = typeof window !== 'undefined' 
-                                    ? localStorage.getItem('selectedGraphId') 
-                                    : null;
-                                
-                                if (localSelectedGraphId) {
-                                    needsUpdate.universityGraphId = localSelectedGraphId;
-                                }
-                            }
-                            
-                            // Обновляем на сервере, если нужно
+                            // Обновляем на сервере
                             if (Object.keys(needsUpdate).length > 0) {
                                 const updatePromises: Promise<void>[] = [];
                                 
@@ -240,10 +249,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                                     updatePromises.push(
                                         UserService.updateSelectedGraph(needsUpdate.selectedGraphId)
                                             .then(() => {
-                                                console.log('Default selectedGraphId set:', needsUpdate.selectedGraphId);
+                                                console.log('SelectedGraphId synced to DB:', needsUpdate.selectedGraphId);
                                             })
                                             .catch((err) => {
-                                                console.error('Failed to set default selectedGraphId:', err);
+                                                console.error('Failed to sync selectedGraphId:', err);
                                             })
                                     );
                                 }
@@ -252,10 +261,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                                     updatePromises.push(
                                         UserService.updateUniversityGraph(needsUpdate.universityGraphId)
                                             .then(() => {
-                                                console.log('Default universityGraphId set:', needsUpdate.universityGraphId);
+                                                console.log('UniversityGraphId synced to DB:', needsUpdate.universityGraphId);
                                             })
                                             .catch((err) => {
-                                                console.error('Failed to set default universityGraphId:', err);
+                                                console.error('Failed to sync universityGraphId:', err);
                                             })
                                     );
                                 }
@@ -431,6 +440,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             localIsStudentRaw === null ? null : localIsStudentRaw === 'true';
         const normalizedLocalGraphId = localSelectedGraphId ?? null;
 
+        // Нормализуем текущие значения из БД
+        const userSelectedGraphId =
+            typeof user.selectedGraphId === 'string'
+                ? user.selectedGraphId
+                : (user.selectedGraphId as any)?._id ?? null;
+        const userUniversityGraphId =
+            typeof (user as any).universityGraphId === 'string'
+                ? (user as any).universityGraphId
+                : ((user as any).universityGraphId as any)?._id ?? null;
+
         if (normalizedLocalIsStudent !== null) {
             const shouldUpdateStudentFlag =
                 userIsStudent === undefined ||
@@ -438,10 +457,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 userIsStudent !== normalizedLocalIsStudent;
 
             if (normalizedLocalIsStudent === true) {
-                const shouldUpdateUniversity =
-                    normalizedLocalGraphId &&
-                    (nextUser as any).universityGraphId !== normalizedLocalGraphId;
-
                 // Обновляем isStudent через отдельный endpoint
                 if (shouldUpdateStudentFlag) {
                     promises.push(
@@ -459,17 +474,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     );
                 }
 
-                // Обновляем universityGraphId через отдельный endpoint
-                if (shouldUpdateUniversity && normalizedLocalGraphId) {
+                // Если пользователь студент, должны быть заполнены оба графа
+                // Обновляем universityGraphId, если есть selectedGraphId в localStorage
+                if (normalizedLocalGraphId) {
+                    const shouldUpdateUniversity = 
+                        !userUniversityGraphId || 
+                        userUniversityGraphId !== normalizedLocalGraphId;
+                    
+                    if (shouldUpdateUniversity) {
+                        promises.push(
+                            UserService.updateUniversityGraph(normalizedLocalGraphId)
+                                .then(() => {
+                                    (nextUser as any).universityGraphId = normalizedLocalGraphId;
+                                    userChanged = true;
+                                })
+                                .catch((error) => {
+                                    console.error(
+                                        'Failed to sync university from localStorage:',
+                                        error
+                                    );
+                                })
+                        );
+                    }
+                } else if (!userUniversityGraphId && userSelectedGraphId) {
+                    // Если нет в localStorage, но есть selectedGraphId в БД, используем его
                     promises.push(
-                        UserService.updateUniversityGraph(normalizedLocalGraphId)
+                        UserService.updateUniversityGraph(userSelectedGraphId)
                             .then(() => {
-                                (nextUser as any).universityGraphId = normalizedLocalGraphId;
+                                (nextUser as any).universityGraphId = userSelectedGraphId;
                                 userChanged = true;
                             })
                             .catch((error) => {
                                 console.error(
-                                    'Failed to sync university from localStorage:',
+                                    'Failed to sync university from selectedGraphId:',
                                     error
                                 );
                             })
@@ -490,11 +527,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
         }
 
-        const userSelectedGraphId =
-            typeof user.selectedGraphId === 'string'
-                ? user.selectedGraphId
-                : (user.selectedGraphId as any)?._id ?? null;
-
+        // Обновляем selectedGraphId, если есть в localStorage и отличается от БД
         if (
             normalizedLocalGraphId &&
             normalizedLocalGraphId !== userSelectedGraphId
@@ -507,6 +540,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     })
                     .catch((error) => {
                         console.error('Failed to sync selectedGraphId from localStorage:', error);
+                    })
+            );
+        }
+        
+        // Если пользователь студент, но нет universityGraphId в БД, используем selectedGraphId
+        if ((user as any).isStudent === true && !userUniversityGraphId && userSelectedGraphId) {
+            promises.push(
+                UserService.updateUniversityGraph(userSelectedGraphId)
+                    .then(() => {
+                        (nextUser as any).universityGraphId = userSelectedGraphId;
+                        userChanged = true;
+                    })
+                    .catch((error) => {
+                        console.error('Failed to set universityGraphId from selectedGraphId:', error);
                     })
             );
         }
