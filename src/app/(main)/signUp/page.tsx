@@ -50,44 +50,97 @@ export default function SignUp() {
     setIsSubmitting(true)
 
     try {
-      // Сохраняем выбор в localStorage
+      // ШАГ 1: Сохраняем выбор в localStorage ПЕРЕД авторизацией
+      // Это важно, так как после авторизации useEffect в AuthProvider
+      // синхронизирует эти данные с БД через те же API эндпоинты, что и в проде
       if (typeof window !== 'undefined') {
         localStorage.setItem('isStudent', String(isStudent))
         localStorage.setItem('selectedGraphId', selectedGraphId)
       }
 
-      // Регистрируем пользователя через dev-auth API
-      const response = await fetch('/api/dev-auth', {
+      // ШАГ 2: Регистрируем нового пользователя через dev-login
+      // Это вызывает реальный бэкенд /auth/exchange-code с кодом 'dev-create-user'
+      // Бэкенд должен создать нового пользователя (аналогично Telegram регистрации)
+      const authResponse = await fetch('/api/dev-login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          role: 'user',
-          isStudent,
-          selectedGraphId,
-          universityGraphId: isStudent ? selectedGraphId : null,
-        }),
+        body: JSON.stringify({ createNew: true }), // Флаг для создания нового пользователя
       })
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to register')
+      if (!authResponse.ok) {
+        const error = await authResponse.json()
+        throw new Error(error.error || error.message || 'Failed to authenticate')
       }
 
-      const data = await response.json()
+      const authData = await authResponse.json()
+      const accessToken = authData?.accessToken || authData?.token || authData?.access_token
+      const userDataFromResponse = authData?.user
 
-      // Сохраняем токен и данные
+      if (!accessToken || !userDataFromResponse?._id) {
+        throw new Error('Invalid response from authentication')
+      }
+
+      // ШАГ 3: Сохраняем токен и userId (как в продовой авторизации)
       if (typeof window !== 'undefined') {
-        localStorage.setItem('accessToken', data.accessToken)
-        localStorage.setItem('userId', data.user._id)
-        localStorage.setItem('selectedGraphId', selectedGraphId)
-        localStorage.setItem('isStudent', String(isStudent))
+        localStorage.setItem('accessToken', accessToken)
+        localStorage.setItem('userId', userDataFromResponse._id)
       }
+
+      // ШАГ 4: Вызываем те же API эндпоинты, что и в проде
+      // Это повторяет логику из AuthProvider после exchangeCodeForToken
+      const { UserService } = await import('@/services/user.service')
+      const updatePromises: Promise<void>[] = []
+
+      // Обновляем статус студента
+      updatePromises.push(
+        UserService.updateIsStudent(isStudent)
+          .then(() => {
+            console.log('Student status updated:', isStudent)
+          })
+          .catch((err) => {
+            console.error('Failed to update student status:', err)
+          })
+      )
+
+      // Обновляем selectedGraphId
+      if (selectedGraphId) {
+        updatePromises.push(
+          UserService.updateSelectedGraph(selectedGraphId)
+            .then(() => {
+              console.log('Selected graph updated:', selectedGraphId)
+            })
+            .catch((err) => {
+              console.error('Failed to update selected graph:', err)
+            })
+        )
+      }
+
+      // Если студент, обновляем universityGraphId
+      if (isStudent && selectedGraphId) {
+        updatePromises.push(
+          UserService.updateUniversityGraph(selectedGraphId)
+            .then(() => {
+              console.log('University graph updated:', selectedGraphId)
+            })
+            .catch((err) => {
+              console.error('Failed to update university graph:', err)
+            })
+        )
+      }
+
+      // Ждем завершения всех обновлений
+      await Promise.all(updatePromises)
+
+      // ШАГ 5: Получаем обновленные данные пользователя (как в проде)
+      const fullUserData = await UserService.getById(userDataFromResponse._id)
+      console.log('Full user data after registration:', fullUserData)
 
       notifySuccess('Регистрация успешна', 'Добро пожаловать!')
 
       // Перенаправляем на главную и обновляем страницу для применения изменений
+      // Это вызовет useEffect в AuthProvider, который синхронизирует данные
       setTimeout(() => {
         window.location.href = '/events'
       }, 500)

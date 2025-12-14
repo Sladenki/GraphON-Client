@@ -57,13 +57,25 @@ const GraphSwitcher: React.FC = () => {
     queryKey: ['graph/getGlobalGraphs'],
     queryFn: async () => {
       const res = await GraphService.getGlobalGraphs()
-      return res.data as IGraphList[]
+      // Нормализуем ответ - может быть res.data или сам res
+      const data = res.data || res
+      // Убеждаемся, что это массив
+      return Array.isArray(data) ? data : []
     }
   })
 
   // Фильтруем графы в зависимости от universityGraphId пользователя
   const globalGraphs = useMemo(() => {
-    const graphs = globalGraphsResp || []
+    // Убеждаемся, что это массив
+    let graphs: IGraphList[] = []
+    
+    if (Array.isArray(globalGraphsResp)) {
+      graphs = globalGraphsResp
+    } else if (globalGraphsResp && typeof globalGraphsResp === 'object' && 'data' in globalGraphsResp) {
+      // Если это объект с полем data
+      graphs = Array.isArray((globalGraphsResp as any).data) ? (globalGraphsResp as any).data : []
+    }
+    
     const universityGraphId = user?.universityGraphId
 
     if (!universityGraphId) return graphs
@@ -83,6 +95,9 @@ const GraphSwitcher: React.FC = () => {
 
   // Мемоизируем currentGraph для правильной реактивности
   const currentGraph = useMemo(() => {
+    if (!Array.isArray(globalGraphs) || !selectedGraphId) {
+      return undefined
+    }
     return globalGraphs.find(g => g._id === selectedGraphId)
   }, [globalGraphs, selectedGraphId])
 

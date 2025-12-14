@@ -23,14 +23,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const body = await req.json().catch(() => ({}));
+    const { createNew = false } = body as { createNew?: boolean };
+
     // Используем специальный dev-код для локальной авторизации
-    // Бэкенд должен обработать этот код и вернуть тестового пользователя
+    // 'dev-local-login' - возвращает существующего тестового пользователя
+    // 'dev-create-user' - создает нового пользователя (для регистрации)
+    const devCode = createNew ? 'dev-create-user' : 'dev-local-login';
+    
+    // Бэкенд должен обработать этот код:
+    // - 'dev-local-login' - вернуть существующего тестового пользователя
+    // - 'dev-create-user' - создать нового пользователя и вернуть его
     const response = await fetch(`${apiUrl}/auth/exchange-code`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ code: 'dev-local-login' }),
+      body: JSON.stringify({ code: devCode }),
       credentials: 'include',
     });
 
