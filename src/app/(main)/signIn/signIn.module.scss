@@ -286,23 +286,6 @@
   align-items: center;
 }
 
-.registerLink {
-  display: inline-block;
-  color: rgb(var(--main-Color));
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  padding: 8px 16px;
-  border-radius: 8px;
-  background: rgba(var(--main-Color), 0.1);
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.15);
-    transform: translateY(-1px);
-  }
-}
-
 .backLink {
   display: inline-block;
   color: var(--main-text);

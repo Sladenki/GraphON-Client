@@ -141,11 +141,6 @@ const SignIn = () => {
 
         {/* Футер */}
         <div className={styles.footer}>
-          {isDev && (
-            <Link href="/signUp" className={styles.registerLink}>
-              Регистрация (Dev)
-            </Link>
-          )}
           <Link href="/events" className={styles.backLink}>
             Вернуться на главную
           </Link>
