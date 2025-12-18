@@ -560,6 +560,17 @@ export default function CityPage() {
               <div className={styles.noiseOverlay} />
             </>
           )}
+          
+          {/* Атрибуция источника данных карты (обязательная по лицензии OSM) */}
+          <div className={styles.mapAttribution}>
+            <a
+              href="https://www.openstreetmap.org/copyright"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              © OpenStreetMap contributors
+            </a>
+          </div>
             
           {/* Кнопки фильтра и списка */}
           {!isFilterOpen && !isListOpen && !selectedEvent && (

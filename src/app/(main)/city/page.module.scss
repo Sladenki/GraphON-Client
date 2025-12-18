@@ -101,6 +101,30 @@
   }
 }
 
+/* Небольшая и ненавязчивая атрибуция источника данных карты */
+.mapAttribution {
+  position: absolute;
+  left: 20px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  z-index: 20;
+  font-size: 11px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+  pointer-events: auto;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.9;
+
+    &:hover {
+      text-decoration: underline;
+      opacity: 1;
+    }
+  }
+}
+
 // Общие стили для эффектов
 %cyberpunk-base {
   position: absolute;
@@ -418,6 +442,10 @@
   }
   .listButtonWithMenu {
     bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 44px));
+  }
+
+  .mapAttribution {
+    font-size: 10px;
   }
 }
 
