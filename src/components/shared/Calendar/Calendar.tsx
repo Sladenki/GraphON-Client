@@ -35,39 +35,45 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  // Объединяем все события по датам
+  // Группируем мероприятия по конкретным датам
   const eventsByDate = useMemo(() => {
-    const eventsMap = new Map<string, { schedule: ScheduleItem[], events: EventItem[] }>();
+    const eventsMap = new Map<string, EventItem[]>();
     
-    // Добавляем расписание (используем dayOfWeek для определения даты)
-    schedule.forEach(item => {
-      // Получаем дату на основе дня недели для текущей недели
-      const today = new Date();
-      const currentDay = today.getDay();
-      const monday = new Date(today);
-      monday.setDate(today.getDate() - currentDay + 1); // Понедельник текущей недели
-      
-      const eventDate = new Date(monday);
-      eventDate.setDate(monday.getDate() + item.dayOfWeek - 1);
-      
-      const dateKey = eventDate.toDateString();
-      if (!eventsMap.has(dateKey)) {
-        eventsMap.set(dateKey, { schedule: [], events: [] });
-      }
-      eventsMap.get(dateKey)!.schedule.push(item);
-    });
-    
-    // Добавляем мероприятия
     events.forEach(event => {
       const dateKey = new Date(event.eventDate).toDateString();
       if (!eventsMap.has(dateKey)) {
-        eventsMap.set(dateKey, { schedule: [], events: [] });
+        eventsMap.set(dateKey, []);
       }
-      eventsMap.get(dateKey)!.events.push(event);
+      eventsMap.get(dateKey)!.push(event);
     });
     
     return eventsMap;
-  }, [schedule, events]);
+  }, [events]);
+
+  // Группируем расписание по дню недели (0 - Пн, 6 - Вс)
+  const scheduleByDayOfWeek = useMemo(() => {
+    const map = new Map<number, ScheduleItem[]>();
+    schedule.forEach(item => {
+      const key = item.dayOfWeek;
+      if (!map.has(key)) {
+        map.set(key, []);
+      }
+      map.get(key)!.push(item);
+    });
+    return map;
+  }, [schedule]);
+
+  // Получаем индекс дня недели в формате 0 - Пн, 6 - Вс
+  const getDayOfWeekIndex = useCallback((date: Date) => {
+    const jsDay = date.getDay(); // 0 - Вс, 1 - Пн, ... 6 - Сб
+    return (jsDay + 6) % 7;      // 0 - Пн, 1 - Вт, ... 6 - Вс
+  }, []);
+
+  // Получаем занятия для конкретной даты (по dayOfWeek)
+  const getScheduleForDate = useCallback((date: Date): ScheduleItem[] => {
+    const index = getDayOfWeekIndex(date);
+    return scheduleByDayOfWeek.get(index) || [];
+  }, [scheduleByDayOfWeek, getDayOfWeekIndex]);
 
   // Генерируем календарную сетку
   const calendarDays = useMemo(() => {
@@ -90,20 +96,21 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
     for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
       const date = new Date(year, month, day);
       const dateKey = date.toDateString();
-      const dayEvents = eventsByDate.get(dateKey);
+      const dayEvents = eventsByDate.get(dateKey) || [];
+      const daySchedule = getScheduleForDate(date);
       
       days.push({
         date,
         isCurrentMonth: true,
         isToday: date.toDateString() === today.toDateString(),
         isSelected: selectedDate?.toDateString() === dateKey,
-        hasEvents: !!dayEvents && (dayEvents.schedule.length > 0 || dayEvents.events.length > 0),
-        eventsCount: dayEvents ? dayEvents.schedule.length + dayEvents.events.length : 0
+        hasEvents: daySchedule.length > 0 || dayEvents.length > 0,
+        eventsCount: daySchedule.length + dayEvents.length,
       });
     }
     
     return days;
-  }, [currentDate, eventsByDate, selectedDate]);
+  }, [currentDate, eventsByDate, selectedDate, getScheduleForDate]);
 
   const handlePrevMonth = useCallback(() => {
     setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1));
@@ -120,8 +127,10 @@ const Calendar: React.FC<CalendarProps> = ({ schedule, events, onToggleSubscript
   const selectedDayEvents = useMemo(() => {
     if (!selectedDate) return { schedule: [], events: [] };
     const dateKey = selectedDate.toDateString();
-    return eventsByDate.get(dateKey) || { schedule: [], events: [] };
-  }, [selectedDate, eventsByDate]);
+    const eventsForDate = eventsByDate.get(dateKey) || [];
+    const scheduleForDate = getScheduleForDate(selectedDate);
+    return { schedule: scheduleForDate, events: eventsForDate };
+  }, [selectedDate, eventsByDate, getScheduleForDate]);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('ru-RU', {
