@@ -62,25 +62,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const devLogin = async (options?: { isStudent?: boolean; selectedGraphId?: string; universityGraphId?: string }) => {
         try {
-            // Пробуем сначала новый dev-auth endpoint
-            let response = await fetch('/api/dev-auth', {
+            // 1. Пытаемся сначала получить РЕАЛЬНЫЙ токен от бэкенда через /api/dev-login
+            //    Если бэкенд настроен на код 'dev-local-login', все запросы будут
+            //    работать как при обычной авторизации.
+            let response = await fetch('/api/dev-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
-                    role: 'user',
-                    ...options,
-                }),
             });
 
-            // Если новый endpoint не работает, пробуем старый
+            // 2. Если dev-login недоступен или вернул ошибку — fallback на чисто фронтовый dev-auth
             if (!response.ok) {
-                response = await fetch('/api/dev-login', {
+                response = await fetch('/api/dev-auth', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    body: JSON.stringify({
+                        role: 'user',
+                        ...options,
+                    }),
                 });
             }
 

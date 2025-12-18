@@ -87,6 +87,20 @@ const handle401Error = () => {
     }, 100); // Небольшая задержка для отображения уведомления
 };
 
+// Определяем, нужно ли обрабатывать 401 как критическую ошибку
+const shouldHandle401 = (error: any) => {
+    // Если в localStorage лежит dev-токен от /api/dev-auth,
+    // игнорируем все 401 — это локальный режим без реального бэкенда.
+    if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('accessToken');
+        if (token && token.startsWith('dev-token-')) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
 // Response interceptor для обработки 401 ошибок
 axiosAuth.interceptors.response.use(
     (response) => {
@@ -94,7 +108,7 @@ axiosAuth.interceptors.response.use(
     },
     (error) => {
         // Проверяем, если статус ответа 401
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401 && shouldHandle401(error)) {
             handle401Error();
         }
         
@@ -109,7 +123,7 @@ axiosClassic.interceptors.response.use(
     },
     (error) => {
         // Проверяем, если статус ответа 401
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401 && shouldHandle401(error)) {
             handle401Error();
         }
         
