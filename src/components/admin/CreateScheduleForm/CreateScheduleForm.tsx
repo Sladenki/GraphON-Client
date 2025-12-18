@@ -33,7 +33,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
             ? (rawGlobalId._id ?? rawGlobalId.$oid ?? '')
             : (rawGlobalId ?? '');
 
-    const [formData, setFormData] = useState<Omit<ICreateScheduleDto, 'roomNumber'> & { roomNumber: number | '' }>({
+    const [formData, setFormData] = useState<ICreateScheduleDto>({
         graphId: '',
         name: '',
         type: ScheduleType.LECTURE,
@@ -56,11 +56,7 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
 
     const { mutate: createSchedule, isPending } = useMutation({
         mutationFn: () => {
-            const payload = {
-                ...formData,
-                roomNumber: typeof formData.roomNumber === 'string' ? (parseInt(formData.roomNumber) || 0) : formData.roomNumber,
-            } as ICreateScheduleDto;
-            return ScheduleService.createSchedule(payload);
+            return ScheduleService.createSchedule(formData);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['schedules'] });
@@ -90,16 +86,16 @@ export const CreateScheduleForm = ({ globalGraphId }: CreateScheduleFormProps) =
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: name === 'roomNumber' ? value : value
+            [name]: value
         }));
     };
 
-    const isFormValid = formData.graphId && 
-        formData.name && 
-        formData.type && 
-        ((typeof formData.roomNumber === 'string' ? parseInt(formData.roomNumber) : formData.roomNumber) > 0) && 
-        formData.timeFrom && 
-        formData.timeTo;
+    const isFormValid = !!formData.graphId && 
+        !!formData.name && 
+        !!formData.type && 
+        !!formData.roomNumber &&
+        !!formData.timeFrom && 
+        !!formData.timeTo;
 
     return (
         <AdminForm

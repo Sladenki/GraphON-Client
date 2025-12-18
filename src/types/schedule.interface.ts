@@ -7,7 +7,7 @@ export interface ScheduleItem {
     _id: string;
     name: string;
     type: ScheduleType;
-    roomNumber: number;
+    roomNumber: string;
     dayOfWeek: number;
     timeFrom: string;
     timeTo: string;
@@ -39,7 +39,7 @@ export interface ISchedule {
     graphId: string;
     name: string;
     type: ScheduleType;
-    roomNumber: number;
+    roomNumber: string;
     dayOfWeek: number;
     timeFrom: string;
     timeTo: string;

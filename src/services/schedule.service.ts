@@ -5,7 +5,7 @@ export interface ICreateScheduleDto {
     graphId: string;
     name: string;
     type: string;
-    roomNumber: number;
+    roomNumber: string;
     dayOfWeek: number | number[];
     timeFrom: string;
     timeTo: string;
