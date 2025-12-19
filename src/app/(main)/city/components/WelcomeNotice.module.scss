@@ -62,7 +62,7 @@
     border-radius: 20px;
   }
   
-  [data-theme="dark"],
+  [data-theme="dark"] &,
   html.dark & {
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     box-shadow: 
@@ -76,6 +76,26 @@
     
     &::after {
       background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+    }
+    
+    // Стили для текста в темной теме
+    .content {
+      p {
+        color: #e2e8f0 !important; // Более светлый цвет для лучшей видимости
+      }
+      
+      strong {
+        color: #f1f5f9 !important;
+        background: linear-gradient(135deg, #c084fc 0%, #e9d5ff 100%) !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+      }
+    }
+    
+    .footer {
+      border-top-color: rgba(192, 132, 252, 0.2) !important;
+      color: #e2e8f0 !important; // Более светлый цвет для лучшей видимости
     }
   }
 }
@@ -202,7 +222,7 @@
   p {
     font-size: 15px;
     line-height: 1.7;
-    color: #64748b;
+    color: #475569; // Более темный цвет для лучшей контрастности в светлой теме
     margin: 0 0 14px 0;
     
     &:last-child {
@@ -215,27 +235,12 @@
   }
   
   strong {
-    color: #1e293b;
+    color: #1e293b; // Темный цвет для светлой темы
     font-weight: 600;
-    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); // Более насыщенный градиент для светлой темы
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-  
-  [data-theme="dark"],
-  html.dark & {
-    p {
-      color: #cbd5e1;
-    }
-    
-    strong {
-      color: #f1f5f9;
-      background: linear-gradient(135deg, #c084fc 0%, #e9d5ff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
   }
 }
 
@@ -250,13 +255,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  
-  [data-theme="dark"],
-  html.dark & {
-    border-top-color: rgba(192, 132, 252, 0.2);
-    color: #cbd5e1 !important;
-  }
 }
+
 
 .confirmButton {
   position: relative;
