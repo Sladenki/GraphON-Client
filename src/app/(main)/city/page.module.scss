@@ -106,11 +106,12 @@
   position: absolute;
   left: 20px;
   bottom: calc(10px + env(safe-area-inset-bottom));
-  z-index: 20;
+  z-index: 2200; // Выше BottomMenu (z-index: 2100), чтобы не перекрывалась
   font-size: 11px;
   line-height: 1.3;
-  color: rgba(255, 255, 255, 0.8);
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+  // Для светлой темы - темный текст с легкой тенью
+  color: rgba(30, 41, 59, 0.85); // Темно-серый для светлой темы
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 4px rgba(255, 255, 255, 0.6);
   pointer-events: auto;
 
   a {
@@ -122,6 +123,18 @@
       text-decoration: underline;
       opacity: 1;
     }
+  }
+  
+  // На мобильных устройствах добавляем отступ снизу для BottomMenu
+  @media (max-width: 1000px) {
+    bottom: calc(60px + env(safe-area-inset-bottom)); // Высота BottomMenu (~50px) + отступ
+  }
+  
+  // Для темной темы - белый текст с темной тенью
+  [data-theme="dark"] &,
+  html.dark & {
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
   }
 }
 
@@ -446,6 +459,7 @@
 
   .mapAttribution {
     font-size: 10px;
+    bottom: calc(60px + env(safe-area-inset-bottom)); // Отступ для BottomMenu
   }
 }
 
