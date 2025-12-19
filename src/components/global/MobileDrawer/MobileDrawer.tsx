@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { MapPinned, X, FileText } from 'lucide-react'
+import { MapPinned, X, FileText, HelpCircle } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, mobileDrawerItems } from '@/constants/sidebar'
 import { Settings } from 'lucide-react'
@@ -141,6 +141,10 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
           <div className={styles.themeToggleContainer}>
             <ThemeToggle size="sm" />
           </div>
+          <Link href="/help" className={styles.helpLink} onClick={handleCloseDrawer}>
+            <HelpCircle size={15} />
+            <span>Помощь</span>
+          </Link>
           <Link href="/docs" className={styles.docsLink} onClick={handleCloseDrawer}>
             <FileText size={15} />
             <span>Документы</span>

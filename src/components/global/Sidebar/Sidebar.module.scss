@@ -138,6 +138,7 @@
   padding: 8px 0;
 }
 
+.helpLink,
 .docsLink {
   display: flex;
   align-items: center;
@@ -193,6 +194,7 @@ html[data-theme="dark"] {
     color: var(--main-text);
   }
 
+  .helpLink,
   .docsLink {
     border-color: rgba(var(--main-Color), 0.2);
     opacity: 0.8;

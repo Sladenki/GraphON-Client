@@ -191,6 +191,7 @@
   margin-bottom: 12px;
 }
 
+.helpLink,
 .docsLink {
   display: flex;
   align-items: center;
@@ -228,6 +229,7 @@
 }
 
 @media (hover: none) {
+  .helpLink,
   .docsLink {
     &:hover {
       background: transparent;

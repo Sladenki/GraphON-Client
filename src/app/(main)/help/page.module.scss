@@ -1,0 +1,179 @@
+.helpPage {
+  min-height: 100vh;
+  background: var(--background-color);
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  background: var(--block-color);
+  color: var(--main-text);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.iconWrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(var(--main-Color), 0.1) 0%, rgba(var(--main-Color), 0.2) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(var(--main-Color));
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--main-text);
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--main-text);
+  opacity: 0.7;
+  margin: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.messageBox {
+  background: var(--block-color);
+  border-radius: 16px;
+  padding: 32px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  text-align: center;
+}
+
+.message {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--main-text);
+  margin: 0;
+  opacity: 0.9;
+}
+
+.telegramLink {
+  width: 100%;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, #0088cc 0%, #229ED9 100%);
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 
+    0 8px 16px rgba(0, 136, 204, 0.25),
+    0 4px 8px rgba(0, 136, 204, 0.15);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 24px rgba(0, 136, 204, 0.3),
+      0 6px 12px rgba(0, 136, 204, 0.2);
+    background: linear-gradient(135deg, #0099dd 0%, #33aae7 100%);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 
+      0 6px 12px rgba(0, 136, 204, 0.25),
+      0 3px 6px rgba(0, 136, 204, 0.15);
+  }
+
+  &:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+}
+
+.telegramIcon {
+  flex-shrink: 0;
+}
+
+.buttonText {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+
+// Мобильная версия
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .messageBox {
+    padding: 24px;
+  }
+
+  .message {
+    font-size: 15px;
+  }
+
+  .telegramLink {
+    padding: 16px 24px;
+    font-size: 15px;
+  }
+}
+
