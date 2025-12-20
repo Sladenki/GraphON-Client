@@ -143,9 +143,9 @@
 /* Mobile Adaptations */
 @media (max-width: 768px) {
   .sheet {
-    /* FooterPopUp теперь закрывает BottomMenu полностью */
+    /* FooterPopUp должен оставлять место для BottomMenu */
     max-height: 85vh;
-    bottom: 0; /* Без отступа снизу */
+    bottom: calc(60px + env(safe-area-inset-bottom, 0)); /* Отступ для BottomMenu (~50px + padding) */
     transform: translateY(100%); /* Скрываем полностью снизу */
   }
   
@@ -163,13 +163,13 @@
     transform: translateY(0%);
   }
 
-  /* Учитываем высоту BottomMenu для footer и content */
+  /* Footer уже учитывает BottomMenu через padding, но можно оставить для дополнительного пространства */
   .footer {
-    padding-bottom: calc(12px + 50px + env(safe-area-inset-bottom, 0));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
   }
 
   .content {
-    padding-bottom: calc(16px + 70px + env(safe-area-inset-bottom, 0));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
   }
 }
 
