@@ -143,7 +143,7 @@ export default function FooterPopUp({
     ...(isDragging && {
       transform: isDesktop 
         ? `translate(-50%, ${dragTranslateY}px)`
-        : `translateY(${dragTranslateY}px)`,
+        : `translate(-50%, calc(-50% + ${dragTranslateY}px))`, // Для центрированного модального окна на мобильных
     }),
     maxHeight,
     ...(maxWidth && { maxWidth }),

@@ -143,27 +143,45 @@
 /* Mobile Adaptations */
 @media (max-width: 768px) {
   .sheet {
-    /* FooterPopUp должен оставлять место для BottomMenu */
+    /* Центрированное модальное окно на мобильных */
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    width: calc(100% - 32px);
+    max-width: 480px;
     max-height: 85vh;
-    bottom: calc(60px + env(safe-area-inset-bottom, 0)); /* Отступ для BottomMenu (~50px + padding) */
-    transform: translateY(100%); /* Скрываем полностью снизу */
+    border-radius: 20px; /* Все углы скруглены */
+    transform: translate(-50%, calc(-50% + 20px));
+    opacity: 0;
+    transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   
   .sheetOpen {
-    transform: translateY(0%);
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+
+  /* Скрываем handle на мобильных для центрированного окна */
+  .sheetHandleArea {
+    display: none;
   }
 
   .inContainerSheet {
-    left: 0;
-    right: 0;
-    width: 100%;
-    transform: translateY(100%);
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    width: calc(100% - 32px);
+    max-width: 480px;
+    transform: translate(-50%, calc(-50% + 20px));
+    opacity: 0;
   }
   .inContainerSheet.sheetOpen {
-    transform: translateY(0%);
+    transform: translate(-50%, -50%);
+    opacity: 1;
   }
 
-  /* Footer уже учитывает BottomMenu через padding, но можно оставить для дополнительного пространства */
   .footer {
     padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
   }
@@ -188,6 +206,10 @@
   .sheet {
     background: #ffffff;
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+    
+    @media (max-width: 768px) {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); /* Тень для центрированного модального окна */
+    }
   }
   
   .header {
@@ -236,6 +258,10 @@
   .sheet {
     background: #1e2028;
     box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.6);
+    
+    @media (max-width: 768px) {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7); /* Тень для центрированного модального окна */
+    }
   }
   
   .header {
