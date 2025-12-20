@@ -448,7 +448,7 @@
 // Объединенные медиа-запросы для оптимизации
 @media (max-width: 480px) {
   .filterButton {
-    bottom: calc(16px + env(safe-area-inset-bottom));
+    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 60px));
     right: calc(16px + env(safe-area-inset-right));
     width: 52px;
     height: 52px;
@@ -462,18 +462,18 @@
     }
   }
   .filterButtonWithMenu {
-    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 44px));
+    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 70px));
   }
   
   .listButton {
-    bottom: calc(16px + env(safe-area-inset-bottom));
+    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 60px));
     right: calc(16px + env(safe-area-inset-right) + 52px + 10px);
     width: 52px;
     height: 52px;
     z-index: 9999;
   }
   .listButtonWithMenu {
-    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 44px));
+    bottom: calc(16px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 70px));
   }
 
   .mapAttribution {
@@ -510,7 +510,7 @@
   }
   
   .filterButton {
-    bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 60px)) !important;
     right: calc(12px + env(safe-area-inset-right)) !important;
     width: 48px;
     height: 48px;
@@ -529,11 +529,11 @@
     }
   }
   .filterButtonWithMenu {
-    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 70px)) !important;
   }
   
   .listButton {
-    bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 60px)) !important;
     right: calc(12px + env(safe-area-inset-right) + 48px + 8px) !important;
     width: 48px;
     height: 48px;
@@ -545,7 +545,7 @@
     }
   }
   .listButtonWithMenu {
-    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+    bottom: calc(12px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 70px)) !important;
   }
 }
 
@@ -560,7 +560,7 @@
   }
   
   .filterButton {
-    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 60px)) !important;
     right: calc(8px + env(safe-area-inset-right)) !important;
     width: 44px;
     height: 44px;
@@ -579,11 +579,11 @@
     }
   }
   .filterButtonWithMenu {
-    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 70px)) !important;
   }
   
   .listButton {
-    bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 60px)) !important;
     right: calc(8px + env(safe-area-inset-right) + 44px + 8px) !important;
     width: 44px;
     height: 44px;
@@ -595,7 +595,7 @@
     }
   }
   .listButtonWithMenu {
-    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 50px)) !important;
+    bottom: calc(8px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 70px)) !important;
   }
   
   .loadingOverlay {
@@ -623,7 +623,7 @@
   }
   
   .filterButton {
-    bottom: calc(6px + env(safe-area-inset-bottom)) !important;
+    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 60px)) !important;
     right: calc(6px + env(safe-area-inset-right)) !important;
     width: 40px;
     height: 40px;
@@ -642,11 +642,11 @@
     }
   }
   .filterButtonWithMenu {
-    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 76px)) !important;
+    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 80px)) !important;
   }
   
   .listButton {
-    bottom: calc(6px + env(safe-area-inset-bottom)) !important;
+    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 60px)) !important;
     right: calc(6px + env(safe-area-inset-right) + 40px + 6px) !important;
     width: 40px;
     height: 40px;
@@ -658,7 +658,7 @@
     }
   }
   .listButtonWithMenu {
-    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 76px)) !important;
+    bottom: calc(6px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 80px)) !important;
   }
   
   .searchBox {
