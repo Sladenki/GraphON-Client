@@ -92,12 +92,14 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({ children }) => {
         {/* Заголовок */}
         <div className={styles.header}>
           <div className={styles.title}>
-            <Logo 
-              width={120}
-              height={40}
-              clickable={false}
-              className={styles.logo}
-            />
+            <Link href="/events" onClick={handleCloseDrawer}>
+              <Logo 
+                width={120}
+                height={40}
+                clickable={false}
+                className={styles.logo}
+              />
+            </Link>
           </div>
           <button 
             className={styles.closeButton}
