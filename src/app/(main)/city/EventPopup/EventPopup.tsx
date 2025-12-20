@@ -1,12 +1,15 @@
 "use client";
 
-import { useCallback } from "react";
-import { MapPin, Calendar, Users, Clock, ArrowLeft, Share2 } from "lucide-react";
+import { useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { MapPin, Calendar, Users, Clock, ArrowLeft, Share2, UserPlus, UserX, LogIn } from "lucide-react";
 import FooterPopUp from "@/components/global/FooterPopUp";
 import ActionButton from "@/components/ui/ActionButton";
 import styles from "./EventPopup.module.scss";
 import type { CityEvent } from "../mockEvents";
 import { getCategoryIcon, getCategoryColor } from "../constants/categories";
+import { useEventRegistration } from "@/hooks/useEventRegistration";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface EventPopupProps {
   event: CityEvent | null;
@@ -51,6 +54,45 @@ export default function EventPopup({
   onBack,
   portalContainer
 }: EventPopupProps) {
+  const router = useRouter();
+  const { isLoggedIn } = useAuth();
+  
+  // Хук для регистрации на событие
+  const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
+    event?.id || '',
+    event?.isAttended
+  );
+
+  // Проверка, прошло ли мероприятие
+  const isEventPast = useMemo(() => {
+    if (!event || event.isDateTbd) return false;
+    const eventDate = new Date(event.eventDate);
+    const now = new Date();
+    // Если есть время окончания, используем его, иначе используем время начала или конец дня
+    if (event.timeTo) {
+      const [hours, minutes] = event.timeTo.split(':').map(Number);
+      eventDate.setHours(hours, minutes, 0, 0);
+    } else if (event.timeFrom) {
+      const [hours, minutes] = event.timeFrom.split(':').map(Number);
+      eventDate.setHours(hours, minutes, 0, 0);
+    } else {
+      eventDate.setHours(23, 59, 59, 999); // Конец дня
+    }
+    return eventDate < now;
+  }, [event]);
+
+  // Обработчик регистрации
+  const handleRegistration = useCallback(async () => {
+    if (!isLoggedIn) {
+      router.push('/signIn');
+      return;
+    }
+    try {
+      await toggleRegistration();
+    } catch (error) {
+      console.error('Registration error:', error);
+    }
+  }, [isLoggedIn, router, toggleRegistration]);
 
   // Функция открытия маршрута в Яндекс.Картах
   const openInYandexMaps = () => {
@@ -128,12 +170,37 @@ export default function EventPopup({
         </button>
       )}
       <ActionButton
-        label="Записаться"
-        icon={<Calendar size={18} />}
-        variant="primary"
-        onClick={() => {
-          // TODO: Implement registration logic
-        }}
+        label={
+          isEventPast 
+            ? 'Запись закончена' 
+            : isLoggedIn
+              ? (isRegistered ? 'Отменить запись' : 'Записаться')
+              : 'Необходимо войти'
+        }
+        icon={
+          isLoading ? (
+            <div style={{ 
+              width: 18, 
+              height: 18, 
+              border: '2px solid currentColor', 
+              borderTopColor: 'transparent', 
+              borderRadius: '50%', 
+              animation: 'spin 0.6s linear infinite',
+              display: 'inline-block'
+            }} />
+          ) : isEventPast ? (
+            <Clock size={18} />
+          ) : !isLoggedIn ? (
+            <LogIn size={18} />
+          ) : isRegistered ? (
+            <UserX size={18} />
+          ) : (
+            <UserPlus size={18} />
+          )
+        }
+        variant={isEventPast ? 'info' : (isRegistered ? 'danger' : 'primary')}
+        onClick={handleRegistration}
+        disabled={isLoading || isEventPast}
         className={styles.registerButton}
       />
       <button

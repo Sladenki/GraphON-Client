@@ -105,6 +105,7 @@ function transformApiEventToCityEvent(apiEvent: any, topicMap: Map<string, strin
     timeFrom: apiEvent.timeFrom,
     timeTo: apiEvent.timeTo,
     regedUsers: apiEvent.regedUsers || 0,
+    isAttended: apiEvent.isAttended || false,
   };
 }
 

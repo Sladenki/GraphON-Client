@@ -15,6 +15,7 @@ export interface CityEventAPI {
   timeFrom?: string; // "19:00"
   timeTo?: string; // "21:00"
   regedUsers: number;
+  isAttended?: boolean; // Флаг регистрации пользователя на событие
 }
 
 /**
