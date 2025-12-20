@@ -426,6 +426,25 @@
   right: calc(24px + 56px + 12px);
 }
 
+// Медиа-запрос для планшетов и средних экранов (480px - 1000px)
+@media (min-width: 481px) and (max-width: 1000px) {
+  .filterButton {
+    bottom: calc(24px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 80px)); // Отступ для BottomMenu
+    z-index: 9999;
+  }
+  .filterButtonWithMenu {
+    bottom: calc(24px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 80px));
+  }
+  
+  .listButton {
+    bottom: calc(24px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 80px)); // Отступ для BottomMenu
+    z-index: 9999;
+  }
+  .listButtonWithMenu {
+    bottom: calc(24px + env(safe-area-inset-bottom) + var(--bottom-menu-offset, 80px));
+  }
+}
+
 // Объединенные медиа-запросы для оптимизации
 @media (max-width: 480px) {
   .filterButton {
