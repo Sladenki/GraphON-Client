@@ -101,8 +101,8 @@ export default function SubsList() {
   if (isEmpty) {
     return (
       <EmptyState
-        message="Нет подписанных мероприятий"
-        subMessage="Подпишитесь на интересные группы, чтобы видеть их события здесь"
+        message="Мероприятий нет"
+        subMessage="В подписанных группах пока нет мероприятий"
         icon={CalendarX}
       />
     )
