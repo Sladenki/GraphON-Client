@@ -1,0 +1,195 @@
+.content {
+  padding: 0;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--main-text);
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(var(--main-Color), 0.08);
+    transform: translateX(4px);
+  }
+
+  &:active {
+    transform: translateX(2px);
+    background-color: rgba(var(--main-Color), 0.12);
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 16px;
+    gap: 14px;
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: translateX(2px);
+    }
+  }
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.menuTitle {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--main-text);
+  transition: color 0.2s ease;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(var(--main-Color), 0.1);
+  margin: 16px 0;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.optionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-radius: 12px;
+
+  @media (max-width: 768px) {
+    padding: 12px 16px;
+  }
+}
+
+.optionLabel {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--main-text);
+}
+
+// Вспомогательные действия (горизонтально)
+.secondaryActions {
+  display: flex;
+  gap: 8px;
+  padding: 0 20px 12px 20px;
+
+  @media (max-width: 768px) {
+    padding: 0 16px 10px 16px;
+    gap: 6px;
+  }
+}
+
+.secondaryLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: rgba(var(--main-text), 0.7);
+  background: rgba(var(--main-Color), 0.04);
+  border: 1px solid rgba(var(--main-Color), 0.08);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  flex: 1;
+  justify-content: center;
+
+  svg {
+    color: rgba(var(--main-Color), 0.6);
+    width: 16px;
+    height: 16px;
+  }
+
+  span {
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.06);
+    color: rgba(var(--main-text), 0.85);
+    border-color: rgba(var(--main-Color), 0.12);
+
+    svg {
+      color: rgba(var(--main-Color), 0.75);
+    }
+  }
+
+  &:active {
+    background: rgba(var(--main-Color), 0.08);
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 12px;
+    gap: 6px;
+
+    span {
+      font-size: 12px;
+    }
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 768px) {
+  .menuItem {
+    // Упрощенные transitions на мобильных
+    transition: background-color 0.15s ease;
+
+    // Отключаем hover эффекты
+    @media (hover: none) {
+      &:hover {
+        background-color: transparent;
+        transform: none;
+      }
+    }
+  }
+
+  .secondaryLink {
+    transition: background-color 0.15s ease, transform 0.1s ease;
+
+    @media (hover: none) {
+      &:hover {
+        background: rgba(var(--main-Color), 0.04);
+        color: rgba(var(--main-text), 0.7);
+        border-color: rgba(var(--main-Color), 0.08);
+      }
+    }
+  }
+}
+

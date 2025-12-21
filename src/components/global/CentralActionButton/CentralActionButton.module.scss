@@ -1,0 +1,88 @@
+.centralButton {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgb(var(--main-Color));
+  border: 2px solid var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  transform: translateY(-6px);
+  z-index: 10;
+
+  &:hover {
+    transform: translateY(-7px);
+    background: rgba(var(--main-Color), 0.9);
+  }
+
+  &:active {
+    transform: translateY(-5px) scale(0.96);
+    transition: transform 0.1s ease;
+  }
+
+  @media (max-width: 480px) {
+    width: 44px;
+    height: 44px;
+    transform: translateY(-5px);
+
+    &:hover {
+      transform: translateY(-6px);
+    }
+
+    &:active {
+      transform: translateY(-4px) scale(0.96);
+    }
+  }
+}
+
+.buttonContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--background-color);
+  width: 100%;
+  height: 100%;
+
+  svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2;
+  }
+
+  @media (max-width: 480px) {
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 768px) {
+  .centralButton {
+    transition: transform 0.15s ease, background-color 0.15s ease;
+
+    &:hover {
+      transform: translateY(-6px);
+      background: rgb(var(--main-Color));
+    }
+
+    &:active {
+      transform: translateY(-5px) scale(0.96);
+    }
+  }
+}
+
+// Отключение hover на touch устройствах
+@media (hover: none) {
+  .centralButton {
+    &:hover {
+      transform: translateY(-6px);
+      background: rgb(var(--main-Color));
+    }
+  }
+}
+
