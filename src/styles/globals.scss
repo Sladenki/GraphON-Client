@@ -121,6 +121,11 @@ html.dark {
   }
 }
 
+html {
+  // Резервируем место для скроллбара, чтобы контент не сдвигался при его скрытии
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
   transition: 1s all ease;
