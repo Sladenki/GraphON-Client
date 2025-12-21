@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { Heart, Settings, FileText, HelpCircle, Network } from 'lucide-react'
+import { Heart, Settings, FileText, HelpCircle, Pencil } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
-import { CITY_GRAPH_ID, GRAPHS_ROUTE } from '@/constants/sidebar'
 import { useSelectedGraphId } from '@/stores/useUIStore'
+import { UserRole } from '@/types/user.interface'
 import Link from 'next/link'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import FooterPopUp from '../FooterPopUp/FooterPopUp'
@@ -23,18 +23,6 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   // Блокируем скролл когда попап открыт
   useScrollLock(isOpen)
 
-  const normalizeGraphId = (raw: any): string | null => {
-    if (!raw) return null
-    if (typeof raw === 'string') return raw
-    if (typeof raw === 'object') {
-      return raw._id ?? raw.$oid ?? null
-    }
-    return null
-  }
-
-  const effectiveGraphId = storeSelectedGraphId || normalizeGraphId(user?.selectedGraphId)
-  const isCityGraph = effectiveGraphId === CITY_GRAPH_ID
-
   // Определяем доступ к управлению
   const hasManageAccess = (() => {
     if (!user) return false
@@ -42,6 +30,9 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
     const managedIds = anyUser?.managed_graph_id ?? anyUser?.managedGraphIds ?? []
     return Array.isArray(managedIds) && managedIds.length > 0
   })()
+
+  // Определяем доступ к админке
+  const hasAdminAccess = user?.role !== UserRole.User
 
   // Пункты меню
   const menuItems = useMemo(() => {
@@ -58,14 +49,14 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
       })
     }
 
-    // Графы (убрали "Город" из MorePopup)
-    if (!isCityGraph) {
+    // Админка (только если есть доступ)
+    if (hasAdminAccess) {
       items.push({
-        id: 'graphs',
-        icon: <Network color="rgb(var(--main-Color))" size={20} strokeWidth={1.5} />,
-        title: 'Графы',
-        path: GRAPHS_ROUTE,
-        forAuthUsers: false,
+        id: 'admin',
+        icon: <Pencil color="rgb(var(--main-Color))" size={20} strokeWidth={1.5} />,
+        title: 'Админка',
+        path: '/admin/',
+        forAuthUsers: true,
       })
     }
 
@@ -81,7 +72,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
     }
 
     return items
-  }, [isLoggedIn, hasManageAccess, isCityGraph])
+  }, [isLoggedIn, hasManageAccess, hasAdminAccess])
 
   return (
     <FooterPopUp
@@ -119,7 +110,6 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
         {/* Дополнительные опции */}
         <div className={styles.options}>
           <div className={styles.optionRow}>
-            <span className={styles.optionLabel}>Тема</span>
             <ThemeToggle size="sm" />
           </div>
 

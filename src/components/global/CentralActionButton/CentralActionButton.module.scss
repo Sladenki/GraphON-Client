@@ -10,30 +10,28 @@
   justify-content: center;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
-  transform: translateY(-6px);
   z-index: 10;
 
   &:hover {
-    transform: translateY(-7px);
+    transform: scale(1.05);
     background: rgba(var(--main-Color), 0.9);
   }
 
   &:active {
-    transform: translateY(-5px) scale(0.96);
+    transform: scale(0.96);
     transition: transform 0.1s ease;
   }
 
   @media (max-width: 480px) {
     width: 44px;
     height: 44px;
-    transform: translateY(-5px);
 
     &:hover {
-      transform: translateY(-6px);
+      transform: scale(1.05);
     }
 
     &:active {
-      transform: translateY(-4px) scale(0.96);
+      transform: scale(0.96);
     }
   }
 }
@@ -66,12 +64,12 @@
     transition: transform 0.15s ease, background-color 0.15s ease;
 
     &:hover {
-      transform: translateY(-6px);
+      transform: scale(1.05);
       background: rgb(var(--main-Color));
     }
 
     &:active {
-      transform: translateY(-5px) scale(0.96);
+      transform: scale(0.96);
     }
   }
 }
@@ -80,7 +78,7 @@
 @media (hover: none) {
   .centralButton {
     &:hover {
-      transform: translateY(-6px);
+      transform: none;
       background: rgb(var(--main-Color));
     }
   }
