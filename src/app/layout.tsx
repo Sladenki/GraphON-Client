@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="ru" className={`${inter.variable} ${orbitron.variable}`} suppressHydrationWarning>
       <head>
         {/* Telegram WebApp Script - загружаем синхронно для корректной работы */}
-        <script src="https://telegram.org/js/telegram-web-app.js" />
+        {/* <script src="https://telegram.org/js/telegram-web-app.js" /> */}
         
         <script
           dangerouslySetInnerHTML={{
