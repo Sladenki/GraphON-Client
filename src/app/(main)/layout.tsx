@@ -14,6 +14,7 @@ import { useSelectedGraphId, useSetSelectedGraphId } from '@/stores/useUIStore';
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useAuth } from '@/providers/AuthProvider';
 import StudentStatusDialog from '@/components/global/StudentStatusDialog/StudentStatusDialog';
+import FeedbackModal from '@/components/global/FeedbackModal/FeedbackModal';
 import { NON_STUDENT_DEFAULT_GRAPH_ID } from '@/constants/nonStudentDefaults';
 
 export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -156,6 +157,9 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
   return (
     <HeroUIProvider>
       <Toaster position="top-right" richColors />
+
+      {/* Модальное окно обратной связи - показывается один раз */}
+      <FeedbackModal />
 
       {/* Диалог выбора статуса студента - показывается первым */}
       <StudentStatusDialog

@@ -14,6 +14,8 @@ interface PopUpWrapperProps {
   height?: number | string;
   hideCloseButton?: boolean;
   preventClose?: boolean;
+  overlayClassName?: string;
+  contentClassName?: string;
 }
 
 const PopUpWrapper: FC<PopUpWrapperProps> = ({ 
@@ -23,7 +25,9 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   width = 'auto',
   height = 'auto',
   hideCloseButton = false,
-  preventClose = false
+  preventClose = false,
+  overlayClassName = '',
+  contentClassName = '',
 }) => {
   const modalContainer = useModalManager();
   
@@ -67,8 +71,8 @@ const PopUpWrapper: FC<PopUpWrapperProps> = ({
   if (!isOpen || !modalContainer) return null;
 
   return createPortal(
-    <div className={styles.overlay} onClick={handleOverlayClick}>
-      <div className={styles.content} style={{ width, height }}>
+    <div className={`${styles.overlay} ${overlayClassName}`} onClick={handleOverlayClick}>
+      <div className={`${styles.content} ${contentClassName}`} style={{ width, height }}>
         {!hideCloseButton && (
           <button 
             onClick={onClose} 

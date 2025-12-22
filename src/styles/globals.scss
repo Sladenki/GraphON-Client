@@ -230,4 +230,6 @@ html.dark * {
 //     background: rgba(0, 0, 0, 0.6) !important;
 //   }
 // }
+
+// (FeedbackModal) Убрали глобальный селектор с :has() — переопределения делаются через props `contentClassName` в PopUpWrapper.
   
