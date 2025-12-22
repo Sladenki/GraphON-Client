@@ -3,8 +3,8 @@
   width: 50px;
   height: 50px;
   border-radius: 16px;
-  background: rgba(var(--main-Color), 0.08);
-  border: 1px solid rgba(var(--main-Color), 0.2);
+  background: transparent;
+  border: 1px solid transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,10 +13,20 @@
   z-index: 10;
   margin-top: -4px;
 
+  &.active {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.2);
+  }
+
   &:hover {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.2);
+    transform: translateY(-1px);
+  }
+
+  &.active:hover {
     background: rgba(var(--main-Color), 0.12);
     border-color: rgba(var(--main-Color), 0.3);
-    transform: translateY(-1px);
   }
 
   &:active {
@@ -86,8 +96,13 @@
 
     &:hover {
       transform: translateY(-1px);
-      background: rgba(var(--main-Color), 0.08);
-      border-color: rgba(var(--main-Color), 0.2);
+      background: rgba(var(--main-Color), 0.06);
+      border-color: rgba(var(--main-Color), 0.15);
+    }
+
+    &.active:hover {
+      background: rgba(var(--main-Color), 0.1);
+      border-color: rgba(var(--main-Color), 0.25);
     }
 
     &:active {

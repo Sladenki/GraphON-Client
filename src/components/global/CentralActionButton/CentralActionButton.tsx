@@ -5,13 +5,14 @@ import { Network, MapPinned } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useSelectedGraphId } from '@/stores/useUIStore';
 import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE } from '@/constants/sidebar';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import styles from './CentralActionButton.module.scss';
 
 const CentralActionButton: React.FC = () => {
   const { user } = useAuth();
   const storeSelectedGraphId = useSelectedGraphId();
   const router = useRouter();
+  const pathname = usePathname();
 
   const normalizeGraphId = (raw: any): string | null => {
     if (!raw) return null;
@@ -24,15 +25,16 @@ const CentralActionButton: React.FC = () => {
 
   const effectiveGraphId = storeSelectedGraphId || normalizeGraphId(user?.selectedGraphId);
   const isCityGraph = effectiveGraphId === CITY_GRAPH_ID;
+  const targetPath = isCityGraph ? CITY_ROUTE : GRAPHS_ROUTE;
+  const isActive = pathname === targetPath;
 
   const handleClick = () => {
-    const targetPath = isCityGraph ? CITY_ROUTE : GRAPHS_ROUTE;
     router.push(targetPath);
   };
 
   return (
     <button 
-      className={styles.centralButton}
+      className={`${styles.centralButton} ${isActive ? styles.active : ''}`}
       onClick={handleClick}
       aria-label={isCityGraph ? 'Город' : 'Графы'}
     >
