@@ -1,63 +1,20 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import styles from "./MobileBottomNav.module.scss";
 import Link from "next/link";
-import { Newspaper, CalendarCheck2, Users, MoreHorizontal } from "lucide-react";
+import { Newspaper, Heart, Users, MoreHorizontal } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
-import { UserRole } from "@/types/user.interface";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import CentralActionButton from "../CentralActionButton/CentralActionButton";
 import MorePopup from "../MorePopup/MorePopup";
 
 const MobileBottomNav: React.FC = () => {
-  const { user, isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuth();
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 1000px)');
   const [isMoreOpen, setIsMoreOpen] = useState(false);
-
-  // Определяем доступ к админке
-  const hasAdminAccess = user?.role !== UserRole.User;
-
-  // Пункты навигации
-  const navItems = useMemo(() => {
-    const items = [
-      {
-        id: 'events',
-        icon: <Newspaper size={20} strokeWidth={1.8} />,
-        title: 'Мероприятия',
-        path: '/events/',
-        forAuthUsers: false,
-      },
-      {
-        id: 'schedule',
-        icon: <CalendarCheck2 size={20} strokeWidth={1.8} />,
-        title: 'Расписание',
-        path: '/schedule/',
-        forAuthUsers: true,
-      },
-      {
-        id: 'groups',
-        icon: <Users size={20} strokeWidth={1.8} />,
-        title: 'Группы',
-        path: '/groups/',
-        forAuthUsers: false,
-      },
-    ];
-
-    return items.filter(({ forAuthUsers, path }) => {
-      // Базовая проверка авторизации
-      let shouldInclude = !forAuthUsers || isLoggedIn;
-
-      // Для админки проверяем роль пользователя
-      if (path === '/admin/' && !hasAdminAccess) {
-        shouldInclude = false;
-      }
-
-      return shouldInclude;
-    });
-  }, [isLoggedIn, hasAdminAccess]);
 
   if (!isMobile) return null;
 
@@ -80,20 +37,22 @@ const MobileBottomNav: React.FC = () => {
             </Link>
           </li>
 
-          {/* Расписание */}
-          <li className={styles.navItem}>
-            <Link 
-              href="/schedule/" 
-              className={`${styles.navLink} ${pathname === '/schedule/' ? styles.active : ""}`} 
-              aria-label="Расписание" 
-              aria-current={pathname === '/schedule/' ? "page" : undefined}
-            >
-              <span className={styles.iconWrapper}>
-                <CalendarCheck2 size={18} strokeWidth={1.5} />
-              </span>
-              <span className={styles.srOnly}>Расписание</span>
-            </Link>
-          </li>
+          {/* Подписки */}
+          {isLoggedIn && (
+            <li className={styles.navItem}>
+              <Link 
+                href="/subs/" 
+                className={`${styles.navLink} ${pathname === '/subs/' ? styles.active : ""}`} 
+                aria-label="Подписки" 
+                aria-current={pathname === '/subs/' ? "page" : undefined}
+              >
+                <span className={styles.iconWrapper}>
+                  <Heart size={18} strokeWidth={1.5} />
+                </span>
+                <span className={styles.srOnly}>Подписки</span>
+              </Link>
+            </li>
+          )}
 
           {/* Центральная кнопка */}
           <li className={styles.navItem}>

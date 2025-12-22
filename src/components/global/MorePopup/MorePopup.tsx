@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo } from 'react'
-import { Heart, Settings, FileText, HelpCircle, Pencil } from 'lucide-react'
+import { Heart, Settings, FileText, HelpCircle, Pencil, CalendarCheck2 } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { useSelectedGraphId } from '@/stores/useUIStore'
 import { UserRole } from '@/types/user.interface'
@@ -38,13 +38,13 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   const menuItems = useMemo(() => {
     const items = []
 
-    // Подписки (только для авторизованных)
+    // Расписание (только для авторизованных)
     if (isLoggedIn) {
       items.push({
-        id: 'subs',
-        icon: <Heart color="rgb(var(--main-Color))" size={20} strokeWidth={1.5} />,
-        title: 'Подписки',
-        path: '/subs/',
+        id: 'schedule',
+        icon: <CalendarCheck2 color="rgb(var(--main-Color))" size={20} strokeWidth={1.5} />,
+        title: 'Расписание',
+        path: '/schedule/',
         forAuthUsers: true,
       })
     }
