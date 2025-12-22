@@ -15,6 +15,7 @@ import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useAuth } from '@/providers/AuthProvider';
 import StudentStatusDialog from '@/components/global/StudentStatusDialog/StudentStatusDialog';
 import { NON_STUDENT_DEFAULT_GRAPH_ID } from '@/constants/nonStudentDefaults';
+import { useTelegramWebApp } from '@/hooks/useTelegramWebApp';
 
 export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
@@ -25,6 +26,9 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
   const [isHydrated, setIsHydrated] = useState(false);
   const [showStudentDialog, setShowStudentDialog] = useState(false);
   const [localIsStudent, setLocalIsStudent] = useState<boolean | null | undefined>(undefined);
+  
+  // Инициализация Telegram WebApp
+  useTelegramWebApp();
 
   // Ждем пока Zustand загрузит данные из localStorage
   useEffect(() => {
