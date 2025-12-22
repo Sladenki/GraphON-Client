@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import Sidebar from "@/components/global/Sidebar/Sidebar";
 import styles from './layout.module.scss'
 import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
-import MobileDrawer from "@/components/global/MobileDrawer/MobileDrawer";
-import TopPanel from "@/components/global/TopPanel/TopPanel";
+import MobileBottomNav from "@/components/global/MobileBottomNav/MobileBottomNav";
+import MobileTopBar from "@/components/global/MobileTopBar/MobileTopBar";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
@@ -25,6 +25,7 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
   const [isHydrated, setIsHydrated] = useState(false);
   const [showStudentDialog, setShowStudentDialog] = useState(false);
   const [localIsStudent, setLocalIsStudent] = useState<boolean | null | undefined>(undefined);
+
 
   // Ждем пока Zustand загрузит данные из localStorage
   useEffect(() => {
@@ -205,18 +206,16 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
             if (isStudent === false) {
               return (
                 <div className={styles.wrapper}>
-                  {/* Top Panel - только для мобильных */}
-                  {small && <TopPanel />}
+                  {/* Top Bar - только для мобильных */}
+                  {small && <MobileTopBar />}
 
-                  {/* Mobile Drawer - только для мобильных */}
+                  {/* Контент */}
                   {small ? (
-                    <MobileDrawer>
-                      <div className={styles.main}>
-                        <div className={styles.content}>
-                          {children}
-                        </div>
+                    <div className={styles.main}>
+                      <div className={styles.content}>
+                        {children}
                       </div>
-                    </MobileDrawer>
+                    </div>
                   ) : (
                     <>
                       {/* Sidebar - только для десктопа */}
@@ -233,8 +232,9 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
                     </>
                   )}
 
+                  {/* Bottom Navigation - только для мобильных, BottomMenu - для десктопа */}
                   <div className={styles.BottomMenu}>
-                    <BottomMenu/>
+                    {small ? <MobileBottomNav /> : <BottomMenu />}
                   </div>
                 </div>
               );
@@ -276,18 +276,16 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
             if (!selectedGraphId && isStudent === false) {
               return (
                 <div className={styles.wrapper}>
-                  {/* Top Panel - только для мобильных */}
-                  {small && <TopPanel />}
+                  {/* Top Bar - только для мобильных */}
+                  {small && <MobileTopBar />}
 
-                  {/* Mobile Drawer - только для мобильных */}
+                  {/* Контент */}
                   {small ? (
-                    <MobileDrawer>
-                      <div className={styles.main}>
-                        <div className={styles.content}>
-                          {children}
-                        </div>
+                    <div className={styles.main}>
+                      <div className={styles.content}>
+                        {children}
                       </div>
-                    </MobileDrawer>
+                    </div>
                   ) : (
                     <>
                       {/* Sidebar - только для десктопа */}
@@ -304,8 +302,9 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
                     </>
                   )}
 
+                  {/* Bottom Navigation - только для мобильных, BottomMenu - для десктопа */}
                   <div className={styles.BottomMenu}>
-                    <BottomMenu/>
+                    <MobileBottomNav/>
                   </div>
                 </div>
               );
@@ -314,18 +313,16 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
             // Если университет выбран - показываем контент
             return (
               <div className={styles.wrapper}>
-                {/* Top Panel - только для мобильных */}
-                {small && <TopPanel />}
+                {/* Top Bar - только для мобильных */}
+                {small && <MobileTopBar />}
 
-                {/* Mobile Drawer - только для мобильных */}
+                {/* Контент */}
                 {small ? (
-                  <MobileDrawer>
-                    <div className={styles.main}>
-                      <div className={styles.content}>
-                        {children}
-                      </div>
+                  <div className={styles.main}>
+                    <div className={styles.content}>
+                      {children}
                     </div>
-                  </MobileDrawer>
+                  </div>
                 ) : (
                   <>
                     {/* Sidebar - только для десктопа */}
@@ -342,8 +339,9 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
                   </>
                 )}
 
+                {/* Bottom Navigation - только для мобильных, BottomMenu - для десктопа */}
                 <div className={styles.BottomMenu}>
-                  <BottomMenu/>
+                  {small ? <MobileBottomNav /> : <BottomMenu />}
                 </div>
               </div>
             );

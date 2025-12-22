@@ -1,0 +1,184 @@
+.bottomNav {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: var(--block-color);
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  padding: 6px 8px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
+  border-top: 1px solid rgba(var(--main-Color), 0.1);
+  z-index: 2100;
+
+  /* Glass subtlety on larger screens */
+  @media (min-width: 768px) {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Float centered on tablet/desktop */
+  @media (min-width: 768px) {
+    max-width: 560px;
+    margin: 0 auto;
+    border-radius: 16px;
+    border: 1px solid rgba(var(--main-Color), 0.12);
+    padding: 10px 12px;
+  }
+}
+
+.navList {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-family: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  position: relative;
+}
+
+.navItem {
+  flex: 1 1 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+}
+
+.navLink {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--main-text);
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+  width: 100%;
+  min-width: 0;
+
+  &:hover {
+    background-color: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.15);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(var(--main-Color), 0.3);
+  }
+}
+
+.iconWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--main-text);
+  transition: color 0.2s ease, transform 0.2s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.5;
+  }
+}
+
+// Active state
+.active {
+  background-color: rgba(var(--main-Color), 0.1);
+  border-color: rgba(var(--main-Color), 0.25);
+
+  .iconWrapper {
+    color: rgb(var(--main-Color));
+  }
+}
+
+// Центральная кнопка
+.centralButtonWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+// Кнопка "Еще"
+.moreButton {
+  // Стили наследуются от .navLink
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .navLink {
+    padding: 7px 10px;
+    gap: 2px;
+    border-radius: 12px;
+  }
+
+  .iconWrapper {
+    svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 1.4;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .bottomNav {
+    max-width: 640px;
+  }
+}
+
+/* Accessibility */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  font-size: 0;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .navLink {
+    transition: none !important;
+  }
+  .iconWrapper {
+    transition: none !important;
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 768px) {
+  .navLink {
+    // Упрощенные transitions на мобильных
+    transition: background-color 0.15s ease, transform 0.1s ease;
+
+    // Отключаем hover эффекты на touch устройствах
+    @media (hover: none) {
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+}
+

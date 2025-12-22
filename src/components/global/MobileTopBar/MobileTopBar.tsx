@@ -5,15 +5,17 @@ import { User } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 import Link from 'next/link';
 import GraphSwitcher from '../GraphSwitcher/GraphSwitcher';
-import styles from './TopPanel.module.scss';
+import styles from './MobileTopBar.module.scss';
 
-const TopPanel: React.FC = () => {
+const MobileTopBar: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
 
   return (
-    <div className={styles.topPanel}>
+    <div className={styles.topBar}>
       {/* Центральная часть - переключатель университетов */}
-      <GraphSwitcher />
+      <div className={styles.centerSection}>
+        <GraphSwitcher />
+      </div>
 
       {/* Правая часть - аватарка пользователя */}
       <div className={styles.userSection}>
@@ -42,4 +44,5 @@ const TopPanel: React.FC = () => {
   );
 };
 
-export default TopPanel;
+export default MobileTopBar;
+

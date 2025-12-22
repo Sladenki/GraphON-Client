@@ -1,0 +1,457 @@
+// Overlay
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 3000;
+  transition: background 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    align-items: center;
+  }
+}
+
+.overlayVisible {
+  background: rgba(0, 0, 0, 0.5);
+
+  @media (max-width: 768px) {
+    background: rgba(0, 0, 0, 0.6);
+  }
+}
+
+// Bottom Sheet
+.sheet {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  background: var(--block-color);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+  overflow: hidden;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+
+  @media (max-width: 768px) {
+    width: calc(100% - 32px);
+    max-width: 480px;
+    border-radius: 24px;
+    max-height: 90vh;
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+    transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+.sheetOpen {
+  transform: translateY(0);
+
+  @media (max-width: 768px) {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+// Handle для драга
+.sheetHandleArea {
+  padding: 12px 0 8px 0;
+  cursor: grab;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.sheetHandle {
+  width: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(var(--main-Color), 0.2);
+  transition: background 0.2s ease;
+}
+
+// Брендинг
+.branding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 20px 20px 20px;
+  border-bottom: 1px solid rgba(var(--main-Color), 0.08);
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    padding: 20px 16px 16px 16px;
+    gap: 6px;
+  }
+}
+
+.logo {
+  opacity: 0.9;
+}
+
+.subtitle {
+  margin: 0;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(var(--main-text), 0.6);
+  text-align: center;
+  letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    font-size: 13px;
+  }
+}
+
+// Контент
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    gap: 20px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+  }
+}
+
+// Секция карточек
+.cardsSection {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+
+  @media (min-width: 480px) {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
+
+// Карточка действия
+.actionCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--background-color);
+  border: 1px solid rgba(var(--main-Color), 0.1);
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--main-text);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(var(--main-Color), 0.03);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover {
+    border-color: rgba(var(--main-Color), 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--main-Color), 0.1);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(var(--main-Color), 0.08);
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    gap: 14px;
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.cardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(var(--main-Color), 0.08);
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+
+  .actionCard:hover & {
+    background: rgba(var(--main-Color), 0.12);
+  }
+
+  @media (max-width: 768px) {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--main-text);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+}
+
+.cardDescription {
+  margin: 0;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(var(--main-text), 0.6);
+  line-height: 1.4;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+}
+
+// Секция темы
+.themeSection {
+  padding: 16px 20px;
+  background: var(--background-color);
+  border: 1px solid rgba(var(--main-Color), 0.08);
+  border-radius: 16px;
+
+  @media (max-width: 768px) {
+    padding: 14px 16px;
+  }
+}
+
+.themeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.themeLabel {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--main-text);
+  letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+}
+
+// Утилитарная секция
+.utilitySection {
+  display: flex;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(var(--main-Color), 0.08);
+
+  @media (max-width: 768px) {
+    gap: 6px;
+  }
+}
+
+.utilityLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: rgba(var(--main-text), 0.65);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  flex: 1;
+  justify-content: center;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+
+  svg {
+    color: rgba(var(--main-Color), 0.5);
+    width: 18px;
+    height: 18px;
+    transition: color 0.2s ease;
+  }
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.04);
+    color: rgba(var(--main-text), 0.8);
+    border-color: rgba(var(--main-Color), 0.08);
+
+    svg {
+      color: rgba(var(--main-Color), 0.7);
+    }
+  }
+
+  &:active {
+    background: rgba(var(--main-Color), 0.06);
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px 14px;
+    gap: 6px;
+    font-size: 12px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+// Темная тема
+[data-theme='dark'] {
+  .overlayVisible {
+    background: rgba(0, 0, 0, 0.7);
+
+    @media (max-width: 768px) {
+      background: rgba(0, 0, 0, 0.8);
+    }
+  }
+
+  .sheet {
+    background: var(--block-color);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+
+    @media (max-width: 768px) {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  .sheetHandle {
+    background: rgba(var(--main-Color), 0.3);
+  }
+
+  .branding {
+    border-bottom-color: rgba(var(--main-Color), 0.12);
+  }
+
+  .actionCard {
+    background: var(--background-color);
+    border-color: rgba(var(--main-Color), 0.15);
+
+    &:hover {
+      border-color: rgba(var(--main-Color), 0.25);
+      box-shadow: 0 4px 12px rgba(var(--main-Color), 0.15);
+    }
+  }
+
+  .themeSection {
+    background: var(--background-color);
+    border-color: rgba(var(--main-Color), 0.12);
+  }
+
+  .utilitySection {
+    border-top-color: rgba(var(--main-Color), 0.12);
+  }
+}
+
+// Светлая тема
+[data-theme='light'] {
+  .overlayVisible {
+    background: rgba(0, 0, 0, 0.4);
+
+    @media (max-width: 768px) {
+      background: rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .sheet {
+    background: var(--block-color);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 768px) {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .sheetHandle {
+    background: rgba(var(--main-Color), 0.15);
+  }
+}
+
+// Отключение hover на touch устройствах
+@media (hover: none) {
+  .actionCard:hover {
+    transform: none;
+    border-color: rgba(var(--main-Color), 0.1);
+    box-shadow: none;
+
+    &::before {
+      opacity: 0;
+    }
+
+    .cardIcon {
+      background: rgba(var(--main-Color), 0.08);
+    }
+  }
+
+  .utilityLink:hover {
+    background: transparent;
+    color: rgba(var(--main-text), 0.65);
+    border-color: transparent;
+
+    svg {
+      color: rgba(var(--main-Color), 0.5);
+    }
+  }
+}

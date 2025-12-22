@@ -1,4 +1,4 @@
-.topPanel {
+.topBar {
   position: fixed;
   top: 0;
   left: 0;
@@ -10,13 +10,13 @@
   background-color: var(--background-color);
   display: flex;
   align-items: center;
-  justify-content: space-between; // Равномерное распределение элементов
+  justify-content: space-between;
   gap: 8px;
   padding: 0 20px;
   z-index: 1000;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: none !important; // убираем нижнюю тень полностью
+  box-shadow: none !important;
 
   @media (max-width: 768px) {
     padding: 0 16px;
@@ -30,10 +30,17 @@
   }
 }
 
+.centerSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .userSection {
   display: flex;
   align-items: center;
-  flex-shrink: 0; // Предотвращаем сжатие секции пользователя
+  flex-shrink: 0;
 }
 
 .userAvatar {
@@ -82,7 +89,7 @@
 .signInButton {
   display: flex;
   gap: 8px;
-  padding: 9px 16px;
+  padding: 6px 16px;
   background: rgba(var(--main-Color), 0.1);
   border: 1px solid rgba(var(--main-Color), 0.2);
   border-radius: 12px;
@@ -91,6 +98,7 @@
   font-size: 14px;
   font-weight: 500;
   transition: background 0.2s ease, transform 0.15s ease;
+  text-decoration: none;
 
   &:hover {
     background: rgba(var(--main-Color), 0.15);

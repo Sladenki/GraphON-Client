@@ -1,0 +1,134 @@
+.centralButton {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  margin-top: -4px;
+
+  &.active {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.2);
+  }
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.08);
+    border-color: rgba(var(--main-Color), 0.2);
+    transform: translateY(-1px);
+  }
+
+  &.active:hover {
+    background: rgba(var(--main-Color), 0.12);
+    border-color: rgba(var(--main-Color), 0.3);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+    transition: all 0.1s ease;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(var(--main-Color), 0.3);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 480px) {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    margin-top: -3px;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0) scale(0.98);
+    }
+  }
+}
+
+.buttonContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(var(--main-Color));
+  width: 100%;
+  height: 100%;
+
+  svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.8;
+    transition: stroke-width 0.2s ease;
+  }
+
+  @media (max-width: 480px) {
+    svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 1.6;
+    }
+  }
+}
+
+.centralButton:hover .buttonContent svg {
+  stroke-width: 2;
+}
+
+@media (max-width: 480px) {
+  .centralButton:hover .buttonContent svg {
+    stroke-width: 1.8;
+  }
+}
+
+// Мобильные оптимизации
+@media (max-width: 768px) {
+  .centralButton {
+    transition: all 0.15s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      background: rgba(var(--main-Color), 0.06);
+      border-color: rgba(var(--main-Color), 0.15);
+    }
+
+    &.active:hover {
+      background: rgba(var(--main-Color), 0.1);
+      border-color: rgba(var(--main-Color), 0.25);
+    }
+
+    &:active {
+      transform: translateY(0) scale(0.98);
+    }
+  }
+}
+
+// Отключение hover на touch устройствах
+@media (hover: none) {
+  .centralButton {
+    &:hover {
+      transform: none;
+      background: rgba(var(--main-Color), 0.08);
+      border-color: rgba(var(--main-Color), 0.2);
+    }
+  }
+
+  .centralButton:hover .buttonContent svg {
+    stroke-width: 1.8;
+  }
+
+  @media (max-width: 480px) {
+    .centralButton:hover .buttonContent svg {
+      stroke-width: 1.6;
+    }
+  }
+}
+
