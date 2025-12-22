@@ -55,7 +55,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   })()
 
   // Определяем доступ к админке
-  const hasAdminAccess = user?.role !== UserRole.User
+  const hasAdminAccess = isLoggedIn && user && user.role !== UserRole.User
 
   // Карточки действий
   const actionCards = useMemo(() => {
