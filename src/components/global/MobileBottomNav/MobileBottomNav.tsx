@@ -81,21 +81,19 @@ const MobileBottomNav: React.FC = () => {
           </li>
 
           {/* Расписание */}
-          {isLoggedIn && (
-            <li className={styles.navItem}>
-              <Link 
-                href="/schedule/" 
-                className={`${styles.navLink} ${pathname === '/schedule/' ? styles.active : ""}`} 
-                aria-label="Расписание" 
-                aria-current={pathname === '/schedule/' ? "page" : undefined}
-              >
+          <li className={styles.navItem}>
+            <Link 
+              href="/schedule/" 
+              className={`${styles.navLink} ${pathname === '/schedule/' ? styles.active : ""}`} 
+              aria-label="Расписание" 
+              aria-current={pathname === '/schedule/' ? "page" : undefined}
+            >
               <span className={styles.iconWrapper}>
                 <CalendarCheck2 size={18} strokeWidth={1.5} />
               </span>
-                <span className={styles.srOnly}>Расписание</span>
-              </Link>
-            </li>
-          )}
+              <span className={styles.srOnly}>Расписание</span>
+            </Link>
+          </li>
 
           {/* Центральная кнопка */}
           <li className={styles.navItem}>

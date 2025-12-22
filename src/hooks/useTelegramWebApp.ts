@@ -19,7 +19,7 @@ declare global {
           onClick: (callback: () => void) => void;
           setText: (text: string) => void;
         };
-        HeaderColor: {
+        HeaderColor?: {
           setColor: (color: string) => void;
         };
         backgroundColor: string;
@@ -78,6 +78,11 @@ export const useTelegramWebApp = () => {
 
       // Настраиваем цвета панели в соответствии с темой приложения
       const updateHeaderColor = () => {
+        // Проверяем наличие HeaderColor API (доступно не во всех версиях)
+        if (!tg.HeaderColor?.setColor) {
+          return;
+        }
+
         // Используем цвет фона приложения
         const bgColor = getComputedStyle(document.documentElement)
           .getPropertyValue('--background-color')
