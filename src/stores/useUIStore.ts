@@ -9,14 +9,10 @@ interface UIState {
   searchQuery: string;
   selectedGraphId: string | null;
   
-  // UI state
-  isMobileNavOpen: boolean;
-  
   // Actions
   setActiveTab: (tab: TabType) => void;
   setSearchQuery: (query: string) => void;
   setSelectedGraphId: (id: string | null) => void;
-  setMobileNavOpen: (isOpen: boolean) => void;
   clearSearch: () => void;
   
   // Computed
@@ -30,7 +26,6 @@ export const useUIStore = create<UIState>()(
       activeTab: 'events',
       searchQuery: '',
       selectedGraphId: null,
-      isMobileNavOpen: false,
       
       // Actions
       setActiveTab: (tab: TabType) => {
@@ -66,10 +61,6 @@ export const useUIStore = create<UIState>()(
         }
       },
       
-      setMobileNavOpen: (isOpen: boolean) => {
-        set({ isMobileNavOpen: isOpen });
-      },
-      
       clearSearch: () => {
         set({ searchQuery: '' });
       },
@@ -86,7 +77,7 @@ export const useUIStore = create<UIState>()(
         // Only persist these fields
         activeTab: state.activeTab,
         selectedGraphId: state.selectedGraphId,
-        // Don't persist searchQuery and isMobileNavOpen
+        // Don't persist searchQuery
       }),
       // Добавляем версию для избежания конфликтов при изменении структуры
       version: 2,
@@ -108,13 +99,11 @@ export const useUIStore = create<UIState>()(
 export const useActiveTab = () => useUIStore((state) => state.activeTab);
 export const useSearchQuery = () => useUIStore((state) => state.searchQuery);
 export const useSelectedGraphId = () => useUIStore((state) => state.selectedGraphId);
-export const useMobileNavOpen = () => useUIStore((state) => state.isMobileNavOpen);
 
 // Individual action hooks for better stability
 export const useSetActiveTab = () => useUIStore((state) => state.setActiveTab);
 export const useSetSearchQuery = () => useUIStore((state) => state.setSearchQuery);
 export const useSetSelectedGraphId = () => useUIStore((state) => state.setSelectedGraphId);
-export const useSetMobileNavOpen = () => useUIStore((state) => state.setMobileNavOpen);
 export const useClearSearch = () => useUIStore((state) => state.clearSearch);
 
 // Legacy action hooks (deprecated - use individual hooks above)
@@ -122,6 +111,5 @@ export const useUIActions = () => useUIStore((state) => ({
   setActiveTab: state.setActiveTab,
   setSearchQuery: state.setSearchQuery,
   setSelectedGraphId: state.setSelectedGraphId,
-  setMobileNavOpen: state.setMobileNavOpen,
   clearSearch: state.clearSearch,
 })); 

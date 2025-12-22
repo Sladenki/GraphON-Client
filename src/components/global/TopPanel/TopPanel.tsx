@@ -1,31 +1,17 @@
 'use client'
 
 import React from 'react';
-import { TextAlignStart, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
-import { useUIStore } from '@/stores/useUIStore';
 import Link from 'next/link';
 import GraphSwitcher from '../GraphSwitcher/GraphSwitcher';
 import styles from './TopPanel.module.scss';
 
 const TopPanel: React.FC = () => {
   const { user, isLoggedIn } = useAuth();
-  const { setMobileNavOpen } = useUIStore();
 
-  const handleMenuClick = () => {
-    setMobileNavOpen(true);
-  };
   return (
     <div className={styles.topPanel}>
-      {/* Левая часть - кнопка меню */}
-      <button 
-        className={styles.menuButton}
-        onClick={handleMenuClick}
-        aria-label="Открыть меню"
-      >
-        <TextAlignStart size={24} />
-      </button>
-
       {/* Центральная часть - переключатель университетов */}
       <GraphSwitcher />
 

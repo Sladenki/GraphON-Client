@@ -30,37 +30,6 @@
   }
 }
 
-.menuButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  min-width: 40px; // Предотвращаем сжатие
-  border-radius: 12px;
-  border: 1px solid rgb(var(--main-Color), 0.2);
-  color: rgb(var(--main-Color));
-  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.08);
-    border-color: rgba(var(--main-Color), 0.25);
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  @media (max-width: 480px) {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    border-radius: 10px;
-  }
-}
-
 .userSection {
   display: flex;
   align-items: center;

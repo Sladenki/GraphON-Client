@@ -43,12 +43,3 @@ export const bottomMenuItems = [
   createSidebarItem(2, <CalendarCheck2 color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Расписание', true, '/schedule/'),
   createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Админка', true, '/admin/'),
 ];
-
-// --- Для MobileDrawer (боковое меню) ---
-export const mobileDrawerItems = [
-  // createSidebarItem(1, <House color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Главная', false, '/'),
-  createSidebarItem(2, <Users color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Группы', false, '/groups/'),
-  createSidebarItem(5, <Newspaper color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Мероприятия', false, '/events/'),
-  createSidebarItem(3, <Heart color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Подписки', true, '/subs/'),
-  createSidebarItem(4, <Network color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Графы', false, GRAPHS_ROUTE),
-];
