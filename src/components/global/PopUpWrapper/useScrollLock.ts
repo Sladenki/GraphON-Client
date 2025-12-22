@@ -90,7 +90,7 @@ export const useScrollLock = (isLocked: boolean) => {
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       if (scrollbarWidth > 0) {
         body.style.paddingRight = `${scrollbarWidth}px`;
-        html.style.paddingRight = `${scrollbarWidth}px`;
+        (html.style as CSSStyleDeclaration).paddingRight = `${scrollbarWidth}px`;
       }
     }
 
