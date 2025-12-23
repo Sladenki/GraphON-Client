@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+ import { useAuth } from '@/providers/AuthProvider';
 import PopUpWrapper from '../PopUpWrapper/PopUpWrapper';
 import styles from './FeedbackModal.module.scss';
 import { MessageCircle } from 'lucide-react';
@@ -8,6 +9,8 @@ import { MessageCircle } from 'lucide-react';
 const STORAGE_KEY = 'feedbackModalSeen';
 
 const FeedbackModal: React.FC = () => {
+   const { isLoggedIn, user } = useAuth();
+   const canShow = Boolean(isLoggedIn && user);
   const [isOpen, setIsOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -15,13 +18,28 @@ const FeedbackModal: React.FC = () => {
     // Проверяем, видел ли пользователь это окно
     if (typeof window !== 'undefined') {
       setIsHydrated(true);
+ 
+       // Только для авторизованных пользователей
+       if (!canShow) {
+         setIsOpen(false);
+         return;
+       }
+ 
       const hasSeenModal = localStorage.getItem(STORAGE_KEY);
       if (!hasSeenModal) {
         // Показываем с небольшой задержкой для плавного появления
-        setTimeout(() => setIsOpen(true), 800);
+         const t = window.setTimeout(() => setIsOpen(true), 800);
+         return () => window.clearTimeout(t);
       }
     }
-  }, []);
+   }, [canShow]);
+ 
+   // Если пользователь разлогинился — сразу закрываем
+   useEffect(() => {
+     if (!canShow && isOpen) {
+       setIsOpen(false);
+     }
+   }, [canShow, isOpen]);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -33,6 +51,8 @@ const FeedbackModal: React.FC = () => {
 
   // Не показываем до завершения гидрации
   if (!isHydrated) return null;
+   // Не показываем для неавторизованных
+   if (!canShow) return null;
 
   return (
     <PopUpWrapper 
@@ -87,4 +107,5 @@ const FeedbackModal: React.FC = () => {
 };
 
 export default FeedbackModal;
+
 

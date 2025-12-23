@@ -14,6 +14,7 @@ export interface ScheduleItem {
 
 export interface EventItem {
   _id: string;
+  type?: string;
   graphId?: {
     _id: string;
     name: string;
