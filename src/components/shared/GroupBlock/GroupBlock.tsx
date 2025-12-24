@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import Image from "next/image";
-import { Heart, HeartCrack, Calendar, Info } from "lucide-react";
+import { Heart, HeartCrack, Calendar } from "lucide-react";
 import { notifySuccess, notifyInfo } from "@/lib/notifications";
 import styles from './GroupBlock.module.scss';
 import { useAuth } from "@/providers/AuthProvider";
@@ -17,6 +17,7 @@ interface GroupBlockProps {
   imgPath?: string;
   about?: string;
   handleScheduleButtonClick: () => void;
+  layout?: 'vertical' | 'horizontal';
 }
 
 const GroupBlock: React.FC<GroupBlockProps> = memo(({ 
@@ -26,6 +27,7 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
   imgPath, 
   about,
   handleScheduleButtonClick,
+  layout = 'vertical',
 }) => {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
@@ -43,13 +45,21 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
     }
   };
 
-  const handleInfoClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleCardClick = () => {
     router.push(`/groups/${id}`);
   };
 
   return (
-    <div className={styles.card}>
+    <div
+      className={`${styles.card} ${layout === 'horizontal' ? styles.horizontal : styles.vertical}`}
+      role="button"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') handleCardClick();
+      }}
+      aria-label={`Открыть группу: ${displayName}`}
+    >
       <div className={styles.contentWrapper}>
         <div className={styles.imageContainer}>
           {fullImageUrl ? (
@@ -84,32 +94,40 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
           )}
           
           {/* Оверлей с заголовком */}
-          <div className={styles.overlay}>
-            <h3 className={styles.title}>{displayName}</h3>
+          {layout === 'vertical' && (
+            <div className={styles.overlay}>
+              <h3 className={styles.title}>{displayName}</h3>
+            </div>
+          )}
+        </div>
+
+        <div className={styles.body}>
+          {layout === 'horizontal' && (
+            <div className={styles.headerRow}>
+              <h3 className={styles.titleInline}>{displayName}</h3>
+            </div>
+          )}
+
+          {/* Описание */}
+          <div className={styles.content}>
+            <p className={styles.description}>
+              {about || "Описание отсутствует"}
+            </p>
           </div>
-        </div>
 
-        {/* Описание */}
-        <div className={styles.content}>
-          <p className={styles.description}>
-            {about || "Описание отсутствует"}
-          </p>
-        </div>
-
-        {/* Кнопки */}
-        <div className={styles.actions}>
-          <ActionButton
-            onClick={handleScheduleButtonClick}
-            variant="primary"
-            icon={<Calendar size={16} />}
-            label="Расписание"
-          />
-          <ActionButton
-            onClick={handleInfoClick}
-            variant="info"
-            icon={<Info size={16} />}
-            label="Подробнее"
-          />
+          {/* Кнопки */}
+          <div className={styles.actions}>
+            <ActionButton
+              onClick={(e) => {
+                e.stopPropagation();
+                handleScheduleButtonClick();
+              }}
+              variant="primary"
+              icon={<Calendar size={16} />}
+              label="Расписание"
+              className={styles.actionButtonCompact}
+            />
+          </div>
         </div>
       </div>
     </div>

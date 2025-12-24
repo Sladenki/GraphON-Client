@@ -161,6 +161,7 @@ export default function GroupsList() {
                   imgPath={g.imgPath}
                   about={g.about}
                   handleScheduleButtonClick={() => handleScheduleClick(g._id)}
+                  layout="horizontal"
                 />
               </div>
             ))}
@@ -219,6 +220,7 @@ export default function GroupsList() {
                 imgPath={graph.imgPath}
                 about={graph.about}
                 handleScheduleButtonClick={() => handleScheduleClick(graph._id)}
+                layout="horizontal"
               />
             </div>
           ))}
