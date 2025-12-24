@@ -23,7 +23,7 @@ const RenderMenuList: React.FC<{arrayItems: IArrayItem[], small: boolean}> = ({ 
       const order = ['/profile', '/schedule/', '/subs/'];
       return order.indexOf(a.path) - order.indexOf(b.path);
     });
-  const group3 = arrayItems.filter(({ path }) => ['/manage/', '/admin/'].includes(path));
+  const group3 = arrayItems.filter(({ path }) => ['/admin/'].includes(path));
 
   const renderGroup = (items: IArrayItem[]) => {
     const filteredItems = items.filter(({ forAuthUsers, path }) => {

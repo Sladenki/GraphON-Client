@@ -10,6 +10,17 @@
   padding: 20px 0;
 }
 
+.ownedSection {
+  padding-top: 16px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--main-text);
+  margin: 6px 0 10px;
+}
+
 .searchResults {
   margin-top: 12px;
   font-size: 14px;
@@ -58,6 +69,15 @@
 @media (max-width: 768px) {
   .container {
     padding: 0 12px;
+  }
+
+  .ownedSection {
+    padding-top: 12px;
+  }
+
+  .sectionTitle {
+    font-size: 15px;
+    margin: 4px 0 8px;
   }
 
   .searchSection {

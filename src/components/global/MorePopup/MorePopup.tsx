@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useEffect, useRef, useCallback, useState } from 'react'
-import { FileText, HelpCircle, Clock, Shield, Cog } from 'lucide-react'
+import { FileText, HelpCircle, Clock, Shield } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { UserRole } from '@/types/user.interface'
 import Link from 'next/link'
@@ -46,14 +46,6 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen])
 
-  // Определяем доступ к управлению
-  const hasManageAccess = (() => {
-    if (!user) return false
-    const anyUser: any = user as any
-    const managedIds = anyUser?.managed_graph_id ?? anyUser?.managedGraphIds ?? []
-    return Array.isArray(managedIds) && managedIds.length > 0
-  })()
-
   // Определяем доступ к админке
   const hasAdminAccess = isLoggedIn && user && user.role !== UserRole.User
 
@@ -83,19 +75,8 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
       })
     }
 
-    // Управление (только если есть доступ)
-    if (hasManageAccess) {
-      cards.push({
-        id: 'manage',
-        icon: <Cog size={24} strokeWidth={1.8} />,
-        title: 'Управление',
-        path: '/manage/',
-        color: 'var(--main-Color)',
-      })
-    }
-
     return cards
-  }, [isLoggedIn, hasManageAccess, hasAdminAccess])
+  }, [isLoggedIn, hasAdminAccess])
 
   // Обработка драга
   const handlePointerDown = useCallback((clientY: number) => {

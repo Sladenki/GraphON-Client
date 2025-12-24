@@ -7,7 +7,7 @@ import styles from './Sidebar.module.scss'
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, sidebar } from '@/constants/sidebar';
 import { useAuth } from '@/providers/AuthProvider';
-import { MapPinned, Settings, User, FileText, HelpCircle } from 'lucide-react';
+import { MapPinned, User, FileText, HelpCircle } from 'lucide-react';
 
 import RenderMenuList from './RenderMenuList/RenderMenuList';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
@@ -32,14 +32,6 @@ const Sidebar: React.FC<{}> = ({}) => {
 
   const effectiveGraphId = storeSelectedGraphId || normalizeGraphId(user?.selectedGraphId);
   const isCityGraph = effectiveGraphId === CITY_GRAPH_ID;
-  // Определяем доступ к управлению: если у пользователя есть непустой список managed_graph_id
-  const hasManageAccess = (() => {
-    if (!user) return false;
-    const anyUser: any = user as any;
-    const managedIds = anyUser?.managed_graph_id ?? anyUser?.managedGraphIds ?? [];
-    return Array.isArray(managedIds) && managedIds.length > 0;
-  })();
-
   const baseNavigationItems = useMemo(() => {
     return sidebar.map((item) => {
       if (item.path !== GRAPHS_ROUTE) return item;
@@ -69,23 +61,8 @@ const Sidebar: React.FC<{}> = ({}) => {
       items.push(profileItem);
     }
     
-    if (hasManageAccess) {
-      const manageItem = {
-        id: 98,
-        icon: <Settings color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />,
-        title: 'Управление',
-        forAuthUsers: true,
-        path: '/manage/'
-      };
-      const createIndex = items.findIndex((it) => it.path === '/admin/');
-      if (createIndex !== -1) {
-        items.splice(createIndex, 0, manageItem);
-      } else {
-        items.push(manageItem);
-      }
-    }
     return items;
-  }, [baseNavigationItems, hasManageAccess, isLoggedIn]);
+  }, [baseNavigationItems, isLoggedIn]);
 
   return (
     <div className={styles.sidebar}>
