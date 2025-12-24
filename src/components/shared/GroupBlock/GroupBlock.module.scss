@@ -420,11 +420,6 @@
   .horizontal .actions {
     padding: 0 14px 12px;
   }
-
-  /* На мобилке убираем блок действий (в т.ч. "Расписание") — переход по клику на карточку */
-  .actions {
-    display: none;
-  }
 }
 
 @media (max-width: 360px) {
@@ -434,6 +429,13 @@
 
   .horizontal .imageContainer {
     width: 112px;
+  }
+}
+
+/* Мобильная версия (touch): убираем блок действий (в т.ч. "Расписание") — переход по клику на карточку */
+@media (hover: none) and (pointer: coarse) {
+  .actions {
+    display: none;
   }
 }
 

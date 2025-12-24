@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useEffect, useRef, useCallback, useState } from 'react'
-import { FileText, HelpCircle, Clock, Shield } from 'lucide-react'
+import { FileText, HelpCircle, Shield } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { UserRole } from '@/types/user.interface'
 import Link from 'next/link'
@@ -53,17 +53,6 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   const actionCards = useMemo(() => {
     const cards = []
 
-    // Расписание (только для авторизованных)
-    if (isLoggedIn) {
-      cards.push({
-        id: 'schedule',
-        icon: <Clock size={24} strokeWidth={1.8} />,
-        title: 'Расписание',
-        path: '/profile?tab=schedule',
-        color: 'var(--main-Color)',
-      })
-    }
-
     // Админка (только если есть доступ)
     if (hasAdminAccess) {
       cards.push({
@@ -76,7 +65,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
     }
 
     return cards
-  }, [isLoggedIn, hasAdminAccess])
+  }, [hasAdminAccess])
 
   // Обработка драга
   const handlePointerDown = useCallback((clientY: number) => {
