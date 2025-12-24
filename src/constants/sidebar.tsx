@@ -1,4 +1,4 @@
-import { Pencil, CalendarCheck2, Users, Heart, Network, Newspaper } from 'lucide-react'
+import { Pencil, Users, Heart, Network, Newspaper, User } from 'lucide-react'
 import { JSX } from 'react';
 
 export const GRAPHS_ROUTE = '/graphs/';
@@ -33,13 +33,12 @@ export const sidebar = [
   createSidebarItem(5, <Newspaper color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Мероприятия', false, '/events/'),
   createSidebarItem(6, <Heart color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Подписки', true, '/subs/'),
   createSidebarItem(7, <Network color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Графы', false, GRAPHS_ROUTE),
-  createSidebarItem(2, <CalendarCheck2 color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Расписание', true, '/schedule/'),
   createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Админка', true, '/admin/'),
 ];
 
 // --- Для BottomMenu (нижняя панель) ---
 export const bottomMenuItems = [
   createSidebarItem(1, <Newspaper color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Мероприятия', false, '/events/'),
-  createSidebarItem(2, <CalendarCheck2 color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Расписание', true, '/schedule/'),
+  createSidebarItem(2, <User color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Профиль', true, '/profile'),
   createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={18} strokeWidth={0.9} />, 'Админка', true, '/admin/'),
 ];

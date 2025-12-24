@@ -5,11 +5,11 @@ import styles from './Profile.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { EmptyState } from '@/components/global/EmptyState/EmptyState';
 import { IUser, RoleTitles, UserRole } from '@/types/user.interface';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { GraduationCap, Pencil, Heart, CalendarCheck, User, MapPin, Search, CalendarX, HeartOff } from 'lucide-react';
+import { GraduationCap, Pencil, Heart, CalendarCheck, User, Search, CalendarX, HeartOff, CalendarDays } from 'lucide-react';
 import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '@/components/shared/EventCard/EventCard';
 import LogOut from './LogOut/LogOut';
@@ -27,17 +27,18 @@ import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar';
 import GroupBlock from '@/components/shared/GroupBlock/GroupBlock';
 import { useDebounce } from '@/hooks/useDebounce';
 import { notifySuccess, notifyError } from '@/lib/notifications';
+import Calendar from '@/components/shared/Calendar/Calendar';
 
 
 export default function Profile() {
     const { user, setUser, loading, error } = useAuth();
     const queryClient = useQueryClient();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const small = useMediaQuery('(max-width: 650px)')
     const setSelectedGraphId = useSetSelectedGraphId();
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
-    const [showSubscriptions, setShowSubscriptions] = useState<boolean>(false);
-    const [showEvents, setShowEvents] = useState<boolean>(true);
+    const [activeSection, setActiveSection] = useState<'events' | 'subs' | 'schedule'>('events');
     
     // Состояния для поиска и фильтрации
     const [subscriptionQuery, setSubscriptionQuery] = useState<string>('');
@@ -63,14 +64,21 @@ export default function Profile() {
     const { data: userSubscriptions, isLoading: loadingSubscriptions } = useQuery({
         queryKey: ['userSubscriptions'],
         queryFn: () => GraphSubsService.getUserSubscribedGraphs(),
-        enabled: !!user && showSubscriptions
+        enabled: !!user && activeSection === 'subs'
     });
 
     // Загружаем все мероприятия пользователя
     const { data: allUserEvents, isLoading: loadingAllEvents } = useQuery({
         queryKey: ['allUserEvents'],
         queryFn: () => EventRegService.getAllUserEvents(),
-        enabled: !!user && showEvents
+        enabled: !!user && activeSection === 'events'
+    });
+
+    // Загружаем расписание по подпискам (только когда открыт раздел)
+    const { data: subsScheduleResp, isLoading: loadingSchedule, isError: isScheduleError, error: scheduleError } = useQuery({
+        queryKey: ['subsSchedule'],
+        queryFn: () => GraphSubsService.getSubsSchedule(),
+        enabled: !!user && activeSection === 'schedule'
     });
 
     // Локальный выбор ВУЗа (применяется по кнопке)
@@ -255,25 +263,26 @@ export default function Profile() {
 
     // Обработчики для статистик
     const handleSubscriptionsClick = () => {
-        // Если уже открыто - не закрываем, просто ничего не делаем
-        if (showSubscriptions) return;
+        if (activeSection === 'subs') return;
         
-        setShowSubscriptions(true);
-        setShowEvents(false);
+        setActiveSection('subs');
         // Сбрасываем поиск при переключении
         setSubscriptionQuery('');
         setSelectedSubscriptionTags([]);
     };
 
     const handleEventsClick = () => {
-        // Если уже открыто - не закрываем, просто ничего не делаем
-        if (showEvents) return;
+        if (activeSection === 'events') return;
         
-        setShowEvents(true);
-        setShowSubscriptions(false);
+        setActiveSection('events');
         // Сбрасываем поиск при переключении
         setEventQuery('');
         setSelectedEventTags([]);
+    };
+
+    const handleScheduleClick = () => {
+        if (activeSection === 'schedule') return;
+        setActiveSection('schedule');
     };
 
     // Текущее значение select: выбранное пользователем или уже установленный ВУЗ (для роли create)
@@ -285,6 +294,25 @@ export default function Profile() {
             router.push('/signIn');
         }
     }, [loading, user, router]);
+
+    // Умеем открывать раздел по query-параметру: /profile?tab=schedule
+    useEffect(() => {
+        const tab = searchParams.get('tab');
+        if (tab === 'schedule') setActiveSection('schedule');
+        else if (tab === 'subs') setActiveSection('subs');
+        else if (tab === 'events') setActiveSection('events');
+    }, [searchParams]);
+
+    // Если при открытом расписании получили 401 — отправляем на вход
+    useEffect(() => {
+        if (!isScheduleError) return;
+        const anyErr: any = scheduleError as any;
+        const status = anyErr?.response?.status;
+        if (status === 401) {
+            notifyError('Ошибка авторизации');
+            router.push('/signIn');
+        }
+    }, [isScheduleError, scheduleError, router]);
 
     // Условные возвраты после всех хуков
     if(loading) {
@@ -337,7 +365,7 @@ export default function Profile() {
                         {/* Статистика в виде блоков */}
                         <div className={styles.statsBlocks}>
                             <div 
-                                className={`${styles.statBlock} ${showSubscriptions ? styles.active : ''}`}
+                                className={`${styles.statBlock} ${activeSection === 'subs' ? styles.active : ''}`}
                                 onClick={handleSubscriptionsClick}
                             >
                                 <div className={styles.statBlockIcon}>
@@ -349,7 +377,7 @@ export default function Profile() {
                                 </div>
                             </div>
                             <div 
-                                className={`${styles.statBlock} ${showEvents ? styles.active : ''}`}
+                                className={`${styles.statBlock} ${activeSection === 'events' ? styles.active : ''}`}
                                 onClick={handleEventsClick}
                             >
                                 <div className={styles.statBlockIcon}>
@@ -358,6 +386,21 @@ export default function Profile() {
                                 <div className={styles.statBlockContent}>
                                     <div className={styles.statBlockNumber}>{typedUser.attentedEventsNum ?? 0}</div>
                                     <div className={styles.statBlockLabel}>Мероприятий</div>
+                                </div>
+                            </div>
+
+                            <div
+                                className={`${styles.statBlock} ${activeSection === 'schedule' ? styles.active : ''}`}
+                                onClick={handleScheduleClick}
+                            >
+                                <div className={styles.statBlockIcon}>
+                                    <CalendarDays size={20} />
+                                </div>
+                                <div className={styles.statBlockContent}>
+                                    <div className={styles.statBlockNumber}>
+                                        {activeSection === 'schedule' ? 'Открыто' : 'Открыть'}
+                                    </div>
+                                    <div className={styles.statBlockLabel}>Расписание</div>
                                 </div>
                             </div>
                         </div>
@@ -424,7 +467,7 @@ export default function Profile() {
             )}
             
             {/* Секции контента */}
-            {typedUser && showSubscriptions && (
+            {typedUser && activeSection === 'subs' && (
                 <div>
                     <h2 className={styles.sectionTitle}>Ваши подписки</h2>
                     
@@ -488,7 +531,7 @@ export default function Profile() {
                 </div>
             )}
 
-            {typedUser && showEvents && (
+            {typedUser && activeSection === 'events' && (
                 <div>
                     <h2 className={styles.sectionTitle}>Все ваши мероприятия</h2>
                     
@@ -548,6 +591,32 @@ export default function Profile() {
                             <EmptyState
                                 message="У вас пока нет мероприятий"
                                 subMessage="Зарегистрируйтесь на интересные события, чтобы не пропустить их"
+                                icon={CalendarX}
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {typedUser && activeSection === 'schedule' && (
+                <div className={styles.scheduleSection}>
+                    <h2 className={styles.sectionTitle}>Расписание</h2>
+                    {loadingSchedule ? (
+                        <div className={styles.loader}>
+                            <SpinnerLoader />
+                        </div>
+                    ) : subsScheduleResp?.data ? (
+                        <div className={styles.scheduleContainer}>
+                            <Calendar
+                                schedule={subsScheduleResp.data.schedule}
+                                events={subsScheduleResp.data.events}
+                            />
+                        </div>
+                    ) : (
+                        <div className={styles.emptyStateWrapper}>
+                            <EmptyState
+                                message="Тут пока пусто"
+                                subMessage="Подпишитесь на группы, чтобы видеть их расписание и мероприятия"
                                 icon={CalendarX}
                             />
                         </div>

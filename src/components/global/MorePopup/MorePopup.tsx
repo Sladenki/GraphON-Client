@@ -59,7 +59,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
         id: 'schedule',
         icon: <Clock size={24} strokeWidth={1.8} />,
         title: 'Расписание',
-        path: '/schedule/',
+        path: '/profile?tab=schedule',
         color: 'var(--main-Color)',
       })
     }
