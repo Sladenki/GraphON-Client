@@ -14,6 +14,19 @@ import {
   CalendarClock,
   MapPinned,
   UsersRound,
+  Users,
+  Music,
+  Palette,
+  GraduationCap,
+  Briefcase,
+  Trophy,
+  Laugh,
+  UtensilsCrossed,
+  Home,
+  Building2,
+  PartyPopper,
+  Film,
+  Theater,
   Calendar,
   Clock
 } from "lucide-react";
@@ -32,6 +45,52 @@ import { parseDate } from '@internationalized/date';
 import { I18nProvider } from '@react-aria/i18n';
 import { EventService } from '@/services/event.service';
 import { notifySuccess, notifyError } from '@/lib/notifications';
+import { getPastelTheme, getThemeName, type ThemeName } from './pastelTheme';
+
+type ThemeDecor = {
+  Icon: React.ComponentType<{ size?: number }>;
+  light: string;
+  dark: string;
+};
+
+function getThemeDecor(theme: ThemeName): ThemeDecor {
+  switch (theme) {
+    case 'Музыка':
+      return { Icon: Music, light: '#8b5cf6', dark: '#a78bfa' };
+    case 'Искусство':
+    case 'Творчество':
+      return { Icon: Palette, light: '#ec4899', dark: '#f472b6' };
+    case 'Образование':
+    case 'Наука':
+      return { Icon: GraduationCap, light: '#22c55e', dark: '#4ade80' };
+    case 'Бизнес':
+      return { Icon: Briefcase, light: '#3b82f6', dark: '#60a5fa' };
+    case 'Спорт':
+      return { Icon: Trophy, light: '#f59e0b', dark: '#fbbf24' };
+    case 'Юмор':
+      return { Icon: Laugh, light: '#eab308', dark: '#facc15' };
+    case 'Гастро':
+      return { Icon: UtensilsCrossed, light: '#ef4444', dark: '#f87171' };
+    case 'Семья':
+      return { Icon: Home, light: '#06b6d4', dark: '#22d3ee' };
+    case 'Город':
+    case 'Самоуправление':
+      return { Icon: Building2, light: '#6366f1', dark: '#818cf8' };
+    case 'Вечеринки':
+    case 'Фестивали, праздники':
+      return { Icon: PartyPopper, light: '#a855f7', dark: '#c084fc' };
+    case 'Встречи':
+    case 'Отряды':
+    case 'Волонтерство':
+      return { Icon: Users, light: '#14b8a6', dark: '#2dd4bf' };
+    case 'Кино':
+      return { Icon: Film, light: '#0ea5e9', dark: '#38bdf8' };
+    case 'Театр':
+      return { Icon: Theater, light: '#d946ef', dark: '#e879f9' };
+    default:
+      return { Icon: MapPinned, light: '#3b82f6', dark: '#60a5fa' };
+  }
+}
 
 interface EventProps {
   event: {
@@ -67,16 +126,16 @@ const GroupAvatar: React.FC<{
   const [imageError, setImageError] = useState(false);
 
   return (
-    <div className={styles.groupAvatar}>
+    <div className="h-9 w-9 overflow-hidden rounded-2xl bg-white/70 ring-1 ring-black/5 flex items-center justify-center">
       {src && !imageError ? (
         <img
           src={src}
           alt={alt}
-          className={styles.avatarImage}
+          className="h-full w-full object-cover"
           onError={() => setImageError(true)}
         />
       ) : (
-        <div className={styles.avatarFallback}>
+        <div className="h-full w-full flex items-center justify-center text-sm font-semibold text-slate-700">
           {fallback.charAt(0).toUpperCase()}
         </div>
       )}
@@ -320,7 +379,11 @@ const EventCard: React.FC<EventProps> = ({
     }
   }, [event._id, event.name, formattedTime, event.place]);
   
-  // Кнопки действий
+  const themeName = useMemo(() => getThemeName(event), [event]);
+  const pastel = useMemo(() => getPastelTheme(themeName), [themeName]);
+  const decor = useMemo(() => getThemeDecor(themeName), [themeName]);
+
+  // Кнопки действий (как было)
   const actionButtons = useMemo(() => {
     if (!canAccessEditor) return null;
 
@@ -369,7 +432,7 @@ const EventCard: React.FC<EventProps> = ({
     );
   }, [canAccessEditor, isEditing, isSaving, handleEdit, handleCancel, handleStartEdit, handleDelete, disableRegistration]);
 
-  // Кнопка регистрации
+  // Кнопка регистрации (как было)
   const registerButton = useMemo(() => (
     <ActionButton
       className={styles.registerWide}
@@ -406,14 +469,44 @@ const EventCard: React.FC<EventProps> = ({
       <div className={styles.eventCard}>
         {/* Header - название и группа */}
         <div className={styles.cardHeader}>
+          {/* Тематический фон по тематикам */}
+          <div
+            className={styles.themeHeaderBg}
+            style={{
+              // CSS-переключение по теме в SCSS (без зависимости от Tailwind scanning)
+              ['--eventHeaderBgLight' as any]: pastel.headerBgLight,
+              ['--eventHeaderBgDark' as any]: pastel.headerBgDark,
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Декоративные фоновые иконки (как в EventPopUp на карте) */}
+          <div
+            className={styles.backgroundIcons}
+            style={{
+              ['--eventThemeIconLight' as any]: decor.light,
+              ['--eventThemeIconDark' as any]: decor.dark,
+            }}
+            aria-hidden="true"
+          >
+            <div className={styles.bgIcon}>
+              <decor.Icon size={120} />
+            </div>
+            <div className={styles.bgIconSecondary}>
+              <decor.Icon size={84} />
+            </div>
+            <div className={styles.bgIconTertiary}>
+              <decor.Icon size={64} />
+            </div>
+          </div>
+
           <div className={styles.headerTop}>
             <div className={styles.groupInfo} onClick={handleGroupClick}>
-              <GroupAvatar
-                src={fullImageUrl}
-                alt={event.graphId.name}
-                fallback={event.graphId.name}
-              />
-              <span className={styles.groupName}>{event.graphId.name}</span>
+              {/* Оставляем дизайн аватарки и названия организатора */}
+              <GroupAvatar src={fullImageUrl} alt={event.graphId.name} fallback={event.graphId.name} />
+              <span className="truncate text-[13px] font-normal text-slate-700">
+                {event.graphId.name}
+              </span>
             </div>
             
             <div className={styles.headerActions}>
@@ -447,7 +540,7 @@ const EventCard: React.FC<EventProps> = ({
         
         {/* Description */}
         <div className={styles.cardBody}>
-        {isEditing ? (
+          {isEditing ? (
             <div>
               <textarea
                 value={editedEvent.description}
@@ -461,7 +554,7 @@ const EventCard: React.FC<EventProps> = ({
                 {editedEvent.description.length}/300
               </div>
             </div>
-        ) : (
+          ) : (
             <div className={styles.description}>
               {linkifyText(truncatedText)}
               {shouldTruncate && (
@@ -573,30 +666,29 @@ const EventCard: React.FC<EventProps> = ({
           </div>
         </div>
 
-        {/* Footer - участники и кнопка регистрации (десктоп) */}
+        {/* Footer - участники и кнопка регистрации */}
         <div className={styles.cardFooter}>
-
           {isEditing ? null : registerButton}
 
-            <div className={styles.participantsInfo}>
-              <UsersRound size={18} />
-              <span 
-                className={`${styles.participantsText} ${canViewAttendees ? styles.clickable : ''}`}
-                onClick={canViewAttendees ? () => setIsAttendeesOpen(true) : undefined}
-                role={canViewAttendees ? 'button' : undefined}
-                tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
-                onKeyDown={canViewAttendees ? (e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    if (canViewAttendees) {
-                      setIsAttendeesOpen(true);
-                    }
+          <div className={styles.participantsInfo}>
+            <UsersRound size={18} />
+            <span 
+              className={`${styles.participantsText} ${canViewAttendees ? styles.clickable : ''}`}
+              onClick={canViewAttendees ? () => setIsAttendeesOpen(true) : undefined}
+              role={canViewAttendees ? 'button' : undefined}
+              tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
+              onKeyDown={canViewAttendees ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  if (canViewAttendees) {
+                    setIsAttendeesOpen(true);
                   }
-                } : undefined}
-              >
-                {event.regedUsers} {participantsWord}
-              </span>
-            </div>
+                }
+              } : undefined}
+            >
+              {event.regedUsers} {participantsWord}
+            </span>
+          </div>
         </div>
       </div>
       

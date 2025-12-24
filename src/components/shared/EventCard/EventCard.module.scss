@@ -1,4 +1,4 @@
-// Новый минималистичный дизайн EventCard
+// Восстановленный дизайн EventCard (как было), с поддержкой тематического фона в header
 
 .eventCardWrapper {
   width: 100%;
@@ -24,6 +24,96 @@
   padding: 24px 24px 24px 24px;
   background: linear-gradient(to bottom, rgba(var(--main-Color), 0.02), transparent);
   border-bottom: 1px solid rgba(var(--main-Color), 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Icons - Decorative (как в city/EventPopup) */
+.backgroundIcons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  color: var(--eventThemeIconLight);
+}
+
+.bgIcon {
+  position: absolute;
+  top: -20px;
+  right: -30px;
+  opacity: 0.06;
+  filter: blur(1px);
+  animation: floatSlow 20s ease-in-out infinite;
+  transform: rotate(15deg);
+}
+
+.bgIconSecondary {
+  position: absolute;
+  bottom: 28%;
+  left: -20px;
+  opacity: 0.05;
+  filter: blur(1.5px);
+  animation: floatMedium 15s ease-in-out infinite;
+  transform: rotate(-25deg);
+}
+
+.bgIconTertiary {
+  position: absolute;
+  top: 52%;
+  right: 10%;
+  opacity: 0.04;
+  filter: blur(2px);
+  animation: floatFast 12s ease-in-out infinite;
+  transform: rotate(45deg);
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0) rotate(15deg); }
+  50% { transform: translateY(-15px) rotate(20deg); }
+}
+
+@keyframes floatMedium {
+  0%, 100% { transform: translateY(0) rotate(-25deg); }
+  50% { transform: translateY(20px) rotate(-20deg); }
+}
+
+@keyframes floatFast {
+  0%, 100% { transform: translateY(0) rotate(45deg); }
+  50% { transform: translateY(-10px) rotate(50deg); }
+}
+
+// тематический фон (подмешивается под старый header)
+.themeHeaderBg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.85;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: saturate(1.05);
+  background-image: var(--eventHeaderBgLight);
+}
+
+[data-theme="dark"],
+html.dark {
+  .themeHeaderBg {
+    background-image: var(--eventHeaderBgDark);
+    opacity: 0.6;
+    filter: saturate(1.25) contrast(1.05);
+    mix-blend-mode: screen;
+  }
+
+  .backgroundIcons {
+    color: var(--eventThemeIconDark);
+  }
+
+  .bgIcon { opacity: 0.10; }
+  .bgIconSecondary { opacity: 0.08; }
+  .bgIconTertiary { opacity: 0.07; }
 }
 
 .headerTop {
@@ -31,6 +121,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
 }
 
 .groupInfo {
@@ -43,62 +135,6 @@
   border: none;
   transition: all 0.2s ease;
   cursor: pointer;
-  
-  &:hover {
-    background: transparent;
-    
-    .groupAvatar {
-      transform: scale(1.05);
-      border-color: rgba(var(--main-Color), 0.2);
-    }
-
-    .groupName {
-      text-decoration: underline;
-      text-underline-offset: 2px;
-      text-decoration-color: rgba(var(--main-Color), 0.6);
-    }
-  }
-}
-
-.groupAvatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: rgba(var(--main-Color), 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border: 2px solid rgba(var(--main-Color), 0.12);
-  transition: all 0.2s ease;
-}
-  
-.avatarImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatarFallback {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(var(--main-Color), 0.15), rgba(var(--main-Color), 0.08));
-  color: rgb(var(--main-Color));
-  font-weight: 600;
-  font-size: 15px;
-}
-
-.groupName {
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: -0.005em;
-  color: rgb(var(--main-Color));
-  font-family: var(--font-inter);
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
 .headerActions {
@@ -191,11 +227,13 @@
 
 .titleSection {
   margin-top: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .eventTitle {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 500; // немного легче, чем было
   letter-spacing: -0.025em;
   color: var(--text-color);
   font-family: var(--font-inter);
@@ -214,7 +252,7 @@
   font-size: 15px;
   line-height: 1.65;
   font-weight: 400;
-  color: rgba(var(--text-color), 0.85);
+  color: rgba(var(--text-color), 0.72); // легче
   font-family: var(--font-inter);
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -302,7 +340,7 @@
   font-size: 15px;
   font-weight: 400;
   letter-spacing: -0.01em;
-  color: var(--text-color);
+  color: rgba(var(--text-color), 0.9);
   font-family: var(--font-inter);
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -312,7 +350,7 @@
   font-size: 15px;
   font-weight: 400;
   letter-spacing: -0.01em;
-  color: var(--text-color);
+  color: rgba(var(--text-color), 0.9);
   font-family: var(--font-inter);
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -383,14 +421,14 @@
 }
 
 .checkboxContainer {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   
   input[type="checkbox"] {
-        width: 16px;
-        height: 16px;
-      }
+    width: 16px;
+    height: 16px;
+  }
       
   label {
     font-size: 14px;
@@ -455,8 +493,8 @@
 }
 
 .spinner {
-        width: 16px;
-        height: 16px;
+  width: 16px;
+  height: 16px;
   border: 2px solid transparent;
   border-top: 2px solid currentColor;
   border-radius: 50%;
@@ -482,33 +520,6 @@ html.dark {
   
   .cardHeader {
     background: linear-gradient(to bottom, rgba(var(--main-Color), 0.03), transparent);
-  }
-  
-  .groupInfo {
-    background: transparent;
-
-    &:hover {
-      background: transparent;
-
-      .groupAvatar {
-        transform: scale(1.05);
-        border-color: rgba(var(--main-Color), 0.25);
-      }
-
-      .groupName {
-        text-decoration: underline;
-        text-underline-offset: 2px;
-        text-decoration-color: rgba(var(--main-Color), 0.65);
-      }
-    }
-  }
-  
-  .groupAvatar {
-    border-color: rgba(var(--main-Color), 0.2);
-  }
-  
-  .groupName {
-    color: rgb(var(--main-Color));
   }
   
   .readMoreButton {
@@ -549,46 +560,6 @@ html.dark {
     }
   }
   
-  // Редактирование - зелёный (темная тема)
-  .editButton {
-    color: rgba(74, 222, 128, 0.8);
-    
-    &:hover {
-      background: rgba(34, 197, 94, 0.15);
-      color: rgb(74, 222, 128);
-    }
-  }
-  
-  // Удаление - красный (темная тема)
-  .deleteButton {
-    color: rgba(248, 113, 113, 0.8);
-    
-    &:hover {
-      background: rgba(239, 68, 68, 0.15);
-      color: rgb(248, 113, 113);
-    }
-  }
-  
-  // Сохранение - синий (темная тема)
-  .saveButton {
-    color: rgba(96, 165, 250, 0.8);
-    
-    &:hover {
-      background: rgba(59, 130, 246, 0.15);
-      color: rgb(96, 165, 250);
-    }
-  }
-  
-  // Отмена - серый (темная тема)
-  .cancelButton {
-    color: rgba(156, 163, 175, 0.8);
-    
-    &:hover {
-      background: rgba(107, 114, 128, 0.15);
-      color: rgb(156, 163, 175);
-    }
-  }
-  
   .importantInfo {
     background: rgba(var(--main-Color), 0.03);
   }
@@ -610,7 +581,6 @@ html.dark {
       }
     }
   }
-
 }
 
 // Mobile adaptations
@@ -626,21 +596,6 @@ html.dark {
   
   .cardHeader {
     padding: 20px 18px 20px 18px;
-  }
-  
-  .groupInfo {
-    padding: 0;
-    border-radius: 0;
-  }
-  
-  .groupAvatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-  }
-  
-  .groupName {
-    font-size: 12px;
   }
   
   .headerTop {
@@ -664,7 +619,6 @@ html.dark {
     justify-content: space-between;
   }
 
-  // Мобильная версия: вертикальное расположение
   .importantInfo {
     flex-direction: column;
     gap: 10px;
@@ -698,14 +652,6 @@ html.dark {
     color: #6B7280;
     font-size: 13px;
     white-space: nowrap;
-    
-    &.clickable {
-      color: #6B7280;
-      
-      &:hover {
-        color: #4B5563;
-      }
-    }
   }
   
   .eventTitle {
@@ -723,7 +669,6 @@ html.dark {
   }
 }
 
-// Extra small phones
 @media (max-width: 400px) {
   .timeInfo,
   .placeInfo {
@@ -750,8 +695,5 @@ html.dark {
     font-size: 12px;
   }
 }
-
-
-
 
 
