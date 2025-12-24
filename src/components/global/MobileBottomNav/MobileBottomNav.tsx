@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import styles from "./MobileBottomNav.module.scss";
 import Link from "next/link";
-import { Newspaper, Heart, Users, MoreHorizontal } from "lucide-react";
+import { Newspaper, Users, MoreHorizontal, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -37,18 +37,18 @@ const MobileBottomNav: React.FC = () => {
             </Link>
           </li>
 
-          {/* Подписки */}
+          {/* Профиль */}
           <li className={styles.navItem}>
             <Link 
-              href="/subs/" 
-              className={`${styles.navLink} ${pathname === '/subs/' ? styles.active : ""}`} 
-              aria-label="Подписки" 
-              aria-current={pathname === '/subs/' ? "page" : undefined}
+              href="/profile" 
+              className={`${styles.navLink} ${pathname === '/profile' ? styles.active : ""}`} 
+              aria-label="Профиль" 
+              aria-current={pathname === '/profile' ? "page" : undefined}
             >
               <span className={styles.iconWrapper}>
-                <Heart size={18} strokeWidth={1.5} />
+                <User size={18} strokeWidth={1.5} />
               </span>
-              <span className={styles.srOnly}>Подписки</span>
+              <span className={styles.srOnly}>Профиль</span>
             </Link>
           </li>
 
