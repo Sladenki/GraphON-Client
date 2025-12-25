@@ -3,7 +3,7 @@
 import React from 'react';
 import styles from './ActionButton.module.scss';
 
-export type ActionButtonVariant = 'primary' | 'info' | 'danger';
+export type ActionButtonVariant = 'primary' | 'info' | 'danger' | 'custom';
 
 export interface ActionButtonProps {
   label: string;
@@ -32,7 +32,9 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       ? styles.primary
       : variant === 'info'
         ? styles.info
-        : styles.danger;
+        : variant === 'danger'
+          ? styles.danger
+          : '';
 
   return (
     <button

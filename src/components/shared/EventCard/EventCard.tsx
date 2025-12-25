@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
 import { 
   Edit3, 
@@ -28,7 +28,8 @@ import {
   Film,
   Theater,
   Calendar,
-  Clock
+  Clock,
+  BadgeCheck
 } from "lucide-react";
 import { useEventRegistration } from "@/hooks/useEventRegistration";
 import { useAuth } from "@/providers/AuthProvider";
@@ -37,9 +38,11 @@ import { UserRole } from "@/types/user.interface";
 import { useDeclensionWord } from "@/hooks/useDeclension";
 import DeleteConfirmPopUp from './DeleteConfirmPopUp/DeleteConfirmPopUp';
 import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
+import ParticipantOrbits from './ParticipantOrbits/ParticipantOrbits';
 import styles from './EventCard.module.scss';
 import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { linkifyText } from '@/lib/linkify';
+import { motion } from 'framer-motion';
 import { DatePicker, TimeInput } from '@heroui/react';
 import { parseDate } from '@internationalized/date';
 import { I18nProvider } from '@react-aria/i18n';
@@ -166,6 +169,20 @@ const EventCard: React.FC<EventProps> = ({
     event._id, 
     isAttended
   );
+
+  // Триумфальная анимация кнопки сразу после клика "Записаться"
+  const [isJustRegistered, setIsJustRegistered] = useState(false);
+  const prevRegisteredRef = useRef<boolean>(isRegistered);
+  useEffect(() => {
+    const prev = prevRegisteredRef.current;
+    if (!prev && isRegistered) {
+      setIsJustRegistered(true);
+      const t = setTimeout(() => setIsJustRegistered(false), 900);
+      prevRegisteredRef.current = isRegistered;
+      return () => clearTimeout(t);
+    }
+    prevRegisteredRef.current = isRegistered;
+  }, [isRegistered]);
   
   // Проверка прав на просмотр участников
   const canViewAttendees = Boolean(
@@ -435,10 +452,15 @@ const EventCard: React.FC<EventProps> = ({
   // Кнопка регистрации (как было)
   const registerButton = useMemo(() => (
     <ActionButton
-      className={styles.registerWide}
+      className={[
+        styles.registerWide,
+        isRegistered ? styles.registerTicket : styles.registerDefault,
+        isJustRegistered ? styles.registerTicketPulse : '',
+      ].filter(Boolean).join(' ')}
       onClick={handleRegistration}
       disabled={isLoading || !!disableRegistration || isEventPast}
-      variant={isEventPast ? 'info' : (isRegistered ? 'danger' : 'primary')}
+      // Важно: для билетика используем custom, иначе ActionButton.primary перетрёт фон (background)
+      variant={isEventPast ? 'info' : (isRegistered ? 'custom' : 'primary')}
       icon={
         isLoading ? (
           <div className={styles.spinner} />
@@ -447,18 +469,19 @@ const EventCard: React.FC<EventProps> = ({
         ) : !isLoggedIn ? (
           <LogIn size={16} />
         ) : isRegistered ? (
-          <UserX size={16} />
+          <BadgeCheck size={16} />
         ) : (
           <UserPlus size={16} />
         )
       }
       label={
         isEventPast ? 'Запись закончена' : disableRegistration ? 'Регистрация недоступна' : isLoggedIn
-          ? (isRegistered ? 'Отменить запись' : 'Записаться')
+          ? (isRegistered ? 'Вы записаны' : 'Записаться')
           : 'Необходимо войти'
       }
+      data-registered={isRegistered ? 'true' : 'false'}
     />
-  ), [isLoggedIn, isRegistered, isLoading, handleRegistration, disableRegistration, isEventPast]);
+  ), [isLoggedIn, isRegistered, isJustRegistered, isLoading, handleRegistration, disableRegistration, isEventPast]);
 
   if (!event || !event._id) {
     return null;
@@ -466,7 +489,39 @@ const EventCard: React.FC<EventProps> = ({
 
   return (
     <div className={styles.eventCardWrapper}>
-      <div className={styles.eventCard}>
+      <motion.div 
+        className={styles.eventCard}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* Динамический фон с движущимися градиентами */}
+        <motion.div
+          className={styles.dynamicBackground}
+          animate={{
+            x: ['-30%', '30%', '-30%'],
+            y: ['-30%', '30%', '-30%'],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        />
+        <motion.div
+          className={styles.dynamicBackgroundSecondary}
+          animate={{
+            x: ['30%', '-30%', '30%'],
+            y: ['30%', '-30%', '30%'],
+            scale: [1.3, 1, 1.3],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        />
         {/* Header - название и группа */}
         <div className={styles.cardHeader}>
           {/* Тематический фон по тематикам */}
@@ -670,27 +725,17 @@ const EventCard: React.FC<EventProps> = ({
         <div className={styles.cardFooter}>
           {isEditing ? null : registerButton}
 
-          <div className={styles.participantsInfo}>
-            <UsersRound size={18} />
-            <span 
-              className={`${styles.participantsText} ${canViewAttendees ? styles.clickable : ''}`}
-              onClick={canViewAttendees ? () => setIsAttendeesOpen(true) : undefined}
-              role={canViewAttendees ? 'button' : undefined}
-              tabIndex={canViewAttendees ? 0 : undefined as unknown as number}
-              onKeyDown={canViewAttendees ? (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  if (canViewAttendees) {
-                    setIsAttendeesOpen(true);
-                  }
-                }
-              } : undefined}
-            >
-              {event.regedUsers} {participantsWord}
-            </span>
+          {/* Орбиты участников вместо текста */}
+          <div className={styles.participantsOrbits}>
+            <ParticipantOrbits
+              eventId={event._id}
+              totalCount={event.regedUsers}
+              isRegistered={isRegistered}
+              onRegister={canViewAttendees ? () => setIsAttendeesOpen(true) : undefined}
+            />
           </div>
         </div>
-      </div>
+      </motion.div>
       
       {/* PopUp подтверждения удаления */}
       <DeleteConfirmPopUp

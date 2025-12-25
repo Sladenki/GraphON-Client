@@ -10,6 +10,35 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // 🔹 Основная цветовая палитра GraphON
+        primary: {
+          DEFAULT: '#9682EE',
+          hover: '#6E5AD6',
+          light: '#E6E1FA',
+        },
+        secondary: {
+          DEFAULT: '#6E5AD6',
+          darkPurple: '#6E5AD6',
+          softLavender: '#E6E1FA',
+          accentPink: '#EE82C8',
+        },
+        neutral: {
+          background: '#F9F8FD',
+          card: '#FFFFFF',
+          border: '#DAD6F3',
+        },
+        text: {
+          primary: '#2B2A33',
+          secondary: '#5E5C6A',
+          muted: '#9A97AD',
+        },
+        status: {
+          success: '#4CAF88',
+          warning: '#F2B705',
+          error: '#E05A5A',
+          info: '#6FA8FF',
+        },
+        // Старые цвета (для обратной совместимости)
         glass: {
           primary: 'rgba(255, 255, 255, 0.1)',
           secondary: 'rgba(255, 255, 255, 0.05)',
@@ -27,17 +56,21 @@ module.exports = {
         }
       },
       gradients: {
-        primary: 'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)',
-        secondary: 'linear-gradient(135deg, #ec4899 0%, #f59e0b 100%)',
-        danger: 'linear-gradient(135deg, #ef4444 0%, #ec4899 100%)',
+        primary: 'linear-gradient(135deg, #9682EE 0%, #6E5AD6 100%)',
+        secondary: 'linear-gradient(135deg, #EE82C8 0%, #9682EE 100%)',
+        danger: 'linear-gradient(135deg, #E05A5A 0%, #EE82C8 100%)',
+        accent: 'linear-gradient(135deg, #9682EE 0%, #EE82C8 100%)',
       },
       boxShadow: {
         'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
         'glass-lg': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        'neon': '0 0 20px rgba(139, 92, 246, 0.5)',
-        'neon-lg': '0 0 40px rgba(139, 92, 246, 0.7)',
-        'neon-blue': '0 0 20px rgba(59, 130, 246, 0.5)',
-        'neon-pink': '0 0 20px rgba(236, 72, 153, 0.5)',
+        'neon': '0 0 20px rgba(150, 130, 238, 0.5)',
+        'neon-lg': '0 0 40px rgba(150, 130, 238, 0.7)',
+        'neon-blue': '0 0 20px rgba(111, 168, 255, 0.5)',
+        'neon-pink': '0 0 20px rgba(238, 130, 200, 0.5)',
+        'primary-glow': '0 0 20px rgba(150, 130, 238, 0.4)',
+        'primary-glow-lg': '0 0 40px rgba(150, 130, 238, 0.6)',
+        'accent-glow': '0 0 20px rgba(238, 130, 200, 0.4)',
       },
       backdropBlur: {
         'xs': '2px',
@@ -83,10 +116,10 @@ module.exports = {
         },
         glow: {
           '0%, 100%': {
-            boxShadow: '0 0 20px rgba(139, 92, 246, 0.5)',
+            boxShadow: '0 0 20px rgba(150, 130, 238, 0.5)',
           },
           '50%': {
-            boxShadow: '0 0 40px rgba(139, 92, 246, 0.8), 0 0 60px rgba(59, 130, 246, 0.6)',
+            boxShadow: '0 0 40px rgba(150, 130, 238, 0.8), 0 0 60px rgba(238, 130, 200, 0.6)',
           },
         },
       },
@@ -143,13 +176,19 @@ module.exports = {
           'border': '1px solid rgba(75, 85, 99, 0.3)',
         },
         '.text-gradient': {
-          'background': 'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)',
+          'background': 'linear-gradient(135deg, #9682EE 0%, #6E5AD6 100%)',
+          '-webkit-background-clip': 'text',
+          '-webkit-text-fill-color': 'transparent',
+          'background-clip': 'text',
+        },
+        '.text-gradient-accent': {
+          'background': 'linear-gradient(135deg, #9682EE 0%, #EE82C8 100%)',
           '-webkit-background-clip': 'text',
           '-webkit-text-fill-color': 'transparent',
           'background-clip': 'text',
         },
         '.gradient-border': {
-          'background': 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, transparent 50%, rgba(59, 130, 246, 0.2) 100%)',
+          'background': 'linear-gradient(135deg, rgba(150, 130, 238, 0.2) 0%, transparent 50%, rgba(238, 130, 200, 0.2) 100%)',
           'padding': '1px',
           'border-radius': '1rem',
         },

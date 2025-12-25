@@ -1,4 +1,34 @@
 :root {
+  /* 🔹 Основная цветовая палитра GraphON */
+  --color-primary: #9682EE;
+  --color-primary-hover: #6E5AD6;
+  --color-primary-light: #E6E1FA;
+  --color-primary-rgb: 150, 130, 238;
+  --color-primary-hover-rgb: 110, 90, 214;
+
+  /* 🔹 Дополнительные цвета */
+  --color-secondary-dark-purple: #6E5AD6;
+  --color-secondary-soft-lavender: #E6E1FA;
+  --color-accent-pink: #EE82C8;
+  --color-accent-pink-rgb: 238, 130, 200;
+
+  /* ⚪ Нейтральные цвета */
+  --color-neutral-background: #F9F8FD;
+  --color-neutral-card: #FFFFFF;
+  --color-neutral-border: #DAD6F3;
+
+  /* ⚫ Текст */
+  --color-text-primary: #2B2A33;
+  --color-text-secondary: #5E5C6A;
+  --color-text-muted: #9A97AD;
+
+  /* ✅ Состояния */
+  --color-success: #4CAF88;
+  --color-warning: #F2B705;
+  --color-error: #E05A5A;
+  --color-info: #6FA8FF;
+
+  /* Обратная совместимость */
   --main-Color: 150, 130, 238;  /* Тёплый фиолетовый */
   --light-main: rgba(var(--main-Color), .2);
 
@@ -84,20 +114,38 @@
 }
 
 html[data-theme="light"] {
-  // --background-color: #F4F7FF;  /* Светлее */
-  // --block-color: #FFFFFF;
-  --background-color: #FFFFFF;  /* Светлее */
-  --block-color: #FAF9FE;
-  --main-text: #333333;  /* Более тёмный текст */
+  // Используем новую палитру
+  --background-color: var(--color-neutral-background);  /* #F9F8FD */
+  --block-color: var(--color-neutral-card);  /* #FFFFFF */
+  --main-text: var(--color-text-primary);  /* #2B2A33 */
+  
+  // Дополнительные переменные для совместимости
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  --border-color: var(--color-neutral-border);
 }
 
 html[data-theme="dark"],
 html.dark {
-  // --background-color: #2A2D33;  /* Немного светлее */
-  // --block-color: #383B40;
-  --background-color: #383B40;  /* Немного светлее */
-  --block-color: #2A2D33;
-  --main-text: #E0E0E0;  /* Легче */
+  // Темная тема (можно адаптировать под новую палитру)
+  --background-color: #1A1825;
+  --block-color: #252330;
+  --main-text: #F5F4F8;
+  
+  // Адаптированные цвета для темной темы
+  --color-primary: #A896F0;
+  --color-primary-hover: #7E6DE6;
+  --color-text-primary: #F5F4F8;
+  --color-text-secondary: #C5C3D0;
+  --color-text-muted: #8A8799;
+  --color-neutral-background: #1A1825;
+  --color-neutral-card: #252330;
+  --color-neutral-border: #3A3548;
+  
+  // Дополнительные переменные для совместимости
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  --border-color: var(--color-neutral-border);
 
   /* Переменные для графа в тёмной теме */
   --primary-color: #8a7af8;
