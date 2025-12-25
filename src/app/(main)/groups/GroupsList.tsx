@@ -106,7 +106,9 @@ export default function GroupsList() {
   } = useSearchWithTags({
     data: generalGraphs,
     searchFields: ['name', 'about'],
-    tagField: 'parentGraphId',
+    // В данных графа поле parentGraphId может не быть описано в IGraphList типах,
+    // но фактически приходит с API — приводим к any, чтобы не ломать типизацию.
+    tagField: 'parentGraphId' as any,
     tagIdField: '_id',
     tagNameField: 'name'
   })
@@ -160,6 +162,11 @@ export default function GroupsList() {
                   isSubToGraph={Boolean(g.isSubscribed)}
                   imgPath={g.imgPath}
                   about={g.about}
+                  subscribersCount={(g as any).subsNum ?? 0}
+                  specializations={[
+                    ...(((g as any).parentGraphId?.name ? [{ key: String((g as any).parentGraphId?._id ?? (g as any).parentGraphId?.name), label: String((g as any).parentGraphId?.name) }] : []) as any[]),
+                    ...((Array.isArray((g as any).tags) ? (g as any).tags : []).map((t: any) => ({ key: String(t?._id ?? t?.name), label: String(t?.name) })).filter((x: any) => x.label && x.label !== 'undefined')),
+                  ]}
                   handleScheduleButtonClick={() => handleScheduleClick(g._id)}
                   layout="horizontal"
                 />
@@ -219,6 +226,11 @@ export default function GroupsList() {
                 isSubToGraph={graph.isSubscribed}
                 imgPath={graph.imgPath}
                 about={graph.about}
+                subscribersCount={(graph as any).subsNum ?? 0}
+                specializations={[
+                  ...(((graph as any).parentGraphId?.name ? [{ key: String((graph as any).parentGraphId?._id ?? (graph as any).parentGraphId?.name), label: String((graph as any).parentGraphId?.name) }] : []) as any[]),
+                  ...((Array.isArray((graph as any).tags) ? (graph as any).tags : []).map((t: any) => ({ key: String(t?._id ?? t?.name), label: String(t?.name) })).filter((x: any) => x.label && x.label !== 'undefined')),
+                ]}
                 handleScheduleButtonClick={() => handleScheduleClick(graph._id)}
                 layout="horizontal"
               />
