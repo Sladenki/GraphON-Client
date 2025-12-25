@@ -1,6 +1,7 @@
 import { axiosAuth, axiosClassic } from "@/api/interceptors"
 import { IGoogleAuthUser } from "@/types/user.interface"
 import { IUser, IUpdateUserDto } from '@/types/user.interface';
+import { CursorPage, SocialUserListItem } from "@/types/social.interface";
 
 export const UserService = {
     // Google Авторизация
@@ -56,6 +57,31 @@ export const UserService = {
     // Получение пользователя по ID
     async getById(id: string) {
         const { data } = await axiosAuth.get(`/user/getById/${id}`);
+        return data;
+    },
+
+    // Social API: получить список пользователей порционно (cursor pagination)
+    async getUserList(params?: { limit?: number; cursor?: string }): Promise<CursorPage<SocialUserListItem>> {
+        const searchParams = new URLSearchParams();
+        if (params?.limit) searchParams.set('limit', String(params.limit));
+        if (params?.cursor) searchParams.set('cursor', params.cursor);
+        const qs = searchParams.toString();
+
+        const { data } = await axiosAuth.get<CursorPage<SocialUserListItem>>(`/user/list${qs ? `?${qs}` : ''}`);
+        return data;
+    },
+
+    // Social API: поиск пользователей порционно (cursor pagination)
+    // Endpoint публичный (без @Auth) — используем axiosClassic, чтобы работало и без токена.
+    async searchUsers(params: { q: string; limit?: number; cursor?: string }): Promise<CursorPage<SocialUserListItem>> {
+        const q = (params?.q ?? '').trim();
+        const searchParams = new URLSearchParams();
+        searchParams.set('q', q);
+        if (params?.limit) searchParams.set('limit', String(params.limit));
+        if (params?.cursor) searchParams.set('cursor', params.cursor);
+        const qs = searchParams.toString();
+
+        const { data } = await axiosClassic.get<CursorPage<SocialUserListItem>>(`/user/search?${qs}`);
         return data;
     }
 }

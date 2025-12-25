@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useEffect, useRef, useCallback, useState } from 'react'
-import { FileText, HelpCircle, Shield } from 'lucide-react'
+import { FileText, HelpCircle, Shield, UserPlus } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { UserRole } from '@/types/user.interface'
 import Link from 'next/link'
@@ -52,6 +52,17 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   // Карточки действий
   const actionCards = useMemo(() => {
     const cards = []
+
+    // Друзья (только для авторизованных)
+    if (isLoggedIn) {
+      cards.push({
+        id: 'friends',
+        icon: <UserPlus size={24} strokeWidth={1.8} />,
+        title: 'Друзья',
+        path: '/friends',
+        color: 'var(--main-Color)',
+      })
+    }
 
     // Админка (только если есть доступ)
     if (hasAdminAccess) {

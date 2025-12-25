@@ -1,4 +1,4 @@
-import { Pencil, Users, Network, Newspaper, User } from 'lucide-react'
+import { Pencil, Users, Network, Newspaper, User, UserPlus } from 'lucide-react'
 import { JSX } from 'react';
 
 export const GRAPHS_ROUTE = '/graphs/';
@@ -31,6 +31,7 @@ export const sidebar = [
   // createSidebarItem(1, <House color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Главная', false, '/'),
   createSidebarItem(4, <Users color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Группы', false, '/groups/'),
   createSidebarItem(5, <Newspaper color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Мероприятия', false, '/events/'),
+  createSidebarItem(6, <UserPlus color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Друзья', true, '/friends'),
   createSidebarItem(7, <Network color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Графы', false, GRAPHS_ROUTE),
   createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Админка', true, '/admin/'),
 ];
