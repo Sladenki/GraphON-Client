@@ -1,9 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '@/providers/AuthProvider'
 import styles from './DevAuthPanel.module.scss'
-import { User, Shield, GraduationCap, Crown, LogIn } from 'lucide-react'
+import { User, Shield, GraduationCap, Crown, LogIn, Search } from 'lucide-react'
+import { useDebounce } from '@/hooks/useDebounce'
+import { UserService } from '@/services/user.service'
+import type { SocialUserListItem } from '@/types/social.interface'
 
 type DevUserRole = 'admin' | 'creator' | 'student' | 'user'
 
@@ -33,7 +36,14 @@ const ROLE_INFO: Record<DevUserRole, { label: string; icon: React.ReactNode; des
 export const DevAuthPanel: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedRole, setSelectedRole] = useState<DevUserRole>('user')
-  const { devLogin, isLoggedIn, user } = useAuth()
+  const { devLogin, devLoginAs, isLoggedIn, user } = useAuth()
+
+  const [searchQuery, setSearchQuery] = useState('')
+  const debouncedQuery = useDebounce(searchQuery, 250)
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchResults, setSearchResults] = useState<SocialUserListItem[]>([])
+  const [searchError, setSearchError] = useState<string | null>(null)
+  const [loginAsError, setLoginAsError] = useState<string | null>(null)
 
   const handleDevAuth = async (role: DevUserRole) => {
     setIsLoading(true)
@@ -71,6 +81,55 @@ export const DevAuthPanel: React.FC = () => {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    const q = (debouncedQuery || '').trim()
+    if (!q) {
+      setSearchResults([])
+      setSearchError(null)
+      setIsSearching(false)
+      return
+    }
+
+    let cancelled = false
+    setIsSearching(true)
+    setSearchError(null)
+
+    UserService.searchUsers({ q, limit: 20 })
+      .then((res) => {
+        if (cancelled) return
+        setSearchResults(res.items || [])
+      })
+      .catch((e: any) => {
+        if (cancelled) return
+        setSearchError(e?.response?.data?.message || e?.message || 'Ошибка поиска')
+        setSearchResults([])
+      })
+      .finally(() => {
+        if (cancelled) return
+        setIsSearching(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [debouncedQuery])
+
+  const handleLoginAsUser = async (u: SocialUserListItem) => {
+    setIsLoading(true)
+    setLoginAsError(null)
+    try {
+      await devLoginAs(u._id)
+      window.location.href = '/events'
+    } catch (e) {
+      console.error(e)
+      setLoginAsError(e instanceof Error ? e.message : 'Не удалось войти как пользователь')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const visibleResults = useMemo(() => searchResults.slice(0, 8), [searchResults])
 
   // Не показываем панель, если уже авторизован
   if (isLoggedIn && user) {
@@ -135,6 +194,55 @@ export const DevAuthPanel: React.FC = () => {
           </>
         )}
       </button>
+
+      <div className={styles.divider} />
+
+      <div className={styles.header}>
+        <h3 className={styles.title}>
+          <Search size={20} />
+          Войти как пользователь из базы
+        </h3>
+        <p className={styles.subtitle}>
+          Поиск по имени / фамилии / username и вход под выбранным пользователем (только dev)
+        </p>
+      </div>
+
+      <div className={styles.searchBox}>
+        <input
+          className={styles.searchInput}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Например: ivan или ivan petrov"
+          disabled={isLoading}
+        />
+      </div>
+
+      {loginAsError ? <div className={styles.searchError}>{loginAsError}</div> : null}
+      {searchError ? <div className={styles.searchError}>{searchError}</div> : null}
+      {isSearching ? <div className={styles.searchHint}>Поиск…</div> : null}
+
+      {visibleResults.length > 0 ? (
+        <div className={styles.results}>
+          {visibleResults.map((u) => (
+            <button
+              key={u._id}
+              className={styles.resultRow}
+              onClick={() => handleLoginAsUser(u)}
+              disabled={isLoading}
+              type="button"
+              title={`Войти как ${u.firstName} ${u.lastName} (@${u.username})`}
+            >
+              <div className={styles.resultMain}>
+                <div className={styles.resultName}>
+                  {u.firstName} {u.lastName}
+                </div>
+                <div className={styles.resultUser}>@{u.username}</div>
+              </div>
+              <div className={styles.resultAction}>Войти</div>
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <div className={styles.warning}>
         ⚠️ Эта панель доступна только в режиме разработки

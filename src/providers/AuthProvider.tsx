@@ -18,6 +18,7 @@ interface AuthContextType {
     error: string | null;
     refreshUser: () => void;
     devLogin: (options?: { isStudent?: boolean; selectedGraphId?: string; universityGraphId?: string }) => Promise<void>;
+    devLoginAs: (userId: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -30,6 +31,7 @@ const AuthContext = createContext<AuthContextType>({
     error: null,
     refreshUser: () => {},
     devLogin: async () => {},
+    devLoginAs: async () => {},
 });
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL; 
@@ -59,6 +61,55 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
         }
     }, []);
+
+    const applyAuthResponse = async (data: any) => {
+        const accessToken = data?.accessToken || data?.token || data?.access_token;
+        const userDataFromResponse = data?.user;
+
+        if (!accessToken) {
+            throw new Error('Auth response is missing accessToken');
+        }
+        if (!userDataFromResponse?._id) {
+            throw new Error('Auth response is missing user._id');
+        }
+
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('userId', userDataFromResponse._id);
+        }
+
+        const nextUser: User = {
+            _id: userDataFromResponse._id,
+            role: userDataFromResponse.role as any,
+            firstName: userDataFromResponse.firstName || '',
+            lastName: userDataFromResponse.lastName || '',
+            username: userDataFromResponse.username || '',
+            avaPath: userDataFromResponse.avaPath || '',
+            telegramId: userDataFromResponse.telegramId || '',
+            email: userDataFromResponse.email || '',
+            selectedGraphId: userDataFromResponse.selectedGraphId || null,
+            universityGraphId: userDataFromResponse.universityGraphId || null,
+            isStudent: userDataFromResponse.isStudent ?? null,
+            graphSubsNum: userDataFromResponse.graphSubsNum || 0,
+            postsNum: userDataFromResponse.postsNum || 0,
+            attentedEventsNum: userDataFromResponse.attentedEventsNum || 0,
+        };
+
+        setUser(nextUser);
+        setIsLoggedIn(true);
+        setError(null);
+
+        if (typeof window !== 'undefined') {
+            if (userDataFromResponse.selectedGraphId) {
+                localStorage.setItem('selectedGraphId', userDataFromResponse.selectedGraphId);
+            }
+            if (userDataFromResponse.isStudent !== undefined && userDataFromResponse.isStudent !== null) {
+                localStorage.setItem('isStudent', String(userDataFromResponse.isStudent));
+            }
+        }
+
+        return { accessToken, userId: userDataFromResponse._id };
+    };
 
     const devLogin = async (options?: { isStudent?: boolean; selectedGraphId?: string; universityGraphId?: string }) => {
         try {
@@ -92,64 +143,62 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
 
             const data = await response.json();
-            
-            // Извлекаем токен
-            const accessToken = data?.accessToken || data?.token || data?.access_token;
-            
-            // Извлекаем данные пользователя из ответа
-            const userDataFromResponse = data?.user;
-
-            // Сохранить токен в localStorage
-            if (accessToken && typeof window !== 'undefined') {
-                localStorage.setItem('accessToken', accessToken);
-                
-                if (userDataFromResponse?._id) {
-                    localStorage.setItem('userId', userDataFromResponse._id);
-                }
-            }
-
-            // Если данные пользователя пришли вместе с токеном, используем их
-            if (userDataFromResponse) {
-                const user: User = {
-                    _id: userDataFromResponse._id,
-                    role: userDataFromResponse.role as any,
-                    firstName: userDataFromResponse.firstName || '',
-                    lastName: userDataFromResponse.lastName || '',
-                    username: userDataFromResponse.username || '',
-                    avaPath: userDataFromResponse.avaPath || '',
-                    telegramId: userDataFromResponse.telegramId || '',
-                    email: userDataFromResponse.email || '',
-                    selectedGraphId: userDataFromResponse.selectedGraphId || null,
-                    universityGraphId: userDataFromResponse.universityGraphId || null,
-                    isStudent: userDataFromResponse.isStudent ?? null,
-                    graphSubsNum: userDataFromResponse.graphSubsNum || 0,
-                    postsNum: userDataFromResponse.postsNum || 0,
-                    attentedEventsNum: userDataFromResponse.attentedEventsNum || 0,
-                };
-                
-                setUser(user);
-                setIsLoggedIn(true);
-                setError(null);
-                
-                // Сохраняем выбор в localStorage для синхронизации
-                if (typeof window !== 'undefined') {
-                    if (userDataFromResponse.selectedGraphId) {
-                        localStorage.setItem('selectedGraphId', userDataFromResponse.selectedGraphId);
-                    }
-                    if (userDataFromResponse.isStudent !== undefined && userDataFromResponse.isStudent !== null) {
-                        localStorage.setItem('isStudent', String(userDataFromResponse.isStudent));
-                    }
-                }
-                
-                // Для dev режима не делаем запрос к реальному API
-                // Используем данные напрямую
-            } else {
-                // Если нет данных пользователя, пробуем получить их через useUserData
-                // Это произойдет автоматически через хук
-            }
+            await applyAuthResponse(data);
         } catch (error) {
             console.error('Dev login error:', error);
             setError(error instanceof Error ? error.message : 'Ошибка при локальном входе');
+            throw error;
+        }
+    };
+
+    const devLoginAs = async (userId: string) => {
+        try {
+            if (!userId) throw new Error('userId is required');
+            const response = await fetch('/api/dev-login-as', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId }),
+            });
+
+            if (!response.ok) {
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err?.error || 'Failed to login as user');
+            }
+
+            const data = await response.json();
+            const { accessToken } = await applyAuthResponse(data);
+
+            // Sanity-check token BEFORE redirecting anywhere:
+            // do a direct fetch (no axios interceptors) to confirm auth works
+            const apiBase = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/+$/, '');
+            if (!apiBase) throw new Error('API URL is not configured');
+
+            const verify = await fetch(`${apiBase}/user/getById/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                credentials: 'include',
+            });
+
+            if (!verify.ok) {
+                const err = await verify.json().catch(() => ({}));
+                throw new Error(err?.message || err?.error || `Token verification failed (${verify.status})`);
+            }
+        } catch (error) {
+            console.error('Dev login-as error:', error);
+            setError(error instanceof Error ? error.message : 'Ошибка при входе как пользователь');
+            // rollback local auth to avoid immediate redirects loop
+            try {
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('userId');
+                }
+            } catch {}
+            setUser(null);
+            setIsLoggedIn(false);
+            throw error;
         }
     };
 
@@ -669,7 +718,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             });
     }, [user, isLoggedIn, setUser]);
 
-    const value = { isLoggedIn, user, setUser, login, logout, loading: isLoading, error, refreshUser, devLogin }; // Передаем loading в контекст
+    const value = { isLoggedIn, user, setUser, login, logout, loading: isLoading, error, refreshUser, devLogin, devLoginAs }; // Передаем loading в контекст
 
     // Не скрываем children во время загрузки, если пользователь уже авторизован
     // Это позволяет UI обновиться сразу после установки пользователя из exchange-code

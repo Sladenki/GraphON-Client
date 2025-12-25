@@ -167,6 +167,117 @@
   text-align: center;
 }
 
+.divider {
+  height: 1px;
+  background: rgba(var(--main-Color), 0.12);
+  margin: 18px 0;
+}
+
+.searchBox {
+  margin-top: 10px;
+}
+
+.searchInput {
+  width: 100%;
+  border: 1px solid rgba(var(--main-Color), 0.14);
+  background: rgba(var(--main-Color), 0.06);
+  color: var(--text-color);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+
+  &:focus {
+    background: rgba(var(--main-Color), 0.10);
+    border-color: rgba(var(--main-Color), 0.25);
+  }
+}
+
+.searchHint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(var(--text-color), 0.6);
+}
+
+.searchError {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(224, 90, 90, 0.9);
+}
+
+.results {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resultRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--main-Color), 0.10);
+  background: rgba(var(--main-Color), 0.05);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(var(--main-Color), 0.09);
+    border-color: rgba(var(--main-Color), 0.18);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.resultMain {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resultName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resultUser {
+  font-size: 12px;
+  color: rgba(var(--text-color), 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resultAction {
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgb(var(--main-Color));
+  background: rgba(var(--main-Color), 0.10);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
 .info {
   padding: 16px;
   background: rgba(var(--main-Color), 0.05);
