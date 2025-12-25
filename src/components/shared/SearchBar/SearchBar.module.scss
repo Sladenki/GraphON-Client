@@ -15,29 +15,47 @@
   position: relative;
   display: flex;
   align-items: center;
-  background: var(--block-color);
-  border: 1px solid var(--border-color);
+  // Без border — только фон (палитра)
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.10) 0%,
+    rgba(var(--color-accent-pink-rgb), 0.06) 55%,
+    rgba(var(--color-primary-rgb), 0.04) 100%
+  );
+  border: none;
   border-radius: 24px;
   padding: 12px 16px;
-  transition: border-color 0.2s ease;
+  transition: background-color 0.2s ease, filter 0.2s ease, transform 0.15s ease;
   
   &:hover {
-    border-color: rgba(var(--main-Color), 0.3);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--color-primary-rgb), 0.14) 0%,
+      rgba(var(--color-accent-pink-rgb), 0.08) 55%,
+      rgba(var(--color-primary-rgb), 0.06) 100%
+    );
   }
 
   &.focused {
-    border-color: rgb(var(--main-Color));
+    background: linear-gradient(
+      135deg,
+      rgba(var(--color-primary-rgb), 0.18) 0%,
+      rgba(var(--color-accent-pink-rgb), 0.10) 55%,
+      rgba(var(--color-primary-rgb), 0.08) 100%
+    );
+    filter: saturate(1.05);
   }
 }
 
 .searchIcon {
-  color: var(--secondary-text);
+  color: var(--color-text-muted);
   margin-right: 12px;
   flex-shrink: 0;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.15s ease;
 
   &.searchIconFocused {
-    color: rgb(var(--main-Color));
+    color: var(--color-primary);
+    transform: scale(1.05);
   }
 }
 
@@ -53,7 +71,7 @@
   line-height: 1.5;
 
   &::placeholder {
-    color: var(--secondary-text);
+    color: var(--color-text-muted);
     font-weight: 400;
   }
 
@@ -72,7 +90,7 @@
 .vertDivider {
   width: 1px;
   height: 20px;
-  background: var(--border-color);
+  background: rgba(var(--color-primary-rgb), 0.25);
 }
 
 .clearButton {
@@ -83,14 +101,14 @@
   height: 28px;
   border: none;
   background: transparent;
-  color: var(--secondary-text);
+  color: var(--color-text-muted);
   cursor: pointer;
   border-radius: 14px;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.1);
-    color: rgb(var(--main-Color));
+    background: rgba(var(--color-primary-rgb), 0.12);
+    color: var(--color-primary);
   }
 
   &:active {
@@ -107,19 +125,19 @@
   height: 28px;
   border: none;
   background: transparent;
-  color: var(--secondary-text);
+  color: var(--color-text-muted);
   cursor: pointer;
   border-radius: 14px;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.1);
-    color: rgb(var(--main-Color));
+    background: rgba(var(--color-primary-rgb), 0.12);
+    color: var(--color-primary);
   }
 
   &.active {
-    background: rgba(var(--main-Color), 0.1);
-    color: rgb(var(--main-Color));
+    background: rgba(var(--color-primary-rgb), 0.14);
+    color: var(--color-primary);
   }
 
   &:active {
@@ -131,7 +149,7 @@
   position: absolute;
   top: -6px;
   right: -6px;
-  background: rgb(var(--main-Color));
+  background: var(--color-primary);
   color: white;
   font-size: 10px;
   font-weight: 600;
@@ -153,26 +171,26 @@
 }
 
 .queryFilter {
-  background: rgba(var(--main-Color), 0.1);
-  color: rgb(var(--main-Color));
+  background: rgba(var(--color-primary-rgb), 0.12);
+  color: var(--color-primary);
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
-  border: 1px solid rgba(var(--main-Color), 0.2);
+  border: none;
 }
 
 .tagFilter {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(var(--main-Color), 0.1);
-  color: rgb(var(--main-Color));
+  background: rgba(var(--color-primary-rgb), 0.12);
+  color: var(--color-primary);
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
-  border: 1px solid rgba(var(--main-Color), 0.2);
+  border: none;
 }
 
 .removeTag {
@@ -190,8 +208,8 @@
   margin-left: 2px;
 
   &:hover {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    background: rgba(224, 90, 90, 0.12);
+    color: var(--color-error);
   }
 
   &:active {
@@ -200,9 +218,9 @@
 }
 
 .clearAllButton {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(224, 90, 90, 0.12);
+  color: var(--color-error);
+  border: none;
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -211,7 +229,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(239, 68, 68, 0.15);
+    background: rgba(224, 90, 90, 0.18);
   }
 
   &:active {
@@ -224,13 +242,13 @@
   top: 100%;
   left: 0;
   right: 0;
-  background-color: var(--background-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--color-neutral-card);
+  border: none;
   border-radius: 20px;
   z-index: 1000;
   margin-top: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  // без теней
 }
 
 .tagFilterHeader {
@@ -249,8 +267,8 @@
 
 .clearTagsButton {
   background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--secondary-text);
+  border: none;
+  color: var(--color-text-muted);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -259,9 +277,8 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.1);
-    color: rgb(var(--main-Color));
-    border-color: rgba(var(--main-Color), 0.3);
+    background: rgba(var(--color-primary-rgb), 0.12);
+    color: var(--color-primary);
   }
 
   &:active {
@@ -271,7 +288,7 @@
 
 .dateFilterSection {
   padding: 16px;
-  background: linear-gradient(135deg, rgba(var(--main-Color), 0.03) 0%, rgba(var(--main-Color), 0.01) 100%);
+  background: rgba(var(--color-primary-rgb), 0.06);
   border-radius: 12px;
   margin: 8px;
 }
@@ -291,7 +308,7 @@
   span {
     font-size: 11px;
     font-weight: 600;
-    color: var(--secondary-text);
+    color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -315,15 +332,15 @@
     width: 16px;
     height: 16px;
     border-radius: 6px;
-    border: 1.5px solid var(--border-color);
-    background: var(--background-color);
+    border: none;
+    background: rgba(var(--color-primary-rgb), 0.10);
     display: inline-grid;
     place-content: center;
     cursor: pointer;
-    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.05s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.05s ease;
 
     &:hover {
-      border-color: rgba(var(--main-Color), 0.5);
+      background: rgba(var(--color-primary-rgb), 0.14);
     }
 
     &:active {
@@ -332,13 +349,12 @@
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--main-Color), 0.25);
-      border-color: rgb(var(--main-Color));
+      // без теней
+      background: rgba(var(--color-primary-rgb), 0.18);
     }
 
     &:checked {
-      background: rgb(var(--main-Color));
-      border-color: rgb(var(--main-Color));
+      background: var(--color-primary);
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 12.5L10 17.5L19 8.5' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: center;
@@ -368,7 +384,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+    background: rgba(var(--color-primary-rgb), 0.25);
     border-radius: 3px;
   }
 }
@@ -390,12 +406,12 @@
   font-weight: 400;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.05);
+    background: rgba(var(--color-primary-rgb), 0.08);
   }
 
   &.selected {
-    background: rgba(var(--main-Color), 0.1);
-    color: rgb(var(--main-Color));
+    background: rgba(var(--color-primary-rgb), 0.12);
+    color: var(--color-primary);
     font-weight: 500;
   }
 
