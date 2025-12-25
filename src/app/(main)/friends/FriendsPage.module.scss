@@ -2,49 +2,31 @@
   width: 100%;
   max-width: 980px;
   margin: 0 auto;
-  padding: 18px 16px 24px;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.titleRow {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.title {
-  font-family: var(--font-inter), 'Inter', sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  font-size: 22px;
-  color: var(--main-text);
-  margin: 0;
-}
-
-.subtitle {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  line-height: 1.35;
+  padding: 18px 16px 26px;
+  position: relative;
 }
 
 .tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 12px 0 14px;
+  margin: 6px 0 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.tabsRail {
+  width: 100%;
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(var(--color-primary-rgb), 0.10);
 }
 
 .tabBtn {
   border: none;
-  background: rgba(var(--main-Color), 0.08);
+  background: transparent;
   color: var(--main-text);
   border-radius: 999px;
   padding: 9px 12px;
@@ -54,7 +36,7 @@
   transition: background-color 0.18s ease, transform 0.12s ease;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.12);
+    background: rgba(var(--color-primary-rgb), 0.10);
   }
 
   &:active {
@@ -63,28 +45,32 @@
 }
 
 .tabActive {
-  background: rgba(var(--main-Color), 0.16);
-  color: rgb(var(--main-Color));
+  background: rgba(var(--color-primary-rgb), 0.14);
+  color: var(--color-text-primary);
 }
 
 .content {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .panel {
-  background: var(--block-color);
-  border: 1px solid rgba(var(--main-Color), 0.12);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  border: none;
+  border-radius: 22px;
   padding: 14px;
 }
 
 .panelTitle {
   margin: 0 0 10px 0;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
-  color: var(--main-text);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
 .hint {
@@ -103,9 +89,28 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 10px;
-  border-radius: 14px;
-  background: rgba(var(--main-Color), 0.04);
+  padding: 12px 12px;
+  border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.10) 0%,
+    rgba(var(--color-accent-pink-rgb), 0.06) 55%,
+    rgba(var(--color-primary-rgb), 0.06) 100%
+  );
+  transition: background-color 0.18s ease, transform 0.15s ease;
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--color-primary-rgb), 0.13) 0%,
+      rgba(var(--color-accent-pink-rgb), 0.07) 55%,
+      rgba(var(--color-primary-rgb), 0.08) 100%
+    );
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
 }
 
 .avatar {
@@ -174,7 +179,7 @@
   padding: 4px 8px;
   font-size: 11px;
   font-weight: 600;
-  background: rgba(var(--main-Color), 0.08);
+  background: rgba(var(--color-primary-rgb), 0.10);
   color: var(--color-text-secondary);
 }
 
@@ -188,17 +193,17 @@
 
 .smallBtn {
   padding: 9px 12px !important;
-  border-radius: 12px !important;
+  border-radius: 999px !important;
 }
 
 .disabledNote {
   font-size: 12px;
   font-weight: 700;
   color: var(--color-text-muted);
-  background: rgba(var(--main-Color), 0.06);
+  background: rgba(var(--color-primary-rgb), 0.10);
   padding: 9px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(var(--main-Color), 0.10);
+  border-radius: 999px;
+  border: none;
 }
 
 .loadMore {
@@ -210,8 +215,8 @@
 
 .ghostButton {
   border: none;
-  background: rgba(var(--main-Color), 0.10);
-  color: rgb(var(--main-Color));
+  background: rgba(var(--color-primary-rgb), 0.12);
+  color: var(--color-text-primary);
   border-radius: 999px;
   padding: 10px 14px;
   font-weight: 800;
@@ -219,7 +224,7 @@
   transition: background-color 0.18s ease, transform 0.12s ease;
 
   &:hover {
-    background: rgba(var(--main-Color), 0.14);
+    background: rgba(var(--color-primary-rgb), 0.16);
   }
 
   &:active {
@@ -235,10 +240,6 @@
 @media (max-width: 650px) {
   .page {
     padding: 14px 12px 18px;
-  }
-
-  .title {
-    font-size: 20px;
   }
 
   .row {

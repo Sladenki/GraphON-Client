@@ -338,44 +338,37 @@ export default function FriendsPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.header}>
-        <div className={styles.titleRow}>
-          <h1 className={styles.title}>Друзья</h1>
-        </div>
-        <p className={styles.subtitle}>
-          Поиск людей, заявки в друзья и уведомления (пока — на основе заявок, REST для notifications на сервере ещё нет).
-        </p>
-      </div>
-
       <div className={styles.tabs}>
-        <button
-          className={`${styles.tabBtn} ${activeTab === 'people' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('people')}
-          type="button"
-        >
-          Люди
-        </button>
-        <button
-          className={`${styles.tabBtn} ${activeTab === 'incoming' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('incoming')}
-          type="button"
-        >
-          Входящие ({pendingIncomingCount})
-        </button>
-        <button
-          className={`${styles.tabBtn} ${activeTab === 'outgoing' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('outgoing')}
-          type="button"
-        >
-          Исходящие ({pendingOutgoingCount})
-        </button>
-        <button
-          className={`${styles.tabBtn} ${activeTab === 'friends' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('friends')}
-          type="button"
-        >
-          Друзья
-        </button>
+        <div className={styles.tabsRail}>
+          <button
+            className={`${styles.tabBtn} ${activeTab === 'people' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('people')}
+            type="button"
+          >
+            Люди
+          </button>
+          <button
+            className={`${styles.tabBtn} ${activeTab === 'incoming' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('incoming')}
+            type="button"
+          >
+            Входящие ({pendingIncomingCount})
+          </button>
+          <button
+            className={`${styles.tabBtn} ${activeTab === 'outgoing' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('outgoing')}
+            type="button"
+          >
+            Исходящие ({pendingOutgoingCount})
+          </button>
+          <button
+            className={`${styles.tabBtn} ${activeTab === 'friends' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('friends')}
+            type="button"
+          >
+            Друзья
+          </button>
+        </div>
       </div>
 
       <div className={styles.content}>
@@ -387,10 +380,6 @@ export default function FriendsPage() {
               onTagFilter={() => {}}
               showTagFilter={false}
             />
-
-            <div className={styles.hint}>
-              Подсказка: входящие/исходящие заявки и друзья подтягиваются автоматически — кнопки в списке “Люди” показывают актуальный статус.
-            </div>
 
             <div className={styles.list} style={{ marginTop: 12 }}>
               {!isSearchingPeople && peopleUsers.map((u) =>
@@ -463,7 +452,6 @@ export default function FriendsPage() {
 
         {activeTab === 'friends' && (
           <div className={styles.panel}>
-            <h2 className={styles.panelTitle}>Ваши друзья</h2>
             <div className={styles.list}>
               {visibleIds.length === 0 ? (
                 <EmptyState message="Пока нет друзей" subMessage="Найдите людей во вкладке “Люди” и отправьте заявку." />
@@ -485,7 +473,6 @@ export default function FriendsPage() {
 
         {activeTab === 'incoming' && (
           <div className={styles.panel}>
-            <h2 className={styles.panelTitle}>Входящие заявки</h2>
             <div className={styles.list}>
               {visibleIds.length === 0 ? (
                 <EmptyState message="Нет входящих заявок" subMessage="Когда вам отправят заявку, она появится здесь." />
@@ -507,7 +494,6 @@ export default function FriendsPage() {
 
         {activeTab === 'outgoing' && (
           <div className={styles.panel}>
-            <h2 className={styles.panelTitle}>Исходящие заявки</h2>
             <div className={styles.list}>
               {visibleIds.length === 0 ? (
                 <EmptyState message="Нет исходящих заявок" subMessage="Отправьте заявку человеку во вкладке “Люди”." />
