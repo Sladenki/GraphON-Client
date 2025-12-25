@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { EventRegService } from '@/services/eventReg.service';
 import { AttendeeUser } from '@/components/shared/UsersListPopUp/AttendeeItem/AttendeeItem';
 import { useAuth } from '@/providers/AuthProvider';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import styles from './ParticipantOrbits.module.scss';
 
 interface ParticipantOrbitsProps {
@@ -14,8 +15,6 @@ interface ParticipantOrbitsProps {
   isRegistered: boolean;
   onRegister?: () => void;
 }
-
-const MAX_VISIBLE_AVATARS = 5; // Максимум 5 пользователей
 
 // Генерация цвета из строки
 const generateColorFromString = (str: string): string => {
@@ -34,6 +33,8 @@ const ParticipantOrbits: React.FC<ParticipantOrbitsProps> = ({
   onRegister
 }) => {
   const { user } = useAuth();
+  const isXs = useMediaQuery('(max-width: 500px)');
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const queryClient = useQueryClient();
   const [justRegistered, setJustRegistered] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
@@ -93,6 +94,8 @@ const ParticipantOrbits: React.FC<ParticipantOrbitsProps> = ({
 
   // Подготовка данных для отображения
   const displayData = useMemo(() => {
+    const maxVisibleAvatars = isXs ? 3 : isMobile ? 4 : 5;
+
     if (!attendees || attendees.length === 0) {
       // Если нет участников, показываем пустой список
       return {
@@ -101,21 +104,21 @@ const ParticipantOrbits: React.FC<ParticipantOrbitsProps> = ({
       };
     }
 
-    // Берем первые MAX_VISIBLE_AVATARS участников
-    const visibleAvatars = attendees.slice(0, MAX_VISIBLE_AVATARS);
+    // Берем первые maxVisibleAvatars участников
+    const visibleAvatars = attendees.slice(0, maxVisibleAvatars);
     
     // Проверяем, зарегистрирован ли текущий пользователь
     const currentUserIndex = user?._id 
       ? visibleAvatars.findIndex(a => a._id === user._id)
       : -1;
 
-    // Если пользователь зарегистрирован, но не в первых 5, заменяем последнего
+    // Если пользователь зарегистрирован, но не в первых N, заменяем последнего
     let avatarsToShow = [...visibleAvatars];
     if (isRegistered && currentUserIndex === -1 && user?._id) {
       // Находим текущего пользователя в полном списке
       const currentUser = attendees.find(a => a._id === user._id);
       if (currentUser) {
-        avatarsToShow = [...visibleAvatars.slice(0, MAX_VISIBLE_AVATARS - 1), currentUser];
+        avatarsToShow = [...visibleAvatars.slice(0, Math.max(0, maxVisibleAvatars - 1)), currentUser];
       }
     }
 
@@ -149,7 +152,7 @@ const ParticipantOrbits: React.FC<ParticipantOrbitsProps> = ({
         ? avatarsToShow.findIndex(a => a._id === user._id)
         : -1
     };
-  }, [attendees, user, isRegistered]);
+  }, [attendees, user, isRegistered, isMobile, isXs]);
 
   // Анимация для аватарки при регистрации
   const avatarVariants = {

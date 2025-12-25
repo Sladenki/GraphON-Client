@@ -872,4 +872,18 @@ html.dark {
   }
 }
 
+// Extra small phones: keep participants UI readable (<500px)
+@media (max-width: 500px) {
+  .cardFooter {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .participantsOrbits {
+    justify-content: center;
+  }
+}
+
 
