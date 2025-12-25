@@ -43,12 +43,14 @@ import styles from './EventCard.module.scss';
 import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { linkifyText } from '@/lib/linkify';
 import { motion } from 'framer-motion';
+import confetti from 'canvas-confetti';
 import { DatePicker, TimeInput } from '@heroui/react';
 import { parseDate } from '@internationalized/date';
 import { I18nProvider } from '@react-aria/i18n';
 import { EventService } from '@/services/event.service';
 import { notifySuccess, notifyError } from '@/lib/notifications';
 import { getPastelTheme, getThemeName, type ThemeName } from './pastelTheme';
+import { RegistrationSuccessModal } from './RegistrationSuccessModal/RegistrationSuccessModal';
 
 type ThemeDecor = {
   Icon: React.ComponentType<{ size?: number }>;
@@ -163,6 +165,7 @@ const EventCard: React.FC<EventProps> = ({
   const [isAttendeesOpen, setIsAttendeesOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   
   // Хуки
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(
@@ -283,11 +286,24 @@ const EventCard: React.FC<EventProps> = ({
       return;
     }
     try {
+      const wasRegistered = isRegistered;
       await toggleRegistration();
+
+      // "Viral success moment" — только при успешной регистрации (false -> true)
+      if (!wasRegistered) {
+        try {
+          confetti({
+            particleCount: 120,
+            spread: 70,
+            origin: { y: 0.65 },
+          });
+        } catch {}
+        setIsSuccessModalOpen(true);
+      }
     } catch (error) {
       console.error('Registration error:', error);
     }
-  }, [isLoggedIn, router, toggleRegistration]);
+  }, [isLoggedIn, router, toggleRegistration, isRegistered]);
   
   const handleEdit = useCallback(async () => {
     if (isSaving) return;
@@ -752,6 +768,21 @@ const EventCard: React.FC<EventProps> = ({
         onClose={() => setIsAttendeesOpen(false)}
         eventId={event._id}
         eventName={event.name}
+      />
+
+      {/* Viral Success Moment */}
+      <RegistrationSuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+        event={{ id: event._id, name: event.name, description: event.description }}
+        user={{
+          name:
+            user?.firstName && user?.lastName
+              ? `${user.firstName} ${user.lastName}`
+              : user?.firstName || user?.lastName || user?.username || 'User',
+          avatarUrl: user?.avaPath ? user.avaPath : undefined,
+        }}
+        theme={{ primary: decor.light, secondary: decor.dark, accent: '#EE82C8' }}
       />
     </div>
   );
