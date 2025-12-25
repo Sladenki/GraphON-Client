@@ -16,12 +16,8 @@ import LogOut from './LogOut/LogOut';
 import NoImage from '../../../../public/noImage.png'
 import ThemeToggle from '@/components/global/ThemeToggle/ThemeToggle';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { GraphService } from '@/services/graph.service';
-import { UserService } from '@/services/user.service';
 import { GraphSubsService } from '@/services/graphSubs.service';
 import { EventService } from '@/services/event.service';
-import { IGraphList } from '@/types/graph.interface';
-import { useSetSelectedGraphId } from '@/stores/useUIStore';
 import EditProfilePopUp from './EditProfilePopUp/EditProfilePopUp';
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar';
 import GroupBlock from '@/components/shared/GroupBlock/GroupBlock';
@@ -36,7 +32,6 @@ export default function Profile() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const small = useMediaQuery('(max-width: 650px)')
-    const setSelectedGraphId = useSetSelectedGraphId();
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
     const [activeSection, setActiveSection] = useState<'events' | 'subs' | 'schedule'>('events');
     
@@ -50,15 +45,6 @@ export default function Profile() {
     const debouncedEventQuery = useDebounce(eventQuery, 300);
     
     
-
-    // Загружаем список ВУЗов (глобальных графов)
-    const { data: globalGraphsResp, isLoading: isLoadingUniversities } = useQuery<IGraphList[]>({
-        queryKey: ['graph/getGlobalGraphs'],
-        queryFn: async () => {
-            const res = await GraphService.getGlobalGraphs();
-            return res.data as IGraphList[];
-        }
-    });
 
     // Загружаем подписки пользователя
     const { data: userSubscriptions, isLoading: loadingSubscriptions } = useQuery({
@@ -80,10 +66,6 @@ export default function Profile() {
         queryFn: () => GraphSubsService.getSubsSchedule(),
         enabled: !!user && activeSection === 'schedule'
     });
-
-    // Локальный выбор ВУЗа (применяется по кнопке)
-    const [pendingUniversity, setPendingUniversity] = useState<string>('');
-    const [isApplyingUniversity, setIsApplyingUniversity] = useState<boolean>(false);
 
     const typedUser = user as IUser | null;
 
@@ -217,49 +199,13 @@ export default function Profile() {
         }
     };
 
-    // Выбранный ВУЗ: отображаем название если доступно
+    // Выбранный ВУЗ: показываем только если сервер уже отдал объект с name
     const selectedGraphName = (() => {
         const sg: any = typedUser?.selectedGraphId as any;
         if (!sg) return null;
         if (typeof sg === 'object' && sg?.name) return sg.name as string;
-        if (typeof sg === 'string' && globalGraphsResp) {
-            const found = globalGraphsResp.find(g => g._id === sg);
-            return found?.name ?? null;
-        }
         return null;
     })();
-
-    const handleUniversitySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setPendingUniversity(e.target.value);
-    };
-
-    const handleApplyUniversity = async () => {
-        if (!pendingUniversity) return;
-        try {
-            setIsApplyingUniversity(true);
-            await UserService.updateSelectedGraph(pendingUniversity);
-            if (user) {
-                setUser({ ...user, selectedGraphId: pendingUniversity });
-            }
-            setSelectedGraphId(pendingUniversity);
-            queryClient.invalidateQueries({ queryKey: ['eventsList'] });
-            
-            // Находим название выбранного университета
-            const selectedUni = globalGraphsResp?.find(g => g._id === pendingUniversity);
-            if (selectedUni) {
-                notifySuccess(`Университет изменен на ${selectedUni.name}`);
-            } else {
-                notifySuccess('Университет успешно изменен');
-            }
-            
-            // Сбрасываем pending значение
-            setPendingUniversity('');
-        } catch (err) {
-            console.error('Ошибка выбора ВУЗа:', err);
-        } finally {
-            setIsApplyingUniversity(false);
-        }
-    };
 
     // Обработчики для статистик
     const handleSubscriptionsClick = () => {
@@ -284,9 +230,6 @@ export default function Profile() {
         if (activeSection === 'schedule') return;
         setActiveSection('schedule');
     };
-
-    // Текущее значение select: выбранное пользователем или уже установленный ВУЗ (для роли create)
-    const selectValue = pendingUniversity || (typeof typedUser?.selectedGraphId === 'string' ? typedUser.selectedGraphId : '');
 
     // Редирект на страницу входа если пользователь не авторизован
     useEffect(() => {
@@ -327,7 +270,7 @@ export default function Profile() {
         <div className={styles.profileWrapper}>
             {typedUser ? (
                 <div className={styles.profileCard}>
-                    {/* Левая часть - аватарка */}
+                    {/* Avatar */}
                     <div className={styles.avatarSection}>
                         <Image 
                             src={typedUser.avaPath && typedUser.avaPath.startsWith('http') ? typedUser.avaPath : NoImage} 
@@ -342,31 +285,36 @@ export default function Profile() {
                         />
                     </div>
                     
-                    {/* Центральная часть - основная информация */}
+                    {/* Main info */}
                     <div className={styles.mainInfo}>
-                        <div className={styles.nameSection}>
-                            <h1 className={styles.userName}>
-                                {getDisplayName(typedUser)}
-                            </h1>
-                            {/* Роль пользователя */}
-                            <div className={styles.role}>
-                                <User size={16} className={styles.roleIcon} />
-                                <span>{typedUser.role !== 'user' ? RoleTitles[typedUser.role] : 'Пользователь'}</span>
+                        <div className={styles.headerTop}>
+                            <div className={styles.identity}>
+                                <h1 className={styles.userName}>{getDisplayName(typedUser)}</h1>
+                                {typedUser.username && (
+                                    <div className={styles.userSubText}>@{typedUser.username}</div>
+                                )}
                             </div>
-                            {/* Выбранный ВУЗ */}
-                            {selectedGraphName && (
-                                <div className={styles.university}>
-                                    <GraduationCap size={16} className={styles.universityIcon} />
-                                    <span>{selectedGraphName}</span>
+                            <div className={styles.chips}>
+                                <div className={styles.chipPrimary}>
+                                    <User size={14} className={styles.chipIcon} />
+                                    <span>{typedUser.role !== 'user' ? RoleTitles[typedUser.role] : 'Пользователь'}</span>
                                 </div>
-                            )}
+                                {selectedGraphName && (
+                                    <div className={styles.chip}>
+                                        <GraduationCap size={14} className={styles.chipIconMuted} />
+                                        <span>{selectedGraphName}</span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         
-                        {/* Статистика в виде блоков */}
+                        {/* Metrics */}
                         <div className={styles.statsBlocks}>
-                            <div 
+                            <button
+                                type="button"
                                 className={`${styles.statBlock} ${activeSection === 'subs' ? styles.active : ''}`}
                                 onClick={handleSubscriptionsClick}
+                                aria-pressed={activeSection === 'subs'}
                             >
                                 <div className={styles.statBlockIcon}>
                                     <Heart size={20} />
@@ -375,10 +323,12 @@ export default function Profile() {
                                     <div className={styles.statBlockNumber}>{typedUser.graphSubsNum ?? 0}</div>
                                     <div className={styles.statBlockLabel}>Подписок</div>
                                 </div>
-                            </div>
-                            <div 
+                            </button>
+                            <button
+                                type="button"
                                 className={`${styles.statBlock} ${activeSection === 'events' ? styles.active : ''}`}
                                 onClick={handleEventsClick}
+                                aria-pressed={activeSection === 'events'}
                             >
                                 <div className={styles.statBlockIcon}>
                                     <CalendarCheck size={20} />
@@ -387,11 +337,13 @@ export default function Profile() {
                                     <div className={styles.statBlockNumber}>{typedUser.attentedEventsNum ?? 0}</div>
                                     <div className={styles.statBlockLabel}>Мероприятий</div>
                                 </div>
-                            </div>
+                            </button>
 
-                            <div
+                            <button
+                                type="button"
                                 className={`${styles.statBlock} ${activeSection === 'schedule' ? styles.active : ''}`}
                                 onClick={handleScheduleClick}
+                                aria-pressed={activeSection === 'schedule'}
                             >
                                 <div className={styles.statBlockIcon}>
                                     <CalendarDays size={20} />
@@ -402,7 +354,7 @@ export default function Profile() {
                                     </div>
                                     <div className={styles.statBlockLabel}>Расписание</div>
                                 </div>
-                            </div>
+                            </button>
                         </div>
                     </div>
                     
@@ -426,45 +378,7 @@ export default function Profile() {
                     <EditProfilePopUp isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
                 </div>
             ) : null}
-            
-            {/* Выбор ВУЗа - показываем всем пользователям */}
-            {typedUser?.role === 'create' && (
-                <div className={styles.universitySelector}>
-                    <h2 className={styles.sectionTitle}>Выбор университета</h2>
-                    <p className={styles.sectionDescription}>
-                        Выберите ваш университет для просмотра групп и мероприятий
-                    </p>
-                    <div className={styles.universitySelectorContent}>
-                        <select 
-                            className={styles.universitySelect}
-                            value={selectValue}
-                            onChange={handleUniversitySelect}
-                            disabled={isLoadingUniversities || isApplyingUniversity}
-                        >
-                            <option value="">Выберите университет</option>
-                            {globalGraphsResp?.map((graph) => (
-                                <option key={graph._id} value={graph._id}>
-                                    {graph.name}
-                                </option>
-                            ))}
-                        </select>
-                        <button 
-                            className={styles.applyButton}
-                            onClick={handleApplyUniversity}
-                            disabled={!pendingUniversity || isApplyingUniversity || isLoadingUniversities}
-                        >
-                            {isApplyingUniversity ? (
-                                <>
-                                    <div className={styles.buttonSpinner} />
-                                    <span>Применение...</span>
-                                </>
-                            ) : (
-                                'Применить'
-                            )}
-                        </button>
-                    </div>
-                </div>
-            )}
+        
             
             {/* Секции контента */}
             {typedUser && activeSection === 'subs' && (

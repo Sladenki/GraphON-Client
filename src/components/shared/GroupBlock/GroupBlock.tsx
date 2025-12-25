@@ -8,6 +8,7 @@ import ActionButton from "@/components/ui/ActionButton/ActionButton";
 import { THEME_CONFIG } from "@/app/(main)/graphs/GraphView/WaterGraph3D/constants";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { colorsRGB } from "@/constants/colors";
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL;
 
@@ -54,6 +55,36 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
     "Трудоустройство": "Careers",
     "Военно-патриотизм": "Patriotic",
   };
+
+  const themeRgb = useMemo(() => {
+    // Берём первую специализацию как "тематику" (обычно это parentGraphId.name)
+    const theme = specializations?.[0]?.label ?? "";
+    switch (theme) {
+      case "Наука":
+        return colorsRGB.status.info; // blue
+      case "Самоуправление":
+        return colorsRGB.primary.DEFAULT; // purple
+      case "Творчество":
+        return colorsRGB.secondary.accentPink; // pink
+      case "Спорт":
+        return colorsRGB.status.warning; // yellow
+      case "Волонтерство":
+      case "Волонтёрство":
+        return colorsRGB.status.success; // green
+      case "Медиа":
+        return colorsRGB.secondary.accentPink; // pink
+      case "Отряды":
+        return colorsRGB.primary.hover; // deeper purple
+      case "Литература":
+        return colorsRGB.primary.DEFAULT;
+      case "Трудоустройство":
+        return colorsRGB.status.info;
+      case "Военно-патриотизм":
+        return colorsRGB.primary.hover;
+      default:
+        return colorsRGB.primary.DEFAULT;
+    }
+  }, [specializations]);
 
   const formatFollowers = useCallback((n: number) => {
     const abs = Math.max(0, n || 0);
@@ -161,18 +192,19 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
         if (e.key === "Enter" || e.key === " ") handleCardClick();
       }}
       aria-label={`Open group: ${displayName}`}
+      style={{ ["--theme-rgb" as any]: themeRgb } as React.CSSProperties}
       className={[
-        "w-full rounded-2xl border",
-        "bg-[var(--color-neutral-card)] border-[var(--color-neutral-border)]",
+        "w-full rounded-2xl",
+        "bg-[rgba(var(--theme-rgb),0.06)]",
         "text-[var(--color-text-primary)]",
         "transition-colors duration-200",
-        "hover:bg-[var(--color-secondary-soft-lavender)]",
+        "hover:bg-[rgba(var(--theme-rgb),0.10)]",
       ].join(" ")}
     >
       <div className={isWide ? "flex gap-6 p-6" : "flex flex-col gap-5 p-4 sm:p-6"}>
         {/* Cover */}
         <div className={isWide ? "w-[156px] flex-shrink-0" : ""}>
-          <div className="relative overflow-hidden rounded-2xl border border-[var(--color-neutral-border)] bg-[var(--color-neutral-background)]">
+          <div className="relative overflow-hidden rounded-2xl bg-[rgba(var(--theme-rgb),0.14)]">
             {fullImageUrl ? (
               <Image
                 src={fullImageUrl}
@@ -193,9 +225,9 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
             {/* Followers badge */}
             <div
               ref={followersRef}
-              className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-[var(--color-text-primary)] border border-[var(--color-neutral-border)]"
+              className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-[rgba(var(--theme-rgb),0.14)] px-3 py-1 text-xs font-semibold text-[rgb(var(--theme-rgb))]"
             >
-              <Users size={14} className="text-[rgb(var(--main-Color))]" />
+              <Users size={14} className="text-[rgb(var(--theme-rgb))]" />
               <span>{followersLabel}</span>
             </div>
           </div>
@@ -215,7 +247,7 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
                   {specItems.map((s) => (
                     <div
                       key={s.key}
-                      className="inline-flex items-center gap-2 rounded-full border border-[var(--color-neutral-border)] bg-[var(--color-secondary-soft-lavender)] px-3 py-1 text-xs font-semibold text-[var(--color-text-primary)]"
+                      className="inline-flex items-center gap-2 rounded-full bg-[rgba(var(--theme-rgb),0.10)] px-3 py-1 text-xs font-semibold text-[var(--color-text-primary)]"
                     >
                       <span className="text-[12px] leading-none">{s.icon ?? "•"}</span>
                       <span className="truncate">{(s as any).translated ?? s.label}</span>
@@ -228,18 +260,18 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
             {/* Subscribers count + "your slot" */}
             <div className="flex items-center gap-2">
               <div
-                className="h-7 min-w-[44px] px-2 rounded-full border border-[var(--color-neutral-border)] bg-[var(--color-secondary-soft-lavender)] flex items-center justify-center text-[11px] font-bold text-[var(--color-text-secondary)]"
+                className="h-7 min-w-[44px] px-2 rounded-full bg-[rgba(var(--theme-rgb),0.10)] flex items-center justify-center text-[11px] font-bold text-[var(--color-text-secondary)]"
                 aria-label={`${displayedFollowers} followers`}
                 title={`${displayedFollowers} followers`}
               >
                 {formatFollowers(displayedFollowers)}
               </div>
-              <div className="h-7 w-7 rounded-full border border-dashed border-[var(--color-neutral-border)] bg-[var(--color-neutral-card)] flex items-center justify-center">
+              <div className="h-7 w-7 rounded-full bg-[rgba(var(--theme-rgb),0.14)] flex items-center justify-center">
                 {isSubscribed && resolvedUserAvatar ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={resolvedUserAvatar} alt="" className="h-full w-full rounded-full object-cover" />
                 ) : (
-                  <Plus size={14} className="text-[var(--color-text-muted)]" />
+                  <Plus size={14} className="text-[rgb(var(--theme-rgb))]" />
                 )}
               </div>
             </div>
@@ -260,9 +292,8 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
               disabled={isLoading}
               className={[
                 "w-full rounded-2xl px-3 py-2",
-                "border border-[rgba(var(--main-Color),0.25)]",
-                "bg-[rgba(var(--main-Color),0.10)]",
-                "text-xs font-semibold text-[rgb(var(--main-Color))]",
+                "bg-[rgba(var(--theme-rgb),0.14)]",
+                "text-xs font-semibold text-[rgb(var(--theme-rgb))]",
                 "disabled:opacity-60 disabled:cursor-not-allowed",
               ].join(" ")}
             >
@@ -279,8 +310,7 @@ const GroupBlock: React.FC<GroupBlockProps> = memo(({
               }}
               className={[
                 "w-full rounded-2xl px-3 py-2",
-                "border border-[var(--color-neutral-border)]",
-                "bg-[var(--color-neutral-card)]",
+                "bg-[rgba(var(--text-color),0.06)]",
                 "text-xs font-semibold text-[var(--color-text-primary)]",
               ].join(" ")}
             >

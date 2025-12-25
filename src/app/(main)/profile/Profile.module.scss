@@ -1,18 +1,18 @@
 .profileWrapper {
   min-height: 100vh;
   width: 100%;
-  padding: 2rem;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 24px;
 }
 
 .profileCard {
-  background: var(--background-color);
-  border-radius: 20px;
-  padding: 1.5rem;
-  border: 1px solid rgba(var(--main-Color), 0.08);
+  background: var(--color-neutral-card);
+  border-radius: 24px;
+  padding: 20px;
+  border: 1px solid var(--color-neutral-border);
   display: grid;
   grid-template-columns: 140px 1fr auto;
   grid-template-rows: auto auto;
@@ -20,8 +20,8 @@
     "avatar name edit"
     "avatar stats edit";
   align-items: center;
-  gap: 1rem 1.25rem;
-  max-width: 800px;
+  gap: 16px 20px;
+  max-width: 900px;
   width: 100%;
   position: relative;
 }
@@ -40,7 +40,7 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid rgba(var(--main-Color), 0.15);
+  border: 3px solid rgba(var(--main-Color), 0.18);
 }
 
 .role {
@@ -99,28 +99,79 @@
   flex-shrink: 0;
 }
 
-/* Центральная часть - основная информация */
 .mainInfo {
   grid-area: name;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 14px;
 }
 
-.nameSection {
+.headerTop {
   display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .userName {
-  font-size: 1.7rem;
+  font-size: 24px;
   font-weight: 700;
-  color: var(--text-color);
+  color: var(--color-text-primary);
   margin: 0;
   line-height: 1.15;
   letter-spacing: -0.01em;
+}
+
+.identity {
+  min-width: 0;
+}
+
+.userSubText {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  font-family: var(--font-inter);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.chip,
+.chipPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-neutral-border);
+  background: var(--color-secondary-soft-lavender);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 650;
+  font-family: var(--font-inter);
+  white-space: nowrap;
+}
+
+.chipPrimary {
+  border-color: rgba(var(--main-Color), 0.22);
+  background: rgba(var(--main-Color), 0.08);
+  color: rgb(var(--main-Color));
+}
+
+.chipIcon {
+  color: rgb(var(--main-Color));
+  flex-shrink: 0;
+}
+
+.chipIconMuted {
+  color: rgba(var(--text-color), 0.7);
+  flex-shrink: 0;
 }
 
 .verifiedBadge {
@@ -144,29 +195,30 @@
   grid-area: stats;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .statBlock {
-  background: var(--block-color);
-  border: 1px solid rgba(var(--main-Color), 0.12);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
+  background: var(--color-neutral-card);
+  border: 1px solid var(--color-neutral-border);
+  border-radius: 16px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  min-width: 160px;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, color 0.2s ease;
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+  text-align: left;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
   cursor: pointer;
   
   &:hover {
     background: rgba(var(--main-Color), 0.05);
-    transform: translateY(-1px);
-    border-color: rgba(var(--main-Color), 0.2);
+    border-color: rgba(var(--main-Color), 0.20);
   }
   
   &.active {
-    background: rgba(var(--main-Color), 0.08);
+    background: var(--color-primary-light);
     border-color: rgba(var(--main-Color), 0.35);
   }
 }
@@ -189,15 +241,22 @@
 }
 
 .statBlockNumber {
-  font-size: 1.25rem;
+  font-size: 18px;
   font-weight: 700;
-  color: var(--text-color);
+  color: var(--color-text-primary);
   line-height: 1;
   transition: color 0.2s ease;
   
   .statBlock.active & {
     color: rgb(var(--main-Color));
   }
+}
+
+.statBlockLabel {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-inter);
 }
 
 .statBlockLabel {
@@ -420,10 +479,10 @@
 // }
 
 .sectionTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-color);
-  margin: 0 0 1.5rem 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 14px 0;
 }
 
 .scheduleSection {
@@ -544,14 +603,14 @@
 
 /* Поиск и фильтры */
 .searchSection {
-  padding: 20px 0;
-  margin-bottom: 20px;
+  padding: 12px 0 16px;
+  margin-bottom: 12px;
 }
 
 .searchResults {
   margin-top: 12px;
   font-size: 14px;
-  color: rgba(var(--text-color), 0.6);
+  color: var(--color-text-secondary);
   opacity: 0.7;
   text-align: center;
 }
