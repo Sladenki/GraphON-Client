@@ -13,7 +13,7 @@ import type { IUser } from '@/types/user.interface';
 import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 
-type TabKey = 'people' | 'incoming' | 'outgoing' | 'friends' | 'notifications';
+type TabKey = 'people' | 'incoming' | 'outgoing' | 'friends';
 
 const LIMIT = 50;
 
@@ -126,17 +126,6 @@ export default function FriendsPage() {
     }
     if (activeTab === 'outgoing') {
       return (followingIdsQuery.data?.pages ?? []).flatMap((p) => p.items ?? []);
-    }
-    if (activeTab === 'notifications') {
-      const incoming = (followersIdsQuery.data?.pages ?? []).flatMap((p) => p.items ?? []);
-      const outgoing = (followingIdsQuery.data?.pages ?? []).flatMap((p) => p.items ?? []);
-      // de-dupe while preserving order
-      const seen = new Set<string>();
-      return [...incoming, ...outgoing].filter((id) => {
-        if (seen.has(id)) return false;
-        seen.add(id);
-        return true;
-      });
     }
     return [];
   }, [activeTab, friendsIdsQuery.data, followersIdsQuery.data, followingIdsQuery.data]);
@@ -328,30 +317,6 @@ export default function FriendsPage() {
 
           {activeTab === 'outgoing' && <span className={styles.disabledNote}>Заявка отправлена</span>}
 
-          {activeTab === 'notifications' && (
-            <>
-              {followersIds.has(u._id) ? (
-                <>
-                  <ActionButton
-                    label="Принять"
-                    variant="primary"
-                    className={styles.smallBtn}
-                    onClick={() => acceptMutation.mutate(u._id)}
-                  />
-                  <ActionButton
-                    label="Отклонить"
-                    variant="danger"
-                    className={styles.smallBtn}
-                    onClick={() => declineMutation.mutate(u._id)}
-                  />
-                </>
-              ) : followingIds.has(u._id) ? (
-                <span className={styles.disabledNote}>Исходящая заявка</span>
-              ) : (
-                <span className={styles.disabledNote}>Активность</span>
-              )}
-            </>
-          )}
         </div>
       </div>
     );
@@ -410,13 +375,6 @@ export default function FriendsPage() {
           type="button"
         >
           Друзья
-        </button>
-        <button
-          className={`${styles.tabBtn} ${activeTab === 'notifications' ? styles.tabActive : ''}`}
-          onClick={() => setActiveTab('notifications')}
-          type="button"
-        >
-          Уведомления
         </button>
       </div>
 
@@ -569,61 +527,6 @@ export default function FriendsPage() {
           </div>
         )}
 
-        {activeTab === 'notifications' && (
-          <div className={styles.panel}>
-            <h2 className={styles.panelTitle}>Уведомления</h2>
-            <div className={styles.hint}>
-              Сервер пока не отдаёт историю уведомлений через REST. Здесь показываем актуальные события на основе заявок:
-              входящие запросы и (как справка) исходящие.
-            </div>
-
-            {pendingIncomingCount > 0 && (
-              <div style={{ marginTop: 12 }}>
-                <div className={styles.panelTitle}>Новые заявки в друзья</div>
-                <div className={styles.list}>
-                  {(followersIdsQuery.data?.pages ?? [])
-                    .flatMap((p) => p.items ?? [])
-                    .map((id) => {
-                      const u = usersById.get(id) as IUser | undefined;
-                      return renderUserRow({
-                        _id: id,
-                        firstName: u?.firstName,
-                        lastName: u?.lastName,
-                        username: u?.username,
-                        avaPath: (u as any)?.avaPath,
-                      });
-                    })}
-                </div>
-              </div>
-            )}
-
-            {pendingOutgoingCount > 0 && (
-              <div style={{ marginTop: 12 }}>
-                <div className={styles.panelTitle}>Ваши исходящие заявки</div>
-                <div className={styles.list}>
-                  {(followingIdsQuery.data?.pages ?? [])
-                    .flatMap((p) => p.items ?? [])
-                    .map((id) => {
-                      const u = usersById.get(id) as IUser | undefined;
-                      return renderUserRow({
-                        _id: id,
-                        firstName: u?.firstName,
-                        lastName: u?.lastName,
-                        username: u?.username,
-                        avaPath: (u as any)?.avaPath,
-                      });
-                    })}
-                </div>
-              </div>
-            )}
-
-            {pendingIncomingCount === 0 && pendingOutgoingCount === 0 ? (
-              <div style={{ marginTop: 12 }}>
-                <EmptyState message="Пока тихо" subMessage="Когда появятся заявки в друзья — они отобразятся здесь." />
-              </div>
-            ) : null}
-          </div>
-        )}
       </div>
     </div>
   );

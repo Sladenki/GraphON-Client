@@ -5,7 +5,7 @@ import Link from 'next/link'
 import styles from './Sidebar.module.scss'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, sidebar } from '@/constants/sidebar';
+import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE, profileSubMenu, sidebar } from '@/constants/sidebar';
 import { useAuth } from '@/providers/AuthProvider';
 import { MapPinned, User, FileText, HelpCircle } from 'lucide-react';
 
@@ -48,19 +48,19 @@ const Sidebar: React.FC<{}> = ({}) => {
 
   const computedItems = useMemo(() => {
     const items = [...baseNavigationItems];
-    
-    // Добавляем профиль для авторизованных пользователей
+
+    // Профиль + подпункты (Друзья, Уведомления) — только для авторизованных
     if (isLoggedIn) {
-      const profileItem = {
+      items.push({
         id: 99,
         icon: <User color="rgb(var(--main-Color))" size={24} strokeWidth={0.9} />,
         title: 'Профиль',
         forAuthUsers: true,
-        path: '/profile'
-      };
-      items.push(profileItem);
+        path: '/profile',
+      } as any);
+      profileSubMenu.forEach((it) => items.push(it as any));
     }
-    
+
     return items;
   }, [baseNavigationItems, isLoggedIn]);
 

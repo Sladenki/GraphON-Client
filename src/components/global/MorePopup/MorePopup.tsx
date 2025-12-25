@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useEffect, useRef, useCallback, useState } from 'react'
-import { FileText, HelpCircle, Shield, UserPlus } from 'lucide-react'
+import { Bell, FileText, HelpCircle, Shield, UserPlus } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { UserRole } from '@/types/user.interface'
 import Link from 'next/link'
@@ -60,6 +60,14 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
         icon: <UserPlus size={24} strokeWidth={1.8} />,
         title: 'Друзья',
         path: '/friends',
+        color: 'var(--main-Color)',
+      })
+
+      cards.push({
+        id: 'notifications',
+        icon: <Bell size={24} strokeWidth={1.8} />,
+        title: 'Уведомления',
+        path: '/notifications',
         color: 'var(--main-Color)',
       })
     }

@@ -16,11 +16,11 @@ const RenderMenuList: React.FC<{arrayItems: IArrayItem[], small: boolean}> = ({ 
   const menuWidth = small ? 85 : 200;
 
   // Группируем элементы по требованию
-  const primaryPaths = new Set(['/', '/groups/', '/events/', '/friends', GRAPHS_ROUTE, CITY_ROUTE]);
+  const primaryPaths = new Set(['/', '/groups/', '/events/', GRAPHS_ROUTE, CITY_ROUTE]);
   const group1 = arrayItems.filter(({ path }) => primaryPaths.has(path));
-  const group2 = arrayItems.filter(({ path }) => ['/profile'].includes(path))
+  const group2 = arrayItems.filter(({ path }) => ['/profile', '/friends', '/notifications'].includes(path))
     .sort((a, b) => {
-      const order = ['/profile'];
+      const order = ['/profile', '/friends', '/notifications'];
       return order.indexOf(a.path) - order.indexOf(b.path);
     });
   const group3 = arrayItems.filter(({ path }) => ['/admin/'].includes(path));
