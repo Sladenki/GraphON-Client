@@ -10,7 +10,6 @@ import { UserService } from '@/services/user.service';
 import { RelationshipsService } from '@/services/relationships.service';
 import type { SocialUserListItem } from '@/types/social.interface';
 import type { IUser } from '@/types/user.interface';
-import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { Users, UserPlus, Send } from 'lucide-react';
 
@@ -289,63 +288,42 @@ export default function FriendsPage() {
               {isMe ? (
                 <span className={styles.disabledNote}>Это вы</span>
               ) : isFriend ? (
-                <ActionButton
-                  label="Удалить"
-                  variant="danger"
-                  className={styles.smallBtn}
-                  onClick={() => removeMutation.mutate(u._id)}
-                />
+                <button type="button" className={`${styles.pillBtn} ${styles.dangerBtn}`} onClick={() => removeMutation.mutate(u._id)}>
+                  Удалить
+                </button>
               ) : hasIncoming ? (
                 <>
-                  <ActionButton
-                    label="Принять"
-                    variant="primary"
-                    className={styles.smallBtn}
-                    onClick={() => acceptMutation.mutate(u._id)}
-                  />
-                  <ActionButton
-                    label="Отклонить"
-                    variant="danger"
-                    className={styles.smallBtn}
-                    onClick={() => declineMutation.mutate(u._id)}
-                  />
+                  <button type="button" className={`${styles.pillBtn} ${styles.primaryBtn}`} onClick={() => acceptMutation.mutate(u._id)}>
+                    Принять
+                  </button>
+                  <button type="button" className={`${styles.pillBtn} ${styles.ghostBtn}`} onClick={() => declineMutation.mutate(u._id)}>
+                    Отклонить
+                  </button>
                 </>
               ) : hasOutgoing ? (
                 <span className={styles.disabledNote}>Заявка отправлена</span>
               ) : (
-                <ActionButton
-                  label="В друзья"
-                  variant="primary"
-                  className={styles.smallBtn}
-                  onClick={() => requestMutation.mutate(u._id)}
-                />
+                <button type="button" className={`${styles.pillBtn} ${styles.primaryBtn}`} onClick={() => requestMutation.mutate(u._id)}>
+                  В друзья
+                </button>
               )}
             </>
           )}
 
           {activeTab === 'friends' && (
-            <ActionButton
-              label="Удалить"
-              variant="danger"
-              className={styles.smallBtn}
-              onClick={() => removeMutation.mutate(u._id)}
-            />
+            <button type="button" className={`${styles.pillBtn} ${styles.dangerBtn}`} onClick={() => removeMutation.mutate(u._id)}>
+              Удалить
+            </button>
           )}
 
           {activeTab === 'incoming' && (
             <>
-              <ActionButton
-                label="Принять"
-                variant="primary"
-                className={styles.smallBtn}
-                onClick={() => acceptMutation.mutate(u._id)}
-              />
-              <ActionButton
-                label="Отклонить"
-                variant="danger"
-                className={styles.smallBtn}
-                onClick={() => declineMutation.mutate(u._id)}
-              />
+              <button type="button" className={`${styles.pillBtn} ${styles.primaryBtn}`} onClick={() => acceptMutation.mutate(u._id)}>
+                Принять
+              </button>
+              <button type="button" className={`${styles.pillBtn} ${styles.ghostBtn}`} onClick={() => declineMutation.mutate(u._id)}>
+                Отклонить
+              </button>
             </>
           )}
 
@@ -373,39 +351,61 @@ export default function FriendsPage() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.statsGrid} aria-label="Friends overview">
-        <div className={`${styles.statsCard} ${styles.statsMint}`}>
-          <div className={styles.statsIcon} aria-hidden="true">
-            <Users size={18} />
-          </div>
-          <div className={styles.statsContent}>
-            <div className={styles.statsNumber}>{friendsCount}</div>
-            <div className={styles.statsLabel}>Friends</div>
-          </div>
+      <div className={styles.heroCard}>
+        <div className={styles.heroText}>
+          <div className={styles.kicker}>Социальные связи</div>
+          <div className={styles.heroTitle}>Друзья и заявки</div>
+          <div className={styles.heroSub}>Мягкий дашборд: pastel, pills, без резких границ</div>
         </div>
+        <div className={styles.heroStats} aria-label="Friends overview">
+          <div className={`${styles.statsCard} ${styles.statsMint}`}>
+            <div className={styles.statsIcon} aria-hidden="true">
+              <Users size={18} />
+            </div>
+            <div className={styles.statsContent}>
+              <div className={styles.statsNumber}>{friendsCount}</div>
+              <div className={styles.statsLabel}>Friends</div>
+            </div>
+          </div>
 
-        <div className={`${styles.statsCard} ${styles.statsPeach}`}>
-          <div className={styles.statsIcon} aria-hidden="true">
-            <UserPlus size={18} />
+          <div className={`${styles.statsCard} ${styles.statsPeach}`}>
+            <div className={styles.statsIcon} aria-hidden="true">
+              <UserPlus size={18} />
+            </div>
+            <div className={styles.statsContent}>
+              <div className={styles.statsNumber}>{pendingIncomingCount}</div>
+              <div className={styles.statsLabel}>Requests</div>
+            </div>
           </div>
-          <div className={styles.statsContent}>
-            <div className={styles.statsNumber}>{pendingIncomingCount}</div>
-            <div className={styles.statsLabel}>Requests</div>
-          </div>
-        </div>
 
-        <div className={`${styles.statsCard} ${styles.statsLavender}`}>
-          <div className={styles.statsIcon} aria-hidden="true">
-            <Send size={18} />
-          </div>
-          <div className={styles.statsContent}>
-            <div className={styles.statsNumber}>{pendingOutgoingCount}</div>
-            <div className={styles.statsLabel}>Sent</div>
+          <div className={`${styles.statsCard} ${styles.statsLavender}`}>
+            <div className={styles.statsIcon} aria-hidden="true">
+              <Send size={18} />
+            </div>
+            <div className={styles.statsContent}>
+              <div className={styles.statsNumber}>{pendingOutgoingCount}</div>
+              <div className={styles.statsLabel}>Sent</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className={styles.tabs}>
+      <div className={styles.controlCard}>
+        <div className={styles.controlHeader}>
+          <div>
+            <div className={styles.controlTitle}>Управление друзьями</div>
+            <div className={styles.controlSub}>Поиск, заявки и друзья</div>
+          </div>
+          <div className={styles.controlPill}>Всего: {friendsCount + pendingIncomingCount + pendingOutgoingCount}</div>
+        </div>
+
+        <SearchBar
+          placeholder="Поиск людей по имени или @username"
+          onSearch={setPeopleQuery}
+          onTagFilter={() => {}}
+          showTagFilter={false}
+        />
+
         <div className={styles.tabsRail}>
           <button
             className={`${styles.tabBtn} ${activeTab === 'people' ? styles.tabActive : ''}`}
@@ -446,12 +446,6 @@ export default function FriendsPage() {
         {activeTab === 'people' && (
           <div className={styles.panel}>
             <div className={styles.sectionLabel}>Discover</div>
-            <SearchBar
-              placeholder="Поиск людей по имени или @username"
-              onSearch={setPeopleQuery}
-              onTagFilter={() => {}}
-              showTagFilter={false}
-            />
 
             <div className={styles.list} style={{ marginTop: 12 }}>
               {!isSearchingPeople && peopleUsers.map((u) =>
