@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json.schemastore.org/json-schema.json",
+  "meta": {
+    "name": "Pastel Study Companion (Mobile) – High-Level Design DNA",
+    "version": "1.0.0",
+    "source": "Reference screenshot (3 mobile screens: dashboard, quiz, schedule)",
+    "purpose": "Guide AI to replicate the visual language: soft pastel, rounded, playful, premium-lite.",
+    "keywords": ["soft", "pastel", "rounded", "airy", "friendly", "touch-first", "no hard borders"],
+    "devices": ["Mobile-first (360–430px width)", "Tablet-friendly; desktop adaptive later"]
+  },
+  "foundations": {
+    "gridAndSpacing": {
+      "baseUnitPx": 4,
+      "gutterPx": 16,
+      "sectionGapPx": 16,
+      "cardStackGapPx": 12,
+      "listRowGapPx": 10,
+      "maxContentWidthMobilePx": 420,
+      "principles": [
+        "Use a strict 4px scale; most paddings 12–20px.",
+        "Rely on whitespace and surface contrast instead of borders.",
+        "Cards stack vertically with gentle separation; avoid crowding."
+      ]
+    },
+    "typography": {
+      "fontFamilies": {
+        "primary": "var(--font-inter), Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+        "display": "Poppins, var(--font-inter), system-ui, sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+      },
+      "scale": {
+        "h1": { "sizePx": 22, "weight": 800, "lineHeight": 1.2, "letterSpacing": -0.02 },
+        "h2": { "sizePx": 18, "weight": 800, "lineHeight": 1.22, "letterSpacing": -0.02 },
+        "h3": { "sizePx": 15, "weight": 800, "lineHeight": 1.28, "letterSpacing": -0.01 },
+        "body": { "sizePx": 14, "weight": 500, "lineHeight": 1.46, "letterSpacing": -0.01 },
+        "bodySmall": { "sizePx": 12, "weight": 600, "lineHeight": 1.32, "letterSpacing": 0 },
+        "caption": { "sizePx": 11, "weight": 700, "lineHeight": 1.24, "letterSpacing": 0.02 }
+      },
+      "usage": [
+        "Headlines are bold and compact; keep to one line when possible.",
+        "Body text stays calm; use captions for metadata and chips.",
+        "Avoid all caps; prefer sentence case with small-caps accents only in tiny labels."
+      ]
+    },
+    "radii": {
+      "tokensPx": { "xs": 10, "sm": 12, "md": 16, "lg": 20, "xl": 24, "pill": 999 },
+      "usage": [
+        "Cards: 20–24px corners.",
+        "Inputs/buttons: pill or 16–18px.",
+        "Chips: pill."
+      ]
+    },
+    "colors": {
+      "base": {
+        "ink": "#2D2933",
+        "inkSecondary": "#5F5A6C",
+        "inkMuted": "#9B97AA",
+        "surface": "#FFFFFF",
+        "surfaceAlt": "#F9F7FC"
+      },
+      "pastels": {
+        "blush": "#FFE9F4",
+        "peach": "#FFEEDC",
+        "butter": "#FFF6D7",
+        "mint": "#E8F7EE",
+        "sky": "#E9F2FF",
+        "lavender": "#F2EBFF",
+        "rose": "#FADBE8"
+      },
+      "brand": {
+        "primary": "#FF7BA3",
+        "primaryRgb": "255, 123, 163",
+        "accentPurple": "#A287F4",
+        "accentYellow": "#FFC857",
+        "accentTeal": "#5CC2AA"
+      },
+      "semantic": {
+        "success": "#5CC2AA",
+        "warning": "#FFC857",
+        "info": "#7CA7FF",
+        "danger": "#E66A7A"
+      },
+      "usageRules": [
+        "Prefer pastel fills over borders; if a divider is needed, use 1px with 8–12% opacity of ink.",
+        "Primary actions: solid brand primary; secondary: tinted surfaces using brand RGB at 10–16%.",
+        "Backgrounds can softly shift per section: pink for hero, neutral white for lists."
+      ]
+    },
+    "shadowsAndDepth": {
+      "allowShadows": false,
+      "layering": "Hierarchy via surface contrast, pastel blocks, and subtle gradients.",
+      "tokens": { "none": "none" },
+      "usage": [
+        "No visible drop shadows.",
+        "Use nested surfaces and gentle gradients for depth."
+      ]
+    },
+    "motion": {
+      "durationsMs": { "fast": 120, "normal": 180, "slow": 240 },
+      "easing": { "standard": "cubic-bezier(0.2, 0.8, 0.2, 1)", "snappy": "cubic-bezier(0.4, 0, 0.2, 1)" },
+      "usage": [
+        "Micro-interactions: slight scale/translate (<=2%) on press.",
+        "Transitions feel soft; avoid overshoot >4%."
+      ]
+    }
+  },
+  "composition": {
+    "surfaceSystem": {
+      "appBackground": "#F2ECF4",
+      "sectionBackground": "linear-gradient(180deg, rgba(255, 233, 244, 0.6), rgba(242, 236, 244, 0.6))",
+      "cardBackground": "#FFFFFF",
+      "innerTileBackgrounds": ["#FFEEDC", "#E8F7EE", "#F2EBFF"],
+      "separation": [
+        "Use spacing + tint; avoid borders.",
+        "Dividers only when density is high; keep opacity low."
+      ]
+    },
+    "iconography": {
+      "style": "Rounded outline or duotone icons inside circular pastel tokens.",
+      "sizesPx": { "sm": 16, "md": 18, "lg": 22 },
+      "container": { "sizePx": 34, "radius": "pill", "bg": "rgba(255, 123, 163, 0.10)", "color": "#FF7BA3" }
+    },
+    "illustration": {
+      "style": "Playful 2.5D mascot/character, flat with soft shading and thick outlines.",
+      "background": "Concentric pastel rings or soft gradients behind mascot.",
+      "usage": [
+        "Use illustration as hero focus; keep surrounding UI minimal.",
+        "Maintain consistent stroke thickness and rounded corners on shapes."
+      ]
+    }
+  },
+  "components": {
+    "TopBar": {
+      "structure": ["Avatar + greeting left", "Notification/settings icon buttons right"],
+      "paddingPx": { "x": 16, "y": 12, "gap": 10 },
+      "avatar": { "sizePx": 28, "radius": "pill" },
+      "iconButton": { "sizePx": 34, "radius": "pill", "bg": "rgba(255, 123, 163, 0.10)" },
+      "principles": ["Keep bar light; no borders; align vertically centered."]
+    },
+    "Card": {
+      "radiusPx": 22,
+      "paddingPx": 16,
+      "background": "#FFFFFF",
+      "innerBlock": { "radiusPx": 18, "paddingPx": 14, "bgExamples": ["peach", "mint", "lavender"] },
+      "principles": ["Cards are primary layout units; nest pastel tiles for grouping."]
+    },
+    "StatsSummary": {
+      "layout": "2-up grid on mobile; number is hero.",
+      "numberStyle": { "sizePx": 26, "weight": 900, "letterSpacing": -0.02 },
+      "labelStyle": { "sizePx": 12, "weight": 700, "color": "inkSecondary" },
+      "chip": { "bg": "rgba(255, 123, 163, 0.12)", "radius": "pill", "sizePx": 11, "weight": 700 },
+      "principles": ["Bold numerals, soft containers, minimal chrome."]
+    },
+    "Search": {
+      "shape": "Pill",
+      "heightPx": 40,
+      "paddingX": 14,
+      "bg": "rgba(255, 123, 163, 0.10)",
+      "placeholderColor": "inkMuted",
+      "icon": "Leading search icon, muted",
+      "principles": ["No borders; focus tint only; keep compact."]
+    },
+    "PillTabs": {
+      "container": { "radius": "pill", "paddingPx": 6, "bg": "rgba(255, 123, 163, 0.10)" },
+      "tab": {
+        "radius": "pill",
+        "paddingY": 9,
+        "paddingX": 12,
+        "font": { "sizePx": 13, "weight": 800 },
+        "selectedBg": "rgba(255, 123, 163, 0.16)",
+        "selectedText": "ink"
+      },
+      "principles": ["Tabs feel like chips, not bars; limited to 3–5 options."]
+    },
+    "Button": {
+      "primary": {
+        "shape": "pill",
+        "heightPx": 44,
+        "bg": "#FF7BA3",
+        "textColor": "#FFFFFF",
+        "weight": 800,
+        "press": "scale(0.98)"
+      },
+      "secondary": {
+        "shape": "pill",
+        "heightPx": 44,
+        "bg": "rgba(255, 123, 163, 0.12)",
+        "textColor": "ink",
+        "weight": 800
+      },
+      "ghost": {
+        "shape": "pill",
+        "heightPx": 44,
+        "bg": "transparent",
+        "textColor": "inkSecondary"
+      },
+      "principles": ["Keep labels short; one primary action per view; use pill shapes."]
+    },
+    "Chip": {
+      "shape": "pill",
+      "paddingY": 6,
+      "paddingX": 10,
+      "font": { "sizePx": 11, "weight": 700 },
+      "bg": "rgba(255, 123, 163, 0.12)",
+      "textColor": "inkSecondary",
+      "selectedBg": "rgba(255, 123, 163, 0.18)",
+      "selectedTextColor": "ink",
+      "principles": ["Use for filters/subjects; allow multiple chips in a wrap row."]
+    },
+    "ProgressBar": {
+      "track": { "heightPx": 6, "radius": "pill", "bg": "rgba(255, 123, 163, 0.12)" },
+      "fill": { "radius": "pill", "bg": "#FF7BA3" },
+      "label": { "fontSizePx": 12, "weight": 700, "color": "inkSecondary" }
+    },
+    "ScheduleRow": {
+      "shape": "rounded row tile",
+      "radiusPx": 18,
+      "paddingPx": 12,
+      "bg": "linear-gradient(135deg, rgba(255, 123, 163, 0.12), rgba(162, 135, 244, 0.10))",
+      "metaChips": { "radius": "pill", "bg": "rgba(0,0,0,0.06)", "fontSizePx": 11, "weight": 700 },
+      "timeline": { "timeFont": { "sizePx": 13, "weight": 700 }, "dotSizePx": 8, "lineColor": "rgba(0,0,0,0.08)" },
+      "principles": ["Rows feel like mini-cards; no hard separators; rely on color grouping."]
+    },
+    "QuizCard": {
+      "hero": { "illustration": "centered mascot over pastel circle", "progress": "top progress bar + percentage" },
+      "question": { "font": { "sizePx": 16, "weight": 800 }, "maxLines": 2 },
+      "answerInput": { "shape": "pill", "heightPx": 46, "bg": "rgba(0,0,0,0.04)", "placeholder": "inkMuted" },
+      "controls": { "buttons": ["Back (ghost/secondary)", "Next (primary)"], "minWidthPx": 120 }
+    },
+    "DatePills": {
+      "shape": "pill",
+      "sizePx": { "height": 48, "width": 48 },
+      "bg": "rgba(0,0,0,0.04)",
+      "selectedBg": "#FFFFFF",
+      "selectedBorder": "1px solid rgba(0,0,0,0.08)",
+      "font": { "sizePx": 12, "weight": 800 },
+      "principles": ["Center align day; show subtle ring for today/selected."]
+    }
+  },
+  "designPrinciples": {
+    "do": [
+      "Lead with bold numerals and clear hierarchy; keep chrome minimal.",
+      "Use pastel surfaces to group and sequence content.",
+      "Maintain generous padding and large hit areas (>=40px height).",
+      "Use pill shapes for inputs, tabs, and actions.",
+      "Keep typography short and high-weight for headings."
+    ],
+    "dont": [
+      "Avoid hard borders and heavy shadows.",
+      "Avoid dense text blocks; prefer concise labels.",
+      "Avoid sharp corners; keep everything rounded."
+    ],
+    "accessibility": [
+      "Ensure text contrast meets WCAG on pastel backgrounds (prefer ink colors).",
+      "Provide focus-visible states via tint/outline, not glow.",
+      "Icon buttons need aria-label and at least 44px touch target."
+    ]
+  },
+  "implementationHintsForThisRepo": {
+    "cssVariables": [
+      "Use existing --color-primary, --color-primary-rgb; derive tints with rgba().",
+      "Map pastels to CSS vars where possible to keep themeable.",
+      "Set border-radius tokens in SCSS/TS constants for reuse."
+    ],
+    "layoutPatterns": [
+      "Wrap pages in a soft app background; place major sections in white cards.",
+      "Use 2-up stat grid for small metrics; single-column for lists/schedule.",
+      "Prefer chip rails (PillTabs) for filtering rather than dropdowns."
+    ],
+    "interaction": [
+      "Press feedback: scale(0.98) + slight tint change; no shadow on press.",
+      "Transitions 120–180ms; avoid long easing tails.",
+      "For scroll areas, keep inset padding so pills and chips do not touch edges."
+    ]
+  }
+}
+
