@@ -5,7 +5,7 @@ import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import { ErrorState } from '@/components/global/ErrorState/ErrorState'
-import EventCard from '@/components/shared/EventCard/EventCard'
+import EventCardNew from '@/components/shared/EventCardNew/EventCardNew'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useSearchQuery, useSelectedGraphId, useSetSearchQuery } from '@/stores/useUIStore'
 import { EventService } from '@/services/event.service'
@@ -19,6 +19,8 @@ import PillTabs from '@/components/shared/PillTabs/PillTabs'
 import { useAuth } from '@/providers/AuthProvider'
 import { useRouter, useSearchParams } from 'next/navigation'
 import SubsEventsList from './SubsEventsList'
+import { Search as SearchIcon } from 'lucide-react'
+import EventCard from '@/components/shared/EventCard/EventCard'
 
 const EVENTS_PER_PAGE = 20
 
@@ -34,6 +36,7 @@ export default function EventsList() {
   const selectedGraphId = useSelectedGraphId()
   const setSearchQuery = useSetSearchQuery()
   const debouncedSearchQuery = useDebounce(searchQuery, 300)
+  const [showMobileSearch, setShowMobileSearch] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [dateFrom, setDateFrom] = useState<string>('')
   const [dateTo, setDateTo] = useState<string>('')
@@ -251,11 +254,19 @@ export default function EventsList() {
     <div className={styles.container}>
       {/* Панель поиска и фильтров */}
       {isLoggedIn && (
-        <div className={styles.tabsRow}>
+        <div className={styles.mobileTabsRow}>
+          <button
+            type="button"
+            className={styles.searchIconPill}
+            aria-label="Поиск"
+            onClick={() => setShowMobileSearch((v) => !v)}
+          >
+            <SearchIcon size={18} />
+          </button>
           <PillTabs
             options={[
-              { key: 'groups', label: 'От групп' },
-              { key: 'students', label: 'От студентов' },
+              { key: 'groups', label: 'События' },
+              { key: 'students', label: 'Студенчество' },
               { key: 'subs', label: 'Подписки', badge: subsCount },
             ]}
             activeKey={activeTab}
@@ -282,20 +293,22 @@ export default function EventsList() {
       ) : (
         <>
           <div className={styles.filters}>
-            <SearchBar
-              placeholder="Поиск мероприятий..."
-              onSearch={setSearchQuery}
-              onTagFilter={setSelectedTagIds}
-              availableTags={availableTags}
-              initialQuery={searchQuery}
-              showDateFilter
-              dateFrom={dateFrom}
-              dateTo={dateTo}
-              includeTbd={includeTbd}
-              onDateFromChange={setDateFrom}
-              onDateToChange={setDateTo}
-              onIncludeTbdChange={setIncludeTbd}
-            />
+            {(!isLoggedIn || showMobileSearch) && (
+              <SearchBar
+                placeholder="Поиск мероприятий..."
+                onSearch={setSearchQuery}
+                onTagFilter={setSelectedTagIds}
+                availableTags={availableTags}
+                initialQuery={searchQuery}
+                showDateFilter
+                dateFrom={dateFrom}
+                dateTo={dateTo}
+                includeTbd={includeTbd}
+                onDateFromChange={setDateFrom}
+                onDateToChange={setDateTo}
+                onIncludeTbdChange={setIncludeTbd}
+              />
+            )}
           </div>
           
           {/* Переключатель графов - только для ПК */}
@@ -340,11 +353,8 @@ export default function EventsList() {
                       '--delay': `${Math.min(index * 0.05, 0.5)}s`
                     } as React.CSSProperties}
                   >
-                    <EventCard 
-                      event={event} 
-                      isAttended={event.isAttended} 
-                      onDelete={handleDelete}
-                    />
+                {/* <EventCardNew event={event} /> */}
+                <EventCard event={event} />
                   </div>
                 ))}
               </div>

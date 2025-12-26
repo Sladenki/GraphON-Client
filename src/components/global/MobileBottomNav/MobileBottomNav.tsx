@@ -18,6 +18,8 @@ const MobileBottomNav: React.FC = () => {
 
   if (!isMobile) return null;
 
+  const isActive = (path: string) => pathname === path || pathname.startsWith(path);
+
   return (
     <>
       <nav className={styles.bottomNav} role="navigation" aria-label="Bottom navigation">
@@ -26,9 +28,9 @@ const MobileBottomNav: React.FC = () => {
           <li className={styles.navItem}>
             <Link 
               href="/events/" 
-              className={`${styles.navLink} ${pathname === '/events/' ? styles.active : ""}`} 
+              className={`${styles.navLink} ${isActive('/events') ? styles.active : ""}`} 
               aria-label="Мероприятия" 
-              aria-current={pathname === '/events/' ? "page" : undefined}
+              aria-current={isActive('/events') ? "page" : undefined}
             >
               <span className={styles.iconWrapper}>
                 <Newspaper size={18} strokeWidth={1.5} />
@@ -41,9 +43,9 @@ const MobileBottomNav: React.FC = () => {
           <li className={styles.navItem}>
             <Link 
               href="/profile" 
-              className={`${styles.navLink} ${pathname === '/profile' ? styles.active : ""}`} 
+              className={`${styles.navLink} ${isActive('/profile') ? styles.active : ""}`} 
               aria-label="Профиль" 
-              aria-current={pathname === '/profile' ? "page" : undefined}
+              aria-current={isActive('/profile') ? "page" : undefined}
             >
               <span className={styles.iconWrapper}>
                 <User size={18} strokeWidth={1.5} />
@@ -63,9 +65,9 @@ const MobileBottomNav: React.FC = () => {
           <li className={styles.navItem}>
             <Link 
               href="/groups/" 
-              className={`${styles.navLink} ${pathname === '/groups/' ? styles.active : ""}`} 
+              className={`${styles.navLink} ${isActive('/groups') ? styles.active : ""}`} 
               aria-label="Группы" 
-              aria-current={pathname === '/groups/' ? "page" : undefined}
+              aria-current={isActive('/groups') ? "page" : undefined}
             >
               <span className={styles.iconWrapper}>
                 <Users size={18} strokeWidth={1.5} />

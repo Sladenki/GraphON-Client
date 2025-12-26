@@ -21,8 +21,8 @@ const MobileTopBar: React.FC = () => {
         {isLoggedIn && user ? (
           <Link href="/profile" className={styles.avatar}>
             {user.avaPath ? (
-              <img
-                src={user.avaPath}
+              <img 
+                src={user.avaPath} 
                 alt={user.username || 'Пользователь'}
                 className={styles.avatarImage}
               />

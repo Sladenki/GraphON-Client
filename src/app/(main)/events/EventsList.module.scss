@@ -23,6 +23,54 @@
   justify-content: center;
 }
 
+.mobileTabsRow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+
+  @media (max-width: 400px) {
+    gap: 6px;
+  }
+
+  @media (max-width: 350px) {
+    gap: 4px;
+    grid-template-columns: 36px 1fr;
+  }
+}
+
+.searchIconPill {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(var(--main-Color), 0.12);
+  color: var(--color-primary, #7c6aef);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background: rgba(var(--main-Color), 0.16);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  @media (max-width: 400px) {
+    width: 36px;
+    height: 36px;
+  }
+
+  @media (max-width: 350px) {
+    width: 34px;
+    height: 34px;
+  }
+}
+
 .graphSwitcherWrapper {
   position: absolute;
   top: 16px;

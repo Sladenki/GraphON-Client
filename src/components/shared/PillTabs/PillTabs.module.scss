@@ -72,3 +72,23 @@
   }
 }
 
+@media (max-width: 360px) {
+  .rail {
+    padding: 5px;
+    gap: 4px;
+  }
+
+  .tab {
+    padding: 8px 8px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .badge {
+    min-width: 16px;
+    height: 16px;
+    padding: 0 5px;
+    font-size: 10px;
+  }
+}
+
