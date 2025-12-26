@@ -1,9 +1,10 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { websocketService, WebSocketEvent } from '@/services/websocket.service';
 import { useAuth } from './AuthProvider';
+import { FriendRequestNotification } from '@/components/global/FriendRequestNotification/FriendRequestNotification';
 
 interface WebSocketContextType {
   isConnected: boolean;
@@ -18,15 +19,32 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
   const queryClient = useQueryClient();
   const listenerRef = useRef<(() => void) | null>(null);
   const currentUserId = user?._id;
+  
+  // Состояние для popup уведомления о заявке в друзья
+  const [friendRequestNotification, setFriendRequestNotification] = useState<{
+    isOpen: boolean;
+    fromUserId: string;
+  }>({
+    isOpen: false,
+    fromUserId: '',
+  });
 
   const handleWebSocketEvent = useCallback((event: WebSocketEvent) => {
     const { type, data } = event;
 
     console.log('[WebSocket] Received event:', type, data);
+    console.log('[WebSocket] Current user ID:', currentUserId);
+    console.log('[WebSocket] Event data - fromUserId:', data.fromUserId, 'toUserId:', data.toUserId);
 
     // Проверяем, относится ли событие к текущему пользователю
-    if (currentUserId && data.toUserId !== currentUserId && data.fromUserId !== currentUserId) {
+    if (!currentUserId) {
+      console.log('[WebSocket] No current user ID, ignoring event');
+      return;
+    }
+
+    if (data.toUserId !== currentUserId && data.fromUserId !== currentUserId) {
       console.log('[WebSocket] Event not for current user, ignoring');
+      console.log('[WebSocket] Expected toUserId or fromUserId to be:', currentUserId);
       return; // Событие не для текущего пользователя
     }
 
@@ -35,7 +53,15 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         // fromUserId отправил заявку toUserId
         // Для получателя (toUserId) - это входящая заявка
         if (currentUserId === data.toUserId) {
+          console.log('[WebSocket] Friend request received! Showing popup for user:', data.fromUserId);
           console.log('[WebSocket] Adding to followers:', data.fromUserId);
+          
+          // Показываем popup уведомление
+          setFriendRequestNotification({
+            isOpen: true,
+            fromUserId: data.fromUserId,
+          });
+          
           queryClient.setQueryData(['social', 'followers'], (old: any) => {
           if (!old) return old;
           const pages = old.pages || [];
@@ -196,9 +222,12 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
 
   useEffect(() => {
     if (!isLoggedIn) {
+      console.log('[WebSocketProvider] User not logged in, disconnecting WebSocket');
       websocketService.disconnect();
       return;
     }
+
+    console.log('[WebSocketProvider] User logged in, connecting WebSocket. Current userId:', currentUserId);
 
     // Подключаемся при авторизации (не критично, если не подключится - приложение будет работать)
     try {
@@ -212,13 +241,22 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     listenerRef.current = websocketService.subscribe((event: WebSocketEvent) => {
       handleWebSocketEvent(event);
     });
+    console.log('[WebSocketProvider] WebSocket event listener registered');
 
     return () => {
       if (listenerRef.current) {
+        console.log('[WebSocketProvider] Unsubscribing WebSocket listener');
         listenerRef.current();
       }
     };
-  }, [isLoggedIn, handleWebSocketEvent]);
+  }, [isLoggedIn, handleWebSocketEvent, currentUserId]);
+
+  const handleCloseNotification = () => {
+    setFriendRequestNotification({
+      isOpen: false,
+      fromUserId: '',
+    });
+  };
 
   return (
     <WebSocketContext.Provider
@@ -227,6 +265,13 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
       }}
     >
       {children}
+      
+      {/* Popup уведомление о заявке в друзья */}
+      <FriendRequestNotification
+        isOpen={friendRequestNotification.isOpen}
+        onClose={handleCloseNotification}
+        fromUserId={friendRequestNotification.fromUserId}
+      />
     </WebSocketContext.Provider>
   );
 };
