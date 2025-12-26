@@ -1,0 +1,25 @@
+.object {
+  position: absolute;
+  will-change: transform;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Отключение анимаций для пользователей с prefers-reduced-motion
+@media (prefers-reduced-motion: reduce) {
+  .object {
+    animation: none;
+    
+    * {
+      animation: none !important;
+    }
+  }
+}
+

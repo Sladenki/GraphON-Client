@@ -1,3 +1,4 @@
+// СТАРАЯ РЕАЛИЗАЦИЯ - ЗАКОММЕНТИРОВАНА, НО СОХРАНЕНА ДЛЯ ВОЗМОЖНОГО ИСПОЛЬЗОВАНИЯ
 'use client'
 
 import React, { useEffect, useMemo, useState } from 'react'
@@ -33,5 +34,10 @@ export default function EventsHub() {
   // Tabs and subscription logic are handled inside EventsList now
   return <EventsList />
 }
+
+// Новая реализация используется в EventsTikTokFeed
+// export default function EventsHub() {
+//   return null;
+// }
 
 
