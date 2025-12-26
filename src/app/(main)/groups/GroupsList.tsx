@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
@@ -17,14 +17,31 @@ import styles from './GroupsList.module.scss'
 import GroupBlock from '@/components/shared/GroupBlock/GroupBlock'
 import { useAuth } from '@/providers/AuthProvider'
 import { GraphService } from '@/services/graph.service'
+import PillTabs from '@/components/shared/PillTabs/PillTabs'
+import { GraphSubsService } from '@/services/graphSubs.service'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+type GroupsPillTab = 'manage' | 'groups' | 'subs'
 
 export default function GroupsList() {
   const selectedGraphId = useSelectedGraphId()
   const { user, isLoggedIn } = useAuth()
+  const router = useRouter()
+  const searchParams = useSearchParams()
   
   // Состояния для PopUp
   const [isScheduleOpen, setIsScheduleOpen] = useState(false)
   const [popupGraphId, setPopupGraphId] = useState<string | null>(null)
+  
+  // Определяем начальную вкладку из URL или по умолчанию
+  const initialTab: GroupsPillTab = useMemo(() => {
+    const tab = searchParams.get('tab')
+    if (tab === 'subs') return 'subs'
+    if (tab === 'manage') return 'manage'
+    return 'groups'
+  }, [searchParams])
+  
+  const [activeTab, setActiveTab] = useState<GroupsPillTab>(initialTab)
 
   // Загрузка данных
   const { 
@@ -58,12 +75,52 @@ export default function GroupsList() {
     staleTime: 5 * 60_000,
   })
 
+  // Синхронизация вкладки с URL и авторизацией
+  useEffect(() => {
+    if (!isLoggedIn && activeTab === 'subs') {
+      setActiveTab('groups')
+    } else {
+      setActiveTab(initialTab)
+    }
+  }, [isLoggedIn, initialTab])
+
+  const setTabInUrl = (tab: GroupsPillTab) => {
+    const sp = new URLSearchParams(searchParams.toString())
+    if (tab === 'subs') sp.set('tab', 'subs')
+    else if (tab === 'manage') sp.set('tab', 'manage')
+    else sp.delete('tab')
+    const qs = sp.toString()
+    router.replace(qs ? `/groups/?${qs}` : '/groups/')
+  }
+
+  const handleTabChange = (tab: GroupsPillTab) => {
+    if (!isLoggedIn && tab === 'subs') return
+    setActiveTab(tab)
+    setTabInUrl(tab)
+    // Очищаем поиск и фильтры при переключении вкладки
+    setQuery('')
+    setSelectedTags([])
+  }
+
   // Показываем "Мои группы" только если они присутствуют в текущем списке групп выбранного университета
   const ownedGroupsInCurrentList: GraphInfo[] = React.useMemo(() => {
     if (!managedGroups?.length || !allGraphs?.length) return []
     const allIds = new Set(allGraphs.map((g: IGraphList) => g._id))
     return managedGroups.filter((g) => allIds.has(g._id))
   }, [managedGroups, allGraphs])
+  
+  // Загрузка подписок пользователя
+  const { data: subscribedGroupsData, isLoading: isLoadingSubs } = useQuery({
+    queryKey: ['userSubscribedGraphs'],
+    queryFn: () => GraphSubsService.getUserSubscribedGraphs(),
+    enabled: isLoggedIn && activeTab === 'subs',
+    staleTime: 5 * 60_000,
+  })
+  
+  const subscribedGroups: IGraphList[] = useMemo(() => {
+    if (!subscribedGroupsData?.data) return []
+    return subscribedGroupsData.data
+  }, [subscribedGroupsData])
 
   const ownedIdsSet = React.useMemo(() => {
     return new Set(ownedGroupsInCurrentList.map((g) => g._id))
@@ -76,11 +133,21 @@ export default function GroupsList() {
     return allGraphs.filter((g: IGraphList) => !ownedIdsSet.has(g._id))
   }, [allGraphs, ownedIdsSet])
 
+  // Определяем данные для текущей вкладки
+  const currentTabData: IGraphList[] = useMemo(() => {
+    if (activeTab === 'manage') {
+      return ownedGroupsInCurrentList as any[]
+    } else if (activeTab === 'subs') {
+      return subscribedGroups as any[]
+    }
+    return generalGraphs
+  }, [activeTab, ownedGroupsInCurrentList, subscribedGroups, generalGraphs])
+
   // Извлекаем доступные теги из данных групп (из parentGraphId.name)
   const availableTags: SearchTag[] = React.useMemo(() => {
     const tagMap = new Map<string, SearchTag>()
     
-    generalGraphs.forEach((graph: IGraphList) => {
+    currentTabData.forEach((graph: IGraphList) => {
       const parentGraph = (graph as any).parentGraphId
       if (parentGraph && typeof parentGraph === 'object' && parentGraph.name) {
         // Используем название как ключ для избежания дублирования
@@ -92,7 +159,7 @@ export default function GroupsList() {
     
     const tags = Array.from(tagMap.values()).sort((a, b) => a.name.localeCompare(b.name))
     return tags
-  }, [generalGraphs])
+  }, [currentTabData])
 
   // Используем хук для поиска и фильтрации
   const {
@@ -104,7 +171,7 @@ export default function GroupsList() {
     setSelectedTags,
     clearFilters
   } = useSearchWithTags({
-    data: generalGraphs,
+    data: currentTabData,
     searchFields: ['name', 'about'],
     // В данных графа поле parentGraphId может не быть описано в IGraphList типах,
     // но фактически приходит с API — приводим к any, чтобы не ломать типизацию.
@@ -131,10 +198,11 @@ export default function GroupsList() {
   }, [setSelectedTags])
 
   // Состояния загрузки
-  const isLoading = isPostsFetching && !isEndPosts
-  const hasData = generalGraphs.length > 0
+  const isLoading = (isPostsFetching && !isEndPosts) || (activeTab === 'subs' && isLoadingSubs)
+  const hasData = currentTabData.length > 0
   const hasError = !!error
   const noSearchResults = hasActiveFilters && filteredGraphs.length === 0
+  const hasManagedGroups = ownedGroupsInCurrentList.length > 0
 
   // Рендер состояний
   if (hasError) {
@@ -149,32 +217,18 @@ export default function GroupsList() {
 
   return (
     <div className={styles.container}>
-      {/* Мои группы (если пользователь владеет группами) */}
-      {ownedGroupsInCurrentList.length > 0 && (
-        <div className={styles.ownedSection}>
-          <div className={styles.sectionTitle}>Мои группы</div>
-          <div className={styles.grid} data-swipe-enabled="true">
-            {ownedGroupsInCurrentList.map((g) => (
-              <div key={g._id} className={styles.graphItem}>
-                <GroupBlock
-                  id={g._id}
-                  name={g.name}
-                  isSubToGraph={Boolean(g.isSubscribed)}
-                  imgPath={g.imgPath}
-                  about={g.about}
-                  subscribersCount={(g as any).subsNum ?? 0}
-                  specializations={[
-                    ...(((g as any).parentGraphId?.name ? [{ key: String((g as any).parentGraphId?._id ?? (g as any).parentGraphId?.name), label: String((g as any).parentGraphId?.name) }] : []) as any[]),
-                    ...((Array.isArray((g as any).tags) ? (g as any).tags : []).map((t: any) => ({ key: String(t?._id ?? t?.name), label: String(t?.name) })).filter((x: any) => x.label && x.label !== 'undefined')),
-                  ]}
-                  handleScheduleButtonClick={() => handleScheduleClick(g._id)}
-                  layout="horizontal"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* PillTabs для переключения между вкладками */}
+      <div className={styles.tabsRow}>
+        <PillTabs
+          options={[
+            ...(hasManagedGroups ? [{ key: 'manage', label: 'Управление' }] : []),
+            { key: 'groups', label: 'Группы' },
+            ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки' }] : []),
+          ]}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+        />
+      </div>
 
       {/* Поиск и фильтры - всегда видимый */}
       <div className={styles.searchSection}>
@@ -191,7 +245,7 @@ export default function GroupsList() {
         {/* Информация о результатах */}
         {hasActiveFilters && (
           <div className={styles.searchResults}>
-            Найдено: {filteredGraphs.length} из {generalGraphs.length} групп
+            Найдено: {filteredGraphs.length} из {currentTabData.length} групп
           </div>
         )}
       </div>
@@ -223,7 +277,7 @@ export default function GroupsList() {
               <GroupBlock
                 id={graph._id}
                 name={graph.name}
-                isSubToGraph={graph.isSubscribed}
+                isSubToGraph={(graph as any).isSubscribed ?? false}
                 imgPath={graph.imgPath}
                 about={graph.about}
                 subscribersCount={(graph as any).subsNum ?? 0}
@@ -248,7 +302,8 @@ export default function GroupsList() {
         />
       )}
 
-      <div ref={loaderRef} />
+      {/* Loader ref только для вкладки "Группы" с бесконечным скроллом */}
+      {activeTab === 'groups' && <div ref={loaderRef} />}
     </div>
   )
 }

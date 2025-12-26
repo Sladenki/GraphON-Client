@@ -6,6 +6,15 @@
   min-height: 200px;
 }
 
+.tabsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  justify-content: center;
+  padding-top: 16px;
+}
+
 .searchSection {
   padding: 20px 0;
 }
@@ -70,6 +79,11 @@
 @media (max-width: 768px) {
   .container {
     padding: 0 12px;
+  }
+
+  .tabsRow {
+    padding-top: 12px;
+    margin-bottom: 12px;
   }
 
   .ownedSection {
