@@ -20,6 +20,31 @@
   }
 }
 
+.eventCardTransparent {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  
+  &:hover {
+    transform: none;
+    border: none;
+  }
+  
+  // В transparent режиме убираем фон и границы из header
+  .cardHeader {
+    background: transparent !important;
+    border-bottom: none !important;
+  }
+  
+  // Убираем внутренние фоновые элементы в transparent режиме
+  .themeHeaderBg,
+  .backgroundIcons,
+  .dynamicBackground,
+  .dynamicBackgroundSecondary {
+    display: none;
+  }
+}
+
 // Динамический фон с движущимися градиентами
 .dynamicBackground {
   position: absolute;

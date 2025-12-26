@@ -17,6 +17,13 @@
 
   // Оптимизация для мобильных
   -webkit-overflow-scrolling: touch;
+  
+  // Улучшенное центрирование на мобильных
+  @media (max-width: 768px) {
+    scroll-snap-type: y mandatory;
+    // Используем snap points для центрирования
+    scroll-padding: 0;
+  }
 }
 
 .slidesContainer {

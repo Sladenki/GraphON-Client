@@ -120,6 +120,7 @@ interface EventProps {
   isAttended?: boolean;
   onDelete?: (eventId: string) => void;
   disableRegistration?: boolean;
+  transparentMode?: boolean; // Режим без фона и рамок для TikTok-ленты
 }
 
 // Простой компонент аватара группы
@@ -152,7 +153,8 @@ const EventCard: React.FC<EventProps> = ({
   event, 
   isAttended, 
   onDelete,
-  disableRegistration
+  disableRegistration,
+  transparentMode = false
 }) => {
   const router = useRouter();
   const { isLoggedIn, user } = useAuth();
@@ -506,7 +508,7 @@ const EventCard: React.FC<EventProps> = ({
   return (
     <div className={styles.eventCardWrapper}>
       <motion.div 
-        className={styles.eventCard}
+        className={`${styles.eventCard} ${transparentMode ? styles.eventCardTransparent : ''}`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}

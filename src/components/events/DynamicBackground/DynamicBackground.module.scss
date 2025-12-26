@@ -3,6 +3,59 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  will-change: background;
+  will-change: background, transform;
+  overflow: hidden;
+}
+
+// Анимированные градиентные слои для более динамичного фона
+.gradientLayer1,
+.gradientLayer2,
+.gradientLayer3 {
+  position: absolute;
+  inset: -50%;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.6;
+  mix-blend-mode: overlay;
+  will-change: transform;
+  animation: float 20s ease-in-out infinite;
+}
+
+.gradientLayer1 {
+  animation-delay: 0s;
+  animation-duration: 25s;
+}
+
+.gradientLayer2 {
+  animation-delay: -8s;
+  animation-duration: 30s;
+}
+
+.gradientLayer3 {
+  animation-delay: -15s;
+  animation-duration: 35s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30%, -30%) scale(1.2);
+  }
+  50% {
+    transform: translate(-20%, 20%) scale(0.9);
+  }
+  75% {
+    transform: translate(-30%, -20%) scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradientLayer1,
+  .gradientLayer2,
+  .gradientLayer3 {
+    animation: none;
+  }
 }
 

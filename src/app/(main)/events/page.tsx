@@ -1,11 +1,12 @@
-// import EventsHub from './EventsHub'
+'use client';
+
 import EventsHub from './EventsHub'
 import EventsTikTokFeed from './EventsTikTokFeed'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export default function EventsNewPage() {
-  // Старая реализация (закомментирована, но сохранена для возможного использования)
-  return <EventsHub />
+  // Показываем TikTok-ленту на мобильных, обычную ленту на ПК
+  const isMobile = useMediaQuery('(max-width: 768px)')
   
-  // Новая TikTok-стиль реализация
-  // return <EventsTikTokFeed />
+  return isMobile ? <EventsTikTokFeed /> : <EventsHub />
 }

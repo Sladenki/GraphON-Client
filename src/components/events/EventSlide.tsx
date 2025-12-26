@@ -44,7 +44,7 @@ export default function EventSlide({ event, isActive, onIntersect }: EventSlideP
   return (
     <div ref={slideRef} className={styles.slide}>
       <div className={styles.cardWrapper}>
-        <EventCard event={event} />
+        <EventCard event={event} transparentMode={true} />
       </div>
     </div>
   );

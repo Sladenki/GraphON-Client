@@ -2,7 +2,7 @@
   width: 100%;
   height: 100vh;
   min-height: 100vh;
-  scroll-snap-align: start;
+  scroll-snap-align: center; // Центрирование слайда
   scroll-snap-stop: always;
   position: relative;
   display: flex;
@@ -17,5 +17,23 @@
   max-width: 680px; // Максимальная ширина EventCard
   position: relative;
   z-index: 1;
+  margin: auto; // Дополнительное центрирование
+}
+
+// Мобильная версия - улучшенное центрирование
+@media (max-width: 768px) {
+  .slide {
+    scroll-snap-align: center;
+    padding: 16px;
+    // Используем safe-area для устройств с вырезами
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  
+  .cardWrapper {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 8px; // Небольшие отступы по бокам
+  }
 }
 
