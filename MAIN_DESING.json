@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json.schemastore.org/json-schema.json",
+  "meta": {
+    "name": "Staff Two Main – Violet Pastel Dashboard Design DNA",
+    "version": "1.0.0",
+    "source": "Derived from page staff-two-main",
+    "purpose": "High-level design guidance to let AI replicate the current violet pastel look and component recipes across the app."
+  },
+  "foundations": {
+    "layout": {
+      "baseUnitPx": 4,
+      "gutterPx": 16,
+      "sectionGapPx": 12,
+      "cardRadiusPx": 22,
+      "contentWidthMobilePx": 440,
+      "pagePaddingPx": [18, 16, 48]
+    },
+    "typography": {
+      "fontFamily": "var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+      "weights": { "bold": 900, "semibold": 800, "medium": 600, "regular": 500 },
+      "sizesPx": {
+        "h1": 22,
+        "h2": 18,
+        "label": 13,
+        "body": 14,
+        "bodySmall": 12,
+        "caption": 11
+      },
+      "lineHeights": { "tight": 1.2, "normal": 1.45 }
+    },
+    "colors": {
+      "ink": "#1f1c26",
+      "inkSecondary": "#4f4a5c",
+      "inkMuted": "#8b8699",
+      "surface": "#ffffff",
+      "surfaceAlt": "#f9f7fc",
+      "background": "#f5f2fa",
+      "primary": "#7c6aef",
+      "primaryRgb": "124, 106, 239",
+      "accents": {
+        "yellow": "#f7c778",
+        "teal": "#5cc2aa"
+      },
+      "pastels": {
+        "peach": "#ffeedc",
+        "mint": "#e8f7ee",
+        "lavender": "#f2ebff"
+      },
+      "borders": {
+        "subtle": "rgba(31,28,38,0.05)",
+        "subtleStrong": "rgba(31,28,38,0.06)",
+        "primaryAccent": "rgba(124,106,239,0.18)"
+      },
+      "tints": {
+        "rail": "rgba(124,106,239,0.12)",
+        "chip": "rgba(124,106,239,0.14)",
+        "chipActive": "rgba(124,106,239,0.20)",
+        "progressTrack": "rgba(124,106,239,0.14)",
+        "progressFill": "#7c6aef",
+        "iconContainer": "rgba(124,106,239,0.10)",
+        "rowGradientStart": "rgba(124,106,239,0.12)",
+        "rowGradientEnd": "rgba(124,106,239,0.08)"
+      }
+    },
+    "radii": {
+      "xs": 10,
+      "sm": 12,
+      "md": 14,
+      "lg": 18,
+      "xl": 22,
+      "pill": 999
+    },
+    "motion": {
+      "durationsMs": { "fast": 120, "normal": 150, "slow": 220 },
+      "easing": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+      "pressScale": 0.98
+    },
+    "shadows": {
+      "useShadows": false,
+      "note": "Prefer pastel fills + light borders over shadows"
+    }
+  },
+  "components": {
+    "TopBar": {
+      "padding": [12, 16],
+      "radius": 24,
+      "bg": "surface",
+      "avatar": { "size": 32, "bg": "rgba(primaryRgb,0.14)" },
+      "icons": { "size": 34, "bg": "rgba(primaryRgb,0.10)", "hoverBg": "rgba(primaryRgb,0.16)" },
+      "text": { "helloSize": 15, "subSize": 12, "weights": [800, 600] }
+    },
+    "HeroCard": {
+      "layout": "two-column grid (1.1 / 0.9) on desktop, single column on small screens",
+      "bg": "surface",
+      "radius": 22,
+      "border": "borders.subtleStrong",
+      "padding": 16,
+      "value": { "size": 20, "weight": 900 },
+      "metaPills": { "bg": "rgba(31,28,38,0.05)", "radius": 14, "size": 12, "weight": 700 }
+    },
+    "DatePills": {
+      "shape": "pill",
+      "bg": "rgba(0,0,0,0.04)",
+      "selected": { "bg": "surface", "border": "rgba(0,0,0,0.08)" },
+      "labelSize": 11,
+      "daySize": 14,
+      "weight": 800
+    },
+    "StatsCard": {
+      "radius": 18,
+      "padding": 12,
+      "iconBg": "rgba(primaryRgb,0.10)",
+      "iconColor": "primary",
+      "numberSize": 24,
+      "numberWeight": 900,
+      "labelSize": 12,
+      "labelWeight": 700,
+      "tones": {
+        "mint": "pastels.mint",
+        "peach": "pastels.peach",
+        "lavender": "pastels.lavender"
+      }
+    },
+    "Search": {
+      "shape": "pill",
+      "bg": "rgba(primaryRgb,0.10)",
+      "padding": [10, 12],
+      "heightPx": 40,
+      "textSize": 14,
+      "placeholder": "inkMuted"
+    },
+    "Chips": {
+      "shape": "pill",
+      "padding": [8, 12],
+      "bg": "tints.chip",
+      "activeBg": "tints.chipActive",
+      "text": "inkSecondary",
+      "activeText": "ink",
+      "size": 12,
+      "weight": 700
+    },
+    "PillTabs": {
+      "railBg": "tints.rail",
+      "railPadding": 6,
+      "radius": "pill",
+      "tab": {
+        "paddingY": 9,
+        "paddingX": 12,
+        "size": 13,
+        "weight": 800,
+        "selectedBg": "tints.chipActive",
+        "selectedText": "ink"
+      },
+      "badge": {
+        "bg": "rgba(primaryRgb,0.18)",
+        "text": "ink",
+        "size": 11,
+        "weight": 800
+      }
+    },
+    "ProgressBar": {
+      "track": { "bg": "tints.progressTrack", "height": 8, "radius": "pill" },
+      "fill": { "bg": "primary", "radius": "pill" },
+      "label": { "chipBg": "rgba(primaryRgb,0.12)", "text": "ink", "size": 12, "weight": 800 }
+    },
+    "Dropdown": {
+      "trigger": {
+        "bg": "rgba(primaryRgb,0.12)",
+        "border": "1px solid rgba(primaryRgb,0.18)",
+        "radius": 16,
+        "text": "ink",
+        "hover": { "border": "rgba(primaryRgb,0.26)", "bg": "rgba(primaryRgb,0.20)" }
+      },
+      "menu": {
+        "bg": "surface",
+        "border": "1px solid rgba(primaryRgb,0.14)",
+        "shadow": "0 10px 28px rgba(0,0,0,0.06)",
+        "radius": 16
+      },
+      "item": {
+        "padding": 10,
+        "radius": 12,
+        "text": "inkSecondary",
+        "hoverBg": "rgba(primaryRgb,0.10)",
+        "activeBg": "rgba(primaryRgb,0.14)"
+      }
+    },
+    "ScheduleRow": {
+      "bg": "linear-gradient(135deg, tints.rowGradientStart, tints.rowGradientEnd)",
+      "radius": 18,
+      "padding": 12,
+      "time": { "size": 12, "weight": 700, "color": "inkSecondary" },
+      "title": { "size": 14, "weight": 800, "color": "ink" },
+      "meta": { "size": 12, "weight": 600, "color": "inkMuted" },
+      "statusPill": { "bg": "rgba(0,0,0,0.06)", "text": "ink", "size": 11, "weight": 800 },
+      "actions": {
+        "ghost": { "bg": "rgba(31,28,38,0.06)" },
+        "solid": { "bg": "rgba(primaryRgb,0.20)", "text": "ink", "size": 11, "weight": 800 }
+      }
+    },
+    "QuizCard": {
+      "bg": "surfaceAlt",
+      "radius": 22,
+      "border": "borders.subtle",
+      "padding": 16,
+      "heroCircle": {
+        "bg": "linear-gradient(180deg, rgba(primaryRgb,0.16), rgba(primaryRgb,0.12))",
+        "size": 120,
+        "color": "primary"
+      },
+      "question": { "size": 16, "weight": 800, "letterSpacing": -0.01 },
+      "chip": { "bg": "rgba(0,0,0,0.04)", "text": "inkSecondary", "size": 11, "weight": 700 },
+      "progress": { "labelSize": 13, "pctSize": 16, "weight": 900 }
+    },
+    "Buttons": {
+      "primary": { "bg": "primary", "text": "#fff", "shape": "pill", "height": 44, "pressScale": 0.98 },
+      "secondary": { "bg": "rgba(primaryRgb,0.12)", "text": "ink" },
+      "ghost": { "bg": "rgba(primaryRgb,0.10)", "text": "ink" }
+    }
+  },
+  "designPrinciples": {
+    "do": [
+      "Use pill shapes for interactive controls; keep spacing generous.",
+      "Rely on soft tints and light borders; avoid heavy shadows.",
+      "Use ink colors for text contrast; ensure WCAG AA on pastel backgrounds.",
+      "Primary violet (#7C6AEF) for actions, progress, and selected states.",
+      "Pastels (mint/peach/lavender) for grouping and state contexts."
+    ],
+    "dont": [
+      "Avoid harsh outlines or strong reds for primary actions.",
+      "Avoid dense gradients; keep fills soft and consistent.",
+      "Avoid heavy shadows; depth comes from spacing and tint layers."
+    ]
+  },
+  "usageNotes": {
+    "backgrounds": ["Use page background #F5F2FA gradient; cards on white (#FFF)."],
+    "focusStates": ["Outline via background tint or border accent rgba(primaryRgb,0.26); no glow."],
+    "hitAreas": ["Buttons/tabs >= 40px height; pills padded 8–12px horizontally."],
+    "icons": ["Place icons in circular containers with rgba(primaryRgb,0.10–0.14); keep sizes 16–18px."]
+  }
+}
+

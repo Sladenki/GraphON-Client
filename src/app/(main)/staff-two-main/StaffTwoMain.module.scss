@@ -107,6 +107,7 @@
   background: var(--surface);
   border-radius: 22px;
   padding: 16px;
+  border: 1px solid rgba(31, 28, 38, 0.06);
 }
 
 .heroLeft {
@@ -147,7 +148,7 @@
   gap: 6px;
   padding: 8px 10px;
   border-radius: 14px;
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(31, 28, 38, 0.05);
   font-size: 12px;
   font-weight: 700;
   color: var(--ink-secondary);
@@ -195,6 +196,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border: 1px solid rgba(31, 28, 38, 0.05);
 }
 
 .sectionLabel {
@@ -293,7 +295,7 @@
 .chip {
   border-radius: 999px;
   padding: 8px 12px;
-  background: rgba(var(--primary-rgb), 0.12);
+  background: rgba(var(--primary-rgb), 0.14);
   font-size: 12px;
   font-weight: 700;
   color: var(--ink-secondary);
@@ -301,12 +303,12 @@
 }
 
 .chipActive {
-  background: rgba(var(--primary-rgb), 0.18);
+  background: rgba(var(--primary-rgb), 0.20);
   color: var(--ink);
 }
 
 .tabsRail {
-  background: rgba(var(--primary-rgb), 0.1);
+  background: rgba(var(--primary-rgb), 0.12);
   border-radius: 999px;
   padding: 6px;
   display: grid;
@@ -326,7 +328,7 @@
 }
 
 .tabActive {
-  background: rgba(var(--primary-rgb), 0.16);
+  background: rgba(var(--primary-rgb), 0.20);
   color: var(--ink);
 }
 
@@ -373,7 +375,7 @@
   width: 100%;
   height: 8px;
   border-radius: 999px;
-  background: rgba(var(--primary-rgb), 0.12);
+  background: rgba(var(--primary-rgb), 0.14);
   overflow: hidden;
 }
 
@@ -402,7 +404,7 @@
   padding: 10px 14px;
   border-radius: 16px;
   background: rgba(var(--primary-rgb), 0.12);
-  border: 1px solid rgba(var(--primary-rgb), 0.14);
+  border: 1px solid rgba(var(--primary-rgb), 0.18);
   font-size: 13px;
   font-weight: 800;
   color: var(--ink);
@@ -411,8 +413,8 @@
 }
 
 .dropdownOpen {
-  border-color: rgba(var(--primary-rgb), 0.22);
-  background: rgba(var(--primary-rgb), 0.18);
+  border-color: rgba(var(--primary-rgb), 0.26);
+  background: rgba(var(--primary-rgb), 0.20);
 }
 
 .dropdownMenu {
@@ -422,8 +424,8 @@
   min-width: 160px;
   background: #ffffff;
   border-radius: 16px;
-  border: 1px solid rgba(var(--primary-rgb), 0.12);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(var(--primary-rgb), 0.14);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
   padding: 6px;
   display: flex;
   flex-direction: column;
@@ -460,7 +462,7 @@
 }
 
 .row {
-  background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.12), rgba(150, 130, 238, 0.1));
+  background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.12), rgba(var(--primary-rgb), 0.08));
   border-radius: 18px;
   padding: 12px;
   display: grid;
@@ -521,7 +523,7 @@
   width: 34px;
   height: 34px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(31, 28, 38, 0.06);
   display: grid;
   place-items: center;
 }
@@ -529,7 +531,7 @@
 .rowActionSolid {
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(var(--primary-rgb), 0.18);
+  background: rgba(var(--primary-rgb), 0.20);
   font-size: 11px;
   font-weight: 800;
 }
@@ -541,6 +543,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border: 1px solid rgba(31, 28, 38, 0.05);
 }
 
 .quizHeader {
@@ -661,8 +664,8 @@
 }
 
 .ghostBtn {
-  background: transparent;
-  color: var(--ink-secondary);
+  background: rgba(var(--primary-rgb), 0.10);
+  color: var(--ink);
 }
 
 .primaryBtn:active,
