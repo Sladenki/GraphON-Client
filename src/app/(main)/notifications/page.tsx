@@ -101,22 +101,103 @@ export default function NotificationsPage() {
 
   const acceptMutation = useMutation({
     mutationFn: (requesterUserId: string) => RelationshipsService.accept(requesterUserId),
+    onMutate: async (requesterUserId: string) => {
+      // Отменяем запросы для предотвращения конфликтов
+      await queryClient.cancelQueries({ queryKey: ['social', 'followers'] });
+      await queryClient.cancelQueries({ queryKey: ['social', 'friends'] });
+
+      // Сохраняем предыдущие состояния для отката
+      const previousFollowers = queryClient.getQueryData(['social', 'followers']);
+      const previousFriends = queryClient.getQueryData(['social', 'friends']);
+
+      // Удаляем userId из входящих заявок
+      queryClient.setQueryData(['social', 'followers'], (old: any) => {
+        if (!old) return old;
+        const pages = old.pages || [];
+        return {
+          ...old,
+          pages: pages.map((page: any) => ({
+            ...page,
+            items: (page.items || []).filter((id: string) => id !== requesterUserId),
+          })),
+        };
+      });
+
+      // Добавляем userId в друзья
+      queryClient.setQueryData(['social', 'friends'], (old: any) => {
+        if (!old) return old;
+        const pages = old.pages || [];
+        if (pages.length === 0) {
+          return {
+            ...old,
+            pages: [{ items: [requesterUserId], nextCursor: undefined }],
+          };
+        }
+        const firstPage = pages[0];
+        const existingItems = firstPage.items || [];
+        if (existingItems.includes(requesterUserId)) return old;
+        return {
+          ...old,
+          pages: [
+            { ...firstPage, items: [requesterUserId, ...existingItems] },
+            ...pages.slice(1),
+          ],
+        };
+      });
+
+      return { previousFollowers, previousFriends };
+    },
     onSuccess: () => {
+      // Сервер сам должен отправить WebSocket событие другому пользователю
       notifySuccess('Заявка принята');
       invalidateSocial();
     },
-    onError: (e: any) => {
+    onError: (e: any, requesterUserId, context) => {
+      // Откатываем изменения при ошибке
+      if (context?.previousFollowers) {
+        queryClient.setQueryData(['social', 'followers'], context.previousFollowers);
+      }
+      if (context?.previousFriends) {
+        queryClient.setQueryData(['social', 'friends'], context.previousFriends);
+      }
       notifyError('Не удалось принять заявку', e?.response?.data?.message || e?.message);
     },
   });
 
   const declineMutation = useMutation({
     mutationFn: (requesterUserId: string) => RelationshipsService.decline(requesterUserId),
+    onMutate: async (requesterUserId: string) => {
+      // Отменяем запрос для предотвращения конфликтов
+      await queryClient.cancelQueries({ queryKey: ['social', 'followers'] });
+
+      // Сохраняем предыдущее состояние для отката
+      const previousFollowers = queryClient.getQueryData(['social', 'followers']);
+
+      // Оптимистично удаляем userId из входящих заявок
+      queryClient.setQueryData(['social', 'followers'], (old: any) => {
+        if (!old) return old;
+        const pages = old.pages || [];
+        return {
+          ...old,
+          pages: pages.map((page: any) => ({
+            ...page,
+            items: (page.items || []).filter((id: string) => id !== requesterUserId),
+          })),
+        };
+      });
+
+      return { previousFollowers };
+    },
     onSuccess: () => {
+      // Сервер сам должен отправить WebSocket событие другому пользователю
       notifySuccess('Заявка отклонена');
       invalidateSocial();
     },
-    onError: (e: any) => {
+    onError: (e: any, requesterUserId, context) => {
+      // Откатываем изменения при ошибке
+      if (context?.previousFollowers) {
+        queryClient.setQueryData(['social', 'followers'], context.previousFollowers);
+      }
       notifyError('Не удалось отклонить заявку', e?.response?.data?.message || e?.message);
     },
   });
