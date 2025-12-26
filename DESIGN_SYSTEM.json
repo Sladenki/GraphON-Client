@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json.schemastore.org/json-schema.json",
+  "meta": {
+    "name": "GraphON Soft Dashboard (Pastel) Design System",
+    "version": "1.0.0",
+    "source": "User-provided reference screenshot (mobile dashboard UI)",
+    "intent": "High-level design guidance + tokens + component recipes to replicate the same look consistently in this project.",
+    "notes": [
+      "Style keywords: soft, airy, pastel, rounded, friendly, premium-lite, minimal borders, subtle depth, playful illustrations.",
+      "Primary interaction pattern: card-based dashboard with pill controls and compact icon buttons."
+    ]
+  },
+  "foundations": {
+    "gridAndLayout": {
+      "baseUnitPx": 4,
+      "spacingScalePx": [0, 4, 8, 12, 16, 20, 24, 32, 40, 48],
+      "layoutMaxWidthMobilePx": 420,
+      "contentGuttersPx": 16,
+      "verticalRhythm": {
+        "sectionGapPx": 16,
+        "cardStackGapPx": 12,
+        "denseListGapPx": 10
+      },
+      "principle": [
+        "Use a strict 4px grid; most spacing should be multiples of 4.",
+        "Prefer generous whitespace; avoid cramped layouts.",
+        "Use stacked sections with clear visual grouping via backgrounds instead of borders."
+      ]
+    },
+    "typography": {
+      "fontFamilies": {
+        "ui": "var(--font-inter), Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        "displayOptional": "var(--font-poppins), Poppins, var(--font-inter), Inter, system-ui, sans-serif",
+        "mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+      },
+      "letterSpacing": {
+        "tight": -0.02,
+        "normal": -0.01,
+        "wide": 0.02
+      },
+      "typeScale": {
+        "h1": { "fontSizePx": 22, "lineHeight": 1.2, "fontWeight": 800, "letterSpacing": -0.02 },
+        "h2": { "fontSizePx": 18, "lineHeight": 1.25, "fontWeight": 800, "letterSpacing": -0.02 },
+        "h3": { "fontSizePx": 15, "lineHeight": 1.3, "fontWeight": 800, "letterSpacing": -0.01 },
+        "body": { "fontSizePx": 14, "lineHeight": 1.45, "fontWeight": 500, "letterSpacing": -0.01 },
+        "bodySmall": { "fontSizePx": 12, "lineHeight": 1.35, "fontWeight": 500, "letterSpacing": 0 },
+        "caption": { "fontSizePx": 11, "lineHeight": 1.25, "fontWeight": 600, "letterSpacing": 0.02 }
+      },
+      "principle": [
+        "Headings are bold and compact; body text is readable but not heavy.",
+        "Prefer short labels; use captions for metadata.",
+        "Avoid all-caps for long strings; use small uppercase only for tiny section labels."
+      ]
+    },
+    "radii": {
+      "scalePx": {
+        "xs": 10,
+        "sm": 12,
+        "md": 16,
+        "lg": 20,
+        "xl": 24,
+        "pill": 999
+      },
+      "principle": [
+        "The reference uses generous rounding everywhere.",
+        "Cards: 20–24px; inputs: 16–20px; buttons: pill/14–18px."
+      ]
+    },
+    "colors": {
+      "model": "Use existing GraphON CSS variables as the base, extend with pastels for surfaces.",
+      "base": {
+        "ink": "#2B2A33",
+        "inkSecondary": "#5E5C6A",
+        "inkMuted": "#9A97AD",
+        "surface": "#FFFFFF",
+        "surfaceAlt": "#F9F8FD"
+      },
+      "brand": {
+        "primary": "var(--color-primary)",
+        "primaryRgb": "var(--color-primary-rgb)",
+        "accentPink": "var(--color-accent-pink)",
+        "accentPinkRgb": "var(--color-accent-pink-rgb)"
+      },
+      "pastelSurfaces": {
+        "lavender": "#F1ECFF",
+        "mint": "#E7F7EF",
+        "peach": "#FFF0E2",
+        "butter": "#FFF7D6",
+        "blush": "#FFE7F2",
+        "sky": "#EAF2FF"
+      },
+      "states": {
+        "success": "var(--color-success)",
+        "warning": "var(--color-warning)",
+        "error": "var(--color-error)",
+        "info": "var(--color-info)"
+      },
+      "usageRules": [
+        "Avoid visible borders. Use low-opacity tints or surface contrast to separate elements.",
+        "Primary actions use brand color; secondary actions use tinted surfaces.",
+        "Cards use white surface; inner blocks use pastel surfaces for grouping."
+      ]
+    },
+    "shadowsAndDepth": {
+      "allowShadows": false,
+      "shadowStyle": "No shadows. Use layered surfaces + pastel fills for hierarchy.",
+      "tokens": {
+        "shadowNone": "none"
+      },
+      "principle": [
+        "Avoid shadows entirely.",
+        "Prefer depth via layered surfaces (cards within cards) and gentle pastel backgrounds."
+      ]
+    },
+    "motion": {
+      "durationsMs": { "fast": 120, "normal": 180, "slow": 260 },
+      "easings": {
+        "standard": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "snappy": "cubic-bezier(0.4, 0, 0.2, 1)"
+      },
+      "principle": [
+        "Micro-interactions should feel soft and bouncy (small scale/translate), not dramatic.",
+        "Use motion to communicate state changes (selected, pressed, opened)."
+      ]
+    }
+  },
+  "composition": {
+    "surfaceStrategy": {
+      "background": {
+        "appBackground": "var(--color-neutral-background)",
+        "sectionBackground": "rgba(var(--color-primary-rgb), 0.06)",
+        "cardBackground": "#FFFFFF"
+      },
+      "separation": [
+        "Prefer spacing + background tint over borders.",
+        "Dividers (if needed): 1px line with ~8–12% opacity of primary RGB."
+      ]
+    },
+    "iconography": {
+      "style": "Outline icons with rounded ends; place in circular containers for emphasis.",
+      "sizesPx": { "sm": 16, "md": 18, "lg": 22 },
+      "containers": {
+        "iconCircle": {
+          "sizePx": 34,
+          "radius": "pill",
+          "background": "rgba(var(--color-primary-rgb), 0.10)",
+          "color": "var(--color-primary)"
+        }
+      }
+    }
+  },
+  "components": {
+    "AppTopBar": {
+      "structure": ["Left: avatar + greeting", "Right: 1–2 icon buttons (notification/settings)"],
+      "spacing": { "paddingX": 16, "paddingY": 12, "gap": 10 },
+      "avatar": { "sizePx": 28, "radius": "pill" },
+      "iconButtons": {
+        "sizePx": 34,
+        "radius": "pill",
+        "bg": "rgba(var(--color-primary-rgb), 0.08)",
+        "hoverBg": "rgba(var(--color-primary-rgb), 0.12)"
+      },
+      "principles": ["Keep top bar visually light; no borders; minimal text."]
+    },
+    "Card": {
+      "base": {
+        "radiusPx": 22,
+        "paddingPx": 16,
+        "background": "#FFFFFF",
+        "shadow": "shadowNone"
+      },
+      "innerBlocks": {
+        "radiusPx": 18,
+        "paddingPx": 14,
+        "backgroundExamples": ["pastelSurfaces.mint", "pastelSurfaces.peach", "pastelSurfaces.lavender"]
+      },
+      "principles": [
+        "Use cards as primary layout units.",
+        "Inside cards, use pastel blocks to group content and create hierarchy."
+      ]
+    },
+    "StatsCard": {
+      "layout": "2-up grid on mobile (two cards side-by-side), each with icon circle + big number + label",
+      "numberStyle": { "fontSizePx": 26, "fontWeight": 900, "letterSpacing": -0.02 },
+      "labelStyle": { "fontSizePx": 12, "fontWeight": 700, "color": "inkSecondary" },
+      "bg": "Use pastel surface per card category (mint/peach/butter).",
+      "principles": ["Numbers are the hero; labels stay subtle."]
+    },
+    "SearchInput": {
+      "shape": "Pill",
+      "heightPx": 40,
+      "paddingX": 14,
+      "radiusPx": 999,
+      "bg": "rgba(var(--color-primary-rgb), 0.08)",
+      "placeholderColor": "inkMuted",
+      "icon": "Leading search icon in muted tone",
+      "principles": [
+        "No borders.",
+        "Focus state is a slightly stronger tint; avoid glow."
+      ]
+    },
+    "PillTabs": {
+      "container": {
+        "radiusPx": 999,
+        "paddingPx": 6,
+        "bg": "rgba(var(--color-primary-rgb), 0.10)"
+      },
+      "tab": {
+        "radiusPx": 999,
+        "paddingY": 9,
+        "paddingX": 12,
+        "fontSizePx": 13,
+        "fontWeight": 700,
+        "selectedBg": "rgba(var(--color-primary-rgb), 0.14)",
+        "selectedText": "ink"
+      },
+      "principles": ["Tabs should look like soft chips, not navigation bars."]
+    },
+    "Button": {
+      "primary": {
+        "shape": "Pill",
+        "heightPx": 40,
+        "radiusPx": 999,
+        "bg": "var(--color-primary)",
+        "textColor": "#FFFFFF",
+        "fontWeight": 800,
+        "pressTransform": "scale(0.98)"
+      },
+      "secondary": {
+        "shape": "Pill",
+        "heightPx": 40,
+        "radiusPx": 999,
+        "bg": "rgba(var(--color-primary-rgb), 0.10)",
+        "textColor": "ink",
+        "fontWeight": 800
+      },
+      "danger": {
+        "bg": "rgba(224, 90, 90, 0.14)",
+        "textColor": "#E05A5A"
+      },
+      "principles": [
+        "Buttons are bold but friendly; prefer pills.",
+        "Avoid borders; rely on filled backgrounds."
+      ]
+    },
+    "ListRow": {
+      "shape": "Rounded row inside a soft gradient/tint",
+      "radiusPx": 18,
+      "paddingPx": 12,
+      "bg": "linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.10), rgba(var(--color-accent-pink-rgb), 0.06))",
+      "avatar": { "sizePx": 44, "radiusPx": 999 },
+      "title": { "fontSizePx": 14, "fontWeight": 800, "color": "ink" },
+      "subtitle": { "fontSizePx": 12, "fontWeight": 600, "color": "inkMuted" },
+      "metaChips": {
+        "bg": "rgba(var(--color-primary-rgb), 0.10)",
+        "radiusPx": 999,
+        "fontSizePx": 11,
+        "fontWeight": 700
+      },
+      "principles": ["Rows should feel like mini-cards: soft, touch-friendly, no lines."]
+    },
+    "ProgressBar": {
+      "track": { "heightPx": 6, "radiusPx": 999, "bg": "rgba(var(--color-primary-rgb), 0.10)" },
+      "fill": { "bg": "var(--color-primary)", "radiusPx": 999 },
+      "label": { "fontSizePx": 12, "fontWeight": 700, "color": "inkSecondary" }
+    },
+    "Chips": {
+      "shape": "Pill",
+      "paddingY": 6,
+      "paddingX": 10,
+      "radiusPx": 999,
+      "bg": "rgba(var(--color-primary-rgb), 0.10)",
+      "textColor": "inkSecondary",
+      "selectedBg": "rgba(var(--color-primary-rgb), 0.16)",
+      "selectedTextColor": "ink"
+    },
+    "ModalSheet": {
+      "style": "Rounded sheet with soft surface, minimal overlay, no heavy shadow.",
+      "radiusPx": 24,
+      "overlay": { "bg": "rgba(0,0,0,0.45)" },
+      "principles": ["Keep sheet content airy; group actions into pill buttons."]
+    }
+  },
+  "designPrinciples": {
+    "do": [
+      "Use pastel surfaces for grouping and hierarchy.",
+      "Use pill shapes for interactive controls.",
+      "Keep typography bold for headings, calm for body.",
+      "Prefer large corner radii and generous spacing.",
+      "Make touch targets at least 40px tall."
+    ],
+    "dont": [
+      "Don’t use strong borders or heavy drop shadows.",
+      "Don’t overuse gradients—reserve them for subtle row backgrounds or accents.",
+      "Don’t cram multiple actions; prefer one primary and one secondary per row."
+    ],
+    "accessibility": [
+      "Maintain readable contrast for text on pastel backgrounds (prefer ink colors).",
+      "Always provide focus-visible styles (outline via background tint, not glow).",
+      "Ensure icon buttons have aria-labels."
+    ]
+  },
+  "implementationHintsForThisRepo": {
+    "cssVariables": {
+      "use": [
+        "--color-primary / --color-primary-rgb",
+        "--color-accent-pink / --color-accent-pink-rgb",
+        "--color-neutral-background / --color-neutral-card",
+        "--color-text-primary / secondary / muted"
+      ],
+      "recommendation": "Prefer rgba(var(--color-primary-rgb), alpha) for soft tints; avoid borders unless opacity <= 0.12."
+    },
+    "componentPatterns": [
+      "Wrap sections in a white card surface; use inner pastel blocks for highlights.",
+      "Use 'PillTabs' rail for switching states instead of classic tabs with underlines.",
+      "Buttons: pill; primary filled; secondary tinted; avoid outlines.",
+      "Lists: gradient/tinted rows with avatar + name + actions aligned right."
+    ]
+  }
+}
+
+

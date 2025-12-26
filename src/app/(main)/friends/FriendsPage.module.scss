@@ -6,6 +6,68 @@
   position: relative;
 }
 
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.statsCard {
+  border-radius: 22px;
+  padding: 14px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+}
+
+.statsMint {
+  background: #E7F7EF;
+}
+
+.statsPeach {
+  background: #FFF0E2;
+}
+
+.statsLavender {
+  background: #F1ECFF;
+}
+
+.statsIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(var(--color-primary-rgb), 0.10);
+  color: var(--color-primary);
+  flex: 0 0 auto;
+}
+
+.statsContent {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statsNumber {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+}
+
+.statsLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -22,6 +84,13 @@
   padding: 6px;
   border-radius: 999px;
   background: rgba(var(--color-primary-rgb), 0.10);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .tabBtn {
@@ -31,9 +100,14 @@
   border-radius: 999px;
   padding: 9px 12px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: background-color 0.18s ease, transform 0.12s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  white-space: nowrap;
 
   &:hover {
     background: rgba(var(--color-primary-rgb), 0.10);
@@ -49,6 +123,21 @@
   color: var(--color-text-primary);
 }
 
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  background: rgba(var(--color-primary-rgb), 0.14);
+  color: var(--color-text-primary);
+}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -58,10 +147,10 @@
 }
 
 .panel {
-  background: rgba(255, 255, 255, 0.72);
+  background: #FFFFFF;
   border: none;
   border-radius: 22px;
-  padding: 14px;
+  padding: 16px;
 }
 
 .panelTitle {
@@ -71,6 +160,15 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
 }
 
 .hint {
@@ -91,25 +189,45 @@
   gap: 12px;
   padding: 12px 12px;
   border-radius: 18px;
-  background: linear-gradient(
-    135deg,
-    rgba(var(--color-primary-rgb), 0.10) 0%,
-    rgba(var(--color-accent-pink-rgb), 0.06) 55%,
-    rgba(var(--color-primary-rgb), 0.06) 100%
-  );
   transition: background-color 0.18s ease, transform 0.15s ease;
-
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(var(--color-primary-rgb), 0.13) 0%,
-      rgba(var(--color-accent-pink-rgb), 0.07) 55%,
-      rgba(var(--color-primary-rgb), 0.08) 100%
-    );
-  }
+  justify-content: space-between;
 
   &:active {
     transform: scale(0.99);
+  }
+}
+
+.rowLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+// Per-tab row “cards” (pastel surfaces) — replaces generic gradient
+.rowPeople {
+  background: rgba(var(--color-primary-rgb), 0.08);
+  &:hover {
+    background: rgba(var(--color-primary-rgb), 0.10);
+  }
+}
+.rowFriends {
+  background: #E7F7EF; // mint
+  &:hover {
+    background: #DFF3E9;
+  }
+}
+.rowIncoming {
+  background: #FFF0E2; // peach
+  &:hover {
+    background: #FFE8D6;
+  }
+}
+.rowOutgoing {
+  background: #F1ECFF; // lavender
+  &:hover {
+    background: #ECE3FF;
   }
 }
 
@@ -117,13 +235,13 @@
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  background: rgba(var(--main-Color), 0.14);
+  background: rgba(var(--color-primary-rgb), 0.10);
   display: grid;
   place-items: center;
   overflow: hidden;
   flex: 0 0 auto;
   font-weight: 800;
-  color: rgb(var(--main-Color));
+  color: var(--color-primary);
   font-size: 14px;
 }
 
@@ -142,11 +260,12 @@
   gap: 2px;
 }
 
-.userName {
+.userTopLine {
   display: flex;
   align-items: baseline;
   gap: 8px;
   min-width: 0;
+  flex-wrap: wrap;
 }
 
 .fullName {
@@ -178,9 +297,40 @@
   border-radius: 999px;
   padding: 4px 8px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   background: rgba(var(--color-primary-rgb), 0.10);
   color: var(--color-text-secondary);
+}
+
+.statusPill {
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.statusNeutral {
+  background: rgba(var(--color-primary-rgb), 0.10);
+  color: var(--color-text-secondary);
+}
+
+.statusFriend {
+  background: rgba(76, 175, 136, 0.14);
+  color: var(--color-success);
+}
+
+.statusIncoming {
+  background: rgba(242, 183, 5, 0.16);
+  color: var(--color-warning);
+}
+
+.statusOutgoing {
+  background: rgba(150, 130, 238, 0.14);
+  color: var(--color-primary);
 }
 
 .actions {
@@ -194,6 +344,10 @@
 .smallBtn {
   padding: 9px 12px !important;
   border-radius: 999px !important;
+  // override ActionButton hover lift for this soft dashboard style
+  &:hover {
+    transform: none !important;
+  }
 }
 
 .disabledNote {
@@ -242,9 +396,17 @@
     padding: 14px 12px 18px;
   }
 
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .row {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .rowLeft {
+    width: 100%;
   }
 
   .actions {

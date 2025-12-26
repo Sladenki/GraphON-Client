@@ -12,6 +12,7 @@ import type { SocialUserListItem } from '@/types/social.interface';
 import type { IUser } from '@/types/user.interface';
 import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { notifyError, notifySuccess } from '@/lib/notifications';
+import { Users, UserPlus, Send } from 'lucide-react';
 
 type TabKey = 'people' | 'incoming' | 'outgoing' | 'friends';
 
@@ -214,39 +215,72 @@ export default function FriendsPage() {
     const hasIncoming = followersIds.has(u._id);
     const hasOutgoing = followingIds.has(u._id);
 
-    return (
-      <div key={u._id} className={styles.row}>
-        <div className={styles.avatar} aria-hidden="true">
-          {avaUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              className={styles.avatarImg}
-              src={avaUrl}
-              alt=""
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = '';
-              }}
-            />
-          ) : (
-            <span>{initialsFromUser(u)}</span>
-          )}
-        </div>
+    const rowVariantClass =
+      activeTab === 'people'
+        ? (isFriend ? styles.rowFriends : hasIncoming ? styles.rowIncoming : hasOutgoing ? styles.rowOutgoing : styles.rowPeople)
+        : activeTab === 'friends'
+          ? styles.rowFriends
+          : activeTab === 'incoming'
+            ? styles.rowIncoming
+            : activeTab === 'outgoing'
+              ? styles.rowOutgoing
+              : styles.rowPeople;
 
-        <div className={styles.userMain}>
-          <div className={styles.userName}>
-            <div className={styles.fullName}>{fullNameFromUser(u)}</div>
-            {u.username ? <div className={styles.username}>@{u.username}</div> : null}
+    const status =
+      activeTab === 'people'
+        ? isMe
+          ? { label: 'You', className: styles.statusNeutral }
+          : isFriend
+            ? { label: 'Friend', className: styles.statusFriend }
+            : hasIncoming
+              ? { label: 'Request', className: styles.statusIncoming }
+              : hasOutgoing
+                ? { label: 'Sent', className: styles.statusOutgoing }
+                : null
+        : activeTab === 'friends'
+          ? { label: 'Friend', className: styles.statusFriend }
+          : activeTab === 'incoming'
+            ? { label: 'Request', className: styles.statusIncoming }
+            : activeTab === 'outgoing'
+              ? { label: 'Sent', className: styles.statusOutgoing }
+              : null;
+
+    return (
+      <div key={u._id} className={`${styles.row} ${rowVariantClass}`}>
+        <div className={styles.rowLeft}>
+          <div className={styles.avatar} aria-hidden="true">
+            {avaUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className={styles.avatarImg}
+                src={avaUrl}
+                alt=""
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '';
+                }}
+              />
+            ) : (
+              <span>{initialsFromUser(u)}</span>
+            )}
           </div>
 
-          {u.metaPills?.length ? (
-            <div className={styles.meta}>
-              {u.metaPills.map((p) => (
-                <span key={p} className={styles.pill}>
-                  {p}
-                </span>
-              ))}
+          <div className={styles.userMain}>
+            <div className={styles.userTopLine}>
+              <div className={styles.fullName}>{fullNameFromUser(u)}</div>
+              {u.username ? <div className={styles.username}>@{u.username}</div> : null}
+              {status ? <span className={`${styles.statusPill} ${status.className}`}>{status.label}</span> : null}
             </div>
-          ) : null}
+
+            {u.metaPills?.length ? (
+              <div className={styles.meta}>
+                {u.metaPills.map((p) => (
+                  <span key={p} className={styles.pill}>
+                    {p}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <div className={styles.actions}>
@@ -335,9 +369,42 @@ export default function FriendsPage() {
 
   const pendingIncomingCount = followersIds.size;
   const pendingOutgoingCount = followingIds.size;
+  const friendsCount = friendsIds.size;
 
   return (
     <div className={styles.page}>
+      <div className={styles.statsGrid} aria-label="Friends overview">
+        <div className={`${styles.statsCard} ${styles.statsMint}`}>
+          <div className={styles.statsIcon} aria-hidden="true">
+            <Users size={18} />
+          </div>
+          <div className={styles.statsContent}>
+            <div className={styles.statsNumber}>{friendsCount}</div>
+            <div className={styles.statsLabel}>Friends</div>
+          </div>
+        </div>
+
+        <div className={`${styles.statsCard} ${styles.statsPeach}`}>
+          <div className={styles.statsIcon} aria-hidden="true">
+            <UserPlus size={18} />
+          </div>
+          <div className={styles.statsContent}>
+            <div className={styles.statsNumber}>{pendingIncomingCount}</div>
+            <div className={styles.statsLabel}>Requests</div>
+          </div>
+        </div>
+
+        <div className={`${styles.statsCard} ${styles.statsLavender}`}>
+          <div className={styles.statsIcon} aria-hidden="true">
+            <Send size={18} />
+          </div>
+          <div className={styles.statsContent}>
+            <div className={styles.statsNumber}>{pendingOutgoingCount}</div>
+            <div className={styles.statsLabel}>Sent</div>
+          </div>
+        </div>
+      </div>
+
       <div className={styles.tabs}>
         <div className={styles.tabsRail}>
           <button
@@ -345,28 +412,32 @@ export default function FriendsPage() {
             onClick={() => setActiveTab('people')}
             type="button"
           >
-            Люди
+            <span>Люди</span>
           </button>
           <button
             className={`${styles.tabBtn} ${activeTab === 'incoming' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('incoming')}
             type="button"
+            aria-label={`Входящие заявки: ${pendingIncomingCount}`}
           >
-            Входящие ({pendingIncomingCount})
+            <span>Входящие</span>
+            {pendingIncomingCount > 0 ? <span className={styles.tabBadge}>{pendingIncomingCount}</span> : null}
           </button>
           <button
             className={`${styles.tabBtn} ${activeTab === 'outgoing' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('outgoing')}
             type="button"
+            aria-label={`Исходящие заявки: ${pendingOutgoingCount}`}
           >
-            Исходящие ({pendingOutgoingCount})
+            <span>Исходящие</span>
+            {pendingOutgoingCount > 0 ? <span className={styles.tabBadge}>{pendingOutgoingCount}</span> : null}
           </button>
           <button
             className={`${styles.tabBtn} ${activeTab === 'friends' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('friends')}
             type="button"
           >
-            Друзья
+            <span>Друзья</span>
           </button>
         </div>
       </div>
@@ -374,6 +445,7 @@ export default function FriendsPage() {
       <div className={styles.content}>
         {activeTab === 'people' && (
           <div className={styles.panel}>
+            <div className={styles.sectionLabel}>Discover</div>
             <SearchBar
               placeholder="Поиск людей по имени или @username"
               onSearch={setPeopleQuery}
@@ -452,6 +524,7 @@ export default function FriendsPage() {
 
         {activeTab === 'friends' && (
           <div className={styles.panel}>
+            <div className={styles.sectionLabel}>Friends</div>
             <div className={styles.list}>
               {visibleIds.length === 0 ? (
                 <EmptyState message="Пока нет друзей" subMessage="Найдите людей во вкладке “Люди” и отправьте заявку." />
@@ -473,6 +546,7 @@ export default function FriendsPage() {
 
         {activeTab === 'incoming' && (
           <div className={styles.panel}>
+            <div className={styles.sectionLabel}>Incoming</div>
             <div className={styles.list}>
               {visibleIds.length === 0 ? (
                 <EmptyState message="Нет входящих заявок" subMessage="Когда вам отправят заявку, она появится здесь." />
@@ -494,6 +568,7 @@ export default function FriendsPage() {
 
         {activeTab === 'outgoing' && (
           <div className={styles.panel}>
+            <div className={styles.sectionLabel}>Outgoing</div>
             <div className={styles.list}>
               {visibleIds.length === 0 ? (
                 <EmptyState message="Нет исходящих заявок" subMessage="Отправьте заявку человеку во вкладке “Люди”." />
