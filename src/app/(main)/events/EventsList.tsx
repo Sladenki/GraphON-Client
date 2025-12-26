@@ -15,10 +15,21 @@ import styles from './EventsList.module.scss'
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
 import { CalendarX, Search } from 'lucide-react'
 import GraphSwitcher from '@/components/global/GraphSwitcher/GraphSwitcher'
+import PillTabs from '@/components/shared/PillTabs/PillTabs'
+import { useAuth } from '@/providers/AuthProvider'
+import { useRouter, useSearchParams } from 'next/navigation'
+import SubsEventsList from './SubsEventsList'
 
 const EVENTS_PER_PAGE = 20
 
+type EventsPillTab = 'groups' | 'students' | 'subs'
+
 export default function EventsList() {
+  const { isLoggedIn, user } = useAuth()
+  const subsCount = user?.graphSubsNum ?? 0
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
   const searchQuery = useSearchQuery()
   const selectedGraphId = useSelectedGraphId()
   const setSearchQuery = useSetSearchQuery()
@@ -27,8 +38,38 @@ export default function EventsList() {
   const [dateFrom, setDateFrom] = useState<string>('')
   const [dateTo, setDateTo] = useState<string>('')
   const [includeTbd, setIncludeTbd] = useState<boolean>(true)
+  const initialTab: EventsPillTab = useMemo(() => {
+    const tab = searchParams.get('tab')
+    if (tab === 'subs') return 'subs'
+    return 'groups'
+  }, [searchParams])
+  const [activeTab, setActiveTab] = useState<EventsPillTab>(initialTab)
   const queryClient = useQueryClient()
   const loadMoreRef = useRef<HTMLDivElement>(null)
+
+  // sync tab with auth and URL
+  useEffect(() => {
+    if (!isLoggedIn && activeTab === 'subs') {
+      setActiveTab('groups')
+    } else {
+      setActiveTab(initialTab)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn, initialTab])
+
+  const setTabInUrl = (tab: EventsPillTab) => {
+    const sp = new URLSearchParams(searchParams.toString())
+    if (tab === 'subs') sp.set('tab', 'subs')
+    else sp.delete('tab')
+    const qs = sp.toString()
+    router.replace(qs ? `/events/?${qs}` : '/events/')
+  }
+
+  const handleTabChange = (tab: EventsPillTab) => {
+    if (!isLoggedIn && tab === 'subs') return
+    setActiveTab(tab)
+    setTabInUrl(tab)
+  }
 
   // Бесконечная загрузка данных
   const {
@@ -209,83 +250,116 @@ export default function EventsList() {
   return (
     <div className={styles.container}>
       {/* Панель поиска и фильтров */}
-      <div className={styles.filters}>
-        <SearchBar
-          placeholder="Поиск мероприятий..."
-          onSearch={setSearchQuery}
-          onTagFilter={setSelectedTagIds}
-          availableTags={availableTags}
-          initialQuery={searchQuery}
-          showDateFilter
-          dateFrom={dateFrom}
-          dateTo={dateTo}
-          includeTbd={includeTbd}
-          onDateFromChange={setDateFrom}
-          onDateToChange={setDateTo}
-          onIncludeTbdChange={setIncludeTbd}
-        />
-      </div>
-      
-      {/* Переключатель графов - только для ПК */}
-      <div className={styles.graphSwitcherWrapper}>
-        <GraphSwitcher />
-      </div>
-      
-      {/* Загрузка */}
-      {isLoading && (
-        <div className={styles.loader}>
-          <SpinnerLoader />
+      {isLoggedIn && (
+        <div className={styles.tabsRow}>
+          <PillTabs
+            options={[
+              { key: 'groups', label: 'От групп' },
+              { key: 'students', label: 'От студентов' },
+              { key: 'subs', label: 'Подписки', badge: subsCount },
+            ]}
+            activeKey={activeTab}
+            onChange={(key) => handleTabChange(key as EventsPillTab)}
+            aria-label="Фильтр событий"
+          />
         </div>
       )}
 
-      {/* Пустое состояние - нет мероприятий вообще */}
-      {isEmpty && !isLoading && (
-        <EmptyState
-          message="Нет предстоящих мероприятий"
-          subMessage="Следите за обновлениями, чтобы не пропустить новые события"
-          icon={CalendarX}
-        />
-      )}
-
-      {/* Пустой результат поиска */}
-      {noSearchResults && !isEmpty && !isLoading && (
-        <EmptyState
-          message="Ничего не найдено"
-          subMessage="Измените текст, даты или теги"
-          icon={Search}
-        />
-      )}
-
-      {/* Список событий */}
-      {isSuccess && !noSearchResults && !isEmpty && (
+      {activeTab === 'subs' && isLoggedIn ? (
+        <div className={styles.container}>
+          <div className={styles.filters}>
+            <SearchBar
+              placeholder="Поиск по подпискам..."
+              onSearch={setSearchQuery}
+              onTagFilter={() => {}}
+              showTagFilter={false}
+              availableTags={[]}
+              initialQuery={searchQuery}
+            />
+          </div>
+          <SubsEventsList />
+        </div>
+      ) : (
         <>
-          <div className={styles.eventsList} data-swipe-enabled="true">
-            {filteredEvents.map((event: EventItem, index: number) => (
-              <div 
-                key={event._id} 
-                className={styles.eventCard}
-                style={{ 
-                  '--delay': `${Math.min(index * 0.05, 0.5)}s`
-                } as React.CSSProperties}
-              >
-                <EventCard 
-                  event={event} 
-                  isAttended={event.isAttended} 
-                  onDelete={handleDelete}
-                />
-              </div>
-            ))}
+          <div className={styles.filters}>
+            <SearchBar
+              placeholder="Поиск мероприятий..."
+              onSearch={setSearchQuery}
+              onTagFilter={setSelectedTagIds}
+              availableTags={availableTags}
+              initialQuery={searchQuery}
+              showDateFilter
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              includeTbd={includeTbd}
+              onDateFromChange={setDateFrom}
+              onDateToChange={setDateTo}
+              onIncludeTbdChange={setIncludeTbd}
+            />
           </div>
           
-          {/* Индикатор загрузки следующей страницы */}
-          {hasNextPage && (
-            <div ref={loadMoreRef} className={styles.loadMoreTrigger}>
-              {isFetchingNextPage && (
-                <div className={styles.loader}>
-                  <SpinnerLoader />
+          {/* Переключатель графов - только для ПК */}
+          <div className={styles.graphSwitcherWrapper}>
+            <GraphSwitcher />
+          </div>
+          
+          {/* Загрузка */}
+          {isLoading && (
+            <div className={styles.loader}>
+              <SpinnerLoader />
+            </div>
+          )}
+
+          {/* Пустое состояние - нет мероприятий вообще */}
+          {isEmpty && !isLoading && (
+            <EmptyState
+              message="Нет предстоящих мероприятий"
+              subMessage="Следите за обновлениями, чтобы не пропустить новые события"
+              icon={CalendarX}
+            />
+          )}
+
+          {/* Пустой результат поиска */}
+          {noSearchResults && !isEmpty && !isLoading && (
+            <EmptyState
+              message="Ничего не найдено"
+              subMessage="Измените текст, даты или теги"
+              icon={Search}
+            />
+          )}
+
+          {/* Список событий */}
+          {isSuccess && !noSearchResults && !isEmpty && (
+            <>
+              <div className={styles.eventsList} data-swipe-enabled="true">
+                {filteredEvents.map((event: EventItem, index: number) => (
+                  <div 
+                    key={event._id} 
+                    className={styles.eventCard}
+                    style={{ 
+                      '--delay': `${Math.min(index * 0.05, 0.5)}s`
+                    } as React.CSSProperties}
+                  >
+                    <EventCard 
+                      event={event} 
+                      isAttended={event.isAttended} 
+                      onDelete={handleDelete}
+                    />
+                  </div>
+                ))}
+              </div>
+              
+              {/* Индикатор загрузки следующей страницы */}
+              {hasNextPage && (
+                <div ref={loadMoreRef} className={styles.loadMoreTrigger}>
+                  {isFetchingNextPage && (
+                    <div className={styles.loader}>
+                      <SpinnerLoader />
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
+            </>
           )}
         </>
       )}

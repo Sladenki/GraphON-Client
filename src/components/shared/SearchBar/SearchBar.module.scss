@@ -3,6 +3,7 @@
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  padding: 0;
 }
 
 .searchInputWrapper {
@@ -15,35 +16,18 @@
   position: relative;
   display: flex;
   align-items: center;
-  // Без border — только фон (палитра)
-  background: linear-gradient(
-    135deg,
-    rgba(var(--color-primary-rgb), 0.10) 0%,
-    rgba(var(--color-accent-pink-rgb), 0.06) 55%,
-    rgba(var(--color-primary-rgb), 0.04) 100%
-  );
+  background: rgba(124, 106, 239, 0.10);
   border: none;
-  border-radius: 24px;
-  padding: 12px 16px;
-  transition: background-color 0.2s ease, filter 0.2s ease, transform 0.15s ease;
+  border-radius: 999px;
+  padding: 10px 12px;
+  transition: background-color 0.15s ease;
   
   &:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(var(--color-primary-rgb), 0.14) 0%,
-      rgba(var(--color-accent-pink-rgb), 0.08) 55%,
-      rgba(var(--color-primary-rgb), 0.06) 100%
-    );
+    background: rgba(124, 106, 239, 0.14);
   }
 
   &.focused {
-    background: linear-gradient(
-      135deg,
-      rgba(var(--color-primary-rgb), 0.18) 0%,
-      rgba(var(--color-accent-pink-rgb), 0.10) 55%,
-      rgba(var(--color-primary-rgb), 0.08) 100%
-    );
-    filter: saturate(1.05);
+    background: rgba(124, 106, 239, 0.18);
   }
 }
 
@@ -64,15 +48,15 @@
   border: none;
   outline: none;
   background: transparent;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--main-text);
   font-family: var(--font-inter), 'Inter', sans-serif;
-  font-weight: 400;
-  line-height: 1.5;
+  font-weight: 500;
+  line-height: 1.4;
 
   &::placeholder {
     color: var(--color-text-muted);
-    font-weight: 400;
+    font-weight: 500;
   }
 
   &:focus {
@@ -90,7 +74,7 @@
 .vertDivider {
   width: 1px;
   height: 20px;
-  background: rgba(var(--color-primary-rgb), 0.25);
+  background: rgba(124, 106, 239, 0.16);
 }
 
 .clearButton {
@@ -107,7 +91,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(var(--color-primary-rgb), 0.12);
+    background: rgba(124, 106, 239, 0.14);
     color: var(--color-primary);
   }
 
@@ -131,12 +115,12 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(var(--color-primary-rgb), 0.12);
+    background: rgba(124, 106, 239, 0.14);
     color: var(--color-primary);
   }
 
   &.active {
-    background: rgba(var(--color-primary-rgb), 0.14);
+    background: rgba(124, 106, 239, 0.18);
     color: var(--color-primary);
   }
 
@@ -149,7 +133,7 @@
   position: absolute;
   top: -6px;
   right: -6px;
-  background: var(--color-primary);
+  background: #7c6aef;
   color: white;
   font-size: 10px;
   font-weight: 600;
@@ -171,12 +155,12 @@
 }
 
 .queryFilter {
-  background: rgba(var(--color-primary-rgb), 0.12);
-  color: var(--color-primary);
+  background: rgba(124, 106, 239, 0.12);
+  color: var(--main-text);
   padding: 4px 8px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   border: none;
 }
 
@@ -184,12 +168,12 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(var(--color-primary-rgb), 0.12);
-  color: var(--color-primary);
+  background: rgba(124, 106, 239, 0.14);
+  color: var(--main-text);
   padding: 4px 8px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   border: none;
 }
 
@@ -208,8 +192,8 @@
   margin-left: 2px;
 
   &:hover {
-    background: rgba(224, 90, 90, 0.12);
-    color: var(--color-error);
+    background: rgba(124, 106, 239, 0.14);
+    color: var(--color-primary);
   }
 
   &:active {
@@ -218,22 +202,22 @@
 }
 
 .clearAllButton {
-  background: rgba(224, 90, 90, 0.12);
-  color: var(--color-error);
+  background: rgba(124, 106, 239, 0.12);
+  color: var(--main-text);
   border: none;
-  padding: 4px 8px;
-  border-radius: 12px;
+  padding: 5px 10px;
+  border-radius: 14px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: rgba(224, 90, 90, 0.18);
+    background: rgba(124, 106, 239, 0.16);
   }
 
   &:active {
-    transform: scale(0.95);
+    transform: scale(0.97);
   }
 }
 
@@ -242,25 +226,24 @@
   top: 100%;
   left: 0;
   right: 0;
-  background-color: var(--color-neutral-card);
-  border: none;
-  border-radius: 20px;
+  background-color: var(--color-neutral-card, #fff);
+  border: 1px solid rgba(124, 106, 239, 0.12);
+  border-radius: 16px;
   z-index: 1000;
   margin-top: 8px;
   overflow: hidden;
-  // без теней
 }
 
 .tagFilterHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 16px 12px;
+  padding: 12px 12px 8px;
 }
 
 .tagFilterTitle {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 800;
   color: var(--main-text);
   font-family: var(--font-inter), 'Inter', sans-serif;
 }
@@ -270,14 +253,14 @@
   border: none;
   color: var(--color-text-muted);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 12px;
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(var(--color-primary-rgb), 0.12);
+    background: rgba(124, 106, 239, 0.12);
     color: var(--color-primary);
   }
 
@@ -287,8 +270,8 @@
 }
 
 .dateFilterSection {
-  padding: 16px;
-  background: rgba(var(--color-primary-rgb), 0.06);
+  padding: 14px;
+  background: rgba(124, 106, 239, 0.06);
   border-radius: 12px;
   margin: 8px;
 }
@@ -333,14 +316,14 @@
     height: 16px;
     border-radius: 6px;
     border: none;
-    background: rgba(var(--color-primary-rgb), 0.10);
+    background: rgba(124, 106, 239, 0.10);
     display: inline-grid;
     place-content: center;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.05s ease;
 
     &:hover {
-      background: rgba(var(--color-primary-rgb), 0.14);
+      background: rgba(124, 106, 239, 0.14);
     }
 
     &:active {
@@ -349,12 +332,11 @@
 
     &:focus-visible {
       outline: none;
-      // без теней
-      background: rgba(var(--color-primary-rgb), 0.18);
+      background: rgba(124, 106, 239, 0.18);
     }
 
     &:checked {
-      background: var(--color-primary);
+      background: #7c6aef;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 12.5L10 17.5L19 8.5' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: center;
@@ -406,13 +388,13 @@
   font-weight: 400;
 
   &:hover {
-    background: rgba(var(--color-primary-rgb), 0.08);
+    background: rgba(124, 106, 239, 0.10);
   }
 
   &.selected {
-    background: rgba(var(--color-primary-rgb), 0.12);
+    background: rgba(124, 106, 239, 0.14);
     color: var(--color-primary);
-    font-weight: 500;
+    font-weight: 600;
   }
 
   &:active {
