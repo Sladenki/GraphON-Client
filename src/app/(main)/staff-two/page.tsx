@@ -13,11 +13,15 @@ import {
   PlayCircle,
   Heart,
   Search,
+  ChevronDown,
 } from 'lucide-react';
 import styles from './StaffTwo.module.scss';
 
 type TabKey = 'overview' | 'schedule' | 'tasks';
 type ChipKey = 'All' | 'Design' | 'Dev' | 'Science';
+type DropdownOption = { id: string; label: string };
+type UserCard = { id: string; name: string; role: string; status: string };
+type GroupCard = { id: string; name: string; members: number; course: string; progress: number };
 
 const STATS = [
   { id: 'certs', label: 'Certificates', value: '5', tone: 'mint', icon: <CheckCircle2 size={18} /> },
@@ -74,11 +78,30 @@ const SCHEDULE = [
 
 const QUIZ_TAGS = ['Geographic', 'Chemistry', 'Math', 'Writing', 'Developing'] as const;
 
+const DROPDOWN_OPTIONS: DropdownOption[] = [
+  { id: 'today', label: 'Today' },
+  { id: 'week', label: 'This week' },
+  { id: 'month', label: 'This month' },
+];
+
+const USERS: UserCard[] = [
+  { id: 'u1', name: 'Ava Nolan', role: 'Design Lead', status: 'Online' },
+  { id: 'u2', name: 'Liam West', role: 'Frontend', status: 'Offline' },
+  { id: 'u3', name: 'Mia Chen', role: 'Data', status: 'Busy' },
+];
+
+const GROUPS: GroupCard[] = [
+  { id: 'g1', name: 'Design Sprint', members: 8, course: 'UI/UX', progress: 68 },
+  { id: 'g2', name: 'Math Circle', members: 12, course: 'Algebra II', progress: 52 },
+];
+
 export default function StaffTwo() {
   const [activeTab, setActiveTab] = useState<TabKey>('overview');
   const [chip, setChip] = useState<ChipKey>('All');
   const [search, setSearch] = useState('');
   const [activeDate, setActiveDate] = useState<string>('mon');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedRange, setSelectedRange] = useState<DropdownOption>(DROPDOWN_OPTIONS[0]);
 
   const filteredSchedule = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -225,6 +248,82 @@ export default function StaffTwo() {
           </div>
           <div className={styles.progressTrack}>
             <div className={styles.progressFill} style={{ width: '78%' }} />
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionLabel}>Dropdown</div>
+            <div className={styles.dropdownWrapper}>
+              <button
+                type="button"
+                className={`${styles.dropdownTrigger} ${dropdownOpen ? styles.dropdownOpen : ''}`}
+                aria-haspopup="listbox"
+                aria-expanded={dropdownOpen}
+                onClick={() => setDropdownOpen((v) => !v)}
+              >
+                {selectedRange.label}
+                <ChevronDown size={16} />
+              </button>
+              {dropdownOpen && (
+                <div className={styles.dropdownMenu} role="listbox">
+                  {DROPDOWN_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      role="option"
+                      aria-selected={selectedRange.id === opt.id}
+                      className={`${styles.dropdownItem} ${
+                        selectedRange.id === opt.id ? styles.dropdownItemActive : ''
+                      }`}
+                      onClick={() => {
+                        setSelectedRange(opt);
+                        setDropdownOpen(false);
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className={styles.sectionLabel}>User cards</div>
+          <div className={styles.userGrid}>
+            {USERS.map((u) => (
+              <div key={u.id} className={styles.userCard}>
+                <div className={styles.userAvatar}>{u.name.slice(0, 1)}</div>
+                <div className={styles.userInfo}>
+                  <div className={styles.userName}>{u.name}</div>
+                  <div className={styles.userRole}>{u.role}</div>
+                </div>
+                <span className={`${styles.userStatus} ${styles[u.status.toLowerCase()]}`}>{u.status}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className={styles.sectionLabel}>Group cards</div>
+          <div className={styles.groupGrid}>
+            {GROUPS.map((g) => (
+              <div key={g.id} className={styles.groupCard}>
+                <div className={styles.groupHead}>
+                  <div className={styles.groupBadge}>{g.course}</div>
+                  <div className={styles.groupMembers}>{g.members} members</div>
+                </div>
+                <div className={styles.groupTitle}>{g.name}</div>
+                <div className={styles.groupProgressRow}>
+                  <div className={styles.groupProgressTrack}>
+                    <div className={styles.groupProgressFill} style={{ width: `${g.progress}%` }} />
+                  </div>
+                  <div className={styles.groupProgressPct}>{g.progress}%</div>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 

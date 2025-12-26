@@ -330,6 +330,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
+  align-items: center;
 }
 
 .tabBtn {
@@ -339,6 +340,7 @@
   font-weight: 800;
   color: var(--ink-secondary);
   background: transparent;
+  border: none;
   transition: background-color 150ms ease, color 150ms ease;
 }
 
@@ -347,6 +349,215 @@
   color: var(--ink);
 }
 
+.tabsRail .tabBtn:not(.tabActive) {
+  background: transparent;
+  color: var(--ink-secondary);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dropdownWrapper {
+  position: relative;
+  min-width: 200px;
+}
+
+.dropdownTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(var(--primary-rgb), 0.12);
+  border: 1px solid rgba(var(--primary-rgb), 0.14);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  box-shadow: none;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.dropdownOpen {
+  border-color: rgba(var(--primary-rgb), 0.22);
+  background: rgba(var(--primary-rgb), 0.18);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 160px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(var(--primary-rgb), 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 10;
+}
+
+.dropdownItem {
+  text-align: left;
+  border: none;
+  border-radius: 12px;
+  padding: 10px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.dropdownItem:hover {
+  background: rgba(var(--primary-rgb), 0.1);
+  color: var(--ink);
+}
+
+.dropdownItemActive {
+  background: rgba(var(--primary-rgb), 0.14);
+  color: var(--ink);
+}
+
+.userGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.userCard {
+  background: var(--surface-alt);
+  border-radius: 18px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.userAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: rgba(var(--primary-rgb), 0.14);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.userRole {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.userStatus {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--ink);
+}
+
+.online {
+  background: rgba(92, 194, 170, 0.18);
+  color: #2c7a64;
+}
+
+.offline {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--ink-secondary);
+}
+
+.busy {
+  background: rgba(255, 200, 87, 0.18);
+  color: #9c6b1f;
+}
+
+.groupGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.groupCard {
+  background: var(--surface-alt);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.groupHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.groupBadge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(var(--primary-rgb), 0.14);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.groupMembers {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+
+.groupTitle {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.groupProgressRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.groupProgressTrack {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(var(--primary-rgb), 0.12);
+  overflow: hidden;
+}
+
+.groupProgressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.groupProgressPct {
+  font-size: 12px;
+  font-weight: 800;
+}
 .progressRow {
   display: flex;
   align-items: center;
@@ -582,6 +793,7 @@
   border-radius: 999px;
   font-size: 14px;
   font-weight: 800;
+  border: none;
   transition: transform 120ms ease, background-color 150ms ease;
 }
 
@@ -604,6 +816,27 @@
 .ghostBtn {
   background: transparent;
   color: var(--ink-secondary);
+}
+
+.buttonRow .primaryBtn,
+.quizActions .primaryBtn {
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+}
+
+.buttonRow .secondaryBtn,
+.quizActions .secondaryBtn {
+  background: rgba(var(--primary-rgb), 0.12);
+  color: var(--ink);
+  border: none;
+}
+
+.buttonRow .ghostBtn,
+.quizActions .ghostBtn {
+  background: transparent;
+  color: var(--ink-secondary);
+  border: none;
 }
 
 .primaryBtn:active,
