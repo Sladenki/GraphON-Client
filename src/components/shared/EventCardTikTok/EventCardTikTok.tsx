@@ -17,7 +17,6 @@ import ParticipantOrbits from '@/components/shared/EventCard/ParticipantOrbits/P
 import styles from './EventCardTikTok.module.scss';
 import { linkifyText } from '@/lib/linkify';
 import { motion, AnimatePresence } from 'framer-motion';
-import confetti from 'canvas-confetti';
 import { getPastelTheme, getThemeName } from '@/components/shared/EventCard/pastelTheme';
 
 interface EventCardTikTokProps {
@@ -147,15 +146,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
       if (!wasRegistered) {
         // Запускаем анимацию перемещения аватарки
         setIsAnimatingAvatar(true);
-        setTimeout(() => setIsAnimatingAvatar(false), 1200); // Длительность анимации
-
-        try {
-          confetti({
-            particleCount: 120,
-            spread: 70,
-            origin: { y: 0.65 },
-          });
-        } catch {}
+        setTimeout(() => setIsAnimatingAvatar(false), 1400); // Длительность анимации
       }
     } catch (error) {
       console.error('Registration error:', error);
