@@ -223,11 +223,11 @@ export default function EventsTikTokFeed() {
           />
         ))}
 
-        <SimilarEventsButton
+        {/* <SimilarEventsButton
           currentTheme={currentTheme}
           isFiltered={!!filterByTheme}
           onFilterChange={handleFilterChange}
-        />
+        /> */}
       </EventsTikTokContainer>
     </div>
   );

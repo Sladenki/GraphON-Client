@@ -9,14 +9,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 0; // Убираем все отступы для полной ширины карточки
   box-sizing: border-box;
   overflow: hidden; // Предотвращаем выход контента за границы
 }
 
 .cardWrapper {
   width: 100%;
-  max-width: 680px; // Максимальная ширина EventCard
+  max-width: 100%; // Полная ширина для EventsTikTokFeed
   max-height: 100%; // Не превышаем высоту родителя
   position: relative;
   z-index: 1;
@@ -30,16 +30,15 @@
 @media (max-width: 768px) {
   .slide {
     scroll-snap-align: center;
-    padding: 16px;
-    // Используем safe-area для устройств с вырезами
-    padding-top: max(16px, env(safe-area-inset-top));
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    padding: 0; // Полная ширина без отступов
+    // Используем safe-area для устройств с вырезами только снизу
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
   }
   
   .cardWrapper {
     width: 100%;
     max-width: 100%;
-    padding: 0 8px; // Небольшие отступы по бокам
+    padding: 0; // Полная ширина без отступов
   }
 }
 
