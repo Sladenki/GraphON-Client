@@ -18,7 +18,7 @@
 
 // Header
 .cardHeader {
-  padding: 20px 20px 16px;
+  padding: 20px 20px 24px;
   position: relative;
 }
 
@@ -26,7 +26,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .groupInfo {
@@ -108,19 +108,30 @@
 }
 
 .eventTitle {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--main-text, #2f2d32);
   font-family: var(--font-inter), Inter, system-ui, sans-serif;
-  line-height: 1.3;
+  line-height: 1.2;
   margin: 0;
   word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Адаптивность для маленьких экранов
+@media (max-width: 360px) {
+  .eventTitle {
+    font-size: 26px;
+  }
 }
 
 // Body
 .cardBody {
-  padding: 0 20px 20px;
+  padding: 0 20px 24px;
   position: relative;
   flex-shrink: 0;
 }
@@ -162,9 +173,9 @@
   }
 }
 
-// Important Info
+// Important Info - компактные карточки для метаданных
 .importantInfo {
-  padding: 0 20px 20px;
+  padding: 0 20px 32px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -175,11 +186,12 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
   padding: 12px 16px;
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   svg {
     flex-shrink: 0;
@@ -195,67 +207,85 @@
   font-family: var(--font-inter), Inter, system-ui, sans-serif;
 }
 
-.participantsInfo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 0;
-
-  svg {
-    color: var(--main-text, #5f5a6c);
-  }
-}
-
-.participantsText {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--main-text, #5f5a6c);
-  font-family: var(--font-inter), Inter, system-ui, sans-serif;
-}
-
-// Footer
+// Footer - орбиты участников и доминирующая кнопка регистрации
 .cardFooter {
-  padding: 0 20px 20px;
+  padding: 0 20px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  margin-top: auto; // Прижимаем footer к низу
+}
+
+.participantsOrbits {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 4px; // Небольшой отступ от кнопки
 }
 
 .registerButton {
   width: 100%;
-  padding: 14px 20px;
-  border-radius: 16px;
+  min-width: 280px; // Минимальная ширина для удобства клика
+  padding: 18px 24px;
+  border-radius: 20px;
   border: none;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  color: var(--main-text, #2f2d32);
-  font-size: 15px;
-  font-weight: 600;
+  color: var(--main-text, #1F2A1F);
+  font-size: 17px;
+  font-weight: 700;
   font-family: var(--font-inter), Inter, system-ui, sans-serif;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
 
-  &:active {
-    transform: scale(0.98);
-    background: rgba(255, 255, 255, 1);
+  // Hover эффект для desktop
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 1);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
+
+  // Адаптивность для маленьких экранов
+  @media (max-width: 360px) {
+    font-size: 16px;
+    padding: 16px 20px;
+    min-width: auto;
+  }
 }
 
 .registeredButton {
-  background: rgba(92, 194, 170, 0.15);
+  background: rgba(92, 194, 170, 0.25);
   color: rgb(34, 197, 94);
+  box-shadow: 0 4px 12px rgba(92, 194, 170, 0.2);
 
-  &:active {
-    background: rgba(92, 194, 170, 0.2);
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: rgba(92, 194, 170, 0.3);
+      box-shadow: 0 6px 16px rgba(92, 194, 170, 0.25);
+    }
+  }
+
+  &:active:not(:disabled) {
+    background: rgba(92, 194, 170, 0.3);
   }
 }
 
@@ -273,7 +303,3 @@
   }
 }
 
-.participantsOrbits {
-  display: flex;
-  justify-content: center;
-}

@@ -6,7 +6,6 @@ import {
   Share2,
   CalendarClock,
   MapPinned,
-  UsersRound,
   UserPlus,
   UserX,
   LogIn,
@@ -14,7 +13,6 @@ import {
 import { useEventRegistration } from '@/hooks/useEventRegistration';
 import { useAuth } from '@/providers/AuthProvider';
 import { EventItem } from '@/types/schedule.interface';
-import { useDeclensionWord } from '@/hooks/useDeclension';
 import ParticipantOrbits from '@/components/shared/EventCard/ParticipantOrbits/ParticipantOrbits';
 import styles from './EventCardTikTok.module.scss';
 import { linkifyText } from '@/lib/linkify';
@@ -137,8 +135,6 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     return `${baseUrl}/${event.graphId.imgPath}`;
   }, [event.graphId?.imgPath]);
 
-  const participantsWord = useDeclensionWord(event.regedUsers, 'PARTICIPANT');
-
   // Обработчики
   const handleRegistration = useCallback(async () => {
     if (!isLoggedIn) {
@@ -202,7 +198,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     if (!isLoggedIn) {
       return (
         <button className={styles.registerButton} onClick={handleRegistration}>
-          <LogIn size={18} />
+          <LogIn size={22} />
           <span>Войти для регистрации</span>
         </button>
       );
@@ -214,7 +210,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           className={`${styles.registerButton} ${styles.registeredButton} ${isJustRegistered ? styles.justRegistered : ''}`}
           onClick={handleRegistration}
           disabled={isLoading}>
-          <UserX size={18} />
+          <UserX size={22} />
           <span>Отменить регистрацию</span>
         </button>
       );
@@ -222,7 +218,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
 
     return (
       <button className={styles.registerButton} onClick={handleRegistration} disabled={isLoading}>
-        <UserPlus size={18} />
+        <UserPlus size={22} />
         <span>Записаться</span>
       </button>
     );
@@ -284,31 +280,24 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
         </div>
       </div>
 
-      {/* Important Info - время, место и участники */}
+      {/* Important Info - время и место (компактные карточки) */}
       <div className={styles.importantInfo}>
         <div className={styles.timeInfo}>
           <CalendarClock size={20} />
           <span className={styles.timeText}>{formattedTime}</span>
         </div>
 
-        <div className={styles.placeInfo}>
-          <MapPinned size={20} />
-          <span className={styles.placeText}>{event.place}</span>
-        </div>
-
-        <div className={styles.participantsInfo}>
-          <UsersRound size={18} />
-          <span className={styles.participantsText}>
-            {event.regedUsers} {participantsWord}
-          </span>
-        </div>
+        {event.place && (
+          <div className={styles.placeInfo}>
+            <MapPinned size={20} />
+            <span className={styles.placeText}>{event.place}</span>
+          </div>
+        )}
       </div>
 
-      {/* Footer - участники и кнопка регистрации */}
+      {/* Footer - орбиты участников и кнопка регистрации */}
       <div className={styles.cardFooter}>
-        {registerButton}
-
-        {/* Орбиты участников */}
+        {/* Орбиты участников - над кнопкой */}
         <div className={styles.participantsOrbits}>
           <ParticipantOrbits
             eventId={event._id}
@@ -317,6 +306,9 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
             onRegister={undefined}
           />
         </div>
+
+        {/* Доминирующая кнопка регистрации */}
+        {registerButton}
       </div>
 
       {/* Viral Success Moment */}
