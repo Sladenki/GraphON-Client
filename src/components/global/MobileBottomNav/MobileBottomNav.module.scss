@@ -1,29 +1,34 @@
 .bottomNav {
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  background: linear-gradient(180deg, #f5f2fa 0%, #f9f7fc 80%, #f5f2fa 100%);
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  padding: 4px 12px;
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 560px;
+  background: #E6E1FA;
+  border-radius: 32px;
+  padding: 8px 12px;
   padding-bottom: calc(8px + env(safe-area-inset-bottom, 0));
-  border-top: none;
   z-index: 2100;
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: #2A2538;
+  }
 }
 
 .navList {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  gap: 4px;
+  gap: 0;
   padding: 0;
   margin: 0;
   list-style: none;
   font-family: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   position: relative;
-  gap: 8px;
+  width: 100%;
 }
 
 .navItem {
@@ -39,20 +44,33 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 0;
   text-decoration: none;
-  color: var(--main-text);
-  padding: 8px 12px;
-  border-radius: 999px;
+  color: inherit;
+  padding: 10px;
+  border-radius: 50%;
   border: none;
   background: transparent;
-  transition: background-color 0.18s ease, transform 0.1s ease, color 0.18s ease;
+  transition: background-color 0.18s ease, transform 0.1s ease;
   cursor: pointer;
-  width: 100%;
-  min-width: 0;
+  width: auto;
+  min-width: 44px;
+  height: 44px;
+  touch-action: manipulation;
 
-  &:hover {
-    background-color: rgba(var(--main-Color), 0.10);
+  // Hover state (desktop only)
+  @media (hover: hover) {
+    &:hover:not(.active) {
+      background-color: rgba(110, 90, 214, 0.12);
+    }
+
+    // Dark theme hover
+    html[data-theme="dark"] &,
+    html.dark & {
+      &:hover:not(.active) {
+        background-color: rgba(150, 130, 238, 0.15);
+      }
+    }
   }
 
   &:active {
@@ -61,7 +79,7 @@
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(var(--main-Color), 0.20);
+    box-shadow: 0 0 0 2px rgba(150, 130, 238, 0.20);
   }
 }
 
@@ -70,22 +88,34 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--main-text);
-  transition: color 0.2s ease, transform 0.2s ease;
+  color: #8A7AB8;
+  transition: color 0.2s ease;
 
   svg {
     width: 18px;
     height: 18px;
     stroke-width: 1.5;
+    fill: none;
   }
 }
 
-// Active state
+// Active state - circular background
 .active {
-  background-color: rgba(var(--main-Color), 0.18);
+  background-color: #6E5AD6;
+  border-radius: 50%;
 
   .iconWrapper {
-    color: rgb(var(--main-Color));
+    color: #FFFFFF;
+  }
+
+  // Dark theme active state
+  html[data-theme="dark"] &,
+  html.dark & {
+    background-color: #9682EE;
+
+    .iconWrapper {
+      color: #FFFFFF;
+    }
   }
 }
 
@@ -101,17 +131,27 @@
 
 /* Responsive tweaks */
 @media (max-width: 480px) {
-  .navLink {
+  .bottomNav {
+    bottom: 12px;
+    width: calc(100% - 24px);
+    border-radius: 28px;
     padding: 6px 10px;
-    gap: 2px;
-    border-radius: 999px;
+    padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
+  }
+
+  .navLink {
+    padding: 10px;
+    gap: 0;
+    border-radius: 50%;
+    min-width: 44px;
+    height: 44px;
   }
 
   .iconWrapper {
     svg {
-      width: 16px;
-      height: 16px;
-      stroke-width: 1.4;
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.5;
     }
   }
 }
@@ -137,21 +177,6 @@
   }
   .iconWrapper {
     transition: none !important;
-  }
-}
-
-// Мобильные оптимизации
-@media (max-width: 768px) {
-  .navLink {
-    // Упрощенные transitions на мобильных
-    transition: background-color 0.15s ease, transform 0.1s ease;
-
-    // Отключаем hover эффекты на touch устройствах
-    @media (hover: none) {
-      &:hover {
-        background-color: transparent;
-      }
-    }
   }
 }
 
