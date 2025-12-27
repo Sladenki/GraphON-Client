@@ -191,10 +191,6 @@ export default function EventsTikTokFeed() {
     );
   }
 
-  if (events.length === 0) {
-    return <EmptyState message="Нет доступных событий" />;
-  }
-
   return (
     <div className={styles.wrapper}>
       {/* Переключатель вкладок */}
@@ -211,24 +207,28 @@ export default function EventsTikTokFeed() {
         />
       </div>
 
-      <EventsTikTokContainer>
-        <DynamicBackground theme={currentTheme} />
+      {events.length === 0 ? (
+        <EmptyState message="Нет доступных событий" />
+      ) : (
+        <EventsTikTokContainer>
+          <DynamicBackground theme={currentTheme} />
 
-        {events.map((event, index) => (
-          <EventSlide
-            key={event._id}
-            event={event}
-            isActive={index === currentIndex}
-            onIntersect={() => setCurrentIndex(index)}
-          />
-        ))}
+          {events.map((event, index) => (
+            <EventSlide
+              key={event._id}
+              event={event}
+              isActive={index === currentIndex}
+              onIntersect={() => setCurrentIndex(index)}
+            />
+          ))}
 
-        {/* <SimilarEventsButton
-          currentTheme={currentTheme}
-          isFiltered={!!filterByTheme}
-          onFilterChange={handleFilterChange}
-        /> */}
-      </EventsTikTokContainer>
+          {/* <SimilarEventsButton
+            currentTheme={currentTheme}
+            isFiltered={!!filterByTheme}
+            onFilterChange={handleFilterChange}
+          /> */}
+        </EventsTikTokContainer>
+      )}
     </div>
   );
 }

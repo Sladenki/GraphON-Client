@@ -7,8 +7,8 @@
   max-width: 560px;
   background: #E6E1FA;
   border-radius: 32px;
-  padding: 8px 12px;
-  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0));
+  padding: 6px 8px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
   z-index: 2100;
 
   // Dark theme
@@ -135,8 +135,8 @@
     bottom: 12px;
     width: calc(100% - 24px);
     border-radius: 28px;
-    padding: 6px 10px;
-    padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
+    padding: 4px 6px;
+    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0));
   }
 
   .navLink {
