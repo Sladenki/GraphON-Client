@@ -14,6 +14,7 @@ interface ParticipantOrbitsProps {
   totalCount: number;
   isRegistered: boolean;
   onRegister?: () => void;
+  isAnimating?: boolean; // Флаг для анимации появления нового участника
 }
 
 // Генерация цвета из строки
@@ -30,7 +31,8 @@ const ParticipantOrbits: React.FC<ParticipantOrbitsProps> = ({
   eventId,
   totalCount,
   isRegistered,
-  onRegister
+  onRegister,
+  isAnimating = false
 }) => {
   const { user } = useAuth();
   const isXs = useMediaQuery('(max-width: 500px)');

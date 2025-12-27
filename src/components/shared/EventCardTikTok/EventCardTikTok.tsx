@@ -16,10 +16,9 @@ import { EventItem } from '@/types/schedule.interface';
 import ParticipantOrbits from '@/components/shared/EventCard/ParticipantOrbits/ParticipantOrbits';
 import styles from './EventCardTikTok.module.scss';
 import { linkifyText } from '@/lib/linkify';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { getPastelTheme, getThemeName } from '@/components/shared/EventCard/pastelTheme';
-import { RegistrationSuccessModal } from '@/components/shared/EventCard/RegistrationSuccessModal/RegistrationSuccessModal';
 
 interface EventCardTikTokProps {
   event: EventItem;
@@ -61,7 +60,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
   const { isLoggedIn, user } = useAuth();
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isAnimatingAvatar, setIsAnimatingAvatar] = useState(false);
 
   // Хуки
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, (event as any).isAttended);
@@ -146,6 +145,10 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
       await toggleRegistration();
 
       if (!wasRegistered) {
+        // Запускаем анимацию перемещения аватарки
+        setIsAnimatingAvatar(true);
+        setTimeout(() => setIsAnimatingAvatar(false), 1200); // Длительность анимации
+
         try {
           confetti({
             particleCount: 120,
@@ -153,7 +156,6 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
             origin: { y: 0.65 },
           });
         } catch {}
-        setIsSuccessModalOpen(true);
       }
     } catch (error) {
       console.error('Registration error:', error);
@@ -304,27 +306,54 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
             totalCount={event.regedUsers}
             isRegistered={isRegistered}
             onRegister={undefined}
+            isAnimating={isAnimatingAvatar}
           />
         </div>
 
         {/* Доминирующая кнопка регистрации */}
-        {registerButton}
-      </div>
+        <div className={styles.registerButtonWrapper}>
+          {registerButton}
+        </div>
 
-      {/* Viral Success Moment */}
-      <RegistrationSuccessModal
-        isOpen={isSuccessModalOpen}
-        onClose={() => setIsSuccessModalOpen(false)}
-        event={{ id: event._id, name: event.name, description: event.description }}
-        user={{
-          name:
-            user?.firstName && user?.lastName
-              ? `${user.firstName} ${user.lastName}`
-              : user?.firstName || user?.lastName || user?.username || 'User',
-          avatarUrl: user?.avaPath ? user.avaPath : undefined,
-        }}
-        theme={{ primary: '#7C6AEF', secondary: '#9682EE', accent: '#EE82C8' }}
-      />
+        {/* Анимация перемещения аватарки от кнопки к списку */}
+        <AnimatePresence>
+          {isAnimatingAvatar && user && (
+            <motion.div
+              className={styles.animatedAvatar}
+              initial={{
+                scale: 0.6,
+                opacity: 0,
+                y: 0,
+              }}
+              animate={{
+                scale: [0.6, 1.3, 1],
+                opacity: [0, 1, 1, 0.8, 0],
+                y: [0, -90, -90],
+              }}
+              exit={{
+                scale: 0,
+                opacity: 0,
+              }}
+              transition={{
+                duration: 1.4,
+                ease: [0.34, 1.56, 0.64, 1],
+                times: [0, 0.2, 0.7, 0.9, 1],
+              }}>
+              {user?.avaPath ? (
+                <img
+                  src={user.avaPath.startsWith('http') ? user.avaPath : `${process.env.NEXT_PUBLIC_S3_URL}/${user.avaPath}`}
+                  alt={user?.firstName || user?.lastName || 'User'}
+                  className={styles.animatedAvatarImage}
+                />
+              ) : (
+                <div className={styles.animatedAvatarFallback}>
+                  {(user?.firstName?.[0] || user?.lastName?.[0] || user?.username?.[0] || 'U').toUpperCase()}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }
