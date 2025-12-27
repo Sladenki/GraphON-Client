@@ -1,0 +1,272 @@
+// EventCardTikTok - стили для TikTok-ленты
+// Упрощенная версия без фона и рамок, так как фон общий для всей страницы
+
+.card {
+  width: 100%;
+  position: relative;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+// Header
+.cardHeader {
+  padding: 20px 20px 16px;
+  position: relative;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.groupInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.groupAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #5f5a6c;
+}
+
+.groupName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--main-text, #2f2d32);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shareButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  color: var(--main-text, #5f5a6c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:active {
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(0.95);
+  }
+}
+
+.titleSection {
+  position: relative;
+}
+
+.eventTitle {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--main-text, #2f2d32);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  line-height: 1.3;
+  margin: 0;
+  word-wrap: break-word;
+}
+
+// Body
+.cardBody {
+  padding: 0 20px 20px;
+  position: relative;
+}
+
+.description {
+  font-size: 15px;
+  line-height: 1.65;
+  font-weight: 400;
+  color: var(--main-text, rgba(47, 45, 50, 0.8));
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+
+  a {
+    color: rgb(var(--main-Color, 124, 106, 239));
+    text-decoration: none;
+    font-weight: 500;
+
+    &:active {
+      text-decoration: underline;
+    }
+  }
+}
+
+.readMoreButton {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  color: rgb(var(--main-Color, 124, 106, 239));
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+// Important Info
+.importantInfo {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.timeInfo,
+.placeInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  svg {
+    flex-shrink: 0;
+    color: var(--main-text, #5f5a6c);
+  }
+}
+
+.timeText,
+.placeText {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--main-text, #2f2d32);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+}
+
+.participantsInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+
+  svg {
+    color: var(--main-text, #5f5a6c);
+  }
+}
+
+.participantsText {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--main-text, #5f5a6c);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+}
+
+// Footer
+.cardFooter {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.registerButton {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 16px;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  color: var(--main-text, #2f2d32);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.registeredButton {
+  background: rgba(92, 194, 170, 0.15);
+  color: rgb(34, 197, 94);
+
+  &:active {
+    background: rgba(92, 194, 170, 0.2);
+  }
+}
+
+.justRegistered {
+  animation: successPulse 0.9s ease;
+}
+
+@keyframes successPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.participantsOrbits {
+  display: flex;
+  justify-content: center;
+}

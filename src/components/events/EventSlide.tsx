@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import EventCard from '@/components/shared/EventCard/EventCard';
+import EventCardTikTok from '@/components/shared/EventCardTikTok/EventCardTikTok';
 import { EventItem } from '@/types/schedule.interface';
 import styles from './EventSlide.module.scss';
 
@@ -44,7 +44,8 @@ export default function EventSlide({ event, isActive, onIntersect }: EventSlideP
   return (
     <div ref={slideRef} className={styles.slide}>
       <div className={styles.cardWrapper}>
-        <EventCard event={event} transparentMode={true} />
+        {/* Используем специализированный компонент для TikTok-ленты */}
+        <EventCardTikTok event={event} />
       </div>
     </div>
   );

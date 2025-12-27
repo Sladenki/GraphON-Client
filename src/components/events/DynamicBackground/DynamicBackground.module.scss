@@ -15,7 +15,7 @@
   inset: -50%;
   border-radius: 50%;
   filter: blur(120px);
-  opacity: 0.6;
+  opacity: 0.75; // Увеличенная насыщенность
   mix-blend-mode: overlay;
   will-change: transform;
   animation: float 20s ease-in-out infinite;
