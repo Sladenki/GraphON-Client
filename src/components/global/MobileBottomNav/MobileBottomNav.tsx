@@ -1,22 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import styles from "./MobileBottomNav.module.scss";
 import Link from "next/link";
-import { Newspaper, Users, MoreHorizontal, UserPlus } from "lucide-react";
+import { Newspaper, Users, UserPlus, Shield } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { UserRole } from "@/types/user.interface";
 import CentralActionButton from "../CentralActionButton/CentralActionButton";
-import MorePopup from "../MorePopup/MorePopup";
 
 const MobileBottomNav: React.FC = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 1000px)');
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   if (!isMobile) return null;
+
+  // Проверка доступа к админке
+  const hasAdminAccess = isLoggedIn && user && user.role !== UserRole.User;
 
   const isActive = (path: string) => pathname === path || pathname.startsWith(path);
 
@@ -76,24 +78,24 @@ const MobileBottomNav: React.FC = () => {
             </Link>
           </li>
 
-          {/* ЕЩЕ */}
-          <li className={styles.navItem}>
-            <button
-              className={`${styles.navLink} ${styles.moreButton} ${isMoreOpen ? styles.active : ""}`}
-              onClick={() => setIsMoreOpen(true)}
-              aria-label="Еще"
-            >
-              <span className={styles.iconWrapper}>
-                <MoreHorizontal size={18} strokeWidth={1.5} />
-              </span>
-              <span className={styles.srOnly}>Еще</span>
-            </button>
-          </li>
+          {/* АДМИНКА */}
+          {hasAdminAccess && (
+            <li className={styles.navItem}>
+              <Link 
+                href="/admin/" 
+                className={`${styles.navLink} ${isActive('/admin') ? styles.active : ""}`} 
+                aria-label="Админка" 
+                aria-current={isActive('/admin') ? "page" : undefined}
+              >
+                <span className={styles.iconWrapper}>
+                  <Shield size={18} strokeWidth={1.5} />
+                </span>
+                <span className={styles.srOnly}>Админка</span>
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
-
-      {/* Popup "Еще" */}
-      <MorePopup isOpen={isMoreOpen} onClose={() => setIsMoreOpen(false)} />
     </>
   );
 };
