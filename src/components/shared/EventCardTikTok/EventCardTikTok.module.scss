@@ -3,11 +3,17 @@
 
 .card {
   width: 100%;
+  max-width: 100%;
+  max-height: 100%;
   position: relative;
   background: transparent;
   border: none;
   box-shadow: none;
   border-radius: 0;
+  box-sizing: border-box;
+  overflow: hidden; // Предотвращаем выход контента за границы карточки
+  display: flex;
+  flex-direction: column;
 }
 
 // Header
@@ -116,6 +122,7 @@
 .cardBody {
   padding: 0 20px 20px;
   position: relative;
+  flex-shrink: 0;
 }
 
 .description {
