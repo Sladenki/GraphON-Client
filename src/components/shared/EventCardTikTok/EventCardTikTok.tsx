@@ -6,8 +6,6 @@ import {
   Share2,
   CalendarClock,
   MapPinned,
-  UserPlus,
-  UserX,
   LogIn,
 } from 'lucide-react';
 import { useEventRegistration } from '@/hooks/useEventRegistration';
@@ -17,7 +15,8 @@ import ParticipantOrbits from '@/components/shared/EventCard/ParticipantOrbits/P
 import styles from './EventCardTikTok.module.scss';
 import { linkifyText } from '@/lib/linkify';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getPastelTheme, getThemeName } from '@/components/shared/EventCard/pastelTheme';
+import { getThemeName } from '@/components/shared/EventCard/pastelTheme';
+import SwipeButton from './SwipeButton';
 
 interface EventCardTikTokProps {
   event: EventItem;
@@ -63,20 +62,6 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
 
   // Хуки
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, (event as any).isAttended);
-
-  // Триумфальная анимация кнопки сразу после клика "Записаться"
-  const [isJustRegistered, setIsJustRegistered] = useState(false);
-  const prevRegisteredRef = useRef<boolean>(isRegistered);
-  useEffect(() => {
-    const prev = prevRegisteredRef.current;
-    if (!prev && isRegistered) {
-      setIsJustRegistered(true);
-      const t = setTimeout(() => setIsJustRegistered(false), 900);
-      prevRegisteredRef.current = isRegistered;
-      return () => clearTimeout(t);
-    }
-    prevRegisteredRef.current = isRegistered;
-  }, [isRegistered]);
 
   // Форматирование времени
   const formattedTime = useMemo(() => {
@@ -176,46 +161,6 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
   }, [event.graphId, router]);
 
   const themeName = getThemeName(event);
-  const pastel = getPastelTheme(themeName);
-
-  // Кнопка регистрации
-  const registerButton = useMemo(() => {
-    if (isEventPast) {
-      return (
-        <button className={styles.registerButton} disabled>
-          <span>Мероприятие завершено</span>
-        </button>
-      );
-    }
-
-    if (!isLoggedIn) {
-      return (
-        <button className={styles.registerButton} onClick={handleRegistration}>
-          <LogIn size={22} />
-          <span>Войти для регистрации</span>
-        </button>
-      );
-    }
-
-    if (isRegistered) {
-      return (
-        <button
-          className={`${styles.registerButton} ${styles.registeredButton} ${isJustRegistered ? styles.justRegistered : ''}`}
-          onClick={handleRegistration}
-          disabled={isLoading}>
-          <UserX size={22} />
-          <span>Отменить регистрацию</span>
-        </button>
-      );
-    }
-
-    return (
-      <button className={styles.registerButton} onClick={handleRegistration} disabled={isLoading}>
-        <UserPlus size={22} />
-        <span>Записаться</span>
-      </button>
-    );
-  }, [isLoggedIn, isRegistered, isJustRegistered, isLoading, handleRegistration, isEventPast]);
 
   if (!event || !event._id) {
     return null;
@@ -301,9 +246,26 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           />
         </div>
 
-        {/* Доминирующая кнопка регистрации */}
+        {/* Swipe-to-register кнопка */}
         <div className={styles.registerButtonWrapper}>
-          {registerButton}
+          {isEventPast ? (
+            <div className={styles.pastEventButton}>Мероприятие завершено</div>
+          ) : !isLoggedIn ? (
+            <button className={styles.loginButton} onClick={handleRegistration}>
+              <LogIn size={20} />
+              <span>Войти для регистрации</span>
+            </button>
+          ) : (
+            <SwipeButton
+              onSwipeComplete={handleRegistration}
+              disabled={isLoading}
+              isLoading={isLoading}
+              isRegistered={isRegistered}
+              onUnregister={handleRegistration}
+              text="Свайп для регистрации →"
+              registeredText="Вы записаны"
+            />
+          )}
         </div>
 
         {/* Анимация перемещения аватарки от кнопки к списку */}

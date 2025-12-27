@@ -229,6 +229,78 @@
   position: relative;
 }
 
+.pastEventButton {
+  width: 100%;
+  min-width: 280px;
+  padding: 18px 24px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  color: var(--main-text, #1F2A1F);
+  font-size: 17px;
+  font-weight: 700;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.7;
+
+  @media (max-width: 360px) {
+    font-size: 16px;
+    padding: 16px 20px;
+    min-width: auto;
+  }
+}
+
+.loginButton {
+  width: 100%;
+  min-width: 280px;
+  padding: 18px 24px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: var(--main-text, #1F2A1F);
+  font-size: 17px;
+  font-weight: 700;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 1);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 16px;
+    padding: 16px 20px;
+    min-width: auto;
+  }
+}
+
 // Анимация перемещения аватарки от кнопки к списку участников
 .animatedAvatar {
   position: absolute;
