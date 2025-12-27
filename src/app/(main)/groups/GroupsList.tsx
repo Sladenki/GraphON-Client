@@ -227,8 +227,8 @@ export default function GroupsList() {
           ]}
           activeTab={activeTab}
           onTabChange={handleTabChange}
-        />
-      </div>
+                />
+              </div>
 
       {/* Поиск и фильтры - всегда видимый */}
       <div className={styles.searchSection}>

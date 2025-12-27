@@ -25,9 +25,9 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
         <I18nProvider locale="ru-RU">
           <AuthProvider>
             <WebSocketProvider>
-              <MaintenanceWrapper>
-                {children}
-              </MaintenanceWrapper>
+            <MaintenanceWrapper>
+              {children}
+            </MaintenanceWrapper>
             </WebSocketProvider>
           </AuthProvider>
         </I18nProvider>
