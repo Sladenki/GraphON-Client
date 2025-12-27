@@ -25,6 +25,7 @@ import { RegistrationSuccessModal } from '@/components/shared/EventCard/Registra
 
 interface EventCardTikTokProps {
   event: EventItem;
+  isVisible?: boolean;
 }
 
 // Простой компонент аватара группы
@@ -57,7 +58,7 @@ const GroupAvatar: React.FC<{
  * EventCardTikTok - специализированная карточка события для TikTok-ленты
  * Упрощенная версия EventCard без редактирования
  */
-export default function EventCardTikTok({ event }: EventCardTikTokProps) {
+export default function EventCardTikTok({ event, isVisible = true }: EventCardTikTokProps) {
   const router = useRouter();
   const { isLoggedIn, user } = useAuth();
 
@@ -232,7 +233,18 @@ export default function EventCardTikTok({ event }: EventCardTikTokProps) {
   }
 
   return (
-    <div className={styles.card}>
+    <motion.div
+      className={styles.card}
+      initial={{ opacity: 0, y: 30, scale: 0.96 }}
+      animate={
+        isVisible
+          ? { opacity: 1, y: 0, scale: 1 }
+          : { opacity: 0, y: 30, scale: 0.96 }
+      }
+      transition={{
+        duration: 0.5,
+        ease: [0.34, 1.56, 0.64, 1], // Красивая пружинящая анимация
+      }}>
       {/* Header - название и группа */}
       <div className={styles.cardHeader}>
         <div className={styles.headerTop}>
@@ -321,6 +333,6 @@ export default function EventCardTikTok({ event }: EventCardTikTokProps) {
         }}
         theme={{ primary: '#7C6AEF', secondary: '#9682EE', accent: '#EE82C8' }}
       />
-    </div>
+    </motion.div>
   );
 }

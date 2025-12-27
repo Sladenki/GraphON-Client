@@ -18,6 +18,7 @@
   position: relative;
   z-index: 1;
   margin: auto; // Дополнительное центрирование
+  will-change: transform, opacity; // Оптимизация для анимаций
 }
 
 // Мобильная версия - улучшенное центрирование
