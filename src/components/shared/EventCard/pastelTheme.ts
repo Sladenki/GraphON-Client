@@ -66,6 +66,201 @@ export function getThemeName(event: any): ThemeName {
   return allowed.includes(normalized as ThemeName) ? (normalized as ThemeName) : 'Без тематики';
 }
 
+// Более насыщенные цвета для TikTok версии
+export function getPastelThemeTikTok(theme: ThemeName): PastelTheme {
+  switch (theme) {
+    case 'Бизнес':
+      return {
+        chip: 'bg-amber-100 text-amber-800',
+        button: 'bg-amber-600 text-white',
+        buttonHover: 'hover:bg-amber-700',
+        icon: 'text-amber-700',
+        headerBgLight: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(245,158,11,0.35) 0%, rgba(251,191,36,0.25) 100%)',
+      };
+    case 'Вечеринки':
+      return {
+        chip: 'bg-fuchsia-100 text-fuchsia-700',
+        button: 'bg-fuchsia-600 text-white',
+        buttonHover: 'hover:bg-fuchsia-700',
+        icon: 'text-fuchsia-700',
+        headerBgLight: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(217,70,239,0.35) 0%, rgba(168,85,247,0.25) 100%)',
+      };
+    case 'Встречи':
+      return {
+        chip: 'bg-sky-100 text-sky-700',
+        button: 'bg-sky-600 text-white',
+        buttonHover: 'hover:bg-sky-700',
+        icon: 'text-sky-700',
+        headerBgLight: 'linear-gradient(135deg, #bae6fd 0%, #c7d2fe 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(56,189,248,0.35) 0%, rgba(99,102,241,0.25) 100%)',
+      };
+    case 'Гастро':
+      return {
+        chip: 'bg-amber-100 text-amber-800',
+        button: 'bg-rose-600 text-white',
+        buttonHover: 'hover:bg-rose-700',
+        icon: 'text-rose-700',
+        headerBgLight: 'linear-gradient(135deg, #fde68a 0%, #fecdd3 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(251,191,36,0.32) 0%, rgba(244,63,94,0.25) 100%)',
+      };
+    case 'Город':
+      return {
+        chip: 'bg-slate-100 text-slate-700',
+        button: 'bg-slate-700 text-white',
+        buttonHover: 'hover:bg-slate-800',
+        icon: 'text-slate-700',
+        headerBgLight: 'linear-gradient(135deg, #e2e8f0 0%, #bae6fd 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(148,163,184,0.32) 0%, rgba(56,189,248,0.25) 100%)',
+      };
+    case 'Искусство':
+      return {
+        chip: 'bg-pink-100 text-pink-700',
+        button: 'bg-pink-600 text-white',
+        buttonHover: 'hover:bg-pink-700',
+        icon: 'text-pink-700',
+        headerBgLight: 'linear-gradient(135deg, #fce7f3 0%, #fed7aa 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(236,72,153,0.35) 0%, rgba(249,115,22,0.25) 100%)',
+      };
+    case 'Кино':
+      return {
+        chip: 'bg-indigo-100 text-indigo-700',
+        button: 'bg-indigo-600 text-white',
+        buttonHover: 'hover:bg-indigo-700',
+        icon: 'text-indigo-700',
+        headerBgLight: 'linear-gradient(135deg, #c7d2fe 0%, #e2e8f0 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(99,102,241,0.35) 0%, rgba(148,163,184,0.25) 100%)',
+      };
+    case 'Музыка':
+      return {
+        chip: 'bg-violet-100 text-violet-700',
+        button: 'bg-violet-600 text-white',
+        buttonHover: 'hover:bg-violet-700',
+        icon: 'text-violet-700',
+        headerBgLight: 'linear-gradient(135deg, #ddd6fe 0%, #fecdd3 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(139,92,246,0.35) 0%, rgba(244,63,94,0.25) 100%)',
+      };
+    case 'Образование':
+      return {
+        chip: 'bg-sky-100 text-sky-700',
+        button: 'bg-sky-600 text-white',
+        buttonHover: 'hover:bg-sky-700',
+        icon: 'text-sky-700',
+        headerBgLight: 'linear-gradient(135deg, #bae6fd 0%, #d1fae5 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(56,189,248,0.32) 0%, rgba(16,185,129,0.25) 100%)',
+      };
+    case 'Семья':
+      return {
+        chip: 'bg-rose-100 text-rose-700',
+        button: 'bg-rose-600 text-white',
+        buttonHover: 'hover:bg-rose-700',
+        icon: 'text-rose-700',
+        headerBgLight: 'linear-gradient(135deg, #fecdd3 0%, #fde68a 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(244,63,94,0.32) 0%, rgba(251,191,36,0.25) 100%)',
+      };
+    case 'Театр':
+      return {
+        chip: 'bg-purple-100 text-purple-700',
+        button: 'bg-purple-600 text-white',
+        buttonHover: 'hover:bg-purple-700',
+        icon: 'text-purple-700',
+        headerBgLight: 'linear-gradient(135deg, #e9d5ff 0%, #fecdd3 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(168,85,247,0.35) 0%, rgba(244,63,94,0.25) 100%)',
+      };
+    case 'Фестивали, праздники':
+      return {
+        chip: 'bg-amber-100 text-amber-800',
+        button: 'bg-fuchsia-600 text-white',
+        buttonHover: 'hover:bg-fuchsia-700',
+        icon: 'text-fuchsia-700',
+        headerBgLight: 'linear-gradient(135deg, #fde68a 0%, #fce7f3 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(251,191,36,0.30) 0%, rgba(217,70,239,0.25) 100%)',
+      };
+    case 'Юмор':
+      return {
+        chip: 'bg-yellow-100 text-yellow-800',
+        button: 'bg-yellow-600 text-white',
+        buttonHover: 'hover:bg-yellow-700',
+        icon: 'text-yellow-700',
+        headerBgLight: 'linear-gradient(135deg, #fef08a 0%, #dcfce7 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(250,204,21,0.32) 0%, rgba(132,204,22,0.25) 100%)',
+      };
+    case 'Волонтерство':
+      return {
+        chip: 'bg-emerald-100 text-emerald-700',
+        button: 'bg-emerald-600 text-white',
+        buttonHover: 'hover:bg-emerald-700',
+        icon: 'text-emerald-600',
+        headerBgLight: 'linear-gradient(135deg, #d1fae5 0%, #ccfbf1 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(132,204,22,0.32) 0%, rgba(16,185,129,0.28) 100%)',
+      };
+    case 'Медиа':
+      return {
+        chip: 'bg-violet-100 text-violet-700',
+        button: 'bg-violet-600 text-white',
+        buttonHover: 'hover:bg-violet-700',
+        icon: 'text-violet-600',
+        headerBgLight: 'linear-gradient(135deg, #ddd6fe 0%, #c7d2fe 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(139,92,246,0.35) 0%, rgba(59,130,246,0.25) 100%)',
+      };
+    case 'Наука':
+      return {
+        chip: 'bg-sky-100 text-sky-700',
+        button: 'bg-sky-600 text-white',
+        buttonHover: 'hover:bg-sky-700',
+        icon: 'text-sky-600',
+        headerBgLight: 'linear-gradient(135deg, #bae6fd 0%, #cffafe 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(56,189,248,0.32) 0%, rgba(34,211,238,0.28) 100%)',
+      };
+    case 'Отряды':
+      return {
+        chip: 'bg-orange-100 text-orange-700',
+        button: 'bg-orange-600 text-white',
+        buttonHover: 'hover:bg-orange-700',
+        icon: 'text-orange-600',
+        headerBgLight: 'linear-gradient(135deg, #fed7aa 0%, #fecdd3 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(249,115,22,0.35) 0%, rgba(244,63,94,0.25) 100%)',
+      };
+    case 'Самоуправление':
+      return {
+        chip: 'bg-blue-100 text-blue-700',
+        button: 'bg-blue-600 text-white',
+        buttonHover: 'hover:bg-blue-700',
+        icon: 'text-blue-600',
+        headerBgLight: 'linear-gradient(135deg, #e2e8f0 0%, #dbeafe 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(37,99,235,0.32) 0%, rgba(148,163,184,0.25) 100%)',
+      };
+    case 'Спорт':
+      return {
+        chip: 'bg-rose-100 text-rose-700',
+        button: 'bg-rose-600 text-white',
+        buttonHover: 'hover:bg-rose-700',
+        icon: 'text-rose-600',
+        headerBgLight: 'linear-gradient(135deg, #d1fae5 0%, #fecdd3 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(132,204,22,0.32) 0%, rgba(244,63,94,0.25) 100%)',
+      };
+    case 'Творчество':
+      return {
+        chip: 'bg-pink-100 text-pink-700',
+        button: 'bg-pink-600 text-white',
+        buttonHover: 'hover:bg-pink-700',
+        icon: 'text-pink-600',
+        headerBgLight: 'linear-gradient(135deg, #fce7f3 0%, #fce7f3 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(236,72,153,0.35) 0%, rgba(217,70,239,0.28) 100%)',
+      };
+    default:
+      return {
+        chip: 'bg-slate-100 text-slate-700',
+        button: 'bg-slate-700 text-white',
+        buttonHover: 'hover:bg-slate-800',
+        icon: 'text-slate-600',
+        headerBgLight: 'linear-gradient(135deg, #e2e8f0 0%, #f5f5f5 100%)',
+        headerBgDark: 'linear-gradient(135deg, rgba(148,163,184,0.30) 0%, rgba(113,113,122,0.25) 100%)',
+      };
+  }
+}
+
 export function getPastelTheme(theme: ThemeName): PastelTheme {
   switch (theme) {
     case 'Бизнес':

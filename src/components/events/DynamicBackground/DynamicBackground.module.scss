@@ -7,7 +7,7 @@
   overflow: hidden;
 }
 
-// Анимированные градиентные слои для более динамичного фона
+// Анимированные градиентные слои для более динамичного фона (TikTok версия - более насыщенная)
 .gradientLayer1,
 .gradientLayer2,
 .gradientLayer3 {
@@ -15,7 +15,7 @@
   inset: -50%;
   border-radius: 50%;
   filter: blur(120px);
-  opacity: 0.75; // Увеличенная насыщенность
+  opacity: 0.85; // Еще более насыщенная версия для TikTok
   mix-blend-mode: overlay;
   will-change: transform;
   animation: float 20s ease-in-out infinite;
