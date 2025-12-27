@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Ticket } from 'lucide-react';
 import styles from './SwipeButton.module.scss';
 
 interface SwipeButtonProps {
@@ -25,7 +25,7 @@ export default function SwipeButton({
   isLoading = false,
   isRegistered = false,
   onUnregister,
-  text = 'Свайп для регистрации →',
+  text = 'Свайп для регистрации',
   registeredText = 'Вы записаны',
 }: SwipeButtonProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -101,14 +101,16 @@ export default function SwipeButton({
   }, [disabled, isLoading, isRegistered, hasCompleted, onSwipeComplete, onUnregister, x]);
 
   if (isRegistered && onUnregister) {
-    // Кнопка отмены регистрации (без swipe)
+    // Кнопка-билет после регистрации
     return (
       <button
-        className={styles.unregisterButton}
+        className={styles.ticketButton}
         onClick={onUnregister}
         disabled={disabled || isLoading}>
-        <Check size={20} />
-        <span>{registeredText}</span>
+        <div className={styles.ticketContent}>
+          <Ticket size={22} />
+          <span className={styles.ticketText}>Билет</span>
+        </div>
       </button>
     );
   }

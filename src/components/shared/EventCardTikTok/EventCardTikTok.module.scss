@@ -227,6 +227,12 @@
 
 .registerButtonWrapper {
   position: relative;
+  overflow: visible; // Для перфорации билета
+  margin: 0 -12px; // Компенсируем перфорацию билета
+
+  @media (max-width: 768px) {
+    margin: 0 -10px;
+  }
 }
 
 .pastEventButton {
