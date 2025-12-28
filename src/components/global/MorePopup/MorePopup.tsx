@@ -1,9 +1,7 @@
 'use client'
 
 import React, { useMemo, useEffect, useRef, useCallback, useState } from 'react'
-import { Bell, FileText, HelpCircle, Shield, UserPlus } from 'lucide-react'
-import { useAuth } from '@/providers/AuthProvider'
-import { UserRole } from '@/types/user.interface'
+import { FileText, HelpCircle, Users } from 'lucide-react'
 import Link from 'next/link'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import { useScrollLock } from '../PopUpWrapper/useScrollLock'
@@ -17,7 +15,6 @@ interface MorePopupProps {
 }
 
 const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
-  const { user, isLoggedIn } = useAuth()
   const [mounted, setMounted] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [dragTranslateY, setDragTranslateY] = useState(0)
@@ -46,45 +43,18 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen])
 
-  // Определяем доступ к админке
-  const hasAdminAccess = isLoggedIn && user && user.role !== UserRole.User
-
   // Карточки действий
   const actionCards = useMemo(() => {
-    const cards = []
-
-    // Друзья (только для авторизованных)
-    if (isLoggedIn) {
-      cards.push({
-        id: 'friends',
-        icon: <UserPlus size={24} strokeWidth={1.8} />,
-        title: 'Друзья',
-        path: '/friends',
+    return [
+      {
+        id: 'groups',
+        icon: <Users size={24} strokeWidth={1.8} />,
+        title: 'Группы',
+        path: '/groups',
         color: 'var(--main-Color)',
-      })
-
-      cards.push({
-        id: 'notifications',
-        icon: <Bell size={24} strokeWidth={1.8} />,
-        title: 'Уведомления',
-        path: '/notifications',
-        color: 'var(--main-Color)',
-      })
-    }
-
-    // Админка (только если есть доступ)
-    if (hasAdminAccess) {
-      cards.push({
-        id: 'admin',
-        icon: <Shield size={24} strokeWidth={1.8} />,
-        title: 'Админка',
-        path: '/admin/',
-        color: 'var(--main-Color)',
-      })
-    }
-
-    return cards
-  }, [hasAdminAccess])
+      },
+    ]
+  }, [])
 
   // Обработка драга
   const handlePointerDown = useCallback((clientY: number) => {
