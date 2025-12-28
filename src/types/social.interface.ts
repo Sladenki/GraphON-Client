@@ -13,6 +13,12 @@ export interface SocialUserListItem {
   friendsCount: number;
   followersCount: number;
   followingCount: number;
+  metaPills?: string[];
+  topInterests?: Array<{
+    _id: string;
+    name: string;
+    displayName: string;
+  }>;
 }
 
 export type RelationshipStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED';

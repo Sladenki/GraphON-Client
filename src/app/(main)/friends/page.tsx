@@ -12,6 +12,7 @@ import type { SocialUserListItem } from '@/types/social.interface';
 import type { IUser } from '@/types/user.interface';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { Users, UserPlus, Send } from 'lucide-react';
+import { getPastelTheme, type ThemeName } from '@/components/shared/EventCard/pastelTheme';
 
 type TabKey = 'people' | 'incoming' | 'outgoing' | 'friends';
 
@@ -344,16 +345,9 @@ export default function FriendsPage() {
     },
   });
 
-  const renderUserRow = (u: {
-    _id: string;
-    firstName?: string;
-    lastName?: string;
-    username?: string;
-    avaPath?: string;
-    metaPills?: string[];
-  }) => {
+  const renderUserRow = (u: Partial<SocialUserListItem> & { _id: string; firstName?: string; lastName?: string; username?: string; avaPath?: string }) => {
     const isMe = myUserId && u._id === myUserId;
-    const avaUrl = resolveAvaUrl(u.avaPath);
+    const avaUrl = resolveAvaUrl(u.avaPath || '');
     const isFriend = friendsIds.has(u._id);
     const hasIncoming = followersIds.has(u._id);
     const hasOutgoing = followingIds.has(u._id);
@@ -421,6 +415,20 @@ export default function FriendsPage() {
                     {p}
                   </span>
                 ))}
+              </div>
+            ) : null}
+
+            {u.topInterests?.length ? (
+              <div className={styles.interests}>
+                {u.topInterests.map((interest) => {
+                  const themeName = interest.name as ThemeName;
+                  const theme = getPastelTheme(themeName);
+                  return (
+                    <span key={interest._id} className={`${styles.interestPill} ${theme.chip}`}>
+                      {interest.displayName || interest.name}
+                    </span>
+                  );
+                })}
               </div>
             ) : null}
           </div>
@@ -594,11 +602,7 @@ export default function FriendsPage() {
             <div className={styles.list} style={{ marginTop: 12 }}>
               {!isSearchingPeople && peopleUsers.map((u) =>
                 renderUserRow({
-                  _id: u._id,
-                  firstName: u.firstName,
-                  lastName: u.lastName,
-                  username: u.username,
-                  avaPath: u.avaPath,
+                  ...u,
                   metaPills: [
                     `Друзья: ${u.friendsCount ?? 0}`,
                     `Подписчики: ${u.followersCount ?? 0}`,
@@ -616,11 +620,7 @@ export default function FriendsPage() {
 
               {isSearchingPeople && peopleUsers.map((u) =>
                 renderUserRow({
-                  _id: u._id,
-                  firstName: u.firstName,
-                  lastName: u.lastName,
-                  username: u.username,
-                  avaPath: u.avaPath,
+                  ...u,
                   metaPills: [
                     `Друзья: ${u.friendsCount ?? 0}`,
                     `Подписчики: ${u.followersCount ?? 0}`,
