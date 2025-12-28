@@ -5,10 +5,11 @@ import { useQuery } from '@tanstack/react-query'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import { ErrorState } from '@/components/global/ErrorState/ErrorState'
-import { Search } from 'lucide-react'
+import { Search, SlidersHorizontal } from 'lucide-react'
 
 import SchedulePopUp from '@/app/(main)/groups/SchedulePopUp/SchedulePopUp'
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useFetchBunchData } from '@/hooks/useFetchBunchData'
 import { useSearchWithTags } from '@/hooks/useSearchWithTags'
 import { useSelectedGraphId } from '@/stores/useUIStore'
@@ -93,10 +94,11 @@ export default function GroupsList() {
     router.replace(qs ? `/groups/?${qs}` : '/groups/')
   }
 
-  const handleTabChange = (tab: GroupsPillTab) => {
-    if (!isLoggedIn && tab === 'subs') return
-    setActiveTab(tab)
-    setTabInUrl(tab)
+  const handleTabChange = (tab: GroupsPillTab | string | number) => {
+    const tabKey = tab as GroupsPillTab
+    if (!isLoggedIn && tabKey === 'subs') return
+    setActiveTab(tabKey)
+    setTabInUrl(tabKey)
     // Очищаем поиск и фильтры при переключении вкладки
     setQuery('')
     setSelectedTags([])
@@ -215,22 +217,36 @@ export default function GroupsList() {
     )
   }
 
+  const isMobile = useMediaQuery('(max-width: 768px)')
+
+  const handleFilterClick = useCallback(() => {
+    // Пока что просто очищаем фильтры при клике на иконку фильтров
+    clearFilters()
+  }, [clearFilters])
+
   return (
     <div className={styles.container}>
       {/* PillTabs для переключения между вкладками */}
       <div className={styles.tabsRow}>
-        <PillTabs
-          options={[
-            ...(hasManagedGroups ? [{ key: 'manage', label: 'Управление' }] : []),
-            { key: 'groups', label: 'Группы' },
-            ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки' }] : []),
-          ]}
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-                />
-              </div>
+        {isMobile && (
+          <button className={styles.filterButton} aria-label="Фильтры" onClick={handleFilterClick}>
+            <SlidersHorizontal />
+          </button>
+        )}
+        <div className={styles.pillsWrapper}>
+          <PillTabs
+            options={[
+              ...(hasManagedGroups ? [{ key: 'manage', label: 'Управление' }] : []),
+              { key: 'groups', label: 'Группы' },
+              ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки' }] : []),
+            ]}
+            activeKey={activeTab}
+            onChange={handleTabChange}
+          />
+        </div>
+      </div>
 
-      {/* Поиск и фильтры - всегда видимый */}
+      {/* Поиск и фильтры - скрыт на мобильных */}
       <div className={styles.searchSection}>
         <SearchBar
           onSearch={handleSearch}

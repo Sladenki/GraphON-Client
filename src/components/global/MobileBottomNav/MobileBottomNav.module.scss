@@ -20,7 +20,7 @@
 
 .navList {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   gap: 0;
   padding: 0;
@@ -47,7 +47,7 @@
   gap: 0;
   text-decoration: none;
   color: inherit;
-  padding: 10px;
+  padding: 6px;
   border-radius: 50%;
   border: none;
   background: transparent;
@@ -57,6 +57,7 @@
   min-width: 44px;
   height: 44px;
   touch-action: manipulation;
+  margin: 0 -2px;
 
   // Hover state (desktop only)
   @media (hover: hover) {
@@ -140,11 +141,12 @@
   }
 
   .navLink {
-    padding: 10px;
+    padding: 6px;
     gap: 0;
     border-radius: 50%;
     min-width: 44px;
     height: 44px;
+    margin: 0 -2px;
   }
 
   .iconWrapper {

@@ -17,6 +17,8 @@ import { EventService } from '@/services/event.service';
 import { GraphSubsService } from '@/services/graphSubs.service';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getThemeName } from '@/components/shared/EventCard/pastelTheme';
+import { SlidersHorizontal } from 'lucide-react';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import styles from './EventsTikTokFeed.module.scss';
 
 type EventsPillTab = 'groups' | 'students' | 'subs';
@@ -29,6 +31,7 @@ export default function EventsTikTokFeed() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const subsCount = user?.graphSubsNum ?? 0;
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const [filterByTheme, setFilterByTheme] = useState<ThemeName | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -195,16 +198,23 @@ export default function EventsTikTokFeed() {
     <div className={styles.wrapper}>
       {/* Переключатель вкладок */}
       <div className={styles.tabsContainer}>
-        <PillTabs
-          options={[
-            { key: 'groups', label: 'События' },
-            { key: 'students', label: 'Студенчество' },
-            ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки', badge: subsCount }] : []),
-          ]}
-          activeKey={activeTab}
-          onChange={(key) => handleTabChange(key as EventsPillTab)}
-          aria-label="Фильтр событий"
-        />
+        {isMobile && (
+          <button className={styles.filterButton} aria-label="Фильтры" onClick={() => handleFilterChange(null)}>
+            <SlidersHorizontal />
+          </button>
+        )}
+        <div className={styles.pillsWrapper}>
+          <PillTabs
+            options={[
+              { key: 'groups', label: 'События' },
+              { key: 'students', label: 'Студенчество' },
+              ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки', badge: subsCount }] : []),
+            ]}
+            activeKey={activeTab}
+            onChange={(key) => handleTabChange(key as EventsPillTab)}
+            aria-label="Фильтр событий"
+          />
+        </div>
       </div>
 
       {events.length === 0 ? (

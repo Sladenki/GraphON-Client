@@ -3,8 +3,9 @@
   --ink: var(--ink, #2d2933);
   --ink-secondary: var(--ink-secondary, #5f5a6c);
 
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: 6px;
   border-radius: 999px;

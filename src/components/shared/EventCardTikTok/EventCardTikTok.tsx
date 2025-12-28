@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Share2,
+  Share,
   CalendarClock,
   MapPinned,
   LogIn,
@@ -193,7 +193,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
 
           <div className={styles.headerActions}>
             <button className={styles.shareButton} onClick={handleShare} aria-label="Поделиться">
-              <Share2 size={16} />
+              <Share />
             </button>
           </div>
         </div>

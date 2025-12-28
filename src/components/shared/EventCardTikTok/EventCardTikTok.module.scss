@@ -84,22 +84,51 @@
 }
 
 .shareButton {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  color: var(--main-text, #5f5a6c);
+  background: transparent;
+  color: #8A7AB8;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.18s ease, transform 0.1s ease;
+  touch-action: manipulation;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgba(110, 90, 214, 0.12);
+    }
+  }
 
   &:active {
-    background: rgba(255, 255, 255, 0.9);
-    transform: scale(0.95);
+    background-color: rgba(110, 90, 214, 0.18);
+    transform: scale(0.97);
+  }
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: #8A7AB8;
+    
+    @media (hover: hover) {
+      &:hover {
+        background-color: rgba(150, 130, 238, 0.15);
+      }
+    }
+
+    &:active {
+      background-color: rgba(150, 130, 238, 0.2);
+    }
   }
 }
 

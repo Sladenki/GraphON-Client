@@ -13,10 +13,84 @@
   margin-bottom: 16px;
   justify-content: center;
   padding-top: 16px;
+  align-items: center;
+}
+
+.filterButton {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #8A7AB8;
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.1s ease;
+  touch-action: manipulation;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgba(110, 90, 214, 0.12);
+    }
+  }
+
+  &:active {
+    background-color: rgba(110, 90, 214, 0.18);
+    transform: scale(0.97);
+  }
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: #8A7AB8;
+    
+    @media (hover: hover) {
+      &:hover {
+        background-color: rgba(150, 130, 238, 0.15);
+      }
+    }
+
+    &:active {
+      background-color: rgba(150, 130, 238, 0.2);
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+}
+
+.pillsWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+
+  :global(.rail) {
+    width: 100%;
+    max-width: 100%;
+    display: flex !important;
+  }
 }
 
 .searchSection {
   padding: 20px 0;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .ownedSection {
@@ -84,6 +158,14 @@
   .tabsRow {
     padding-top: 12px;
     margin-bottom: 12px;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .pillsWrapper {
+    flex: 1;
+    justify-content: center;
+    width: 100%;
   }
 
   .ownedSection {
@@ -93,10 +175,6 @@
   .sectionTitle {
     font-size: 15px;
     margin: 4px 0 8px;
-  }
-
-  .searchSection {
-    padding: 16px 0;
   }
 
   .searchResults {
