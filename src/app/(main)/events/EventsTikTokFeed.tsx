@@ -45,13 +45,14 @@ export default function EventsTikTokFeed() {
 
   const [activeTab, setActiveTab] = useState<EventsPillTab>(initialTab);
 
-  // Синхронизация таба с URL и авторизацией
+  // Синхронизация таба с URL (простая логика как в EventsList)
   useEffect(() => {
     if (!isLoggedIn && activeTab === 'subs') {
       setActiveTab('groups');
-    } else if (initialTab !== activeTab) {
+    } else {
       setActiveTab(initialTab);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, initialTab]);
 
   const setTabInUrl = (tab: EventsPillTab) => {
@@ -61,6 +62,7 @@ export default function EventsTikTokFeed() {
     } else if (tab === 'students') {
       sp.set('tab', 'students');
     } else {
+      // Для 'groups' удаляем параметр tab
       sp.delete('tab');
     }
     const qs = sp.toString();
@@ -69,9 +71,10 @@ export default function EventsTikTokFeed() {
 
   const handleTabChange = (tab: EventsPillTab) => {
     if (!isLoggedIn && tab === 'subs') return;
+    // Сначала обновляем состояние, затем URL (как в EventsList)
     setActiveTab(tab);
-    setTabInUrl(tab);
     setCurrentIndex(0); // Сбрасываем индекс при смене таба
+    setTabInUrl(tab);
   };
 
   // Загрузка событий в зависимости от активного таба
