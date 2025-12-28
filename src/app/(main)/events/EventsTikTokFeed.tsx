@@ -17,7 +17,6 @@ import { EventService } from '@/services/event.service';
 import { GraphSubsService } from '@/services/graphSubs.service';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getThemeName } from '@/components/shared/EventCard/pastelTheme';
-import { SlidersHorizontal } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import styles from './EventsTikTokFeed.module.scss';
 
@@ -208,11 +207,6 @@ export default function EventsTikTokFeed() {
     <div className={styles.wrapper}>
       {/* Переключатель вкладок */}
       <div className={styles.tabsContainer}>
-        {isMobile && (
-          <button className={styles.filterButton} aria-label="Фильтры" onClick={() => handleFilterChange(null)}>
-            <SlidersHorizontal />
-          </button>
-        )}
         <div className={styles.pillsWrapper}>
           <PillTabs
             options={[
@@ -222,6 +216,7 @@ export default function EventsTikTokFeed() {
             ]}
             activeKey={activeTab}
             onChange={(key) => handleTabChange(key as EventsPillTab)}
+            className={styles.fullWidthRail}
             aria-label="Фильтр событий"
           />
         </div>
