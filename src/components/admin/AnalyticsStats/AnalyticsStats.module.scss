@@ -1,0 +1,100 @@
+.statsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 20px 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.statCard {
+  background: #E6E1FA; // Light pastel purple (как в MobileBottomNav)
+  border: none;
+  border-radius: 24px; // Более закругленные углы
+  padding: 20px 24px;
+  text-align: center;
+  transition: all 0.18s ease;
+  position: relative;
+  overflow: hidden;
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(110, 90, 214, 0.15);
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: #2A2538; // Dark theme background (как в MobileBottomNav)
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+    border-radius: 20px;
+  }
+}
+
+.statLabel {
+  font-size: 12px;
+  color: #8A7AB8; // Inactive icon color (как в MobileBottomNav)
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: #8A8799; // Dark theme inactive color
+  }
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: #6E5AD6; // Active background color (как в MobileBottomNav)
+  line-height: 1.2;
+  font-family: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: #9682EE; // Dark theme active color
+  }
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.error {
+  padding: 20px;
+  text-align: center;
+  color: var(--error-color, #ef4444);
+  font-size: 16px;
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: #f87171;
+  }
+}
+

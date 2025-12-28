@@ -14,10 +14,8 @@ import { CreateScheduleForm } from '@/components/admin/CreateScheduleForm/Create
 import { TransferGraphOwnershipForm } from '@/components/admin/TransferGraphOwnershipForm/TransferGraphOwnershipForm';
 import { useRoleAccess } from '@/hooks/useRoleAccess';
 import { AdminSection } from '@/components/admin/AdminSection/AdminSection';
-import { UserStats } from '@/components/admin/UserStats/UserStats';
 import { ServerStats } from '@/components/admin/ServerStats/ServerStats';
-import { VisitorAnalytics } from '@/components/admin/VisitorAnalytics/VisitorAnalytics';
-import { DownloadsAnalytics } from '@/components/admin/DownloadsAnalytics/DownloadsAnalytics';
+import { AnalyticsStats } from '@/components/admin/AnalyticsStats/AnalyticsStats';
 import { CreateGlobalGraphForm } from '@/components/admin/CreateGlobalGraphForm/CreateGlobalGraphForm';
 import { CreateTopicGraphForm } from '@/components/admin/CreateTopicGraphForm/CreateTopicGraphForm';
 import { GetWeeklySchedule } from '@/components/admin/GetWeeklySchedule/GetWeeklySchedule';
@@ -66,31 +64,11 @@ const Admin = () => {
             </div>
             {canAccessCreate && (
                 <AdminSection 
-                    title="Статистика пользователей"
+                    title="Статистика"
                     emoji="📊"
                     role={UserRole.Create}
                 >
-                    <UserStats />
-                </AdminSection>
-            )}
-
-            {canAccessCreate && (
-                <AdminSection 
-                    title="Аналитика посещаемости"
-                    emoji="📈"
-                    role={UserRole.Create}
-                >
-                    <VisitorAnalytics />
-                </AdminSection>
-            )}
-
-            {canAccessCreate && (
-                <AdminSection
-                    title="Аналитика скачиваний"
-                    emoji="📥"
-                    role={UserRole.Create}
-                >
-                    <DownloadsAnalytics />
+                    <AnalyticsStats />
                 </AdminSection>
             )}
 

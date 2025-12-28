@@ -80,19 +80,19 @@ const MobileBottomNav: React.FC = () => {
 
           {/* АДМИНКА */}
           {hasAdminAccess && (
-            <li className={styles.navItem}>
+          <li className={styles.navItem}>
               <Link 
                 href="/admin/" 
                 className={`${styles.navLink} ${isActive('/admin') ? styles.active : ""}`} 
                 aria-label="Админка" 
                 aria-current={isActive('/admin') ? "page" : undefined}
-              >
-                <span className={styles.iconWrapper}>
+            >
+              <span className={styles.iconWrapper}>
                   <Shield size={18} strokeWidth={1.5} />
-                </span>
+              </span>
                 <span className={styles.srOnly}>Админка</span>
               </Link>
-            </li>
+          </li>
           )}
         </ul>
       </nav>

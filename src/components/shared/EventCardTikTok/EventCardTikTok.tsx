@@ -238,7 +238,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
         setIsCompanyRequestModalOpen(true);
       } else {
         notifyError('Не удалось создать запрос');
-      }
+    }
     } finally {
       setIsCreatingRequest(false);
     }
@@ -336,10 +336,10 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
         </div>
 
         {event.place && (
-          <div className={styles.placeInfo}>
-            <MapPinned size={20} />
-            <span className={styles.placeText}>{event.place}</span>
-          </div>
+        <div className={styles.placeInfo}>
+          <MapPinned size={20} />
+          <span className={styles.placeText}>{event.place}</span>
+        </div>
         )}
       </div>
 
@@ -376,7 +376,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
               registeredText="Вы записаны"
             />
           )}
-        </div>
+      </div>
 
         {/* Анимация перемещения аватарки от кнопки к списку */}
         <AnimatePresence>

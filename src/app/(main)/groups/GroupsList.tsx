@@ -234,17 +234,17 @@ export default function GroupsList() {
           </button>
         )}
         <div className={styles.pillsWrapper}>
-          <PillTabs
-            options={[
-              ...(hasManagedGroups ? [{ key: 'manage', label: 'Управление' }] : []),
-              { key: 'groups', label: 'Группы' },
-              ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки' }] : []),
-            ]}
+        <PillTabs
+          options={[
+            ...(hasManagedGroups ? [{ key: 'manage', label: 'Управление' }] : []),
+            { key: 'groups', label: 'Группы' },
+            ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки' }] : []),
+          ]}
             activeKey={activeTab}
             onChange={handleTabChange}
-          />
+                />
         </div>
-      </div>
+              </div>
 
       {/* Поиск и фильтры - скрыт на мобильных */}
       <div className={styles.searchSection}>
