@@ -1,0 +1,34 @@
+.modalContent {
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 0;
+  max-width: 600px;
+  width: 90%;
+}
+
+.modalHeader {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-color, #1a1825);
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: var(--text-color, #f5f4f8);
+  }
+}
+
+.modalBody {
+  padding: 24px;
+}
+

@@ -2,7 +2,7 @@
 
 import { GraphService } from '@/services/graph.service';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './admin.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { useAuth } from '@/providers/AuthProvider';
@@ -22,11 +22,15 @@ import { CreateGlobalGraphForm } from '@/components/admin/CreateGlobalGraphForm/
 import { CreateTopicGraphForm } from '@/components/admin/CreateTopicGraphForm/CreateTopicGraphForm';
 import { GetWeeklySchedule } from '@/components/admin/GetWeeklySchedule/GetWeeklySchedule';
 import { useSelectedGraphId } from '@/stores/useUIStore';
+import CreateEventModal from '@/components/shared/CreateEventModal/CreateEventModal';
+import { Plus } from 'lucide-react';
 
 const Admin = () => {
     const { user } = useAuth();
     const typedUser = user as IUser | null;
     const { canAccessCreate, canAccessEditor, canAccessSysAdmin, canAccessAdmin } = useRoleAccess(typedUser?.role);
+    const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
+    const [isSuggestEventModalOpen, setIsSuggestEventModalOpen] = useState(false);
 
     // Получение дочерних графов выбранного графа
     const selectedGraphId = useSelectedGraphId();
@@ -41,6 +45,25 @@ const Admin = () => {
 
     return (
         <div className={styles.createPostWrapper}>
+            {/* Pill-кнопки для создания мероприятия */}
+            <div className={styles.createEventPills}>
+                <button 
+                    className={styles.createPill}
+                    onClick={() => setIsCreateEventModalOpen(true)}
+                    aria-label="Создать мероприятие"
+                >
+                    <Plus size={16} />
+                    <span>Создать мероприятие</span>
+                </button>
+                <button 
+                    className={styles.suggestPill}
+                    onClick={() => setIsSuggestEventModalOpen(true)}
+                    aria-label="Предложить мероприятие"
+                >
+                    <Plus size={16} />
+                    <span>Предложить мероприятие</span>
+                </button>
+            </div>
             {canAccessCreate && (
                 <AdminSection 
                     title="Статистика пользователей"
@@ -140,6 +163,17 @@ const Admin = () => {
                     <CreateEventForm globalGraphId={user?.selectedGraphId || ''} />
                 </AdminSection>
             )}
+
+            {/* Создание мероприятия для обычных пользователей */}
+            {typedUser?.role === UserRole.User && mainTopics && (
+                <AdminSection 
+                    title="Создание мероприятия"
+                    emoji="📅"
+                    role={UserRole.User}
+                >
+                    <CreateEventForm globalGraphId={user?.selectedGraphId || ''} hideGraphDropdown={true} />
+                </AdminSection>
+            )}
             
             {canAccessEditor && mainTopics && (
                 <AdminSection 
@@ -160,6 +194,17 @@ const Admin = () => {
                     <GetWeeklySchedule />
                 </AdminSection>
             )}
+
+            <CreateEventModal 
+                isOpen={isCreateEventModalOpen} 
+                onClose={() => setIsCreateEventModalOpen(false)}
+                isSuggestion={false}
+            />
+            <CreateEventModal 
+                isOpen={isSuggestEventModalOpen} 
+                onClose={() => setIsSuggestEventModalOpen(false)}
+                isSuggestion={true}
+            />
         </div>
     );
 };

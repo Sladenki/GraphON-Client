@@ -4,13 +4,16 @@ export const EventService = {
 
     // --- Создание мероприятия ---
     async createEvent(eventData: {
-        graphId: string;
+        graphId?: string; // Для владельцев групп
+        parentGraphId?: string; // Для студентов (тематика)
         name: string;
-        description: string;
-        eventDate: string;
-        timeFrom: string;
-        timeTo: string;
+        description?: string;
+        place?: string;
+        eventDate?: string;
+        timeFrom?: string;
+        timeTo?: string;
         globalGraphId: string;
+        isDateTbd?: boolean;
     }) {
         return axiosAuth.post("/event/create", eventData);
     },
@@ -22,6 +25,17 @@ export const EventService = {
         if (limit !== undefined) params.append('limit', limit.toString());
         const queryString = params.toString();
         return axiosAuth.get(`/event/upcoming/${selectedGraphId}${queryString ? `?${queryString}` : ''}`);
+    },
+
+    // --- Получение мероприятий, созданных студентами ---
+    async getStudentCreatedEvents(globalGraphId?: string, parentGraphId?: string, skip?: number, limit?: number) {
+        const params = new URLSearchParams();
+        if (globalGraphId) params.append('globalGraphId', globalGraphId);
+        if (parentGraphId) params.append('parentGraphId', parentGraphId);
+        if (skip !== undefined) params.append('skip', skip.toString());
+        if (limit !== undefined) params.append('limit', limit.toString());
+        const queryString = params.toString();
+        return axiosAuth.get(`/event/student-created${queryString ? `?${queryString}` : ''}`);
     },
 
     // --- Получение мероприятия по ID ---

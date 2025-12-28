@@ -39,6 +39,7 @@ export default function EventsTikTokFeed() {
   const initialTab: EventsPillTab = useMemo(() => {
     const tab = searchParams.get('tab');
     if (tab === 'subs') return 'subs';
+    if (tab === 'students') return 'students';
     return 'groups';
   }, [searchParams]);
 
@@ -48,15 +49,20 @@ export default function EventsTikTokFeed() {
   useEffect(() => {
     if (!isLoggedIn && activeTab === 'subs') {
       setActiveTab('groups');
-    } else {
+    } else if (initialTab !== activeTab) {
       setActiveTab(initialTab);
     }
-  }, [isLoggedIn, initialTab, activeTab]);
+  }, [isLoggedIn, initialTab]);
 
   const setTabInUrl = (tab: EventsPillTab) => {
     const sp = new URLSearchParams(searchParams.toString());
-    if (tab === 'subs') sp.set('tab', 'subs');
-    else sp.delete('tab');
+    if (tab === 'subs') {
+      sp.set('tab', 'subs');
+    } else if (tab === 'students') {
+      sp.set('tab', 'students');
+    } else {
+      sp.delete('tab');
+    }
     const qs = sp.toString();
     router.replace(qs ? `/events/?${qs}` : '/events/');
   };
@@ -90,6 +96,14 @@ export default function EventsTikTokFeed() {
         }
         // Для следующих страниц используем данные из кеша
         return { data: [] };
+      }
+
+      // Для таба 'students' используем endpoint для мероприятий, созданных студентами
+      if (activeTab === 'students') {
+        if (!selectedGraphId) {
+          return { data: [] };
+        }
+        return await EventService.getStudentCreatedEvents(selectedGraphId, undefined, pageParam, EVENTS_PER_PAGE);
       }
 
       // Для остальных табов используем обычный endpoint
@@ -148,13 +162,6 @@ export default function EventsTikTokFeed() {
 
     // Для остальных табов объединяем все страницы
     let allEvents = data.pages.flatMap((page) => page?.data || []);
-
-    // Фильтрация по типу (groups/students) на клиенте
-    if (activeTab === 'students') {
-      // Фильтруем события от студентов (можно добавить логику определения)
-      // Пока что просто возвращаем все события
-      allEvents = allEvents;
-    }
 
     // Фильтрация по тематике
     if (filterByTheme) {

@@ -136,12 +136,38 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     return descriptionText.slice(0, 300);
   }, [descriptionText, shouldTruncate, isDescriptionExpanded]);
 
-  // URL изображения
+  // Проверка, является ли мероприятие созданным студентом
+  const isStudentCreated = (event as any).isStudentCreated === true;
+
+  // Полный URL изображения группы или пользователя
   const fullImageUrl = useMemo(() => {
+    if (isStudentCreated && (event as any).createdBy?.avaPath) {
+      // Для мероприятий, созданных студентами, используем аватар пользователя
+      return (event as any).createdBy.avaPath;
+    }
     if (!event.graphId?.imgPath) return '';
     const baseUrl = process.env.NEXT_PUBLIC_S3_URL;
     return `${baseUrl}/${event.graphId.imgPath}`;
-  }, [event.graphId?.imgPath]);
+  }, [event.graphId?.imgPath, isStudentCreated, (event as any).createdBy?.avaPath]);
+
+  // Получаем название группы или имя пользователя
+  const displayName = useMemo(() => {
+    if (isStudentCreated && (event as any).createdBy) {
+      const createdBy = (event as any).createdBy;
+      return `${createdBy.firstName || ''} ${createdBy.lastName || ''}`.trim() || createdBy.username || '';
+    }
+    return event.graphId?.name || '';
+  }, [isStudentCreated, event.graphId?.name, (event as any).createdBy]);
+
+  // Получаем fallback для аватара (первая буква имени или названия)
+  const avatarFallback = useMemo(() => {
+    if (isStudentCreated && (event as any).createdBy) {
+      const createdBy = (event as any).createdBy;
+      const name = `${createdBy.firstName || ''} ${createdBy.lastName || ''}`.trim() || createdBy.username || '';
+      return name.charAt(0).toUpperCase();
+    }
+    return (event.graphId?.name || '').charAt(0).toUpperCase();
+  }, [isStudentCreated, event.graphId?.name, (event as any).createdBy]);
 
   // Обработчики
   const handleRegistration = useCallback(async () => {
@@ -180,10 +206,17 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     }
   }, [event.name, event.place, formattedTime]);
 
+  // Обработчик клика на группу или пользователя
   const handleGroupClick = useCallback(() => {
+    if (isStudentCreated && (event as any).createdBy?._id) {
+      // Для мероприятий, созданных студентами, переходим на профиль пользователя
+      router.push(`/friends/${(event as any).createdBy._id}`);
+      return;
+    }
     const graphId = typeof event.graphId === 'object' ? event.graphId._id : event.graphId;
+    if (!graphId) return;
     router.push(`/groups/${graphId}`);
-  }, [event.graphId, router]);
+  }, [event.graphId, router, isStudentCreated, (event as any).createdBy?._id]);
 
   const handleCompanyRequest = useCallback(async () => {
     if (!isLoggedIn) {
@@ -244,10 +277,10 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           <div className={styles.groupInfo} onClick={handleGroupClick}>
             <GroupAvatar
               src={fullImageUrl}
-              alt={event.graphId?.name || ''}
-              fallback={event.graphId?.name || ''}
+              alt={displayName}
+              fallback={avatarFallback}
             />
-            <span className={styles.groupName}>{event.graphId?.name || ''}</span>
+            <span className={styles.groupName}>{displayName}</span>
           </div>
 
           <div className={styles.headerActions}>

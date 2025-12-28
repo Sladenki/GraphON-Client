@@ -1,3 +1,102 @@
+.createEventPills {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 16px;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+}
+
+.createPill,
+.suggestPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: none;
+  background: #6E5AD6;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.1s ease;
+  touch-action: manipulation;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.5;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background: #5D4BC8;
+    }
+  }
+
+  &:active {
+    background: #4D3BA8;
+    transform: scale(0.97);
+  }
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: #9682EE;
+    
+    @media (hover: hover) {
+      &:hover {
+        background: #8571DD;
+      }
+    }
+
+    &:active {
+      background: #7460CC;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 14px 24px;
+  }
+}
+
+.suggestPill {
+  background: #8A7AB8;
+
+  @media (hover: hover) {
+    &:hover {
+      background: #7A6AA8;
+    }
+  }
+
+  &:active {
+    background: #6A5A98;
+  }
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: #9D8EC8;
+    
+    @media (hover: hover) {
+      &:hover {
+        background: #8D7EB8;
+      }
+    }
+
+    &:active {
+      background: #7D6EA8;
+    }
+  }
+}
+
 .createPostWrapper {
   padding: 20px;
   max-width: 1200px;

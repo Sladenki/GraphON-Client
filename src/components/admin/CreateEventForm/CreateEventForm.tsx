@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { EventService } from '@/services/event.service';
 import { GraphService } from '@/services/graph.service';
@@ -10,9 +10,11 @@ import styles from './CreateEventForm.module.scss';
 
 interface CreateEventFormProps {
     globalGraphId?: string; // Делаем опциональным
+    hideGraphDropdown?: boolean; // Скрыть дропдаун выбора графа для обычных пользователей
+    onSuccess?: () => void; // Callback после успешного создания
 }
 
-export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
+export const CreateEventForm = ({ globalGraphId, hideGraphDropdown = false, onSuccess }: CreateEventFormProps) => {
     const DESCRIPTION_MAX_LENGTH = 300;
     const { user } = useAuth();
     
@@ -42,35 +44,78 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
         eventDate: '',
         timeFrom: '',
         timeTo: '',
-        graphId: '',
+        graphId: '', // Для владельцев групп
+        parentGraphId: '', // Для студентов (тематика)
         isDateTbd: false
     });
 
     const queryClient = useQueryClient();
 
+    // Для обычных пользователей загружаем тематики (topic graphs), для редакторов - дочерние графы
     const { data: mainTopics = [], isLoading: isLoadingTopics } = useQuery<IGraphList[]>({
-        queryKey: ['mainTopics', selectedGraphId],
+        queryKey: hideGraphDropdown ? ['topicGraphs', selectedGraphId] : ['mainTopics', selectedGraphId],
         queryFn: async () => {
             if (!selectedGraphId) {
                 throw new Error('Не выбран граф');
             }
-            const response = await GraphService.getAllChildrenByGlobal(selectedGraphId);
-            return response.data;
+            if (hideGraphDropdown) {
+                // Для студентов загружаем тематики
+                const response = await GraphService.getGraphsByTopic(selectedGraphId);
+                return response.data;
+            } else {
+                // Для редакторов загружаем дочерние графы
+                const response = await GraphService.getAllChildrenByGlobal(selectedGraphId);
+                return response.data;
+            }
         },
         enabled: !!selectedGraphId // Запрос выполняется только если есть selectedGraphId
     });
 
-    const { mutate: createEvent, isPending } = useMutation({
+        const { mutate: createEvent, isPending } = useMutation({
         mutationFn: () => {
             if (!selectedGraphId) {
                 throw new Error('Не выбран граф');
             }
-            return EventService.createEvent({
-                ...eventData,
+            
+            // Для студентов используем parentGraphId, для редакторов - graphId
+            const requestData: any = {
+                name: eventData.name,
                 globalGraphId: selectedGraphId,
-                // Если дата не указана, отправляем isDateTbd: true
-                ...(eventData.isDateTbd && { eventDate: undefined })
-            });
+                ...(eventData.description && { description: eventData.description }),
+                ...(eventData.place && { place: eventData.place }),
+            };
+
+            if (hideGraphDropdown) {
+                // Для студентов
+                if (!eventData.parentGraphId) {
+                    throw new Error('Выберите тематику');
+                }
+                requestData.parentGraphId = eventData.parentGraphId;
+            } else {
+                // Для редакторов
+                if (!eventData.graphId) {
+                    throw new Error('Выберите граф');
+                }
+                requestData.graphId = eventData.graphId;
+            }
+
+            // Обработка даты и времени
+            if (eventData.isDateTbd) {
+                requestData.isDateTbd = true;
+            } else {
+                if (!eventData.eventDate || !eventData.timeFrom) {
+                    throw new Error('Укажите дату и время или отметьте "Дата уточняется"');
+                }
+                // Преобразуем дату в ISO формат
+                const dateTime = new Date(`${eventData.eventDate}T${eventData.timeFrom}:00`);
+                requestData.eventDate = dateTime.toISOString();
+                requestData.timeFrom = eventData.timeFrom;
+                if (eventData.timeTo) {
+                    requestData.timeTo = eventData.timeTo;
+                }
+            }
+
+            return EventService.createEvent(requestData);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['eventsList'] });
@@ -82,9 +127,11 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                 timeFrom: '',
                 timeTo: '',
                 graphId: '',
+                parentGraphId: '',
                 isDateTbd: false
             });
             notifySuccess('Мероприятие успешно создано!');
+            onSuccess?.(); // Вызываем callback если передан
         },
         onError: (error: any) => {
             console.error('Failed to create event:', error);
@@ -107,13 +154,29 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             notifyError('Не выбран граф для создания мероприятия');
             return;
         }
-        if (!eventData.name || !eventData.description || !eventData.place || !eventData.graphId) {
-            // Если дата уточняется, то eventDate не обязателен
-            if (!eventData.isDateTbd && !eventData.eventDate) return;
+        
+        // Валидация для студентов
+        if (hideGraphDropdown) {
+            if (!eventData.parentGraphId) {
+                notifyError('Выберите тематику');
+                return;
+            }
+        } else {
+            // Валидация для редакторов
+            if (!eventData.graphId) {
+                notifyError('Выберите граф');
+                return;
+            }
+        }
+
+        if (!eventData.name) {
+            notifyError('Введите название мероприятия');
+            return;
         }
         
         // Если дата уточняется, то время не обязательно
-        if (!eventData.isDateTbd && (!eventData.timeFrom || !eventData.timeTo)) return;
+        // timeTo опционально согласно документации
+        if (!eventData.isDateTbd && !eventData.timeFrom) return;
         
         // Проверяем, что дата мероприятия не сегодня и не в прошлом (строго с завтрашнего дня)
         // Только если дата не уточняется
@@ -122,15 +185,15 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
             return;
         }
             
-        // Validate that end time is after start time (только если дата не уточняется)
-        if (!eventData.isDateTbd) {
+        // Validate that end time is after start time (только если дата не уточняется и timeTo указано)
+        if (!eventData.isDateTbd && eventData.timeFrom && eventData.timeTo) {
             const [fromHours, fromMinutes] = eventData.timeFrom.split(':').map(Number);
             const [toHours, toMinutes] = eventData.timeTo.split(':').map(Number);
             const fromTime = fromHours * 60 + fromMinutes;
             const toTime = toHours * 60 + toMinutes;
             
             if (toTime <= fromTime) {
-                alert('Время окончания должно быть позже времени начала');
+                notifyError('Время окончания должно быть позже времени начала');
                 return;
             }
         }
@@ -147,12 +210,11 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
     };
 
     const isFormValid = eventData.name && 
-        eventData.description && 
-        eventData.description.length <= DESCRIPTION_MAX_LENGTH &&
-        eventData.place &&
-        eventData.graphId &&
+        (!eventData.description || eventData.description.length <= DESCRIPTION_MAX_LENGTH) &&
+        // Для студентов требуется parentGraphId, для редакторов - graphId
+        (hideGraphDropdown ? eventData.parentGraphId : eventData.graphId) &&
         // Если дата уточняется, то eventDate и время не обязательны
-        (eventData.isDateTbd || (eventData.eventDate && eventData.timeFrom && eventData.timeTo));
+        (eventData.isDateTbd || (eventData.eventDate && eventData.timeFrom));
 
     return (
         <>
@@ -187,7 +249,6 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                     type="text"
                     value={eventData.place}
                     onChange={handleChange}
-                    required
                 />
             </FormInputGroup>
 
@@ -199,33 +260,52 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                     value={eventData.description}
                     onChange={handleChange}
                     maxLength={DESCRIPTION_MAX_LENGTH}
-                    required
                 />
                 <div className={`${styles.counter} ${eventData.description.length > DESCRIPTION_MAX_LENGTH ? styles.counterError : ''}`}>
                     {eventData.description.length}/{DESCRIPTION_MAX_LENGTH} символов
                 </div>
             </FormInputGroup>
 
-            <FormInputGroup 
-                label="4. Граф"
-                description="Выберите граф, к которому относится мероприятие"
-            >
-                <DropdownSelect
-                    name="graphId"
-                    value={eventData.graphId}
-                    onChange={(value) => setEventData(prev => ({ ...prev, graphId: Array.isArray(value) ? (value[0] ?? '') : value }))}
-                    placeholder={isLoadingTopics ? 'Загрузка...' : 'Выберите граф'}
-                    options={mainTopics.map((graph: IGraphList) => ({
-                        value: graph._id,
-                        label: graph.name
-                    }))}
-                    required
-                    disabled={isLoadingTopics}
-                />
-            </FormInputGroup>
+            {hideGraphDropdown ? (
+                <FormInputGroup 
+                    label="4. Тематика"
+                    description="Выберите тематику, к которой относится мероприятие"
+                >
+                    <DropdownSelect
+                        name="parentGraphId"
+                        value={eventData.parentGraphId}
+                        onChange={(value) => setEventData(prev => ({ ...prev, parentGraphId: Array.isArray(value) ? (value[0] ?? '') : value }))}
+                        placeholder={isLoadingTopics ? 'Загрузка...' : 'Выберите тематику'}
+                        options={mainTopics.map((graph: IGraphList) => ({
+                            value: graph._id,
+                            label: graph.name
+                        }))}
+                        required
+                        disabled={isLoadingTopics}
+                    />
+                </FormInputGroup>
+            ) : (
+                <FormInputGroup 
+                    label="4. Граф"
+                    description="Выберите граф, к которому относится мероприятие"
+                >
+                    <DropdownSelect
+                        name="graphId"
+                        value={eventData.graphId}
+                        onChange={(value) => setEventData(prev => ({ ...prev, graphId: Array.isArray(value) ? (value[0] ?? '') : value }))}
+                        placeholder={isLoadingTopics ? 'Загрузка...' : 'Выберите граф'}
+                        options={mainTopics.map((graph: IGraphList) => ({
+                            value: graph._id,
+                            label: graph.name
+                        }))}
+                        required
+                        disabled={isLoadingTopics}
+                    />
+                </FormInputGroup>
+            )}
 
             <FormInputGroup 
-                label="5. Дата и время"
+                label={hideGraphDropdown ? "4. Дата и время" : "5. Дата и время"}
                 description="Вы можете уточнить дату и время мероприятия позже при редактировании"
             >
                 <label className={styles.checkboxRow}>
@@ -273,7 +353,7 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                     </FormInputGroup>
 
                     <FormInputGroup 
-                        label="Время окончания:"
+                        label="Время окончания (опционально):"
                     >
                         <FormInput
                             name="timeTo"
@@ -283,7 +363,6 @@ export const CreateEventForm = ({ globalGraphId }: CreateEventFormProps) => {
                             min={eventData.timeFrom && eventData.timeFrom !== '' ? 
                                 eventData.timeFrom : undefined
                             }
-                            required
                         />
                     </FormInputGroup>
                 </div>
