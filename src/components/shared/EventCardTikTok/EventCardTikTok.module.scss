@@ -83,6 +83,126 @@
   gap: 8px;
 }
 
+.viewCompanyRequestsButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #8A7AB8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.1s ease;
+  touch-action: manipulation;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgba(110, 90, 214, 0.12);
+    }
+  }
+
+  &:active {
+    background-color: rgba(110, 90, 214, 0.18);
+    transform: scale(0.97);
+  }
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: #8A7AB8;
+    
+    @media (hover: hover) {
+      &:hover {
+        background-color: rgba(150, 130, 238, 0.15);
+      }
+    }
+
+    &:active {
+      background-color: rgba(150, 130, 238, 0.2);
+    }
+  }
+}
+
+.companyRequestButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #8A7AB8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.1s ease;
+  touch-action: manipulation;
+  position: relative;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgba(110, 90, 214, 0.12);
+    }
+  }
+
+  &:active {
+    background-color: rgba(110, 90, 214, 0.18);
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: #8A7AB8;
+    
+    @media (hover: hover) {
+      &:hover {
+        background-color: rgba(150, 130, 238, 0.15);
+      }
+    }
+
+    &:active {
+      background-color: rgba(150, 130, 238, 0.2);
+    }
+  }
+}
+
+.activeIndicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4CAF88;
+  border: 2px solid var(--background-color, #ffffff);
+  
+  html[data-theme="dark"] &,
+  html.dark & {
+    border-color: var(--background-color, #1A1825);
+  }
+}
+
 .shareButton {
   width: 44px;
   height: 44px;

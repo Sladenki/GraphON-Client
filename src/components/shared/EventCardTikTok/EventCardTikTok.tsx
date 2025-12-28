@@ -7,6 +7,8 @@ import {
   CalendarClock,
   MapPinned,
   LogIn,
+  Users,
+  Search,
 } from 'lucide-react';
 import { useEventRegistration } from '@/hooks/useEventRegistration';
 import { useAuth } from '@/providers/AuthProvider';
@@ -17,6 +19,9 @@ import { linkifyText } from '@/lib/linkify';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getThemeName } from '@/components/shared/EventCard/pastelTheme';
 import SwipeButton from './SwipeButton';
+import CompanyRequestModal from '@/components/shared/CompanyRequestModal/CompanyRequestModal';
+import { CompanyRequestService } from '@/services/companyRequest.service';
+import { notifyError, notifySuccess } from '@/lib/notifications';
 
 interface EventCardTikTokProps {
   event: EventItem;
@@ -59,9 +64,29 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isAnimatingAvatar, setIsAnimatingAvatar] = useState(false);
+  const [isCompanyRequestModalOpen, setIsCompanyRequestModalOpen] = useState(false);
+  const [isCreatingRequest, setIsCreatingRequest] = useState(false);
+  const [hasActiveRequest, setHasActiveRequest] = useState(false);
 
   // Хуки
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, (event as any).isAttended);
+
+  // Проверка активного запроса при загрузке
+  useEffect(() => {
+    if (isLoggedIn && user?._id) {
+      const checkActiveRequest = async () => {
+        try {
+          const requests = await CompanyRequestService.getRequestsByEvent(event._id);
+          const myRequest = requests.find(r => r.initiator._id === user._id);
+          setHasActiveRequest(!!myRequest);
+        } catch (error) {
+          // Игнорируем ошибки при проверке
+          console.error('Error checking active request:', error);
+        }
+      };
+      checkActiveRequest();
+    }
+  }, [isLoggedIn, user?._id, event._id]);
 
   // Форматирование времени
   const formattedTime = useMemo(() => {
@@ -160,6 +185,40 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     router.push(`/groups/${graphId}`);
   }, [event.graphId, router]);
 
+  const handleCompanyRequest = useCallback(async () => {
+    if (!isLoggedIn) {
+      router.push('/signIn');
+      return;
+    }
+
+    setIsCreatingRequest(true);
+    try {
+      await CompanyRequestService.createRequest(event._id);
+      setHasActiveRequest(true);
+      notifySuccess('Вы ищете компанию');
+      setIsCompanyRequestModalOpen(true);
+    } catch (error: any) {
+      console.error('Error creating company request:', error);
+      if (error?.response?.data?.requestId) {
+        // У пользователя уже есть активный запрос
+        setHasActiveRequest(true);
+        setIsCompanyRequestModalOpen(true);
+      } else {
+        notifyError('Не удалось создать запрос');
+      }
+    } finally {
+      setIsCreatingRequest(false);
+    }
+  }, [isLoggedIn, router, event._id]);
+
+  const handleViewCompanyRequests = useCallback(() => {
+    if (!isLoggedIn) {
+      router.push('/signIn');
+      return;
+    }
+    setIsCompanyRequestModalOpen(true);
+  }, [isLoggedIn, router]);
+
   const themeName = getThemeName(event);
 
   if (!event || !event._id) {
@@ -192,6 +251,24 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           </div>
 
           <div className={styles.headerActions}>
+            <button 
+              className={styles.viewCompanyRequestsButton} 
+              onClick={handleViewCompanyRequests}
+              aria-label="Кто ищет компанию"
+              title="Кто ищет компанию"
+            >
+              <Search size={18} />
+            </button>
+            <button 
+              className={styles.companyRequestButton} 
+              onClick={handleCompanyRequest}
+              disabled={isCreatingRequest}
+              aria-label="Ищу компанию"
+              title={hasActiveRequest ? "Вы уже ищете компанию" : "Ищу компанию"}
+            >
+              <Users size={18} />
+              {hasActiveRequest && <span className={styles.activeIndicator} />}
+            </button>
             <button className={styles.shareButton} onClick={handleShare} aria-label="Поделиться">
               <Share />
             </button>
@@ -307,6 +384,12 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           )}
         </AnimatePresence>
       </div>
+
+      <CompanyRequestModal
+        isOpen={isCompanyRequestModalOpen}
+        onClose={() => setIsCompanyRequestModalOpen(false)}
+        eventId={event._id}
+      />
     </motion.div>
   );
 }
