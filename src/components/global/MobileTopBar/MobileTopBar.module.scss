@@ -4,141 +4,106 @@
   left: 0;
   right: 0;
   height: 56px;
-  background: linear-gradient(180deg, #f5f2fa 0%, #f9f7fc 80%, #f5f2fa 100%);
+  background: #E6E1FA; // Light pastel purple (как в MobileBottomNav)
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 0 14px;
+  padding: 6px 12px;
+  padding-top: calc(6px + env(safe-area-inset-top, 0));
   z-index: 1000;
   border: none;
   box-shadow: none !important;
+  // border-bottom-left-radius: 32px;
+  // border-bottom-right-radius: 32px;
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: #2A2538; // Dark theme background (как в MobileBottomNav)
+  }
 
   @media (max-width: 768px) {
-    padding: 0 12px;
-    height: 54px;
+    padding: 4px 8px;
+    padding-top: calc(4px + env(safe-area-inset-top, 0));
+    // border-bottom-left-radius: 28px;
+    // border-bottom-right-radius: 28px;
   }
 
   @media (max-width: 480px) {
-    padding: 0 10px;
-    height: 52px;
+    padding: 4px 6px;
+    padding-top: calc(4px + env(safe-area-inset-top, 0));
     gap: 6px;
   }
 }
 
-.left,
+.left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
 .right {
   display: flex;
   align-items: center;
-    gap: 8px;
+  gap: 8px;
   flex: 0 0 auto;
 }
 
-.centerSection {
+.graphSwitcherWrapper {
   flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.avatar {
+  min-width: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  background: rgba(var(--main-Color), 0.12);
-  color: var(--color-primary, #7c6aef);
-  font-weight: 800;
-  font-size: 14px;
-  transition: transform 0.15s ease, background 0.15s ease;
-  cursor: pointer;
-  overflow: hidden;
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.16);
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  @media (max-width: 480px) {
-    width: 32px;
-    height: 32px;
-    font-size: 13px;
-  }
-}
-
-.avatarImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatarFallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background: rgba(var(--main-Color), 0.12);
-  color: var(--color-primary, #7c6aef);
-}
-
-.avatarInitial {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.signInPill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  background: rgba(var(--main-Color), 0.12);
-  border: none;
-  border-radius: 999px;
-  color: var(--color-primary, #7c6aef);
-  font-family: var(--font-inter), 'Inter', sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  transition: background 0.15s ease, transform 0.1s ease;
-  text-decoration: none;
-
-  &:hover {
-    background: rgba(var(--main-Color), 0.16);
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
 }
 
 .iconBtn {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
+  width: 44px; // Такой же размер как в MobileBottomNav
+  height: 44px;
+  border-radius: 50%;
   border: none;
-  background: rgba(var(--main-Color), 0.12);
-  color: var(--color-primary, #7c6aef);
-  display: grid;
-  place-items: center;
+  background: transparent;
+  color: #8A7AB8; // Inactive icon color (как в MobileBottomNav)
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.1s ease;
+  transition: background-color 0.18s ease, transform 0.1s ease;
+  touch-action: manipulation;
 
-  &:hover {
-    background: rgba(var(--main-Color), 0.16);
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgba(110, 90, 214, 0.12); // Hover background (как в MobileBottomNav)
+    }
+
+    html[data-theme="dark"] &,
+    html.dark & {
+      &:hover {
+        background-color: rgba(150, 130, 238, 0.15);
+      }
+    }
   }
 
   &:active {
-    transform: scale(0.98);
+    background-color: rgba(110, 90, 214, 0.18); // Active background
+    transform: scale(0.97);
+  }
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: #8A7AB8; // Dark theme inactive icon color
+    &:active {
+      background-color: rgba(150, 130, 238, 0.2);
+    }
   }
 }
+
 

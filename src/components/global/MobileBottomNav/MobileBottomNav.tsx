@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./MobileBottomNav.module.scss";
 import Link from "next/link";
-import { Newspaper, Users, UserPlus, Shield } from "lucide-react";
+import { Newspaper, UserPlus, User, Shield } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -41,28 +41,6 @@ const MobileBottomNav: React.FC = () => {
             </Link>
           </li>
 
-          {/* ГРУППЫ */}
-          <li className={styles.navItem}>
-            <Link 
-              href="/groups/" 
-              className={`${styles.navLink} ${isActive('/groups') ? styles.active : ""}`} 
-              aria-label="Группы" 
-              aria-current={isActive('/groups') ? "page" : undefined}
-            >
-              <span className={styles.iconWrapper}>
-                <Users size={18} strokeWidth={1.5} />
-              </span>
-              <span className={styles.srOnly}>Группы</span>
-            </Link>
-          </li>
-
-          {/* Центральная кнопка */}
-          <li className={styles.navItem}>
-            <div className={styles.centralButtonWrapper}>
-              <CentralActionButton />
-            </div>
-          </li>
-
           {/* ДРУЗЬЯ */}
           <li className={styles.navItem}>
             <Link 
@@ -75,6 +53,28 @@ const MobileBottomNav: React.FC = () => {
                 <UserPlus size={18} strokeWidth={1.5} />
               </span>
               <span className={styles.srOnly}>Друзья</span>
+            </Link>
+          </li>
+
+          {/* Центральная кнопка */}
+          <li className={styles.navItem}>
+            <div className={styles.centralButtonWrapper}>
+              <CentralActionButton />
+            </div>
+          </li>
+
+          {/* ПРОФИЛЬ */}
+          <li className={styles.navItem}>
+            <Link 
+              href="/profile" 
+              className={`${styles.navLink} ${isActive('/profile') ? styles.active : ""}`} 
+              aria-label="Профиль" 
+              aria-current={isActive('/profile') ? "page" : undefined}
+            >
+              <span className={styles.iconWrapper}>
+                <User size={18} strokeWidth={1.5} />
+              </span>
+              <span className={styles.srOnly}>Профиль</span>
             </Link>
           </li>
 
