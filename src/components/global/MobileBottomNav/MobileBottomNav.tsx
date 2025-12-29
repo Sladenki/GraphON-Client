@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./MobileBottomNav.module.scss";
 import Link from "next/link";
-import { Newspaper, UserPlus, User, Shield } from "lucide-react";
+import { Newspaper, UserPlus, User, Plus } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -24,78 +24,75 @@ const MobileBottomNav: React.FC = () => {
 
   return (
     <>
-      <nav className={styles.bottomNav} role="navigation" aria-label="Bottom navigation">
-        <ul className={styles.navList}>
-          {/* СОБЫТИЯ */}
-          <li className={styles.navItem}>
-            <Link 
-              href="/events/" 
-              className={`${styles.navLink} ${isActive('/events') ? styles.active : ""}`} 
-              aria-label="События" 
-              aria-current={isActive('/events') ? "page" : undefined}
-            >
-              <span className={styles.iconWrapper}>
-                <Newspaper size={18} strokeWidth={1.5} />
-              </span>
-              <span className={styles.srOnly}>События</span>
-            </Link>
-          </li>
-
-          {/* ДРУЗЬЯ */}
-          <li className={styles.navItem}>
-            <Link 
-              href="/friends" 
-              className={`${styles.navLink} ${isActive('/friends') ? styles.active : ""}`} 
-              aria-label="Друзья" 
-              aria-current={isActive('/friends') ? "page" : undefined}
-            >
-              <span className={styles.iconWrapper}>
-                <UserPlus size={18} strokeWidth={1.5} />
-              </span>
-              <span className={styles.srOnly}>Друзья</span>
-            </Link>
-          </li>
-
-          {/* Центральная кнопка */}
-          <li className={styles.navItem}>
-            <div className={styles.centralButtonWrapper}>
-              <CentralActionButton />
-            </div>
-          </li>
-
-          {/* ПРОФИЛЬ */}
-          <li className={styles.navItem}>
-            <Link 
-              href="/profile" 
-              className={`${styles.navLink} ${isActive('/profile') ? styles.active : ""}`} 
-              aria-label="Профиль" 
-              aria-current={isActive('/profile') ? "page" : undefined}
-            >
-              <span className={styles.iconWrapper}>
-                <User size={18} strokeWidth={1.5} />
-              </span>
-              <span className={styles.srOnly}>Профиль</span>
-            </Link>
-          </li>
-
-          {/* АДМИНКА */}
-          {hasAdminAccess && (
-          <li className={styles.navItem}>
+      <div className={styles.navContainer}>
+        <nav className={styles.bottomNav} role="navigation" aria-label="Bottom navigation">
+          <ul className={styles.navList}>
+            {/* СОБЫТИЯ */}
+            <li className={styles.navItem}>
               <Link 
-                href="/admin/" 
-                className={`${styles.navLink} ${isActive('/admin') ? styles.active : ""}`} 
-                aria-label="Админка" 
-                aria-current={isActive('/admin') ? "page" : undefined}
-            >
-              <span className={styles.iconWrapper}>
-                  <Shield size={18} strokeWidth={1.5} />
-              </span>
-                <span className={styles.srOnly}>Админка</span>
+                href="/events/" 
+                className={`${styles.navLink} ${isActive('/events') ? styles.active : ""}`} 
+                aria-label="События" 
+                aria-current={isActive('/events') ? "page" : undefined}
+              >
+                <span className={styles.iconWrapper}>
+                  <Newspaper size={18} strokeWidth={1.5} />
+                </span>
+                <span className={styles.srOnly}>События</span>
               </Link>
-          </li>
-          )}
-        </ul>
-      </nav>
+            </li>
+
+            {/* ДРУЗЬЯ */}
+            <li className={styles.navItem}>
+              <Link 
+                href="/friends" 
+                className={`${styles.navLink} ${isActive('/friends') ? styles.active : ""}`} 
+                aria-label="Друзья" 
+                aria-current={isActive('/friends') ? "page" : undefined}
+              >
+                <span className={styles.iconWrapper}>
+                  <UserPlus size={18} strokeWidth={1.5} />
+                </span>
+                <span className={styles.srOnly}>Друзья</span>
+              </Link>
+            </li>
+
+            {/* Центральная кнопка */}
+            <li className={styles.navItem}>
+              <div className={styles.centralButtonWrapper}>
+                <CentralActionButton />
+              </div>
+            </li>
+
+            {/* ПРОФИЛЬ */}
+            <li className={styles.navItem}>
+              <Link 
+                href="/profile" 
+                className={`${styles.navLink} ${isActive('/profile') ? styles.active : ""}`} 
+                aria-label="Профиль" 
+                aria-current={isActive('/profile') ? "page" : undefined}
+              >
+                <span className={styles.iconWrapper}>
+                  <User size={18} strokeWidth={1.5} />
+                </span>
+                <span className={styles.srOnly}>Профиль</span>
+              </Link>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Кнопка админки справа от меню */}
+        {hasAdminAccess && (
+          <Link 
+            href="/admin/" 
+            className={`${styles.adminButton} ${isActive('/admin') ? styles.adminButtonActive : ""}`}
+            aria-label="Админка"
+            aria-current={isActive('/admin') ? "page" : undefined}
+          >
+            <Plus size={20} strokeWidth={2.5} />
+          </Link>
+        )}
+      </div>
     </>
   );
 };
