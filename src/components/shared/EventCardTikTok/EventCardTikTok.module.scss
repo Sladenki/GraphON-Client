@@ -65,16 +65,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
+  // bodySmall from MODERN_EVENT.json typography
+  font-size: 14px; // bodySmall fontSizePx
+  font-weight: 700; // Keep bold for avatar initials
+  line-height: 1.45; // bodySmall lineHeight
   color: #5f5a6c;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 .groupName {
-  font-size: 13px;
-  font-weight: 600;
+  // bodySmall from MODERN_EVENT.json typography
+  font-size: 14px; // bodySmall fontSizePx (not 13px)
+  font-weight: 400; // bodySmall fontWeight (not 600)
+  line-height: 1.45; // bodySmall lineHeight
+  letter-spacing: 0; // bodySmall letterSpacing
   color: var(--main-text, #2f2d32);
-  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 .headerActions {
@@ -257,12 +263,13 @@
 }
 
 .eventTitle {
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  // h1 from MODERN_EVENT.json typography
+  font-size: 28px; // h1 fontSizePx
+  font-weight: 700; // h1 fontWeight (not 800)
+  letter-spacing: -0.3px; // h1 letterSpacing
+  line-height: 1.25; // h1 lineHeight
   color: var(--main-text, #2f2d32);
-  font-family: var(--font-inter), Inter, system-ui, sans-serif;
-  line-height: 1.2;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   margin: 0;
   word-wrap: break-word;
   display: -webkit-box;
@@ -274,7 +281,8 @@
 // Адаптивность для маленьких экранов
 @media (max-width: 360px) {
   .eventTitle {
-    font-size: 26px;
+    font-size: 24px; // h2 fontSizePx для маленьких экранов
+    line-height: 1.3; // h2 lineHeight
   }
 }
 
@@ -286,11 +294,13 @@
 }
 
 .description {
-  font-size: 15px;
-  line-height: 1.65;
-  font-weight: 400;
+  // body from MODERN_EVENT.json typography
+  font-size: 16px; // body fontSizePx (not 15px)
+  line-height: 1.5; // body lineHeight (not 1.65)
+  font-weight: 400; // body fontWeight
+  letter-spacing: 0; // body letterSpacing
   color: var(--main-text, rgba(47, 45, 50, 0.8));
-  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   word-wrap: break-word;
   white-space: pre-wrap;
 
@@ -307,13 +317,17 @@
 
 .readMoreButton {
   display: inline-block;
-  margin-top: 8px;
-  padding: 6px 12px;
+  margin-top: 8px; // sm spacing
+  padding: 0;
   background: transparent;
   border: none;
   color: rgb(var(--main-Color, 124, 106, 239));
-  font-size: 14px;
-  font-weight: 500;
+  // label from MODERN_EVENT.json typography
+  font-size: 13px; // label fontSizePx (not 14px)
+  font-weight: 500; // label fontWeight
+  line-height: 1.35; // label lineHeight
+  letter-spacing: 0; // label letterSpacing
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   cursor: pointer;
   transition: all 0.2s ease;
 
@@ -334,26 +348,45 @@
 .placeInfo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px; // Увеличенный gap между иконкой и текстом
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
-  padding: 12px 16px;
-  border-radius: 16px;
+  padding: 16px 20px; // Увеличенный padding для большей высоты
+  border-radius: 9999px; // Сильно закругленные края (pill shape)
   border: 1px solid rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-  svg {
-    flex-shrink: 0;
-    color: var(--main-text, #5f5a6c);
-  }
+.metaIconWrapper {
+  width: 40px; // Размер круга для иконки
+  height: 40px;
+  border-radius: 50%; // Круглая форма
+  background: #FFFFFF; // Белый фон для круга
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.metaIcon {
+  flex-shrink: 0;
+  color: var(--main-text, #2f2d32);
+  width: 20px;
+  height: 20px;
 }
 
 .timeText,
 .placeText {
-  font-size: 14px;
-  font-weight: 500;
+  // bodySmall from MODERN_EVENT.json typography
+  font-size: 14px; // bodySmall fontSizePx
+  font-weight: 400; // bodySmall fontWeight (not 500)
+  line-height: 1.45; // bodySmall lineHeight
+  letter-spacing: 0; // bodySmall letterSpacing
   color: var(--main-text, #2f2d32);
-  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  flex: 1;
+  min-width: 0;
 }
 
 // Footer - орбиты участников и доминирующая кнопка регистрации
@@ -387,15 +420,18 @@
 .pastEventButton {
   width: 100%;
   min-width: 280px;
-  padding: 18px 24px;
+  padding: 16px 24px; // Используем стандартный padding
   border-radius: 20px;
   border: none;
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
   color: var(--main-text, #1F2A1F);
-  font-size: 17px;
-  font-weight: 700;
-  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  // body from MODERN_EVENT.json typography
+  font-size: 16px; // body fontSizePx (not 17px)
+  font-weight: 600; // Для кнопок используется 600 (not 700)
+  line-height: 1.5; // body lineHeight
+  letter-spacing: 0; // body letterSpacing
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -403,8 +439,9 @@
   opacity: 0.7;
 
   @media (max-width: 360px) {
-    font-size: 16px;
-    padding: 16px 20px;
+    font-size: 14px; // bodySmall для маленьких экранов
+    line-height: 1.45;
+    padding: 14px 20px;
     min-width: auto;
   }
 }
@@ -412,15 +449,18 @@
 .loginButton {
   width: 100%;
   min-width: 280px;
-  padding: 18px 24px;
+  padding: 16px 24px; // Используем стандартный padding
   border-radius: 20px;
   border: none;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   color: var(--main-text, #1F2A1F);
-  font-size: 17px;
-  font-weight: 700;
-  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  // body from MODERN_EVENT.json typography
+  font-size: 16px; // body fontSizePx (not 17px)
+  font-weight: 600; // Для кнопок используется 600 (not 700)
+  line-height: 1.5; // body lineHeight
+  letter-spacing: 0; // body letterSpacing
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -450,8 +490,9 @@
   }
 
   @media (max-width: 360px) {
-    font-size: 16px;
-    padding: 16px 20px;
+    font-size: 14px; // bodySmall для маленьких экранов
+    line-height: 1.45;
+    padding: 14px 20px;
     min-width: auto;
   }
 }
@@ -506,15 +547,18 @@
 .registerButton {
   width: 100%;
   min-width: 280px; // Минимальная ширина для удобства клика
-  padding: 18px 24px;
+  padding: 16px 24px; // Используем стандартный padding
   border-radius: 20px;
   border: none;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   color: var(--main-text, #1F2A1F);
-  font-size: 17px;
-  font-weight: 700;
-  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  // body from MODERN_EVENT.json typography
+  font-size: 16px; // body fontSizePx (not 17px)
+  font-weight: 600; // Для кнопок используется 600 (not 700)
+  line-height: 1.5; // body lineHeight
+  letter-spacing: 0; // body letterSpacing
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -530,7 +574,7 @@
     &:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    background: rgba(255, 255, 255, 1);
+      background: rgba(255, 255, 255, 1);
     }
   }
 
@@ -546,8 +590,9 @@
 
   // Адаптивность для маленьких экранов
   @media (max-width: 360px) {
-    font-size: 16px;
-    padding: 16px 20px;
+    font-size: 14px; // bodySmall для маленьких экранов
+    line-height: 1.45;
+    padding: 14px 20px;
     min-width: auto;
   }
 }
@@ -582,4 +627,5 @@
     transform: scale(1.02);
   }
 }
+
 

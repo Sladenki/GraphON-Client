@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   height: 56px;
-  background: #E6E1FA; // Light pastel purple (как в MobileBottomNav)
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -14,13 +14,6 @@
   z-index: 1000;
   border: none;
   box-shadow: none !important;
-  // border-bottom-left-radius: 32px;
-  // border-bottom-right-radius: 32px;
-
-  html[data-theme="dark"] &,
-  html.dark & {
-    background: #2A2538; // Dark theme background (как в MobileBottomNav)
-  }
 
   @media (max-width: 768px) {
     padding: 4px 8px;
@@ -40,8 +33,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex: 1;
-  min-width: 0;
+  flex: 0 0 auto;
 }
 
 .right {
@@ -52,8 +44,7 @@
 }
 
 .graphSwitcherWrapper {
-  flex: 1;
-  min-width: 0;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
 }
@@ -69,7 +60,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.18s ease, transform 0.1s ease;
+  transition: background-color 0.18s ease, transform 0.1s ease, color 0.18s ease;
   touch-action: manipulation;
 
   svg {
@@ -77,31 +68,49 @@
     height: 18px;
     stroke-width: 1.5;
     fill: none;
+    transition: color 0.18s ease;
   }
 
   @media (hover: hover) {
-    &:hover {
+    &:hover:not(.active) {
       background-color: rgba(110, 90, 214, 0.12); // Hover background (как в MobileBottomNav)
     }
 
     html[data-theme="dark"] &,
     html.dark & {
-      &:hover {
+      &:hover:not(.active) {
         background-color: rgba(150, 130, 238, 0.15);
       }
     }
   }
 
   &:active {
-    background-color: rgba(110, 90, 214, 0.18); // Active background
     transform: scale(0.97);
   }
 
   html[data-theme="dark"] &,
   html.dark & {
     color: #8A7AB8; // Dark theme inactive icon color
-    &:active {
-      background-color: rgba(150, 130, 238, 0.2);
+  }
+}
+
+// Active state - circular background (по аналогии с MobileBottomNav)
+.iconBtn.active {
+  background-color: #6E5AD6;
+  color: #FFFFFF;
+
+  svg {
+    color: #FFFFFF;
+  }
+
+  // Dark theme active state
+  html[data-theme="dark"] &,
+  html.dark & {
+    background-color: #9682EE;
+    color: #FFFFFF;
+
+    svg {
+      color: #FFFFFF;
     }
   }
 }

@@ -328,20 +328,24 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
         </div>
       </div>
 
-      {/* Important Info - время и место (компактные карточки) */}
-      <div className={styles.importantInfo}>
-        <div className={styles.timeInfo}>
-          <CalendarClock size={20} />
-          <span className={styles.timeText}>{formattedTime}</span>
-        </div>
+       {/* Important Info - время и место (компактные карточки) */}
+       <div className={styles.importantInfo}>
+         <div className={styles.timeInfo}>
+           <div className={styles.metaIconWrapper}>
+             <CalendarClock className={styles.metaIcon} size={20} />
+           </div>
+           <span className={styles.timeText}>{formattedTime}</span>
+         </div>
 
-        {event.place && (
-        <div className={styles.placeInfo}>
-          <MapPinned size={20} />
-          <span className={styles.placeText}>{event.place}</span>
-        </div>
-        )}
-      </div>
+         {event.place && (
+         <div className={styles.placeInfo}>
+           <div className={styles.metaIconWrapper}>
+             <MapPinned className={styles.metaIcon} size={20} />
+           </div>
+           <span className={styles.placeText}>{event.place}</span>
+         </div>
+         )}
+       </div>
 
       {/* Footer - орбиты участников и кнопка регистрации */}
       <div className={styles.cardFooter}>
