@@ -29,6 +29,11 @@ const Admin = () => {
     const { canAccessCreate, canAccessEditor, canAccessSysAdmin, canAccessAdmin } = useRoleAccess(typedUser?.role);
     const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
     const [isSuggestEventModalOpen, setIsSuggestEventModalOpen] = useState(false);
+    const [isAdminModeEnabled, setIsAdminModeEnabled] = useState(true);
+    
+    // Определяем, показывать ли режим user
+    const isUserRole = typedUser?.role === UserRole.User;
+    const showUserMode = isUserRole || !isAdminModeEnabled;
 
     // Получение дочерних графов выбранного графа
     const selectedGraphId = useSelectedGraphId();
@@ -43,136 +48,151 @@ const Admin = () => {
 
     return (
         <div className={styles.createPostWrapper}>
-            {/* Pill-кнопки для создания мероприятия */}
-            <div className={styles.createEventPills}>
-                <button 
-                    className={styles.createPill}
-                    onClick={() => setIsCreateEventModalOpen(true)}
-                    aria-label="Создать мероприятие"
-                >
-                    <Plus size={16} />
-                    <span>Создать мероприятие</span>
-                </button>
-                <button 
-                    className={styles.suggestPill}
-                    onClick={() => setIsSuggestEventModalOpen(true)}
-                    aria-label="Предложить мероприятие"
-                >
-                    <Plus size={16} />
-                    <span>Предложить мероприятие</span>
-                </button>
-            </div>
-            {canAccessCreate && (
-                <AdminSection 
-                    title="Статистика"
-                    emoji="📊"
-                    role={UserRole.Create}
-                >
-                    <AnalyticsStats />
-                </AdminSection>
+            {/* Переключатель режима администрирования для не-user ролей */}
+            {!isUserRole && (
+                <div className={styles.adminModeToggle}>
+                    <label className={styles.toggleLabel}>
+                        <input
+                            type="checkbox"
+                            checked={isAdminModeEnabled}
+                            onChange={(e) => setIsAdminModeEnabled(e.target.checked)}
+                            className={styles.toggleInput}
+                        />
+                        <span className={styles.toggleSlider}></span>
+                        <span className={styles.toggleText}>
+                            {isAdminModeEnabled ? 'Отключить режим администрирования' : 'Включить режим администрирования'}
+                        </span>
+                    </label>
+                </div>
             )}
 
-            {canAccessCreate && (
-                <AdminSection 
-                    title="Создание глобального графа"
-                    emoji="🌍"
-                    role={UserRole.Create}
-                >
-                    <CreateGlobalGraphForm />
-                </AdminSection>
+            {/* Режим для user или когда режим администрирования отключен */}
+            {showUserMode ? (
+                <div className={styles.userModeContainer}>
+                    <div className={`${styles.userBlock} ${styles.createBlock}`} onClick={() => setIsCreateEventModalOpen(true)}>
+                        <div className={styles.userBlockContent}>
+                            <Plus size={32} strokeWidth={2.5} />
+                            <h2 className={styles.userBlockTitle}>Создать мероприятие</h2>
+                            <p className={styles.userBlockDescription}>
+                                Создайте новое мероприятие для вашей группы
+                            </p>
+                        </div>
+                    </div>
+                    <div className={`${styles.userBlock} ${styles.suggestBlock}`} onClick={() => setIsSuggestEventModalOpen(true)}>
+                        <div className={styles.userBlockContent}>
+                            <Plus size={32} strokeWidth={2.5} />
+                            <h2 className={styles.userBlockTitle}>Предложить мероприятие</h2>
+                            <p className={styles.userBlockDescription}>
+                                Предложите мероприятие для рассмотрения администрацией
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <>
+                    {canAccessCreate && (
+                        <AdminSection 
+                            title="Статистика"
+                            emoji="📊"
+                            role={UserRole.Create}
+                        >
+                            <AnalyticsStats />
+                        </AdminSection>
+                    )}
+
+                    {canAccessCreate && (
+                        <AdminSection 
+                            title="Создание глобального графа"
+                            emoji="🌍"
+                            role={UserRole.Create}
+                        >
+                            <CreateGlobalGraphForm />
+                        </AdminSection>
+                    )}
+
+                    {canAccessCreate && mainTopics && (
+                        <AdminSection 
+                            title="Создание графа-тематики"
+                            emoji="📑"
+                            role={UserRole.Create}
+                        >
+                            <CreateTopicGraphForm />
+                        </AdminSection>
+                    )}
+                    
+                    {canAccessCreate && mainTopics && (
+                        <AdminSection 
+                            title="Создание графа"
+                            emoji="📊"
+                            role={UserRole.Create}
+                        >
+                            <CreateGraphForm />
+                        </AdminSection>
+                    )}
+
+                    {(typedUser?.role === UserRole.SysAdmin || typedUser?.role === UserRole.Create) && (
+                        <AdminSection 
+                            title="Статистика сервера"
+                            emoji="🖥️"
+                            role={UserRole.SysAdmin}
+                        >
+                            <ServerStats />
+                        </AdminSection>
+                    )}
+
+                    {canAccessAdmin && (
+                        <AdminSection 
+                            title="Изменить роль пользователя"
+                            emoji="👥"
+                            role={UserRole.Admin}
+                        >
+                            <UserRoleManager />
+                        </AdminSection>
+                    )}
+
+                    {canAccessAdmin && mainTopics && (
+                        <AdminSection 
+                            title="Передача прав на граф"
+                            emoji="🔑"
+                            role={UserRole.Admin}
+                        >
+                            <TransferGraphOwnershipForm graphs={mainTopics.data} />
+                        </AdminSection>
+                    )}
+       
+                    {canAccessEditor && mainTopics && (
+                        <AdminSection 
+                            title="Создание мероприятия"
+                            emoji="📅"
+                            role={UserRole.Editor}
+                        >
+                            <CreateEventForm globalGraphId={user?.selectedGraphId || ''} />
+                        </AdminSection>
+                    )}
+                    
+                    {canAccessEditor && mainTopics && (
+                        <AdminSection 
+                            title="Создание расписания"
+                            emoji="⏰"
+                            role={UserRole.Editor}
+                        >
+                            <CreateScheduleForm globalGraphId={user?.selectedGraphId || ''} />
+                        </AdminSection>
+                    )}
+
+                    {canAccessEditor && (
+                        <AdminSection 
+                            title="Получить расписание по ВУЗу"
+                            emoji="📆"
+                            role={UserRole.Editor}
+                        >
+                            <GetWeeklySchedule />
+                        </AdminSection>
+                    )}
+                </>
             )}
 
-            {canAccessCreate && mainTopics && (
-                <AdminSection 
-                    title="Создание графа-тематики"
-                    emoji="📑"
-                    role={UserRole.Create}
-                >
-                    <CreateTopicGraphForm />
-                </AdminSection>
-            )}
-            
-            {canAccessCreate && mainTopics && (
-                <AdminSection 
-                    title="Создание графа"
-                    emoji="📊"
-                    role={UserRole.Create}
-                >
-                    <CreateGraphForm />
-                </AdminSection>
-            )}
-
-            {(typedUser?.role === UserRole.SysAdmin || typedUser?.role === UserRole.Create) && (
-                <AdminSection 
-                    title="Статистика сервера"
-                    emoji="🖥️"
-                    role={UserRole.SysAdmin}
-                >
-                    <ServerStats />
-                </AdminSection>
-            )}
-
-            {canAccessAdmin && (
-                <AdminSection 
-                    title="Изменить роль пользователя"
-                    emoji="👥"
-                    role={UserRole.Admin}
-                >
-                    <UserRoleManager />
-                </AdminSection>
-            )}
-
-            {canAccessAdmin && mainTopics && (
-                <AdminSection 
-                    title="Передача прав на граф"
-                    emoji="🔑"
-                    role={UserRole.Admin}
-                >
-                    <TransferGraphOwnershipForm graphs={mainTopics.data} />
-                </AdminSection>
-            )}
-   
-            {canAccessEditor && mainTopics && (
-                <AdminSection 
-                    title="Создание мероприятия"
-                    emoji="📅"
-                    role={UserRole.Editor}
-                >
-                    <CreateEventForm globalGraphId={user?.selectedGraphId || ''} />
-                </AdminSection>
-            )}
-
-            {/* Создание мероприятия для обычных пользователей */}
-            {typedUser?.role === UserRole.User && mainTopics && (
-                <AdminSection 
-                    title="Создание мероприятия"
-                    emoji="📅"
-                    role={UserRole.User}
-                >
-                    <CreateEventForm globalGraphId={user?.selectedGraphId || ''} hideGraphDropdown={true} />
-                </AdminSection>
-            )}
-            
-            {canAccessEditor && mainTopics && (
-                <AdminSection 
-                    title="Создание расписания"
-                    emoji="⏰"
-                    role={UserRole.Editor}
-                >
-                    <CreateScheduleForm globalGraphId={user?.selectedGraphId || ''} />
-                </AdminSection>
-            )}
-
-            {canAccessEditor && (
-                <AdminSection 
-                    title="Получить расписание по ВУЗу"
-                    emoji="📆"
-                    role={UserRole.Editor}
-                >
-                    <GetWeeklySchedule />
-                </AdminSection>
-            )}
-
+            {/* Модальные окна доступны всегда */}
             <CreateEventModal 
                 isOpen={isCreateEventModalOpen} 
                 onClose={() => setIsCreateEventModalOpen(false)}

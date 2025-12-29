@@ -118,6 +118,193 @@
   }
 }
 
+// Переключатель режима администрирования
+.adminModeToggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 20px;
+  background: var(--block-color);
+  border-radius: 16px;
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: #2A2538;
+  }
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  background: #8A7AB8;
+  border-radius: 28px;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 3px;
+    top: 3px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+
+  .toggleInput:checked + & {
+    background: #6E5AD6;
+
+    html[data-theme="dark"] &,
+    html.dark & {
+      background: #9682EE;
+    }
+
+    &::before {
+      transform: translateX(24px);
+    }
+  }
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: #8A7AB8;
+  }
+}
+
+.toggleText {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--main-text);
+  font-family: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+// Контейнер для режима user
+.userModeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: calc(100vh - 200px);
+}
+
+// Блоки для создания и предложения мероприятия
+.userBlock {
+  height: 50vh;
+  min-height: 300px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  padding: 24px;
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+
+  &:active {
+    transform: translateY(-2px);
+  }
+}
+
+// Блок "Создать мероприятие" - фиолетовый фон
+.createBlock {
+  background: rgba(110, 90, 214, 0.15);
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(150, 130, 238, 0.2);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(110, 90, 214, 0.25);
+
+      html[data-theme="dark"] &,
+      html.dark & {
+        background: rgba(150, 130, 238, 0.3);
+      }
+    }
+  }
+}
+
+// Блок "Предложить мероприятие" - серо-фиолетовый фон
+.suggestBlock {
+  background: rgba(138, 122, 184, 0.15);
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(157, 142, 200, 0.2);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(138, 122, 184, 0.25);
+
+      html[data-theme="dark"] &,
+      html.dark & {
+        background: rgba(157, 142, 200, 0.3);
+      }
+    }
+  }
+}
+
+.userBlockContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+  max-width: 400px;
+}
+
+.userBlockTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--main-text);
+  margin: 0;
+  font-family: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.userBlockDescription {
+  font-size: 16px;
+  color: var(--secondary-text, #8A7AB8);
+  margin: 0;
+  line-height: 1.5;
+  font-family: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.userBlock svg {
+  color: #6E5AD6;
+
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: #9682EE;
+  }
+}
+
 
 
 @media only screen and (max-width: 680px) {
