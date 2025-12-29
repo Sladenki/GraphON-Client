@@ -47,6 +47,56 @@ function fullNameFromUser(u: { firstName?: string; lastName?: string; username?:
   return combined || (u.username ? `@${u.username}` : 'Пользователь');
 }
 
+// Функция для определения цвета фона карточки на основе интересов пользователя
+function getCardBackgroundColor(topInterests?: Array<{ name: string; _id: string; displayName?: string }>): string {
+  const interests = topInterests || [];
+  
+  if (interests.length === 0) {
+    // Нет интересов - приятный пастельный фиолетовый фон
+    return 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)'; // Мягкий пастельный фиолетовый градиент
+  } else if (interests.length === 1) {
+    // Один интерес - используем градиент этого интереса
+    const themeName = interests[0].name as ThemeName;
+    const theme = getPastelTheme(themeName);
+    return theme.headerBgLight;
+  } else {
+    // Несколько интересов - создаем градиент из цветов интересов
+    const gradients = interests.slice(0, 3).map((interest) => {
+      const themeName = interest.name as ThemeName;
+      const theme = getPastelTheme(themeName);
+      return theme.headerBgLight;
+    });
+    
+    // Извлекаем цвета из градиентов
+    const extractColor = (gradient: string): string => {
+      // Ищем hex цвета
+      const hexMatch = gradient.match(/#[0-9a-fA-F]{6}/i);
+      if (hexMatch) return hexMatch[0];
+      
+      // Ищем rgba цвета и конвертируем в hex (упрощенная версия)
+      const rgbaMatch = gradient.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (rgbaMatch) {
+        const r = parseInt(rgbaMatch[1]);
+        const g = parseInt(rgbaMatch[2]);
+        const b = parseInt(rgbaMatch[3]);
+        return `#${[r, g, b].map(x => x.toString(16).padStart(2, '0')).join('')}`;
+      }
+      
+      return 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)'; // fallback - приятный пастельный фиолетовый
+    };
+    
+    const colors = gradients.map(extractColor);
+    
+    // Создаем градиент из цветов
+    if (colors.length === 2) {
+      return `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 100%)`;
+    } else if (colors.length >= 3) {
+      return `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 50%, ${colors[2]} 100%)`;
+    }
+    return colors[0] || 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)';
+  }
+}
+
 export default function FriendsPage() {
   const { user, isLoggedIn } = useAuth();
   const typedUser = user as IUser | null;
@@ -352,6 +402,9 @@ export default function FriendsPage() {
     const hasIncoming = followersIds.has(u._id);
     const hasOutgoing = followingIds.has(u._id);
 
+    // Определяем цвет фона на основе интересов (без хуков, так как это внутри функции рендеринга)
+    const cardBackground = getCardBackgroundColor(u.topInterests);
+
     const rowVariantClass =
       activeTab === 'people'
         ? (isFriend ? styles.rowFriends : hasIncoming ? styles.rowIncoming : hasOutgoing ? styles.rowOutgoing : styles.rowPeople)
@@ -383,7 +436,13 @@ export default function FriendsPage() {
               : null;
 
     return (
-      <div key={u._id} className={`${styles.row} ${rowVariantClass}`}>
+      <div 
+        key={u._id} 
+        className={`${styles.row} ${rowVariantClass}`}
+        style={{
+          background: cardBackground,
+        }}
+      >
         <div className={styles.rowLeft}>
           <div className={styles.avatar} aria-hidden="true">
             {avaUrl ? (
@@ -403,7 +462,11 @@ export default function FriendsPage() {
 
           <div className={styles.userMain}>
             <div className={styles.userTopLine}>
-              <div className={styles.fullName}>{fullNameFromUser(u)}</div>
+              <div className={styles.fullName}>
+                {u.firstName && u.lastName 
+                  ? `${u.firstName} ${u.lastName}` 
+                  : fullNameFromUser(u)}
+              </div>
               {u.username ? <div className={styles.username}>@{u.username}</div> : null}
               {status ? <span className={`${styles.statusPill} ${status.className}`}>{status.label}</span> : null}
             </div>

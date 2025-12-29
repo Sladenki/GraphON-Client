@@ -262,14 +262,19 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 12px;
-  border-radius: 18px;
-  transition: background-color 0.18s ease, transform 0.12s ease, border-color 0.12s ease;
+  padding: 16px 16px;
+  border-radius: 28px; // Увеличенный border-radius для более сильных закругленных краев
+  transition: background-color 0.18s ease, transform 0.12s ease, border-color 0.12s ease, opacity 0.18s ease;
   justify-content: space-between;
   border: 1px solid transparent;
 
   &:active {
     transform: scale(0.99);
+    opacity: 0.9;
+  }
+
+  &:hover {
+    opacity: 0.95;
   }
 }
 
@@ -281,26 +286,32 @@
   flex: 1 1 auto;
 }
 
-// Per-tab row “cards” (pastel surfaces) — replaces generic gradient
+// Per-tab row "cards" (pastel surfaces) — replaces generic gradient
+// Теперь фон определяется динамически на основе интересов пользователя
+// Эти классы используются только для fallback или когда интересы не определены
 .rowPeople {
+  // Фон будет переопределен inline стилем на основе интересов
   background: rgba(var(--primary-rgb), 0.08);
   &:hover {
     background: rgba(var(--primary-rgb), 0.10);
   }
 }
 .rowFriends {
+  // Фон будет переопределен inline стилем на основе интересов
   background: var(--pastel-mint);
   &:hover {
     background: #dff3e9;
   }
 }
 .rowIncoming {
+  // Фон будет переопределен inline стилем на основе интересов
   background: var(--pastel-peach);
   &:hover {
     background: #ffe8d6;
   }
 }
 .rowOutgoing {
+  // Фон будет переопределен inline стилем на основе интересов
   background: var(--pastel-lavender);
   &:hover {
     background: #ece3ff;
@@ -308,8 +319,8 @@
 }
 
 .avatar {
-  width: 44px;
-  height: 44px;
+  width: 56px; // Увеличенный размер аватарки
+  height: 56px;
   border-radius: 999px;
   background: rgba(var(--color-primary-rgb), 0.10);
   display: grid;
@@ -318,7 +329,7 @@
   flex: 0 0 auto;
   font-weight: 800;
   color: var(--color-primary);
-  font-size: 14px;
+  font-size: 16px; // Увеличенный размер шрифта для инициалов
 }
 
 .avatarImg {
@@ -517,17 +528,21 @@
   }
 
   .row {
-    flex-direction: column;
-    align-items: flex-start;
+    // На мобильной версии оставляем flex-direction: row, чтобы кнопки были справа
+    flex-direction: row;
+    align-items: center;
   }
 
   .rowLeft {
-    width: 100%;
+    // Занимает доступное пространство, но не растягивается на всю ширину
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .actions {
-    width: 100%;
-    justify-content: flex-start;
+    // Кнопки всегда справа на мобильной версии
+    flex: 0 0 auto;
+    justify-content: flex-end;
   }
 }
 
