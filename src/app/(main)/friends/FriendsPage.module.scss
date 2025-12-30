@@ -27,6 +27,7 @@
   justify-content: center;
   align-items: center;
   gap: 16px;
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
 .heroText {
@@ -83,6 +84,9 @@
   border: 2px solid transparent;
   cursor: pointer;
   user-select: none;
+  animation: fadeInUp 0.5s ease-out forwards;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
 
   &:hover {
     transform: translateY(-4px) scale(1.02);
@@ -271,6 +275,9 @@
   flex-direction: column;
   gap: 12px;
   margin: 12px 0;
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
 }
 
 .controlHeader {
@@ -376,6 +383,9 @@
   border: none;
   border-radius: 22px;
   padding: 16px;
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: 0.4s;
+  opacity: 0;
 }
 
 .panelTitle {
@@ -417,6 +427,9 @@
   transition: background-color 0.18s ease, transform 0.12s ease, border-color 0.12s ease, opacity 0.18s ease;
   justify-content: space-between;
   border: 1px solid transparent;
+  animation: fadeInUp 0.4s ease-out forwards;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
 
   &:active {
     transform: scale(0.99);
@@ -693,6 +706,39 @@
     // Кнопки всегда справа на мобильной версии
     flex: 0 0 auto;
     justify-content: flex-end;
+  }
+}
+
+// Анимации появления элементов
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Отключение анимаций для пользователей с prefers-reduced-motion
+@media (prefers-reduced-motion: reduce) {
+  .heroCard,
+  .statsCard,
+  .controlCard,
+  .panel,
+  .row {
+    animation: none;
+    opacity: 1;
   }
 }
 

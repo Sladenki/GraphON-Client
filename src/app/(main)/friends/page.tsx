@@ -395,7 +395,7 @@ export default function FriendsPage() {
     },
   });
 
-  const renderUserRow = (u: Partial<SocialUserListItem> & { _id: string; firstName?: string; lastName?: string; username?: string; avaPath?: string }) => {
+  const renderUserRow = (u: Partial<SocialUserListItem> & { _id: string; firstName?: string; lastName?: string; username?: string; avaPath?: string }, index?: number) => {
     const isMe = myUserId && u._id === myUserId;
     const avaUrl = resolveAvaUrl(u.avaPath || '');
     const isFriend = friendsIds.has(u._id);
@@ -435,13 +435,16 @@ export default function FriendsPage() {
               ? { label: 'Sent', className: styles.statusOutgoing }
               : null;
 
+    const animationDelay = index !== undefined ? `${0.1 + index * 0.05}s` : '0s';
+    
     return (
       <div 
         key={u._id} 
         className={`${styles.row} ${rowVariantClass}`}
         style={{
           background: cardBackground,
-        }}
+          '--delay': animationDelay,
+        } as React.CSSProperties}
       >
         <div className={styles.rowLeft}>
           <div className={styles.avatar} aria-hidden="true">
@@ -580,7 +583,7 @@ export default function FriendsPage() {
               }
             }}
             aria-label="Перейти к списку друзей"
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', '--delay': '0.1s' } as React.CSSProperties}
           >
             <div className={styles.statsIconBackground} aria-hidden="true">
               <Users size={64} />
@@ -601,7 +604,7 @@ export default function FriendsPage() {
               }
             }}
             aria-label="Перейти к входящим заявкам"
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', '--delay': '0.2s' } as React.CSSProperties}
           >
             <div className={styles.statsIconBackground} aria-hidden="true">
               <UserPlus size={64} />
@@ -622,7 +625,7 @@ export default function FriendsPage() {
               }
             }}
             aria-label="Перейти к исходящим заявкам"
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', '--delay': '0.3s' } as React.CSSProperties}
           >
             <div className={styles.statsIconBackground} aria-hidden="true">
               <Send size={64} />
@@ -668,7 +671,7 @@ export default function FriendsPage() {
             <div className={styles.sectionLabel}>Discover</div>
 
             <div className={styles.list} style={{ marginTop: 12 }}>
-              {!isSearchingPeople && peopleUsers.map((u) =>
+              {!isSearchingPeople && peopleUsers.map((u, index) =>
                 renderUserRow({
                   ...u,
                   metaPills: [
@@ -676,7 +679,7 @@ export default function FriendsPage() {
                     `Подписчики: ${u.followersCount ?? 0}`,
                     `Подписки: ${u.followingCount ?? 0}`,
                   ],
-                })
+                }, index)
               )}
 
               {isSearchingPeople && peopleUsers.length === 0 ? (
@@ -686,7 +689,7 @@ export default function FriendsPage() {
                 />
               ) : null}
 
-              {isSearchingPeople && peopleUsers.map((u) =>
+              {isSearchingPeople && peopleUsers.map((u, index) =>
                 renderUserRow({
                   ...u,
                   metaPills: [
@@ -694,7 +697,7 @@ export default function FriendsPage() {
                     `Подписчики: ${u.followersCount ?? 0}`,
                     `Подписки: ${u.followingCount ?? 0}`,
                   ],
-                })
+                }, index)
               )}
             </div>
 
@@ -733,9 +736,9 @@ export default function FriendsPage() {
             <div className={styles.sectionLabel}>Friends</div>
             <div className={styles.list}>
               {visibleIds.length === 0 ? (
-                <EmptyState message="Пока нет друзей" subMessage="Найдите людей во вкладке “Люди” и отправьте заявку." />
+                <EmptyState message="Пока нет друзей" subMessage="Найдите людей во вкладке &quot;Люди&quot; и отправьте заявку." />
               ) : (
-                visibleIds.map((id) => {
+                visibleIds.map((id, index) => {
                   const u = usersById.get(id) as IUser | undefined;
                   return renderUserRow({
                     _id: id,
@@ -743,7 +746,7 @@ export default function FriendsPage() {
                     lastName: u?.lastName,
                     username: u?.username,
                     avaPath: (u as any)?.avaPath,
-                  });
+                  }, index);
                 })
               )}
             </div>
@@ -757,7 +760,7 @@ export default function FriendsPage() {
               {visibleIds.length === 0 ? (
                 <EmptyState message="Нет входящих заявок" subMessage="Когда вам отправят заявку, она появится здесь." />
               ) : (
-                visibleIds.map((id) => {
+                visibleIds.map((id, index) => {
                   const u = usersById.get(id) as IUser | undefined;
                   return renderUserRow({
                     _id: id,
@@ -765,7 +768,7 @@ export default function FriendsPage() {
                     lastName: u?.lastName,
                     username: u?.username,
                     avaPath: (u as any)?.avaPath,
-                  });
+                  }, index);
                 })
               )}
             </div>
@@ -777,9 +780,9 @@ export default function FriendsPage() {
             <div className={styles.sectionLabel}>Outgoing</div>
             <div className={styles.list}>
               {visibleIds.length === 0 ? (
-                <EmptyState message="Нет исходящих заявок" subMessage="Отправьте заявку человеку во вкладке “Люди”." />
+                <EmptyState message="Нет исходящих заявок" subMessage="Отправьте заявку человеку во вкладке &quot;Люди&quot;." />
               ) : (
-                visibleIds.map((id) => {
+                visibleIds.map((id, index) => {
                   const u = usersById.get(id) as IUser | undefined;
                   return renderUserRow({
                     _id: id,
@@ -787,7 +790,7 @@ export default function FriendsPage() {
                     lastName: u?.lastName,
                     username: u?.username,
                     avaPath: (u as any)?.avaPath,
-                  });
+                  }, index);
                 })
               )}
             </div>
