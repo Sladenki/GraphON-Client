@@ -357,6 +357,43 @@ export default function FriendsPage() {
     },
   });
 
+  const cancelRequestMutation = useMutation({
+    mutationFn: (targetUserId: string) => RelationshipsService.decline(targetUserId),
+    onMutate: async (targetUserId: string) => {
+      // Отменяем запрос для предотвращения конфликтов
+      await queryClient.cancelQueries({ queryKey: ['social', 'following'] });
+
+      // Сохраняем предыдущее состояние для отката
+      const previousFollowing = queryClient.getQueryData(['social', 'following']);
+
+      // Оптимистично удаляем userId из исходящих заявок
+      queryClient.setQueryData(['social', 'following'], (old: any) => {
+        if (!old) return old;
+        const pages = old.pages || [];
+        return {
+          ...old,
+          pages: pages.map((page: any) => ({
+            ...page,
+            items: (page.items || []).filter((id: string) => id !== targetUserId),
+          })),
+        };
+      });
+
+      return { previousFollowing };
+    },
+    onSuccess: () => {
+      notifySuccess('Заявка отменена');
+      invalidateSocial();
+    },
+    onError: (e: any, targetUserId, context) => {
+      // Откатываем изменения при ошибке
+      if (context?.previousFollowing) {
+        queryClient.setQueryData(['social', 'following'], context.previousFollowing);
+      }
+      notifyError('Не удалось отменить заявку', e?.response?.data?.message || e?.message);
+    },
+  });
+
   const removeMutation = useMutation({
     mutationFn: (friendUserId: string) => RelationshipsService.removeFriend(friendUserId),
     onMutate: async (friendUserId: string) => {
@@ -519,7 +556,9 @@ export default function FriendsPage() {
                   </button>
                 </>
               ) : hasOutgoing ? (
-                <span className={styles.disabledNote}>Заявка отправлена</span>
+                <button type="button" className={`${styles.pillBtn} ${styles.ghostBtn}`} onClick={() => cancelRequestMutation.mutate(u._id)}>
+                  Отменить заявку
+                </button>
               ) : (
                 <button type="button" className={`${styles.pillBtn} ${styles.primaryBtn}`} onClick={() => requestMutation.mutate(u._id)}>
                   В друзья
@@ -545,7 +584,11 @@ export default function FriendsPage() {
             </>
           )}
 
-          {activeTab === 'outgoing' && <span className={styles.disabledNote}>Заявка отправлена</span>}
+          {activeTab === 'outgoing' && (
+            <button type="button" className={`${styles.pillBtn} ${styles.ghostBtn}`} onClick={() => cancelRequestMutation.mutate(u._id)}>
+              Отменить заявку
+            </button>
+          )}
 
         </div>
       </div>
