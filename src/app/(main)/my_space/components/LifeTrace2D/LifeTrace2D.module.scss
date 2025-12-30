@@ -1,0 +1,44 @@
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #0a0a1a;
+  overflow: hidden;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.userNode,
+.eventNode,
+.friendNode {
+  transition: all 0.2s ease;
+}
+
+.node {
+  filter: drop-shadow(0 0 4px currentColor);
+  transition: all 0.2s ease;
+}
+
+.glow {
+  filter: blur(4px);
+  transition: all 0.2s ease;
+}
+
+.label {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+  user-select: none;
+}
+
+.pathLine {
+  transition: opacity 0.3s ease;
+}
+
+.friendLine {
+  transition: opacity 0.3s ease;
+}
+
