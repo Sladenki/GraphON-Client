@@ -34,6 +34,10 @@ export interface LifeTraceData {
     id: string;
     x: number;
     y: number;
+    avatarUrl?: string;
+    firstName?: string;
+    lastName?: string;
+    username?: string;
   };
   events: EventNode[];
   friends: FriendNode[];

@@ -6,6 +6,7 @@ import { select } from 'd3-selection';
 import { zoom, ZoomBehavior, ZoomTransform } from 'd3-zoom';
 import { generateMockData } from './mockData';
 import { LifeTraceData, EventNode, FriendNode, CATEGORY_COLORS } from './types';
+import { useAuth } from '@/providers/AuthProvider';
 import { UserNode } from './UserNode';
 import { EventNodeComponent } from './EventNode';
 import { FriendNodeComponent } from './FriendNode';
@@ -14,11 +15,21 @@ import { EventModal } from './EventModal';
 import styles from './LifeTrace2D.module.scss';
 
 export function LifeTrace2D() {
+  const { user } = useAuth();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [data] = useState<LifeTraceData>(() => generateMockData());
   const [selectedEvent, setSelectedEvent] = useState<EventNode | null>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  
+  // Обновляем данные пользователя
+  const userData = useMemo(() => ({
+    ...data.userNode,
+    avatarUrl: user?.avaPath,
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    username: user?.username,
+  }), [data.userNode, user]);
   // Создаем identity transform вручную
   const [transform, setTransform] = useState<ZoomTransform>({ x: 0, y: 0, k: 1 } as ZoomTransform);
   const simulationRef = useRef<d3.Simulation<any, undefined> | null>(null);
@@ -100,7 +111,7 @@ export function LifeTrace2D() {
     setSelectedEvent(null);
   }, []);
 
-  // Вычисляем позиции для хронологической линии
+  // Вычисляем позиции для хронологической линии с категориями
   const pathPoints = useMemo(() => {
     const sortedEvents = nodes
       .filter((n): n is EventNode => 'category' in n)
@@ -108,6 +119,7 @@ export function LifeTrace2D() {
     return sortedEvents.map((event) => ({
       x: (event.x || 0) + centerX,
       y: (event.y || 0) + centerY,
+      category: event.category,
     }));
   }, [nodes, centerX, centerY]);
 
@@ -136,8 +148,8 @@ export function LifeTrace2D() {
           </filter>
         </defs>
 
-        {/* Хронологическая линия */}
-        <PathLine points={pathPoints} />
+        {/* Хронологическая линия с градиентами */}
+        <PathLine points={pathPoints} events={data.events} />
 
         {/* Центральный узел пользователя */}
         <UserNode
@@ -145,6 +157,10 @@ export function LifeTrace2D() {
           y={centerY}
           isHovered={hoveredNode === 'user-core'}
           onHover={(hovered) => setHoveredNode(hovered ? 'user-core' : null)}
+          avatarUrl={userData.avatarUrl}
+          firstName={userData.firstName}
+          lastName={userData.lastName}
+          username={userData.username}
         />
 
         {/* Узлы событий */}

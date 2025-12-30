@@ -42,3 +42,18 @@
   transition: opacity 0.3s ease;
 }
 
+.avatarImage {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.userInitials {
+  pointer-events: none;
+  user-select: none;
+}
+
+.friendInitials {
+  pointer-events: none;
+  user-select: none;
+}
+

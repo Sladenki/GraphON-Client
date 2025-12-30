@@ -66,13 +66,20 @@ export function generateMockData(): LifeTraceData {
     if (Math.random() > 0.5 && i > 0) {
       const friendCount = Math.floor(Math.random() * 3) + 1;
       for (let j = 0; j < friendCount; j++) {
+        const firstNames = ['Алексей', 'Мария', 'Дмитрий', 'Анна', 'Иван'];
+        const lastNames = ['Иванов', 'Петрова', 'Сидоров', 'Козлова', 'Смирнов'];
+        const firstName = firstNames[Math.floor(Math.random() * 5)];
+        const lastName = lastNames[Math.floor(Math.random() * 5)];
+        
         friends.push({
           id: `friend-${i}-${j}`,
           userId: `user-${i}-${j}`,
-          firstName: ['Алексей', 'Мария', 'Дмитрий', 'Анна', 'Иван'][Math.floor(Math.random() * 5)],
-          lastName: ['Иванов', 'Петрова', 'Сидоров', 'Козлова', 'Смирнов'][Math.floor(Math.random() * 5)],
+          firstName,
+          lastName,
           username: `user${i}${j}`,
           eventId: `event-${i}`,
+          // Моковые URL аватаров (в реальном приложении будут из API)
+          avatarUrl: Math.random() > 0.3 ? `https://i.pravatar.cc/150?img=${i * 5 + j + 1}` : undefined,
         });
       }
     }
