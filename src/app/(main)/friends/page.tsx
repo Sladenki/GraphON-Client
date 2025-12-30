@@ -11,7 +11,7 @@ import { RelationshipsService } from '@/services/relationships.service';
 import type { SocialUserListItem } from '@/types/social.interface';
 import type { IUser } from '@/types/user.interface';
 import { notifyError, notifySuccess } from '@/lib/notifications';
-import { Users, UserPlus, Send } from 'lucide-react';
+import { Users, UserPlus, Send, Search } from 'lucide-react';
 import { getPastelTheme, type ThemeName } from '@/components/shared/EventCard/pastelTheme';
 
 type TabKey = 'people' | 'incoming' | 'outgoing' | 'friends';
@@ -568,7 +568,20 @@ export default function FriendsPage() {
     <div className={styles.page}>
       <div className={styles.heroCard}>
         <div className={styles.heroStats} aria-label="Friends overview">
-          <div className={`${styles.statsCard} ${styles.statsMint}`}>
+          <div 
+            className={`${styles.statsCard} ${styles.statsMint} ${activeTab === 'friends' ? styles.statsCardActive : ''}`}
+            onClick={() => setActiveTab('friends')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setActiveTab('friends');
+              }
+            }}
+            aria-label="Перейти к списку друзей"
+            style={{ cursor: 'pointer' }}
+          >
             <div className={styles.statsIconBackground} aria-hidden="true">
               <Users size={64} />
             </div>
@@ -576,7 +589,20 @@ export default function FriendsPage() {
             <div className={styles.statsLabel}>Друзья</div>
           </div>
 
-          <div className={`${styles.statsCard} ${styles.statsPeach}`}>
+          <div 
+            className={`${styles.statsCard} ${styles.statsPeach} ${activeTab === 'incoming' ? styles.statsCardActive : ''}`}
+            onClick={() => setActiveTab('incoming')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setActiveTab('incoming');
+              }
+            }}
+            aria-label="Перейти к входящим заявкам"
+            style={{ cursor: 'pointer' }}
+          >
             <div className={styles.statsIconBackground} aria-hidden="true">
               <UserPlus size={64} />
             </div>
@@ -584,7 +610,20 @@ export default function FriendsPage() {
             <div className={styles.statsLabel}>Заявки</div>
           </div>
 
-          <div className={`${styles.statsCard} ${styles.statsLavender}`}>
+          <div 
+            className={`${styles.statsCard} ${styles.statsLavender} ${activeTab === 'outgoing' ? styles.statsCardActive : ''}`}
+            onClick={() => setActiveTab('outgoing')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setActiveTab('outgoing');
+              }
+            }}
+            aria-label="Перейти к исходящим заявкам"
+            style={{ cursor: 'pointer' }}
+          >
             <div className={styles.statsIconBackground} aria-hidden="true">
               <Send size={64} />
             </div>
@@ -592,6 +631,26 @@ export default function FriendsPage() {
             <div className={styles.statsLabel}>Отправлено</div>
           </div>
         </div>
+        
+        {/* Блок "Глобальный поиск" - появляется при выборе любого раздела кроме "Люди" */}
+        {activeTab !== 'people' && (
+          <div 
+            className={styles.globalSearchBlock}
+            onClick={() => setActiveTab('people')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setActiveTab('people');
+              }
+            }}
+            aria-label="Перейти к глобальному поиску"
+          >
+            <Search size={20} className={styles.globalSearchIcon} />
+            <span className={styles.globalSearchText}>Глобальный поиск</span>
+          </div>
+        )}
       </div>
 
       <div className={styles.controlCard}>
@@ -601,41 +660,6 @@ export default function FriendsPage() {
           onTagFilter={() => {}}
           showTagFilter={false}
         />
-
-        <div className={styles.tabsRail}>
-          <button
-            className={`${styles.tabBtn} ${activeTab === 'people' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('people')}
-            type="button"
-          >
-            <span>Люди</span>
-          </button>
-          <button
-            className={`${styles.tabBtn} ${activeTab === 'incoming' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('incoming')}
-            type="button"
-            aria-label={`Входящие заявки: ${pendingIncomingCount}`}
-          >
-            <span>Входящие</span>
-            {pendingIncomingCount > 0 ? <span className={styles.tabBadge}>{pendingIncomingCount}</span> : null}
-          </button>
-          <button
-            className={`${styles.tabBtn} ${activeTab === 'outgoing' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('outgoing')}
-            type="button"
-            aria-label={`Исходящие заявки: ${pendingOutgoingCount}`}
-          >
-            <span>Исходящие</span>
-            {pendingOutgoingCount > 0 ? <span className={styles.tabBadge}>{pendingOutgoingCount}</span> : null}
-          </button>
-          <button
-            className={`${styles.tabBtn} ${activeTab === 'friends' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('friends')}
-            type="button"
-          >
-            <span>Друзья</span>
-          </button>
-        </div>
       </div>
 
       <div className={styles.content}>

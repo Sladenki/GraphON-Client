@@ -23,8 +23,10 @@
   border-radius: 22px;
   padding: 16px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 16px;
 }
 
 .heroText {
@@ -75,13 +77,42 @@
   gap: 10px;
   padding: 24px 20px;
   box-sizing: border-box;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, border 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   overflow: hidden; // Чтобы иконка не выходила за границы
+  border: 2px solid transparent;
+  cursor: pointer;
+  user-select: none;
 
   &:hover {
     transform: translateY(-4px) scale(1.02);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &:active {
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  // Активное состояние - показывает выбранный раздел
+  &.statsCardActive {
+    border-color: rgba(var(--primary-rgb), 0.4);
+    box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.2), 0 2px 8px rgba(0, 0, 0, 0.08);
+    
+    &:hover {
+      border-color: rgba(var(--primary-rgb), 0.5);
+      box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.25), 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // На мобильных упрощаем hover эффекты
+  @media (hover: none) {
+    &:hover {
+      transform: none;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
   }
 }
 
@@ -135,6 +166,101 @@
   letter-spacing: 0.01em;
   position: relative;
   z-index: 1; // Поверх фоновой иконки
+}
+
+.globalSearchBlock {
+  width: 100%;
+  max-width: 600px;
+  min-height: 60px;
+  border-radius: 32px;
+  background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.1) 0%, rgba(var(--primary-rgb), 0.15) 100%);
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 0 24px;
+  box-sizing: border-box;
+  
+  // Анимация появления
+  animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  
+  &:hover {
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--primary-rgb), 0.2) 100%);
+    border-color: rgba(var(--primary-rgb), 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+  
+  &:focus {
+    outline: 2px solid rgba(var(--primary-rgb), 0.4);
+    outline-offset: 2px;
+  }
+  
+  // На мобильных упрощаем hover эффекты
+  @media (hover: none) {
+    &:hover {
+      transform: none;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    min-height: 56px;
+    padding: 0 20px;
+    gap: 10px;
+  }
+}
+
+.globalSearchIcon {
+  color: var(--primary);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  
+  .globalSearchBlock:hover & {
+    transform: scale(1.1);
+  }
+}
+
+.globalSearchText {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+  
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    max-height: 0;
+    margin-top: -16px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 100px;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }
 
 .controlCard {
@@ -528,8 +654,8 @@
 }
 
 .primaryBtn {
-  background: var(--primary);
-  color: #ffffff;
+  background: var(--block-color);
+  color: var(--ink);
 }
 
 .ghostBtn {
