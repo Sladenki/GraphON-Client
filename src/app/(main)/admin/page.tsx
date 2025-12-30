@@ -20,15 +20,14 @@ import { CreateGlobalGraphForm } from '@/components/admin/CreateGlobalGraphForm/
 import { CreateTopicGraphForm } from '@/components/admin/CreateTopicGraphForm/CreateTopicGraphForm';
 import { GetWeeklySchedule } from '@/components/admin/GetWeeklySchedule/GetWeeklySchedule';
 import { useSelectedGraphId } from '@/stores/useUIStore';
-import CreateEventModal from '@/components/shared/CreateEventModal/CreateEventModal';
+import { useRouter } from 'next/navigation';
 import { Plus } from 'lucide-react';
 
 const Admin = () => {
     const { user } = useAuth();
+    const router = useRouter();
     const typedUser = user as IUser | null;
     const { canAccessCreate, canAccessEditor, canAccessSysAdmin, canAccessAdmin } = useRoleAccess(typedUser?.role);
-    const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
-    const [isSuggestEventModalOpen, setIsSuggestEventModalOpen] = useState(false);
     const [isAdminModeEnabled, setIsAdminModeEnabled] = useState(true);
     
     // Определяем, показывать ли режим user
@@ -69,7 +68,7 @@ const Admin = () => {
             {/* Режим для user или когда режим администрирования отключен */}
             {showUserMode ? (
                 <div className={styles.userModeContainer}>
-                    <div className={`${styles.userBlock} ${styles.createBlock}`} onClick={() => setIsCreateEventModalOpen(true)}>
+                    <div className={`${styles.userBlock} ${styles.createBlock}`} onClick={() => router.push('/admin/create-event')}>
                         <div className={styles.userBlockContent}>
                             <Plus size={32} strokeWidth={2.5} />
                             <h2 className={styles.userBlockTitle}>Создать мероприятие</h2>
@@ -78,7 +77,7 @@ const Admin = () => {
                             </p>
                         </div>
                     </div>
-                    <div className={`${styles.userBlock} ${styles.suggestBlock}`} onClick={() => setIsSuggestEventModalOpen(true)}>
+                    <div className={`${styles.userBlock} ${styles.suggestBlock}`} onClick={() => router.push('/admin/suggest-event')}>
                         <div className={styles.userBlockContent}>
                             <Plus size={32} strokeWidth={2.5} />
                             <h2 className={styles.userBlockTitle}>Предложить мероприятие</h2>
@@ -191,18 +190,6 @@ const Admin = () => {
                     )}
                 </>
             )}
-
-            {/* Модальные окна доступны всегда */}
-            <CreateEventModal 
-                isOpen={isCreateEventModalOpen} 
-                onClose={() => setIsCreateEventModalOpen(false)}
-                isSuggestion={false}
-            />
-            <CreateEventModal 
-                isOpen={isSuggestEventModalOpen} 
-                onClose={() => setIsSuggestEventModalOpen(false)}
-                isSuggestion={true}
-            />
         </div>
     );
 };
