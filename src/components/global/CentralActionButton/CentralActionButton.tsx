@@ -40,9 +40,9 @@ const CentralActionButton: React.FC = () => {
     >
       <div className={styles.buttonContent}>
         {isCityGraph ? (
-          <MapPinned size={22} strokeWidth={2} />
+          <MapPinned size={18} strokeWidth={1.5} />
         ) : (
-          <Network size={22} strokeWidth={2} />
+          <Network size={18} strokeWidth={1.5} />
         )}
       </div>
     </button>
