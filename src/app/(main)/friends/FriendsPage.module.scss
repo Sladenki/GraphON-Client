@@ -23,8 +23,8 @@
   border-radius: 22px;
   padding: 16px;
   display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .heroText {
@@ -54,19 +54,35 @@
 }
 
 .heroStats {
-  flex: 1 1 320px;
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 16px;
+  justify-items: center;
+  max-width: 600px;
 }
 
 .statsCard {
-  border-radius: 18px;
-  padding: 12px;
+  // Красивый скругленный квадрат
+  width: 130px;
+  height: 130px;
+  border-radius: 32px; // Сильно закругленные края
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  background: #fff;
+  padding: 24px 20px;
+  box-sizing: border-box;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden; // Чтобы иконка не выходила за границы
+
+  &:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
 }
 
 .statsMint {
@@ -81,36 +97,44 @@
   background: var(--pastel-lavender);
 }
 
-.statsIcon {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: rgba(var(--primary-rgb), 0.10);
-  color: var(--primary);
-  flex: 0 0 auto;
-}
+.statsIconBackground {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.12; // Очень прозрачная иконка на фоне
+  color: var(--ink);
+  pointer-events: none;
+  z-index: 0;
 
-.statsContent {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  svg {
+    width: 64px;
+    height: 64px;
+    stroke-width: 1.5;
+  }
 }
 
 .statsNumber {
-  font-size: 22px;
+  font-size: 36px;
   font-weight: 900;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   color: var(--ink);
-  line-height: 1.1;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 4px;
+  position: relative;
+  z-index: 1; // Поверх фоновой иконки
 }
 
 .statsLabel {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--ink-secondary);
+  text-align: center;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  position: relative;
+  z-index: 1; // Поверх фоновой иконки
 }
 
 .controlCard {

@@ -567,53 +567,34 @@ export default function FriendsPage() {
   return (
     <div className={styles.page}>
       <div className={styles.heroCard}>
-        <div className={styles.heroText}>
-          <div className={styles.kicker}>Социальные связи</div>
-          <div className={styles.heroTitle}>Друзья и заявки</div>
-          <div className={styles.heroSub}>Мягкий дашборд: pastel, pills, без резких границ</div>
-        </div>
         <div className={styles.heroStats} aria-label="Friends overview">
           <div className={`${styles.statsCard} ${styles.statsMint}`}>
-            <div className={styles.statsIcon} aria-hidden="true">
-              <Users size={18} />
+            <div className={styles.statsIconBackground} aria-hidden="true">
+              <Users size={64} />
             </div>
-            <div className={styles.statsContent}>
-              <div className={styles.statsNumber}>{friendsCount}</div>
-              <div className={styles.statsLabel}>Friends</div>
-            </div>
+            <div className={styles.statsNumber}>{friendsCount}</div>
+            <div className={styles.statsLabel}>Друзья</div>
           </div>
 
           <div className={`${styles.statsCard} ${styles.statsPeach}`}>
-            <div className={styles.statsIcon} aria-hidden="true">
-              <UserPlus size={18} />
+            <div className={styles.statsIconBackground} aria-hidden="true">
+              <UserPlus size={64} />
             </div>
-            <div className={styles.statsContent}>
-              <div className={styles.statsNumber}>{pendingIncomingCount}</div>
-              <div className={styles.statsLabel}>Requests</div>
-            </div>
+            <div className={styles.statsNumber}>{pendingIncomingCount}</div>
+            <div className={styles.statsLabel}>Заявки</div>
           </div>
 
           <div className={`${styles.statsCard} ${styles.statsLavender}`}>
-            <div className={styles.statsIcon} aria-hidden="true">
-              <Send size={18} />
+            <div className={styles.statsIconBackground} aria-hidden="true">
+              <Send size={64} />
             </div>
-            <div className={styles.statsContent}>
-              <div className={styles.statsNumber}>{pendingOutgoingCount}</div>
-              <div className={styles.statsLabel}>Sent</div>
-            </div>
+            <div className={styles.statsNumber}>{pendingOutgoingCount}</div>
+            <div className={styles.statsLabel}>Отправлено</div>
           </div>
         </div>
       </div>
 
       <div className={styles.controlCard}>
-        <div className={styles.controlHeader}>
-          <div>
-            <div className={styles.controlTitle}>Управление друзьями</div>
-            <div className={styles.controlSub}>Поиск, заявки и друзья</div>
-          </div>
-          <div className={styles.controlPill}>Всего: {friendsCount + pendingIncomingCount + pendingOutgoingCount}</div>
-        </div>
-
         <SearchBar
           placeholder="Поиск людей по имени или @username"
           onSearch={setPeopleQuery}
