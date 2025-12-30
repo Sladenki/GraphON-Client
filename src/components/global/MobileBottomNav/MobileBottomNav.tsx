@@ -7,7 +7,6 @@ import { Newspaper, UserPlus, User, Plus } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { UserRole } from "@/types/user.interface";
 import CentralActionButton from "../CentralActionButton/CentralActionButton";
 
 const MobileBottomNav: React.FC = () => {
@@ -16,9 +15,6 @@ const MobileBottomNav: React.FC = () => {
   const isMobile = useMediaQuery('(max-width: 1000px)');
 
   if (!isMobile) return null;
-
-  // Проверка доступа к админке
-  const hasAdminAccess = isLoggedIn && user && user.role !== UserRole.User;
 
   const isActive = (path: string) => pathname === path || pathname.startsWith(path);
 
@@ -81,12 +77,12 @@ const MobileBottomNav: React.FC = () => {
           </ul>
         </nav>
 
-        {/* Кнопка админки справа от меню */}
-        {hasAdminAccess && (
+        {/* Кнопка создания справа от меню */}
+        {isLoggedIn && (
           <Link 
             href="/admin/" 
             className={`${styles.adminButton} ${isActive('/admin') ? styles.adminButtonActive : ""}`}
-            aria-label="Админка"
+            aria-label="Создать"
             aria-current={isActive('/admin') ? "page" : undefined}
           >
             <Plus size={20} strokeWidth={2.5} />
