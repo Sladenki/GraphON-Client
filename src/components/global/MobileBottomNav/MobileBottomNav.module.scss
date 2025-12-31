@@ -77,13 +77,15 @@
   border-radius: 50%;
   border: none;
   background: transparent;
-  transition: background-color 0.18s ease, transform 0.1s ease;
+  transition: background-color 0.18s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   width: auto;
   min-width: 44px;
   height: 44px;
   touch-action: manipulation;
   margin: 0 -2px;
+  position: relative;
+  overflow: hidden;
 
   // Hover state (desktop only)
   @media (hover: hover) {
@@ -101,7 +103,8 @@
   }
 
   &:active {
-    transform: scale(0.97);
+    transform: scale(0.88);
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   &:focus-visible {
@@ -116,13 +119,32 @@
   align-items: center;
   justify-content: center;
   color: #8A7AB8;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
   svg {
     width: 18px;
     height: 18px;
     stroke-width: 1.5;
     fill: none;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  // Анимация при клике на родительский элемент
+  .navLink:active & {
+    transform: scale(1.15);
+    animation: iconBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+@keyframes iconBounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1.15);
   }
 }
 
@@ -207,7 +229,8 @@
   }
 
   &:active {
-    transform: scale(0.95);
+    transform: scale(0.88);
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   &:focus-visible {
@@ -298,12 +321,30 @@
   }
   .navLink {
     transition: none !important;
+    
+    &:active {
+      transform: scale(0.95) !important;
+    }
   }
   .iconWrapper {
     transition: none !important;
+    animation: none !important;
+    
+    svg {
+      transition: none !important;
+    }
+    
+    .navLink:active & {
+      transform: scale(1) !important;
+      animation: none !important;
+    }
   }
   .adminButton {
     transition: none !important;
+    
+    &:active {
+      transform: scale(0.95) !important;
+    }
   }
 }
 
