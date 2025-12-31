@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./MobileBottomNav.module.scss";
 import Link from "next/link";
-import { Newspaper, UserPlus, User, Plus } from "lucide-react";
+import { Newspaper, UserPlus, CircleUser, Plus } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -79,7 +79,7 @@ const MobileBottomNav: React.FC = () => {
                 aria-current={isActive('/profile') ? "page" : undefined}
               >
                 <span className={styles.iconWrapper}>
-                  <User size={18} strokeWidth={1.5} />
+                  <CircleUser size={18} strokeWidth={1.5} />
                 </span>
                 <span className={styles.srOnly}>Профиль</span>
               </Link>
@@ -95,7 +95,7 @@ const MobileBottomNav: React.FC = () => {
             aria-label="Создать"
             aria-current={isActive('/admin') ? "page" : undefined}
           >
-            <Plus size={20} strokeWidth={2.5} />
+            <Plus size={18} strokeWidth={2.5} />
           </Link>
         )}
       </div>
