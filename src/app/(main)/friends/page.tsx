@@ -358,7 +358,7 @@ export default function FriendsPage() {
   });
 
   const cancelRequestMutation = useMutation({
-    mutationFn: (targetUserId: string) => RelationshipsService.decline(targetUserId),
+    mutationFn: (targetUserId: string) => RelationshipsService.cancel(targetUserId),
     onMutate: async (targetUserId: string) => {
       // Отменяем запрос для предотвращения конфликтов
       await queryClient.cancelQueries({ queryKey: ['social', 'following'] });

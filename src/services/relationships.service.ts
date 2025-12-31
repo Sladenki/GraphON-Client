@@ -23,6 +23,11 @@ export const RelationshipsService = {
     return data;
   },
 
+  async cancel(targetUserId: string): Promise<FriendDeclineResponse> {
+    const { data } = await axiosAuth.post<FriendDeclineResponse>(`/relationships/cancel/${targetUserId}`);
+    return data;
+  },
+
   async removeFriend(friendUserId: string): Promise<FriendRemoveResponse> {
     const { data } = await axiosAuth.delete<FriendRemoveResponse>(`/relationships/friends/${friendUserId}`);
     return data;
