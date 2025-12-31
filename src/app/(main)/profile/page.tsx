@@ -207,12 +207,8 @@ export default function Profile() {
 
     // Обработчики для статистик
     const handleSubscriptionsClick = () => {
-        if (activeSection === 'subs') return;
-        
-        setActiveSection('subs');
-        // Сбрасываем поиск при переключении
-        setSubscriptionQuery('');
-        setSelectedSubscriptionTags([]);
+        // Переход на страницу "Мой путь"
+        router.push('/my_space');
     };
 
     const handleEventsClick = () => {
