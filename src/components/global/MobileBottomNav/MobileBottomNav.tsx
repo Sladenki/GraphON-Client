@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./MobileBottomNav.module.scss";
 import Link from "next/link";
 import { Newspaper, UserPlus, User, Plus } from "lucide-react";
@@ -13,6 +13,16 @@ const MobileBottomNav: React.FC = () => {
   const { isLoggedIn, user } = useAuth();
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 1000px)');
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Запускаем анимацию после монтирования компонента
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 50); // Небольшая задержка для плавности
+
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!isMobile) return null;
 
@@ -20,7 +30,7 @@ const MobileBottomNav: React.FC = () => {
 
   return (
     <>
-      <div className={styles.navContainer}>
+      <div className={`${styles.navContainer} ${isVisible ? styles.visible : ''}`}>
         <nav className={styles.bottomNav} role="navigation" aria-label="Bottom navigation">
           <ul className={styles.navList}>
             {/* СОБЫТИЯ */}
