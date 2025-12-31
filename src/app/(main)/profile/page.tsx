@@ -4,17 +4,15 @@ import { useAuth } from '@/providers/AuthProvider';
 import styles from './Profile.module.scss'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader';
 import { EmptyState } from '@/components/global/EmptyState/EmptyState';
-import { IUser, RoleTitles, UserRole } from '@/types/user.interface';
+import { IUser } from '@/types/user.interface';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image'
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { GraduationCap, Pencil, Heart, CalendarCheck, User, Search, CalendarX, HeartOff, CalendarDays } from 'lucide-react';
+import { Pencil, Search, CalendarX, HeartOff } from 'lucide-react';
 import { EventRegService } from '@/services/eventReg.service';
 import EventCard from '@/components/shared/EventCard/EventCard';
-import LogOut from './LogOut/LogOut';
 import NoImage from '../../../../public/noImage.png'
-import ThemeToggle from '@/components/global/ThemeToggle/ThemeToggle';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { GraphSubsService } from '@/services/graphSubs.service';
 import { EventService } from '@/services/event.service';
@@ -27,13 +25,13 @@ import Calendar from '@/components/shared/Calendar/Calendar';
 
 
 export default function Profile() {
-    const { user, setUser, loading, error } = useAuth();
+    const { user, loading, error } = useAuth();
     const queryClient = useQueryClient();
     const router = useRouter();
     const searchParams = useSearchParams();
     const small = useMediaQuery('(max-width: 650px)')
     const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
-    const [activeSection, setActiveSection] = useState<'events' | 'subs' | 'schedule'>('events');
+    const [activeSection, setActiveSection] = useState<'events' | 'subs' | 'schedule'>('schedule');
     
     // Состояния для поиска и фильтрации
     const [subscriptionQuery, setSubscriptionQuery] = useState<string>('');
@@ -269,114 +267,82 @@ export default function Profile() {
     return (
         <div className={styles.profileWrapper}>
             {typedUser ? (
-                <div className={styles.profileCard}>
-                    {/* Avatar */}
-                    <div className={styles.avatarSection}>
-                        <Image 
-                            src={typedUser.avaPath && typedUser.avaPath.startsWith('http') ? typedUser.avaPath : NoImage} 
-                            className={styles.avatar} 
-                            alt="Аватар" 
-                            width={120}
-                            height={120}
-                            onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = NoImage.src;
-                            }}
-                        />
-                    </div>
-                    
-                    {/* Main info */}
-                    <div className={styles.mainInfo}>
-                        <div className={styles.headerTop}>
-                            <div className={styles.identity}>
-                                <h1 className={styles.userName}>{getDisplayName(typedUser)}</h1>
-                                {typedUser.username && (
-                                    <div className={styles.userSubText}>@{typedUser.username}</div>
-                                )}
-                            </div>
-                            <div className={styles.chips}>
-                                <div className={styles.chipPrimary}>
-                                    <User size={14} className={styles.chipIcon} />
-                                    <span>{typedUser.role !== 'user' ? RoleTitles[typedUser.role] : 'Пользователь'}</span>
-                                </div>
-                                {selectedGraphName && (
-                                    <div className={styles.chip}>
-                                        <GraduationCap size={14} className={styles.chipIconMuted} />
-                                        <span>{selectedGraphName}</span>
-                                    </div>
-                                )}
-                            </div>
+                <>
+                    <div className={styles.profileCard}>
+                        {/* Avatar */}
+                        <div className={styles.avatarSection}>
+                            <Image 
+                                src={typedUser.avaPath && typedUser.avaPath.startsWith('http') ? typedUser.avaPath : NoImage} 
+                                className={styles.avatar} 
+                                alt="Аватар" 
+                                width={100}
+                                height={100}
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = NoImage.src;
+                                }}
+                            />
                         </div>
                         
-                        {/* Metrics */}
-                        <div className={styles.statsBlocks}>
-                            <button
-                                type="button"
-                                className={`${styles.statBlock} ${activeSection === 'subs' ? styles.active : ''}`}
-                                onClick={handleSubscriptionsClick}
-                                aria-pressed={activeSection === 'subs'}
-                            >
-                                <div className={styles.statBlockIcon}>
-                                    <Heart size={20} />
-                                </div>
-                                <div className={styles.statBlockContent}>
-                                    <div className={styles.statBlockNumber}>{typedUser.graphSubsNum ?? 0}</div>
-                                    <div className={styles.statBlockLabel}>Подписок</div>
-                                </div>
-                            </button>
-                            <button
-                                type="button"
-                                className={`${styles.statBlock} ${activeSection === 'events' ? styles.active : ''}`}
-                                onClick={handleEventsClick}
-                                aria-pressed={activeSection === 'events'}
-                            >
-                                <div className={styles.statBlockIcon}>
-                                    <CalendarCheck size={20} />
-                                </div>
-                                <div className={styles.statBlockContent}>
-                                    <div className={styles.statBlockNumber}>{typedUser.attentedEventsNum ?? 0}</div>
-                                    <div className={styles.statBlockLabel}>Мероприятий</div>
-                                </div>
-                            </button>
-
-                            <button
-                                type="button"
-                                className={`${styles.statBlock} ${activeSection === 'schedule' ? styles.active : ''}`}
-                                onClick={handleScheduleClick}
-                                aria-pressed={activeSection === 'schedule'}
-                            >
-                                <div className={styles.statBlockIcon}>
-                                    <CalendarDays size={20} />
-                                </div>
-                                <div className={styles.statBlockContent}>
-                                    <div className={styles.statBlockNumber}>
-                                        {activeSection === 'schedule' ? 'Открыто' : 'Открыть'}
-                                    </div>
-                                    <div className={styles.statBlockLabel}>Расписание</div>
-                                </div>
-                            </button>
+                        {/* Main info */}
+                        <div className={styles.mainInfo}>
+                            <h1 className={styles.userName}>{getDisplayName(typedUser)}</h1>
+                            {typedUser.username && (
+                                <div className={styles.userSubText}>@{typedUser.username}</div>
+                            )}
                         </div>
+                        
+                        {/* Кнопка редактирования */}
+                        <button 
+                            className={styles.editButton}
+                            onClick={() => setIsEditOpen(true)}
+                            aria-label="Редактировать профиль"
+                        >
+                            <Pencil size={18} />
+                        </button>
+                    </div>
+
+                    {/* Навигационные карточки */}
+                    <div className={styles.navigationCards}>
+                        <button
+                            type="button"
+                            className={`${styles.navCard} ${activeSection === 'subs' ? styles.navCardActive : ''}`}
+                            onClick={handleSubscriptionsClick}
+                            aria-pressed={activeSection === 'subs'}
+                        >
+                            <div className={styles.navCardContent}>
+                                <span className={styles.navCardTitle}>Мой путь</span>
+                                <span className={styles.navCardSubtitle}>Ваши подписки</span>
+                            </div>
+                        </button>
+                        
+                        <button
+                            type="button"
+                            className={`${styles.navCard} ${activeSection === 'events' ? styles.navCardActive : ''}`}
+                            onClick={handleEventsClick}
+                            aria-pressed={activeSection === 'events'}
+                        >
+                            <div className={styles.navCardContent}>
+                                <span className={styles.navCardTitle}>События</span>
+                                <span className={styles.navCardSubtitle}>Ваши мероприятия</span>
+                            </div>
+                        </button>
+
+                        <button
+                            type="button"
+                            className={`${styles.navCard} ${activeSection === 'schedule' ? styles.navCardActive : ''}`}
+                            onClick={handleScheduleClick}
+                            aria-pressed={activeSection === 'schedule'}
+                        >
+                            <div className={styles.navCardContent}>
+                                <span className={styles.navCardTitle}>Расписание</span>
+                                <span className={styles.navCardSubtitle}>Календарь событий</span>
+                            </div>
+                        </button>
                     </div>
                     
-                    {/* Кнопка редактирования */}
-                    <button 
-                        className={styles.editButton}
-                        onClick={() => setIsEditOpen(true)}
-                    >
-                        <Pencil size={16} />
-                    </button>
-                    
-                    {/* Кнопка редактирования для мобильной версии */}
-                    <button 
-                        className={styles.editButtonMobile}
-                        onClick={() => setIsEditOpen(true)}
-                    >
-                        <Pencil size={16} />
-                        <span>Редактировать профиль</span>
-                    </button>
-                    
                     <EditProfilePopUp isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
-                </div>
+                </>
             ) : null}
         
             

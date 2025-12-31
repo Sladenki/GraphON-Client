@@ -11,16 +11,10 @@
 .profileCard {
   background: var(--color-neutral-card);
   border-radius: 24px;
-  padding: 20px;
-  border: 1px solid var(--color-neutral-border);
-  display: grid;
-  grid-template-columns: 140px 1fr auto;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    "avatar name edit"
-    "avatar stats edit";
+  padding: 20px 24px;
+  display: flex;
   align-items: center;
-  gap: 16px 20px;
+  gap: 20px;
   max-width: 900px;
   width: 100%;
   position: relative;
@@ -28,19 +22,17 @@
 
 /* Левая часть - аватарка */
 .avatarSection {
-  grid-area: avatar;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .avatar {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid rgba(var(--main-Color), 0.18);
+  border: 3px solid rgba(var(--main-Color), 0.15);
 }
 
 .role {
@@ -100,17 +92,11 @@
 }
 
 .mainInfo {
-  grid-area: name;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-}
-
-.headerTop {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
 }
 
 .userName {
@@ -118,20 +104,17 @@
   font-weight: 700;
   color: var(--color-text-primary);
   margin: 0;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-}
-
-.identity {
-  min-width: 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-family: var(--font-inter);
 }
 
 .userSubText {
-  margin-top: 6px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--color-text-muted);
   font-family: var(--font-inter);
+  opacity: 0.7;
 }
 
 .chips {
@@ -190,84 +173,171 @@
   font-weight: bold;
 }
 
-.statsBlocks {
-  margin-top: 10px;
-  grid-area: stats;
+/* Навигационные карточки */
+.navigationCards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 900px;
+  width: 100%;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
-.statBlock {
-  background: var(--color-neutral-card);
-  border: 1px solid var(--color-neutral-border);
-  border-radius: 16px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-  width: 100%;
-  text-align: left;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+.navCard {
+  background: linear-gradient(135deg, rgba(110, 90, 214, 0.08) 0%, rgba(150, 130, 238, 0.05) 100%);
+  border: 1px solid rgba(110, 90, 214, 0.12);
+  border-radius: 28px;
+  padding: 24px 20px;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(110, 90, 214, 0.15) 0%, rgba(150, 130, 238, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
   
   &:hover {
-    background: rgba(var(--main-Color), 0.05);
-    border-color: rgba(var(--main-Color), 0.20);
+    transform: translateY(-2px);
+    border-color: rgba(110, 90, 214, 0.25);
+    box-shadow: 0 8px 24px rgba(110, 90, 214, 0.12);
+    
+    &::before {
+      opacity: 1;
+    }
   }
   
-  &.active {
-    background: var(--color-primary-light);
-    border-color: rgba(var(--main-Color), 0.35);
+  &:active {
+    transform: translateY(0);
+  }
+  
+  // Первая карточка - "Мой путь" (розово-персиковый)
+  &:nth-child(1) {
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.12) 0%, rgba(255, 192, 203, 0.08) 100%);
+    border-color: rgba(255, 182, 193, 0.25);
+    
+    &::before {
+      background: linear-gradient(135deg, rgba(255, 182, 193, 0.2) 0%, rgba(255, 192, 203, 0.15) 100%);
+    }
+    
+    &:hover {
+      border-color: rgba(255, 182, 193, 0.4);
+      box-shadow: 0 8px 24px rgba(255, 182, 193, 0.15);
+    }
+  }
+  
+  // Вторая карточка - "События" (голубой)
+  &:nth-child(2) {
+    background: linear-gradient(135deg, rgba(173, 216, 230, 0.12) 0%, rgba(176, 224, 230, 0.08) 100%);
+    border-color: rgba(173, 216, 230, 0.25);
+    
+    &::before {
+      background: linear-gradient(135deg, rgba(173, 216, 230, 0.2) 0%, rgba(176, 224, 230, 0.15) 100%);
+    }
+    
+    &:hover {
+      border-color: rgba(173, 216, 230, 0.4);
+      box-shadow: 0 8px 24px rgba(173, 216, 230, 0.15);
+    }
+  }
+  
+  // Третья карточка - "Расписание" (лавандовый)
+  &:nth-child(3) {
+    background: linear-gradient(135deg, rgba(230, 230, 250, 0.12) 0%, rgba(221, 160, 221, 0.08) 100%);
+    border-color: rgba(230, 230, 250, 0.25);
+    
+    &::before {
+      background: linear-gradient(135deg, rgba(230, 230, 250, 0.2) 0%, rgba(221, 160, 221, 0.15) 100%);
+    }
+    
+    &:hover {
+      border-color: rgba(230, 230, 250, 0.4);
+      box-shadow: 0 8px 24px rgba(230, 230, 250, 0.15);
+    }
+  }
+  
+  // Dark theme adjustments
+  html[data-theme="dark"] &,
+  html.dark & {
+    &:nth-child(1) {
+      background: linear-gradient(135deg, rgba(255, 182, 193, 0.15) 0%, rgba(255, 192, 203, 0.1) 100%);
+    }
+    
+    &:nth-child(2) {
+      background: linear-gradient(135deg, rgba(173, 216, 230, 0.15) 0%, rgba(176, 224, 230, 0.1) 100%);
+    }
+    
+    &:nth-child(3) {
+      background: linear-gradient(135deg, rgba(230, 230, 250, 0.15) 0%, rgba(221, 160, 221, 0.1) 100%);
+    }
   }
 }
 
-.statBlockIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  color: rgb(var(--main-Color));
-  border-radius: 8px;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+.navCardActive {
+  background: linear-gradient(135deg, rgba(110, 90, 214, 0.2) 0%, rgba(150, 130, 238, 0.15) 100%) !important;
+  border-color: rgba(110, 90, 214, 0.4) !important;
+  box-shadow: 0 4px 16px rgba(110, 90, 214, 0.2);
+  
+  &::before {
+    opacity: 1 !important;
+  }
+  
+  &:nth-child(1) {
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.25) 0%, rgba(255, 192, 203, 0.2) 100%) !important;
+    border-color: rgba(255, 182, 193, 0.5) !important;
+    box-shadow: 0 4px 16px rgba(255, 182, 193, 0.25);
+  }
+  
+  &:nth-child(2) {
+    background: linear-gradient(135deg, rgba(173, 216, 230, 0.25) 0%, rgba(176, 224, 230, 0.2) 100%) !important;
+    border-color: rgba(173, 216, 230, 0.5) !important;
+    box-shadow: 0 4px 16px rgba(173, 216, 230, 0.25);
+  }
+  
+  &:nth-child(3) {
+    background: linear-gradient(135deg, rgba(230, 230, 250, 0.25) 0%, rgba(221, 160, 221, 0.2) 100%) !important;
+    border-color: rgba(230, 230, 250, 0.5) !important;
+    box-shadow: 0 4px 16px rgba(230, 230, 250, 0.25);
+  }
 }
 
-.statBlockContent {
+.navCardContent {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 6px;
 }
 
-.statBlockNumber {
-  font-size: 18px;
+.navCardTitle {
+  font-size: 20px;
   font-weight: 700;
   color: var(--color-text-primary);
-  line-height: 1;
-  transition: color 0.2s ease;
-  
-  .statBlock.active & {
-    color: rgb(var(--main-Color));
-  }
-}
-
-.statBlockLabel {
-  color: var(--color-text-muted);
-  font-size: 12px;
-  font-weight: 600;
   font-family: var(--font-inter);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-.statBlockLabel {
-  font-size: 0.8rem;
-  color: rgba(var(--text-color), 0.6);
-  font-weight: 400;
-  transition: color 0.2s ease;
-  
-  .statBlock.active & {
-    color: rgba(var(--main-Color), 0.8);
-  }
+.navCardSubtitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  font-family: var(--font-inter);
+  opacity: 0.8;
+  line-height: 1.4;
 }
 
 /* Правая часть - статистика */
@@ -298,11 +368,8 @@
 
 /* Кнопка редактирования */
 .editButton {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 2px solid rgba(var(--main-Color), 0.15);
   background: var(--background-color);
@@ -312,35 +379,12 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
   
   &:hover {
     border-color: rgba(var(--main-Color), 0.3);
-    color: var(--text-color);
-    transform: translateY(-1px);
-  }
-}
-
-/* Кнопка редактирования для мобильной версии */
-.editButtonMobile {
-  display: none;
-  width: 90%;
-  padding: 12px 16px;
-  background: rgba(var(--main-Color), 0.1);
-  border: 1px solid rgba(var(--main-Color), 0.2);
-  border-radius: 12px;
-  color: rgb(var(--main-Color));
-  font-family: var(--font-inter), 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  
-  &:hover {
-    background: rgba(var(--main-Color), 0.15);
-    border-color: rgba(var(--main-Color), 0.3);
+    color: rgb(var(--main-Color));
+    background: rgba(var(--main-Color), 0.05);
     transform: translateY(-1px);
   }
   
@@ -350,38 +394,17 @@
 }
 
 
+
 /* Мобильная адаптивность */
 @media (max-width: 768px) {
   .profileWrapper {
-    padding: 1rem;
+    padding: 16px;
+    gap: 20px;
   }
 
   .profileCard {
-    padding: 1rem;
-    gap: 1rem;
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "avatar"
-      "name"
-      "stats"
-      "edit";
-    text-align: center;
-  }
-
-  .nameSection {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-  }
-
-  .avatarSection {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    gap: 0.75rem;
+    padding: 16px 20px;
+    gap: 16px;
   }
 
   .avatar {
@@ -389,82 +412,82 @@
     height: 80px;
   }
 
-  .role {
-    font-size: 11.5px;
-    height: 26px;
-    padding: 5px 9px;
-    text-align: center;
-    margin-left: 6px;
-    margin-top: 0;
-  }
-
-  .university {
-    font-size: 11.5px;
-    height: 26px;
-    padding: 5px 9px;
-    text-align: center;
-    margin-left: 4px;
-    margin-top: 0;
-  }
-
-  .userInfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
   .userName {
-    font-size: 1.5rem;
+    font-size: 20px;
   }
 
-  .statsBlocks {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
-    width: 100%;
-    align-items: stretch;
-    justify-items: stretch;
-  }
-
-  .statBlock {
-    min-width: 0;
-    padding: 0.6rem 0.9rem;
-    justify-content: center;
-    text-align: center;
-  }
-
-  .statBlockIcon {
-    width: 22px;
-    height: 22px;
-  }
-
-  .statBlockNumber {
-    font-size: 1.15rem;
-  }
-
-  .statBlockLabel {
-    font-size: 0.75rem;
-  }
-
-  .statsSection {
-    flex-direction: row;
-    justify-content: space-around;
-    width: 100%;
-    min-width: auto;
+  .userSubText {
+    font-size: 14px;
   }
 
   .editButton {
-    display: flex;
+    width: 40px;
+    height: 40px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
   }
-  
-  .editButtonMobile {
-    display: none;
+
+  .navigationCards {
+    gap: 12px;
+  }
+
+  .navCard {
+    padding: 20px 18px;
+    border-radius: 24px;
+  }
+
+  .navCardTitle {
+    font-size: 18px;
+  }
+
+  .navCardSubtitle {
+    font-size: 13px;
   }
 }
 
 @media (max-width: 480px) {
-  .statsBlocks {
-    grid-template-columns: 1fr;
+  .profileCard {
+    padding: 14px 16px;
+    gap: 14px;
+  }
+
+  .avatar {
+    width: 70px;
+    height: 70px;
+  }
+
+  .userName {
+    font-size: 18px;
+  }
+
+  .navCard {
+    padding: 18px 16px;
+  }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .navCard {
+    transition: none !important;
+    
+    &:hover {
+      transform: none !important;
+    }
+    
+    &:active {
+      transform: none !important;
+    }
+  }
+  
+  .editButton {
+    transition: none !important;
+    
+    &:hover {
+      transform: none !important;
+    }
   }
 }
 
