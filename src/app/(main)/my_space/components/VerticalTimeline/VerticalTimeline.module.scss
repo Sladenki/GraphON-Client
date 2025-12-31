@@ -65,6 +65,29 @@
       }
     }
   }
+  
+  @media (max-width: 360px) {
+    gap: 8px;
+    padding: 10px 12px;
+    
+    &.scrolled {
+      padding: 6px 12px;
+      gap: 6px;
+      
+      .statValue {
+        font-size: 16px;
+      }
+      
+      .statLabel {
+        font-size: 9px;
+      }
+      
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
 }
 
 .statItem {
@@ -101,6 +124,14 @@
       font-size: 16px;
     }
   }
+  
+  @media (max-width: 360px) {
+    font-size: 18px;
+    
+    .statsHeader.scrolled & {
+      font-size: 14px;
+    }
+  }
 }
 
 .statLabel {
@@ -117,6 +148,14 @@
       font-size: 9px;
     }
   }
+  
+  @media (max-width: 360px) {
+    font-size: 10px;
+    
+    .statsHeader.scrolled & {
+      font-size: 8px;
+    }
+  }
 }
 
 .timelineContent {
@@ -126,6 +165,14 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  
+  @media (max-width: 768px) {
+    padding: 200px 20px 100px;
+  }
+  
+  @media (max-width: 360px) {
+    padding: 180px 12px 80px;
+  }
 }
 
 // Извилистая линия пути (SVG)
@@ -159,6 +206,12 @@
     width: calc(100% - 40px);
     max-width: 320px;
   }
+  
+  @media (max-width: 360px) {
+    width: calc(100% - 24px);
+    max-width: none;
+    top: 10px;
+  }
 }
 
 .nextEventContent {
@@ -171,6 +224,12 @@
   align-items: center;
   gap: 20px;
   box-shadow: 0 0 30px rgba(110, 90, 214, 0.3);
+  
+  @media (max-width: 360px) {
+    padding: 16px;
+    gap: 12px;
+    border-radius: 16px;
+  }
 }
 
 .nextEventIcon {
@@ -185,6 +244,12 @@
   font-weight: 700;
   color: rgba(110, 90, 214, 0.8);
   border: 2px solid rgba(110, 90, 214, 0.4);
+  
+  @media (max-width: 360px) {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
 }
 
 .nextEventText {
@@ -196,11 +261,20 @@
   font-weight: 700;
   color: #ffffff;
   margin-bottom: 4px;
+  
+  @media (max-width: 360px) {
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
 }
 
 .nextEventSubtitle {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.6);
+  
+  @media (max-width: 360px) {
+    font-size: 12px;
+  }
 }
 
 @keyframes pulseGlow {
@@ -228,6 +302,13 @@
   z-index: 1;
   animation: fadeInUp 0.6s ease-out;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  
+  @media (max-width: 360px) {
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 16px;
+    max-width: calc(100% - 24px);
+  }
 }
 
 .achievementIcon {
@@ -241,6 +322,12 @@
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
+  
+  @media (max-width: 360px) {
+    font-size: 10px;
+    white-space: normal;
+    line-height: 1.3;
+  }
 }
 
 .timelineItem {
@@ -289,6 +376,18 @@
     margin-left: auto;
     margin-right: calc(50% - 210px - 80px);
   }
+  
+  @media (max-width: 360px) {
+    width: 100%;
+    max-width: none;
+    min-height: 180px;
+    
+    &.left,
+    &.right {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
 }
 
 .eventCardContent {
@@ -316,6 +415,12 @@
       transparent 100%
     );
   }
+  
+  @media (max-width: 360px) {
+    padding: 18px;
+    border-radius: 16px;
+    border-width: 1.5px;
+  }
 }
 
 // Сфера события
@@ -327,6 +432,12 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
+  
+  @media (max-width: 360px) {
+    width: 60px;
+    height: 60px;
+    top: -30px;
+  }
 }
 
 .sphereInner {
@@ -358,6 +469,10 @@
 .eventInfo {
   margin-top: 40px;
   text-align: center;
+  
+  @media (max-width: 360px) {
+    margin-top: 30px;
+  }
 }
 
 .eventCategory {
@@ -376,12 +491,22 @@
   color: #ffffff;
   margin: 0 0 8px 0;
   line-height: 1.3;
+  
+  @media (max-width: 360px) {
+    font-size: 18px;
+    margin: 0 0 6px 0;
+  }
 }
 
 .eventDate {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 12px;
+  
+  @media (max-width: 360px) {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
 }
 
 .eventDescription {
@@ -389,6 +514,11 @@
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.5;
   margin: 0;
+  
+  @media (max-width: 360px) {
+    font-size: 12px;
+    line-height: 1.4;
+  }
 }
 
 // Контейнер друзей
@@ -441,6 +571,17 @@
     
     &:first-child {
       margin-left: 0;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    width: 42px;
+    height: 42px;
+    margin-left: -10px;
+    
+    &::before {
+      width: 52px;
+      height: 52px;
     }
   }
   
@@ -638,7 +779,7 @@
 // Мобильная адаптивность
 @media (max-width: 768px) {
   .timelineContent {
-    padding: 60px 20px 100px;
+    padding: 200px 20px 100px;
   }
   
   .eventCard {
@@ -695,6 +836,109 @@
   
   .timelineLine {
     left: 20px;
+  }
+}
+
+// Адаптация для маленьких экранов (360px)
+@media (max-width: 360px) {
+  .timelineContent {
+    padding: 180px 12px 80px;
+  }
+  
+  .eventCard {
+    width: 100%;
+    max-width: none;
+    min-height: 160px;
+  }
+  
+  .eventCardContent {
+    padding: 16px;
+  }
+  
+  .eventSphere {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+  }
+  
+  .eventInfo {
+    margin-top: 28px;
+  }
+  
+  .eventName {
+    font-size: 16px;
+  }
+  
+  .eventCategory {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .eventDate {
+    font-size: 11px;
+  }
+  
+  .eventDescription {
+    font-size: 11px;
+  }
+  
+  .friendsContainer {
+    margin-top: 12px;
+    gap: 6px;
+  }
+  
+  .friendAvatar {
+    width: 36px;
+    height: 36px;
+    
+    &::before {
+      width: 48px;
+      height: 48px;
+    }
+  }
+  
+  .friendMore {
+    font-size: 12px;
+  }
+  
+  .achievementBadge {
+    padding: 6px 10px;
+    gap: 6px;
+    max-width: calc(100% - 24px);
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  
+  .achievementTitle {
+    font-size: 10px;
+    white-space: normal;
+    line-height: 1.3;
+  }
+  
+  .nextEventCard {
+    width: calc(100% - 24px);
+  }
+  
+  .nextEventContent {
+    padding: 14px;
+    gap: 10px;
+  }
+  
+  .nextEventIcon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+  
+  .nextEventTitle {
+    font-size: 14px;
+  }
+  
+  .nextEventSubtitle {
+    font-size: 11px;
   }
 }
 
