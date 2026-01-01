@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { ChevronDown, Check } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { GraphService } from '@/services/graph.service'
@@ -13,6 +13,10 @@ import { IGraphList } from '@/types/graph.interface'
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL
 
+// ID университетов для фильтрации
+const KBKK_ID = '6896447465255a1c4ed48eaf'
+const KGTU_ID = '67a499dd08ac3c0df94d6ab7'
+
 const GraphSwitcherIcon: React.FC = () => {
   const { user, setUser } = useAuth()
   const router = useRouter()
@@ -23,12 +27,34 @@ const GraphSwitcherIcon: React.FC = () => {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const { data: globalGraphsData, isLoading } = useQuery({
-    queryKey: ['graph/getAllGlobalGraphs'],
-    queryFn: () => GraphService.getAllGlobalGraphs(),
+  const { data: globalGraphsResp, isLoading } = useQuery<IGraphList[]>({
+    queryKey: ['graph/getGlobalGraphs'],
+    queryFn: async () => {
+      const res = await GraphService.getGlobalGraphs()
+      // Нормализуем ответ - может быть res.data или сам res
+      const data = res.data || res
+      // Убеждаемся, что это массив
+      return Array.isArray(data) ? data : []
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
   })
 
-  const globalGraphs = globalGraphsData?.data || []
+  // Фильтруем графы: показываем только КБК и КГТУ для переключения между ними
+  // В отличие от GraphSwitcher, здесь всегда показываем оба варианта, независимо от universityGraphId
+  const globalGraphs = useMemo(() => {
+    // Убеждаемся, что это массив
+    let graphs: IGraphList[] = []
+    
+    if (Array.isArray(globalGraphsResp)) {
+      graphs = globalGraphsResp
+    } else if (globalGraphsResp && typeof globalGraphsResp === 'object' && 'data' in globalGraphsResp) {
+      // Если это объект с полем data
+      graphs = Array.isArray((globalGraphsResp as any).data) ? (globalGraphsResp as any).data : []
+    }
+    
+    // Фильтруем только КБК и КГТУ (показываем оба для переключения)
+    return graphs.filter((graph: IGraphList) => graph._id === KBKK_ID || graph._id === KGTU_ID)
+  }, [globalGraphsResp])
 
   const currentGraph = globalGraphs.find((g: IGraphList) => g._id === selectedGraphId)
 
@@ -95,7 +121,13 @@ const GraphSwitcherIcon: React.FC = () => {
     }
   }
 
-  if (isLoading || globalGraphs.length === 0 || globalGraphs.length === 1) {
+  // Показываем компонент только если есть хотя бы 2 графа для переключения
+  if (isLoading) {
+    return null
+  }
+
+  // Если графов меньше двух, не показываем компонент (нечего переключать)
+  if (globalGraphs.length < 2) {
     return null
   }
 

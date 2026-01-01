@@ -250,7 +250,7 @@
   border-bottom-right-radius: 0;
   padding: 20px;
   padding-bottom: max(100px, calc(80px + env(safe-area-inset-bottom))); // Отступ для BottomMenu
-  margin-top: -80px; // Увеличен отрицательный отступ, чтобы поднять блок еще выше
+
   // Темный блок доходит до краев страницы
   width: 100vw;
   margin-left: calc(50% - 50vw);
