@@ -16,6 +16,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import StudentStatusDialog from '@/components/global/StudentStatusDialog/StudentStatusDialog';
 import FeedbackModal from '@/components/global/FeedbackModal/FeedbackModal';
 import { NON_STUDENT_DEFAULT_GRAPH_ID } from '@/constants/nonStudentDefaults';
+import { usePathname } from 'next/navigation';
 
 export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
 
@@ -317,9 +318,6 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
             // Если университет выбран - показываем контент
             return (
               <div className={styles.wrapper}>
-                {/* Top Bar - только для мобильных */}
-                {small && <MobileTopBar />}
-
                 {/* Контент */}
                 {small ? (
                   <div className={styles.main}>

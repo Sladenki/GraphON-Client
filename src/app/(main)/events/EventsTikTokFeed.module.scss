@@ -11,11 +11,12 @@
 
 .tabsContainer {
   position: fixed;
-  top: 56px; // Ниже MobileTopBar (высота 56px на десктопе)
+  top: 0; // На самом верху, так как MobileTopBar скрыт на /events
   left: 0;
   right: 0;
   z-index: 999; // Ниже MobileTopBar (z-index: 1000), но выше контента
   padding: 12px 16px;
+  padding-top: max(12px, env(safe-area-inset-top)); // Учитываем safe-area для устройств с вырезами
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -54,7 +55,7 @@
 // Мобильная версия
 @media (max-width: 768px) {
   .tabsContainer {
-    top: 54px; // Высота MobileTopBar на мобильных (54px)
+    top: 0; // На самом верху, так как MobileTopBar скрыт на /events
     padding: 12px 0;
     // Учитываем safe-area для устройств с вырезами
     padding-top: max(12px, env(safe-area-inset-top));
@@ -90,7 +91,7 @@
 
 @media (max-width: 480px) {
   .tabsContainer {
-    top: 52px; // Высота MobileTopBar на маленьких экранах (52px)
+    top: 0; // На самом верху, так как MobileTopBar скрыт на /events
   }
 }
 

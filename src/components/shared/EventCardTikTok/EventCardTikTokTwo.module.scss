@@ -1,0 +1,591 @@
+// EventCardTikTokTwo - Redesigned TikTok-style event card
+// Premium design with immersive header and dark glass content area
+
+.card {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  box-sizing: border-box;
+  overflow: visible; // Изменено на visible, чтобы contentBlock мог доходить до краев
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+// ============================================
+// Block 1: Event Header (Immersive Background)
+// ============================================
+.headerBlock {
+  position: relative;
+  padding-top: max(80px, calc(60px + env(safe-area-inset-top))); // Отступ только для PillTabs (~60px), шапка убрана
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px; // Уменьшен нижний отступ
+  min-height: 380px; // Увеличена высота первого блока
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+
+  @media (min-width: 769px) {
+    padding-top: max(80px, calc(60px + env(safe-area-inset-top))); // Отступ только для PillTabs (~60px)
+    min-height: 400px;
+    padding-bottom: 24px;
+  }
+}
+
+// Share Button - Top Right (Circular, White, Icon-only)
+.shareButton {
+  position: absolute;
+  top: max(20px, calc(60px + env(safe-area-inset-top))); // Отступ только для PillTabs (~60px), шапка убрана
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  color: #2f2d32;
+
+  &:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(255, 255, 255, 1);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+// Event Title (Primary Visual Focus)
+.titleContainer {
+  margin-top: 0;
+  margin-bottom: auto;
+  padding-right: 70px; // Space for share button
+  padding-left: 0;
+}
+
+.eventTitle {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  color: #2f2d32;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 480px) {
+    font-size: 28px;
+    line-height: 1.25;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 24px;
+    -webkit-line-clamp: 4;
+  }
+}
+
+// Bottom Row: Participant Orbits + Author
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0; // Убран отступ сверху, чтобы поднять максимально высоко
+  margin-bottom: 60px; // Отрицательный отступ снизу, чтобы поднять выше темного блока
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 6; // Выше темного блока (z-index: 5), чтобы не перекрывался
+}
+
+// Left: Participant Orbits + Count
+.participantsSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.participantsOrbits {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.participantCount {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f2d32;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
+}
+
+// Right: Author Avatar + Name
+.authorSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.authorAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #5f5a6c;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  @media (max-width: 480px) {
+    font-size: 16px;
+  }
+}
+
+.authorName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2f2d32;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+    max-width: 100px;
+  }
+
+  @media (max-width: 360px) {
+    max-width: 80px;
+  }
+}
+
+// ============================================
+// Block 2: Content Area (Dark Glass)
+// ============================================
+.contentBlock {
+  background: rgba(18, 18, 23, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top-left-radius: 32px;
+  border-top-right-radius: 32px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 20px;
+  padding-bottom: max(100px, calc(80px + env(safe-area-inset-bottom))); // Отступ для BottomMenu
+  margin-top: -80px; // Увеличен отрицательный отступ, чтобы поднять блок еще выше
+  // Темный блок доходит до краев страницы
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  position: relative;
+  z-index: 5;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none; // Убрана тень
+  box-sizing: border-box;
+
+  // Mobile optimization - reduce blur for performance
+  @media (max-width: 768px) {
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    margin-top: -76px; // Увеличен отрицательный отступ на мобильных
+  }
+}
+
+// Tabs Navigation - Fixed at top
+.tabsContainer {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (hover: hover) {
+    &:hover:not(.tabActive) {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
+
+.tabActive {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  position: relative;
+
+  // Нижнее подчеркивание для активной вкладки
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -13px; // Ниже padding-bottom контейнера (12px) + 1px
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: rgba(124, 106, 239, 0.9);
+    border-radius: 2px;
+  }
+}
+
+// Tab Content
+.tabContent {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 120px;
+  max-height: 400px;
+  padding-right: 4px; // Space for scrollbar
+
+  @media (max-width: 480px) {
+    max-height: 300px;
+  }
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
+// Info Tab Content (Pills)
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.infoPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.infoPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  transition: all 0.2s ease;
+  cursor: default;
+  max-width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+
+  span {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    max-width: 100%;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 14px;
+    font-size: 13px;
+    gap: 6px;
+    border-radius: 16px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+// Description Tab Content
+.descriptionContent {
+  padding: 4px 0;
+}
+
+.descriptionText {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  hyphens: auto;
+
+  a {
+    color: #9682EE;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:active {
+      text-decoration: underline;
+    }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}
+
+// ============================================
+// Registration CTA (Persistent at Bottom - Inside Dark Block)
+// ============================================
+.registrationCTA {
+  padding: 20px 0 0;
+  margin-top: auto;
+  background: transparent;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pastEventButton {
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.7;
+  box-sizing: border-box;
+
+  @media (max-width: 360px) {
+    font-size: 14px;
+    padding: 14px 20px;
+  }
+}
+
+.loginButton {
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: #1F2A1F;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 1);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 14px;
+    padding: 14px 20px;
+  }
+}
+
+// ============================================
+// Animated Avatar (Registration Feedback)
+// ============================================
+.animatedAvatar {
+  position: absolute;
+  left: 50%;
+  bottom: 100px;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(124, 106, 239, 0.9);
+  box-shadow: 0 4px 24px rgba(124, 106, 239, 0.5), 0 0 40px rgba(124, 106, 239, 0.4);
+  background: rgba(255, 255, 255, 0.98);
+  pointer-events: none;
+  will-change: transform, opacity;
+
+  @media (max-width: 768px) {
+    width: 48px;
+    height: 48px;
+    bottom: 90px;
+  }
+}
+
+.animatedAvatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.animatedAvatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #5f5a6c;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
+}
+

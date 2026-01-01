@@ -1,13 +1,14 @@
 'use client'
 
 import React, { useMemo, useEffect, useRef, useCallback, useState } from 'react'
-import { FileText, HelpCircle, Users } from 'lucide-react'
+import { FileText, HelpCircle, Users, Bell } from 'lucide-react'
 import Link from 'next/link'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import { useScrollLock } from '../PopUpWrapper/useScrollLock'
 import { createPortal } from 'react-dom'
 import { Logo } from '../Logo/Logo'
 import styles from './MorePopup.module.scss'
+import { usePathname } from 'next/navigation'
 
 interface MorePopupProps {
   isOpen: boolean
@@ -21,6 +22,8 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   const [animateOpen, setAnimateOpen] = useState(false)
   const dragStartYRef = useRef<number | null>(null)
   const sheetRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
+  const isNotificationsActive = pathname === '/notifications' || pathname.startsWith('/notifications')
 
   // Блокируем скролл когда попап открыт
   useScrollLock(isOpen)
@@ -157,6 +160,22 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
 
         {/* Основной контент */}
         <div className={styles.content}>
+          {/* Уведомления */}
+          <div className={styles.cardsSection}>
+            <Link
+              href="/notifications"
+              className={`${styles.actionCard} ${isNotificationsActive ? styles.actionCardActive : ''}`}
+              onClick={onClose}
+            >
+              <div className={styles.cardIcon} style={{ color: 'var(--main-Color)' }}>
+                <Bell size={24} strokeWidth={1.8} />
+              </div>
+              <div className={styles.cardContent}>
+                <h3 className={styles.cardTitle}>Уведомления</h3>
+              </div>
+            </Link>
+          </div>
+
           {/* Карточки действий */}
           {actionCards.length > 0 && (
             <div className={styles.cardsSection}>

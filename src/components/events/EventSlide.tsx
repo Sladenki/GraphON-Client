@@ -5,6 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import EventCardTikTok from '@/components/shared/EventCardTikTok/EventCardTikTok';
 import { EventItem } from '@/types/schedule.interface';
 import styles from './EventSlide.module.scss';
+import EventCardTikTokTwo from '../shared/EventCardTikTok/EventCardTikTokTwo';
 
 interface EventSlideProps {
   event: EventItem;
@@ -68,7 +69,11 @@ export default function EventSlide({ event, isActive, onIntersect }: EventSlideP
           ease: [0.34, 1.56, 0.64, 1], // Пружинящая анимация
         }}>
         {/* Используем специализированный компонент для TikTok-ленты */}
-        <EventCardTikTok event={event} isVisible={isInView} />
+        {/* <EventCardTikTok event={event} isVisible={isInView} /> */}
+        <EventCardTikTokTwo
+          event={event}
+          isVisible={isInView}
+        />
       </motion.div>
     </motion.div>
   );

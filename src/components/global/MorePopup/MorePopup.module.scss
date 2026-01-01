@@ -160,6 +160,11 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+}
+
+.actionCardActive {
+  border-color: rgba(var(--main-Color), 0.3);
+  background: rgba(var(--main-Color), 0.05);
 
   &::before {
     content: '';

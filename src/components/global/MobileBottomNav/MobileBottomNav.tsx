@@ -3,17 +3,20 @@
 import React, { useState, useEffect } from "react";
 import styles from "./MobileBottomNav.module.scss";
 import Link from "next/link";
-import { Newspaper, UserPlus, CircleUser, Plus } from "lucide-react";
+import { Newspaper, UserPlus, CircleUser, Plus, Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import CentralActionButton from "../CentralActionButton/CentralActionButton";
+import MorePopup from "../MorePopup/MorePopup";
+import GraphSwitcherIcon from "../GraphSwitcherIcon/GraphSwitcherIcon";
 
 const MobileBottomNav: React.FC = () => {
   const { isLoggedIn, user } = useAuth();
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 1000px)');
   const [isVisible, setIsVisible] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   useEffect(() => {
     // Запускаем анимацию после монтирования компонента
@@ -84,21 +87,44 @@ const MobileBottomNav: React.FC = () => {
                 <span className={styles.srOnly}>Профиль</span>
               </Link>
             </li>
+
+            {/* НАСТРОЙКИ (крайняя правая кнопка в меню) */}
+            <li className={styles.navItem}>
+              <button 
+                type="button"
+                className={`${styles.navLink} ${isMoreOpen ? styles.active : ""}`}
+                aria-label="Настройки"
+                onClick={() => setIsMoreOpen(true)}
+              >
+                <span className={styles.iconWrapper}>
+                  <Settings size={18} strokeWidth={1.5} />
+                </span>
+                <span className={styles.srOnly}>Настройки</span>
+              </button>
+            </li>
           </ul>
         </nav>
 
         {/* Кнопка создания справа от меню */}
         {isLoggedIn && (
-          <Link 
-            href="/admin/" 
-            className={`${styles.adminButton} ${isActive('/admin') ? styles.adminButtonActive : ""}`}
-            aria-label="Создать"
-            aria-current={isActive('/admin') ? "page" : undefined}
-          >
-            <Plus size={18} strokeWidth={2.5} />
-          </Link>
+          <>
+            <Link 
+              href="/admin/" 
+              className={`${styles.adminButton} ${isActive('/admin') ? styles.adminButtonActive : ""}`}
+              aria-label="Создать"
+              aria-current={isActive('/admin') ? "page" : undefined}
+            >
+              <Plus size={18} strokeWidth={2.5} />
+            </Link>
+            {/* Выбор графа (иконка) справа от кнопки создания */}
+            <div className={styles.graphSwitcherIcon}>
+              <GraphSwitcherIcon />
+            </div>
+          </>
         )}
       </div>
+      {/* Popup "Еще" */}
+      <MorePopup isOpen={isMoreOpen} onClose={() => setIsMoreOpen(false)} />
     </>
   );
 };

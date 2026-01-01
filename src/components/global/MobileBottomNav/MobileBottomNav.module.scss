@@ -252,6 +252,87 @@
   }
 }
 
+// Кнопка настроек (шестеренка) справа от профиля
+.settingsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  background: rgba(110, 90, 214, 0.15);
+  border: none;
+  color: #6E5AD6;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  touch-action: manipulation;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(150, 130, 238, 0.2);
+    color: #9682EE;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.5;
+  }
+
+  // Hover state (desktop only)
+  @media (hover: hover) {
+    &:hover:not(.settingsButtonActive) {
+      background-color: rgba(110, 90, 214, 0.25);
+      color: #6E5AD6;
+    }
+
+    // Dark theme hover
+    html[data-theme="dark"] &,
+    html.dark & {
+      &:hover:not(.settingsButtonActive) {
+        background-color: rgba(150, 130, 238, 0.3);
+        color: #9682EE;
+      }
+    }
+  }
+
+  &:active {
+    transform: scale(0.88);
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(150, 130, 238, 0.20);
+  }
+}
+
+// Активное состояние кнопки настроек
+.settingsButtonActive {
+  background-color: #6E5AD6;
+  color: #FFFFFF;
+
+  // Dark theme active state
+  html[data-theme="dark"] &,
+  html.dark & {
+    background-color: #9682EE;
+    color: #FFFFFF;
+  }
+}
+
+// Иконка выбора графа (справа от кнопки создания)
+.graphSwitcherIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Responsive tweaks */
 @media (max-width: 480px) {
   .navContainer {
@@ -294,6 +375,32 @@
       width: 18px;
       height: 18px;
       stroke-width: 2.5;
+    }
+  }
+
+  .settingsButton {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.5;
+    }
+  }
+
+  .graphSwitcherIcon {
+    :global(.iconButton) {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+    }
+
+    :global(.graphImage),
+    :global(.graphImagePlaceholder) {
+      width: 28px;
+      height: 28px;
     }
   }
 }
@@ -340,6 +447,13 @@
     }
   }
   .adminButton {
+    transition: none !important;
+    
+    &:active {
+      transform: scale(0.95) !important;
+    }
+  }
+  .settingsButton {
     transition: none !important;
     
     &:active {
