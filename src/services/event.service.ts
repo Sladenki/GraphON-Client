@@ -77,4 +77,13 @@ export const EventService = {
         return axiosAuth.put(`/event/${eventId}`, eventData);
     },
 
+    // --- Приглашение друга на мероприятие ---
+    async inviteFriend(eventId: string, targetUserId: string) {
+        const { data } = await axiosAuth.post(`/event/invite/${eventId}/${targetUserId}`, {
+            eventId: eventId,
+            targetUserId: targetUserId
+        });
+        return data;
+    },
+
 }

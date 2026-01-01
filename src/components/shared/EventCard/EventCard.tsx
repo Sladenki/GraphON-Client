@@ -29,7 +29,8 @@ import {
   Theater,
   Calendar,
   Clock,
-  BadgeCheck
+  BadgeCheck,
+  UserCheck
 } from "lucide-react";
 import { useEventRegistration } from "@/hooks/useEventRegistration";
 import { useAuth } from "@/providers/AuthProvider";
@@ -39,6 +40,7 @@ import { useDeclensionWord } from "@/hooks/useDeclension";
 import DeleteConfirmPopUp from './DeleteConfirmPopUp/DeleteConfirmPopUp';
 import AttendeesPopUp from './AttendeesPopUp/AttendeesPopUp';
 import ParticipantOrbits from './ParticipantOrbits/ParticipantOrbits';
+import { InviteFriendModal } from './InviteFriendModal/InviteFriendModal';
 import styles from './EventCard.module.scss';
 import ActionButton from '@/components/ui/ActionButton/ActionButton';
 import { linkifyText } from '@/lib/linkify';
@@ -165,6 +167,7 @@ const EventCard: React.FC<EventProps> = ({
   const [editedEvent, setEditedEvent] = useState(event);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isAttendeesOpen, setIsAttendeesOpen] = useState(false);
+  const [isInviteFriendOpen, setIsInviteFriendOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -583,6 +586,16 @@ const EventCard: React.FC<EventProps> = ({
             </div>
             
             <div className={styles.headerActions}>
+              {isLoggedIn && (
+                <button 
+                  className={styles.inviteButton}
+                  onClick={() => setIsInviteFriendOpen(true)}
+                  aria-label="Пригласить друга"
+                  title="Пригласить друга"
+                >
+                  <UserCheck size={16} />
+                </button>
+              )}
               <button 
                 className={styles.shareButton}
                 onClick={handleShare}
@@ -768,6 +781,14 @@ const EventCard: React.FC<EventProps> = ({
       <AttendeesPopUp
         isOpen={isAttendeesOpen}
         onClose={() => setIsAttendeesOpen(false)}
+        eventId={event._id}
+        eventName={event.name}
+      />
+
+      {/* Приглашение друга */}
+      <InviteFriendModal
+        isOpen={isInviteFriendOpen}
+        onClose={() => setIsInviteFriendOpen(false)}
         eventId={event._id}
         eventName={event.name}
       />
