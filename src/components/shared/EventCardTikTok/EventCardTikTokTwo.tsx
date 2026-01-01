@@ -17,6 +17,7 @@ import { linkifyText } from '@/lib/linkify';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getThemeName, getPastelThemeTikTok } from '@/components/shared/EventCard/pastelTheme';
 import SwipeButton from './SwipeButton';
+import BackgroundParticles from './BackgroundParticles';
 
 interface EventCardTikTokTwoProps {
   event: EventItem;
@@ -213,6 +214,9 @@ export default function EventCardTikTokTwo({ event, isVisible = true }: EventCar
       }}>
       {/* Block 1: Event Header (Immersive Background) */}
       <div className={styles.headerBlock} style={backgroundStyle}>
+        {/* Subtle animated particles layer */}
+        <BackgroundParticles theme={themeName} />
+        
         {/* Share Button - Top Right (Circular, White, Icon-only) */}
         <button className={styles.shareButton} onClick={handleShare} aria-label="Поделиться">
           <Share size={18} />

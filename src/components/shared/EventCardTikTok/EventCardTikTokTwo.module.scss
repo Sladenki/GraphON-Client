@@ -47,6 +47,7 @@
   position: absolute;
   top: max(20px, calc(60px + env(safe-area-inset-top))); // Отступ только для PillTabs (~60px), шапка убрана
   right: 20px;
+  z-index: 10; // Above particles
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -82,6 +83,8 @@
   margin-bottom: auto;
   padding-right: 70px; // Space for share button
   padding-left: 0;
+  position: relative;
+  z-index: 3; // Above particles
 }
 
 .eventTitle {
@@ -123,7 +126,7 @@
   width: 100%;
   box-sizing: border-box;
   position: relative;
-  z-index: 6; // Выше темного блока (z-index: 5), чтобы не перекрывался
+  z-index: 6; // Выше темного блока (z-index: 5), чтобы не перекрывался, и выше particles
 }
 
 // Left: Participant Orbits + Count
@@ -241,7 +244,7 @@
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-top-left-radius: 32px;
+  border-top-left-radius: 52px;
   border-top-right-radius: 32px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
