@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useEffect, useRef, useCallback, useState } from 'react'
-import { FileText, HelpCircle, Users, Bell } from 'lucide-react'
+import { FileText, HelpCircle, Users, Bell, Plus } from 'lucide-react'
 import Link from 'next/link'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import { useScrollLock } from '../PopUpWrapper/useScrollLock'
@@ -9,6 +9,7 @@ import { createPortal } from 'react-dom'
 import { Logo } from '../Logo/Logo'
 import styles from './MorePopup.module.scss'
 import { usePathname } from 'next/navigation'
+import { useAuth } from '@/providers/AuthProvider'
 
 interface MorePopupProps {
   isOpen: boolean
@@ -23,7 +24,10 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   const dragStartYRef = useRef<number | null>(null)
   const sheetRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
+  const { user } = useAuth()
   const isNotificationsActive = pathname === '/notifications' || pathname.startsWith('/notifications')
+  const isProfileActive = pathname === '/profile' || pathname.startsWith('/profile')
+  const isAdminActive = pathname === '/admin' || pathname.startsWith('/admin')
 
   // Блокируем скролл когда попап открыт
   useScrollLock(isOpen)
@@ -160,23 +164,53 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
 
         {/* Основной контент */}
         <div className={styles.content}>
-          {/* Уведомления */}
-          <div className={styles.cardsSection}>
+          {/* Блок профиля и уведомлений */}
+          <div className={styles.profileRow}>
+            {/* Блок профиля */}
             <Link
-              href="/notifications"
-              className={`${styles.actionCard} ${isNotificationsActive ? styles.actionCardActive : ''}`}
+              href="/profile"
+              className={`${styles.profileLink} ${isProfileActive ? styles.profileLinkActive : ''}`}
               onClick={onClose}
             >
-              <div className={styles.cardIcon} style={{ color: 'var(--main-Color)' }}>
-                <Bell size={24} strokeWidth={1.8} />
+              <span className={styles.profileText}>Профиль</span>
+              <div className={styles.profileAvatar}>
+                {user?.avaPath ? (
+                  <img
+                    src={user.avaPath.startsWith('http') ? user.avaPath : `${process.env.NEXT_PUBLIC_S3_URL}/${user.avaPath}`}
+                    alt={user?.firstName || user?.lastName || 'User'}
+                    className={styles.avatarImage}
+                  />
+                ) : (
+                  <div className={styles.avatarFallback}>
+                    {(user?.firstName?.[0] || user?.lastName?.[0] || user?.username?.[0] || 'U').toUpperCase()}
+                  </div>
+                )}
               </div>
-              <div className={styles.cardContent}>
-                <h3 className={styles.cardTitle}>Уведомления</h3>
-              </div>
+            </Link>
+
+            {/* Блок уведомлений */}
+            <Link
+              href="/notifications"
+              className={`${styles.notificationsButton} ${isNotificationsActive ? styles.notificationsButtonActive : ''}`}
+              onClick={onClose}
+            >
+              <Bell size={18} strokeWidth={1.8} />
             </Link>
           </div>
 
-          {/* Карточки действий */}
+          {/* Добавить событие */}
+          <Link
+            href="/admin"
+            className={`${styles.addEventLink} ${isAdminActive ? styles.addEventLinkActive : ''}`}
+            onClick={onClose}
+          >
+            <div className={styles.addEventIcon}>
+              <Plus size={20} strokeWidth={2} />
+            </div>
+            <span className={styles.addEventText}>Добавить событие</span>
+          </Link>
+
+          {/* Группы */}
           {actionCards.length > 0 && (
             <div className={styles.cardsSection}>
               {actionCards.map((card) => (

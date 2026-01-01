@@ -125,12 +125,239 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 
   @media (max-width: 768px) {
     padding: 16px;
-    gap: 20px;
+    gap: 14px;
     padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+  }
+}
+
+// Ряд с профилем и уведомлениями
+.profileRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+// Блок профиля
+.profileLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--background-color);
+  border: 1px solid rgba(var(--main-Color), 0.1);
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--main-text);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  flex: 1;
+
+  &:hover {
+    border-color: rgba(var(--main-Color), 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(var(--main-Color), 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    padding: 14px 16px;
+    gap: 12px;
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.profileLinkActive {
+  border-color: rgba(var(--main-Color), 0.3);
+  background: rgba(var(--main-Color), 0.05);
+}
+
+.profileText {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--main-text);
+  letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+}
+
+.profileAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(var(--main-Color), 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: rgb(var(--main-Color));
+  background: rgba(var(--main-Color), 0.15);
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+// Блок уведомлений (отдельный)
+.notificationsButton {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+  border: 1px solid rgba(var(--main-Color), 0.1);
+  color: rgb(var(--main-Color));
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  flex-shrink: 0;
+
+  &:hover {
+    border-color: rgba(var(--main-Color), 0.2);
+    background: rgba(var(--main-Color), 0.05);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(var(--main-Color), 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    width: 52px;
+    height: 52px;
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.notificationsButtonActive {
+  border-color: rgba(var(--main-Color), 0.3);
+  background: rgba(var(--main-Color), 0.1);
+}
+
+// Ссылка "Добавить событие"
+.addEventLink {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--background-color);
+  border: 1px solid rgba(var(--main-Color), 0.1);
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--main-text);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+
+  &:hover {
+    border-color: rgba(var(--main-Color), 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(var(--main-Color), 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    padding: 14px 16px;
+    gap: 12px;
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.addEventLinkActive {
+  border-color: rgba(var(--main-Color), 0.3);
+  background: rgba(var(--main-Color), 0.05);
+}
+
+.addEventIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--main-Color), 0.1);
+  color: rgb(var(--main-Color));
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+
+  .addEventLink:hover & {
+    background: rgba(var(--main-Color), 0.15);
+  }
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.addEventText {
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--main-text);
+  letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
   }
 }
 

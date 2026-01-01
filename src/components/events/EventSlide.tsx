@@ -69,11 +69,11 @@ export default function EventSlide({ event, isActive, onIntersect }: EventSlideP
           ease: [0.34, 1.56, 0.64, 1], // Пружинящая анимация
         }}>
         {/* Используем специализированный компонент для TikTok-ленты */}
-        {/* <EventCardTikTok event={event} isVisible={isInView} /> */}
-        <EventCardTikTokTwo
+        <EventCardTikTok event={event} isVisible={isInView} />
+        {/* <EventCardTikTokTwo
           event={event}
           isVisible={isInView}
-        />
+        /> */}
       </motion.div>
     </motion.div>
   );

@@ -73,21 +73,6 @@ const MobileBottomNav: React.FC = () => {
               </div>
             </li>
 
-            {/* ПРОФИЛЬ */}
-            <li className={styles.navItem}>
-              <Link 
-                href="/profile" 
-                className={`${styles.navLink} ${isActive('/profile') ? styles.active : ""}`} 
-                aria-label="Профиль" 
-                aria-current={isActive('/profile') ? "page" : undefined}
-              >
-                <span className={styles.iconWrapper}>
-                  <CircleUser size={18} strokeWidth={1.5} />
-                </span>
-                <span className={styles.srOnly}>Профиль</span>
-              </Link>
-            </li>
-
             {/* НАСТРОЙКИ (крайняя правая кнопка в меню) */}
             <li className={styles.navItem}>
               <button 
@@ -105,22 +90,11 @@ const MobileBottomNav: React.FC = () => {
           </ul>
         </nav>
 
-        {/* Кнопка создания справа от меню */}
+        {/* Выбор графа (иконка) справа от меню */}
         {isLoggedIn && (
-          <>
-            <Link 
-              href="/admin/" 
-              className={`${styles.adminButton} ${isActive('/admin') ? styles.adminButtonActive : ""}`}
-              aria-label="Создать"
-              aria-current={isActive('/admin') ? "page" : undefined}
-            >
-              <Plus size={18} strokeWidth={2.5} />
-            </Link>
-            {/* Выбор графа (иконка) справа от кнопки создания */}
-            <div className={styles.graphSwitcherIcon}>
-              <GraphSwitcherIcon />
-            </div>
-          </>
+          <div className={styles.graphSwitcherIcon}>
+            <GraphSwitcherIcon />
+          </div>
         )}
       </div>
       {/* Popup "Еще" */}
