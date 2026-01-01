@@ -7,82 +7,39 @@
 }
 
 .tabsRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-  justify-content: center;
-  padding-top: 16px;
-  align-items: center;
-}
-
-.filterButton {
-  display: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: #8A7AB8;
-  cursor: pointer;
-  transition: background-color 0.18s ease, transform 0.1s ease;
-  touch-action: manipulation;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    width: 20px;
-    height: 20px;
-    stroke-width: 1.5;
-    fill: none;
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: rgba(110, 90, 214, 0.12);
-    }
-  }
-
-  &:active {
-    background-color: rgba(110, 90, 214, 0.18);
-    transform: scale(0.97);
-  }
-
-  // Dark theme
-  html[data-theme="dark"] &,
-  html.dark & {
-    color: #8A7AB8;
-    
-    @media (hover: hover) {
-      &:hover {
-        background-color: rgba(150, 130, 238, 0.15);
-      }
-    }
-
-    &:active {
-      background-color: rgba(150, 130, 238, 0.2);
-    }
-  }
-
-  @media (max-width: 768px) {
-    display: flex;
-  }
+  width: 100%;
+  display: block;
+  margin: 0 0 16px 0;
+  padding: 16px 0 0 0;
+  box-sizing: border-box;
 }
 
 .pillsWrapper {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 0;
   width: 100%;
+  display: block;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  :global(.rail) {
-    width: 100%;
-    max-width: 100%;
-    display: flex !important;
-  }
+.fullWidthRail {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  display: flex !important;
+  margin: 0 !important;
+  padding: 6px !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  overflow-x: visible !important;
+}
+
+.fullWidthRail :global(button) {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 .searchSection {
@@ -158,14 +115,33 @@
   .tabsRow {
     padding-top: 12px;
     margin-bottom: 12px;
-    justify-content: flex-start;
-    gap: 12px;
   }
 
   .pillsWrapper {
-    flex: 1;
-    justify-content: center;
     width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .fullWidthRail {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    display: flex !important;
+    margin: 0 !important;
+    padding: 6px !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    overflow-x: visible !important;
+  }
+
+  .fullWidthRail :global(button) {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 
   .ownedSection {

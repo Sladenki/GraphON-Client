@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { SpinnerLoader } from '@/components/global/SpinnerLoader/SpinnerLoader'
 import { EmptyState } from '@/components/global/EmptyState/EmptyState'
 import { ErrorState } from '@/components/global/ErrorState/ErrorState'
-import { Search, SlidersHorizontal } from 'lucide-react'
+import { Search } from 'lucide-react'
 
 import SchedulePopUp from '@/app/(main)/groups/SchedulePopUp/SchedulePopUp'
 import SearchBar, { SearchTag } from '@/components/shared/SearchBar/SearchBar'
@@ -219,32 +219,25 @@ export default function GroupsList() {
 
   const isMobile = useMediaQuery('(max-width: 768px)')
 
-  const handleFilterClick = useCallback(() => {
-    // Пока что просто очищаем фильтры при клике на иконку фильтров
-    clearFilters()
-  }, [clearFilters])
 
   return (
     <div className={styles.container}>
       {/* PillTabs для переключения между вкладками */}
       <div className={styles.tabsRow}>
-        {isMobile && (
-          <button className={styles.filterButton} aria-label="Фильтры" onClick={handleFilterClick}>
-            <SlidersHorizontal />
-          </button>
-        )}
         <div className={styles.pillsWrapper}>
-        <PillTabs
-          options={[
-            ...(hasManagedGroups ? [{ key: 'manage', label: 'Управление' }] : []),
-            { key: 'groups', label: 'Группы' },
-            ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки' }] : []),
-          ]}
+          <PillTabs
+            options={[
+              ...(hasManagedGroups ? [{ key: 'manage', label: 'Управление' }] : []),
+              { key: 'groups', label: 'Группы' },
+              ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки' }] : []),
+            ]}
             activeKey={activeTab}
             onChange={handleTabChange}
-                />
+            className={styles.fullWidthRail}
+            aria-label="Фильтр групп"
+          />
         </div>
-              </div>
+      </div>
 
       {/* Поиск и фильтры - скрыт на мобильных */}
       <div className={styles.searchSection}>
