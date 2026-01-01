@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
 import { getPastelTheme, getPastelThemeTikTok, ThemeName } from '@/components/shared/EventCard/pastelTheme';
 import AnimatedObjects from './AnimatedObjects';
 import styles from './DynamicBackground.module.scss';
@@ -106,9 +107,19 @@ function getThemeGradientsTikTok(theme: ThemeName): string[] {
 }
 
 export default function DynamicBackground({ theme, isDark = false }: DynamicBackgroundProps) {
+  const { theme: appTheme } = useTheme();
+  
+  // Определяем, активна ли темная тема приложения
+  const isDarkTheme = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    const html = document.documentElement;
+    const dataTheme = html.getAttribute('data-theme');
+    return appTheme === 'dark' || dataTheme === 'dark' || html.classList.contains('dark') || isDark;
+  }, [appTheme, isDark]);
+  
   // Используем более насыщенные цвета для TikTok версии
   const themeData = getPastelThemeTikTok(theme);
-  const backgroundStyle = isDark ? themeData.headerBgDark : themeData.headerBgLight;
+  const backgroundStyle = isDarkTheme ? themeData.headerBgDark : themeData.headerBgLight;
   const gradientLayers = useMemo(() => getThemeGradientsTikTok(theme), [theme]);
 
   return (

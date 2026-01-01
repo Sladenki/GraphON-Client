@@ -19,7 +19,6 @@ import ParticipantOrbits from '@/components/shared/EventCard/ParticipantOrbits/P
 import styles from './EventCardTikTok.module.scss';
 import { linkifyText } from '@/lib/linkify';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getThemeName } from '@/components/shared/EventCard/pastelTheme';
 import SwipeButton from './SwipeButton';
 import CompanyRequestModal from '@/components/shared/CompanyRequestModal/CompanyRequestModal';
 import { CompanyRequestService } from '@/services/companyRequest.service';
@@ -304,8 +303,6 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     await queryClient.invalidateQueries({ queryKey: ['companyRequests', event._id] });
     setIsCompanyRequestModalOpen(true);
   }, [isLoggedIn, router, event._id, queryClient]);
-
-  const themeName = getThemeName(event);
 
   if (!event || !event._id) {
     return null;

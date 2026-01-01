@@ -8,6 +8,7 @@ import {
   MapPinned,
   LogIn,
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { useEventRegistration } from '@/hooks/useEventRegistration';
 import { useAuth } from '@/providers/AuthProvider';
 import { EventItem } from '@/types/schedule.interface';
@@ -42,6 +43,7 @@ function formatParticipantCount(count: number): string {
 export default function EventCardTikTokTwo({ event, isVisible = true }: EventCardTikTokTwoProps) {
   const router = useRouter();
   const { isLoggedIn, user } = useAuth();
+  const { theme: appTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<'info' | 'description'>('info');
   const [isAnimatingAvatar, setIsAnimatingAvatar] = useState(false);
 
@@ -54,6 +56,14 @@ export default function EventCardTikTokTwo({ event, isVisible = true }: EventCar
   // Theme for background
   const themeName = useMemo(() => getThemeName(event), [event]);
   const theme = useMemo(() => getPastelThemeTikTok(themeName), [themeName]);
+
+  // Determine if dark theme is active
+  const isDarkTheme = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    const html = document.documentElement;
+    const dataTheme = html.getAttribute('data-theme');
+    return appTheme === 'dark' || dataTheme === 'dark' || html.classList.contains('dark');
+  }, [appTheme]);
 
   // Format date for pills
   const formattedDate = useMemo(() => {
@@ -123,12 +133,12 @@ export default function EventCardTikTokTwo({ event, isVisible = true }: EventCar
     return (event.graphId?.name || '').charAt(0).toUpperCase();
   }, [isStudentCreated, event.graphId?.name, (event as any).createdBy]);
 
-  // Background style (using theme gradient)
+  // Background style (using theme gradient - dark or light based on app theme)
   const backgroundStyle = useMemo(() => {
     return {
-      background: theme.headerBgLight,
+      background: isDarkTheme ? theme.headerBgDark : theme.headerBgLight,
     };
-  }, [theme]);
+  }, [theme, isDarkTheme]);
 
   // Handlers
   const handleRegistration = useCallback(async () => {
