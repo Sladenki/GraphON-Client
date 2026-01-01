@@ -399,12 +399,99 @@
   margin-top: auto; // Прижимаем footer к низу
 }
 
+.participantsSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  position: relative;
+  min-height: 60px; // Минимальная высота для анимации
+}
+
 .participantsOrbits {
   display: flex;
   justify-content: center;
   padding-bottom: 4px; // Небольшой отступ от кнопки
   position: relative;
-  min-height: 60px; // Минимальная высота для анимации
+  flex: 1;
+}
+
+.companyButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  color: var(--main-text, #2f2d32);
+  // bodySmall from MODERN_EVENT.json typography
+  font-size: 14px; // bodySmall fontSizePx
+  font-weight: 500; // label fontWeight
+  line-height: 1.35; // label lineHeight
+  letter-spacing: 0; // label letterSpacing
+  font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+  }
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.95);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(26, 24, 37, 0.85);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        background: rgba(26, 24, 37, 0.95);
+      }
+    }
+  }
+
+  @media (max-width: 360px) {
+    padding: 8px 12px;
+    font-size: 13px;
+    gap: 6px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    span {
+      display: none; // Скрываем текст на очень маленьких экранах, оставляем только иконку
+    }
+  }
 }
 
 .registerButtonWrapper {

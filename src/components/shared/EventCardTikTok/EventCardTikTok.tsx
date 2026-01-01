@@ -22,6 +22,7 @@ import SwipeButton from './SwipeButton';
 import CompanyRequestModal from '@/components/shared/CompanyRequestModal/CompanyRequestModal';
 import { CompanyRequestService } from '@/services/companyRequest.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface EventCardTikTokProps {
   event: EventItem;
@@ -61,32 +62,36 @@ const GroupAvatar: React.FC<{
 export default function EventCardTikTok({ event, isVisible = true }: EventCardTikTokProps) {
   const router = useRouter();
   const { isLoggedIn, user } = useAuth();
+  const queryClient = useQueryClient();
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isAnimatingAvatar, setIsAnimatingAvatar] = useState(false);
   const [isCompanyRequestModalOpen, setIsCompanyRequestModalOpen] = useState(false);
   const [isCreatingRequest, setIsCreatingRequest] = useState(false);
-  const [hasActiveRequest, setHasActiveRequest] = useState(false);
 
   // Хуки
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, (event as any).isAttended);
 
-  // Проверка активного запроса при загрузке
-  useEffect(() => {
-    if (isLoggedIn && user?._id) {
-      const checkActiveRequest = async () => {
-        try {
-          const requests = await CompanyRequestService.getRequestsByEvent(event._id);
-          const myRequest = requests.find(r => r.initiator._id === user._id);
-          setHasActiveRequest(!!myRequest);
-        } catch (error) {
-          // Игнорируем ошибки при проверке
-          console.error('Error checking active request:', error);
-        }
-      };
-      checkActiveRequest();
-    }
-  }, [isLoggedIn, user?._id, event._id]);
+  // Проверка активного запроса через React Query
+  const { data: companyRequests } = useQuery({
+    queryKey: ['companyRequests', event._id],
+    queryFn: () => CompanyRequestService.getRequestsByEvent(event._id),
+    enabled: isLoggedIn && !!user?._id && !!event._id,
+    staleTime: 30_000, // 30 секунд
+    refetchOnWindowFocus: false,
+  });
+
+  // Определяем, есть ли активный запрос от текущего пользователя
+  const hasActiveRequest = useMemo(() => {
+    if (!isLoggedIn || !user?._id || !companyRequests) return false;
+    
+    const userId = typeof user._id === 'string' ? user._id : (user._id as any)?._id;
+    const myRequest = companyRequests.find(r => {
+      const initiatorId = typeof r.initiator._id === 'string' ? r.initiator._id : (r.initiator._id as any)?._id;
+      return String(initiatorId) === String(userId);
+    });
+    return !!myRequest;
+  }, [isLoggedIn, user?._id, companyRequests]);
 
   // Форматирование времени
   const formattedTime = useMemo(() => {
@@ -227,30 +232,33 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     setIsCreatingRequest(true);
     try {
       await CompanyRequestService.createRequest(event._id);
-      setHasActiveRequest(true);
+      // Инвалидируем кеш, чтобы обновить состояние
+      await queryClient.invalidateQueries({ queryKey: ['companyRequests', event._id] });
       notifySuccess('Вы ищете компанию');
       setIsCompanyRequestModalOpen(true);
     } catch (error: any) {
       console.error('Error creating company request:', error);
       if (error?.response?.data?.requestId) {
         // У пользователя уже есть активный запрос
-        setHasActiveRequest(true);
+        await queryClient.invalidateQueries({ queryKey: ['companyRequests', event._id] });
         setIsCompanyRequestModalOpen(true);
       } else {
         notifyError('Не удалось создать запрос');
-    }
+      }
     } finally {
       setIsCreatingRequest(false);
     }
-  }, [isLoggedIn, router, event._id]);
+  }, [isLoggedIn, router, event._id, queryClient]);
 
-  const handleViewCompanyRequests = useCallback(() => {
+  const handleViewCompanyRequests = useCallback(async () => {
     if (!isLoggedIn) {
       router.push('/signIn');
       return;
     }
+    // Обновляем кеш перед открытием модального окна
+    await queryClient.invalidateQueries({ queryKey: ['companyRequests', event._id] });
     setIsCompanyRequestModalOpen(true);
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, router, event._id, queryClient]);
 
   const themeName = getThemeName(event);
 
@@ -284,24 +292,6 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           </div>
 
           <div className={styles.headerActions}>
-            <button 
-              className={styles.viewCompanyRequestsButton} 
-              onClick={handleViewCompanyRequests}
-              aria-label="Кто ищет компанию"
-              title="Кто ищет компанию"
-            >
-              <Search size={18} />
-            </button>
-            <button 
-              className={styles.companyRequestButton} 
-              onClick={handleCompanyRequest}
-              disabled={isCreatingRequest}
-              aria-label="Ищу компанию"
-              title={hasActiveRequest ? "Вы уже ищете компанию" : "Ищу компанию"}
-            >
-              <Users size={18} />
-              {hasActiveRequest && <span className={styles.activeIndicator} />}
-            </button>
             <button className={styles.shareButton} onClick={handleShare} aria-label="Поделиться">
               <Share />
             </button>
@@ -349,15 +339,37 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
 
       {/* Footer - орбиты участников и кнопка регистрации */}
       <div className={styles.cardFooter}>
-        {/* Орбиты участников - над кнопкой */}
-        <div className={styles.participantsOrbits}>
-          <ParticipantOrbits
-            eventId={event._id}
-            totalCount={event.regedUsers}
-            isRegistered={isRegistered}
-            onRegister={undefined}
-            isAnimating={isAnimatingAvatar}
-          />
+        {/* Орбиты участников и кнопка компании */}
+        <div className={styles.participantsSection}>
+          <div className={styles.participantsOrbits}>
+            <ParticipantOrbits
+              eventId={event._id}
+              totalCount={event.regedUsers}
+              isRegistered={isRegistered}
+              onRegister={undefined}
+              isAnimating={isAnimatingAvatar}
+            />
+          </div>
+          {isLoggedIn && (
+            <button
+              className={styles.companyButton}
+              onClick={hasActiveRequest ? handleViewCompanyRequests : handleCompanyRequest}
+              disabled={isCreatingRequest}
+              aria-label={hasActiveRequest ? "Кто ищет компанию" : "Ищу компанию"}
+            >
+              {hasActiveRequest ? (
+                <>
+                  <Search size={16} />
+                  <span>Кто ищет компании</span>
+                </>
+              ) : (
+                <>
+                  <Users size={16} />
+                  <span>Ищу компанию</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
 
         {/* Swipe-to-register кнопка */}
@@ -424,7 +436,11 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
 
       <CompanyRequestModal
         isOpen={isCompanyRequestModalOpen}
-        onClose={() => setIsCompanyRequestModalOpen(false)}
+        onClose={async () => {
+          setIsCompanyRequestModalOpen(false);
+          // Обновляем кеш после закрытия модального окна
+          await queryClient.invalidateQueries({ queryKey: ['companyRequests', event._id] });
+        }}
         eventId={event._id}
       />
     </motion.div>
