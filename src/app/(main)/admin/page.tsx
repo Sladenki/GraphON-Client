@@ -82,7 +82,7 @@ const Admin = () => {
                             <Plus size={32} strokeWidth={2.5} />
                             <h2 className={styles.userBlockTitle}>Предложить мероприятие</h2>
                             <p className={styles.userBlockDescription}>
-                                Предложите мероприятие для рассмотрения администрацией
+                                Если мероприятие наберёт определенное количество участников оно будет опубликовано
                             </p>
                         </div>
                     </div>

@@ -125,13 +125,9 @@
   align-items: center;
   padding: 16px;
   margin-bottom: 20px;
-  background: var(--block-color);
+  background: transparent;
   border-radius: 16px;
-
-  html[data-theme="dark"] &,
-  html.dark & {
-    background: #2A2538;
-  }
+  border: none;
 }
 
 .toggleLabel {
