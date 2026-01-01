@@ -9,6 +9,8 @@ import {
   LogIn,
   Users,
   Search,
+  Navigation,
+  UserCheck,
 } from 'lucide-react';
 import { useEventRegistration } from '@/hooks/useEventRegistration';
 import { useAuth } from '@/providers/AuthProvider';
@@ -23,6 +25,7 @@ import CompanyRequestModal from '@/components/shared/CompanyRequestModal/Company
 import { CompanyRequestService } from '@/services/companyRequest.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { InviteFriendModal } from '@/components/shared/EventCard/InviteFriendModal/InviteFriendModal';
 
 interface EventCardTikTokProps {
   event: EventItem;
@@ -68,6 +71,9 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
   const [isAnimatingAvatar, setIsAnimatingAvatar] = useState(false);
   const [isCompanyRequestModalOpen, setIsCompanyRequestModalOpen] = useState(false);
   const [isCreatingRequest, setIsCreatingRequest] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isInviteFriendOpen, setIsInviteFriendOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // Хуки
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, (event as any).isAttended);
@@ -195,21 +201,60 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
   }, [isLoggedIn, router, toggleRegistration, isRegistered]);
 
   const handleShare = useCallback(async () => {
-    const shareUrl = `${window.location.origin}/events/${event._id}`;
-    const text = `${event.name} — ${formattedTime}${event.place ? `, ${event.place}` : ''}`;
+    setIsMenuOpen(false);
+    try {
+      const shareUrl = `${window.location.origin}/events/${event._id}`;
+      const text = `${event.name} — ${formattedTime}${event.place ? `, ${event.place}` : ''}`;
+      const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
 
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: event.name, text: text, url: shareUrl } as any);
-      } catch (err) {
-        if ((err as Error).name !== 'AbortError') {
-          console.error('Error sharing:', err);
-        }
+      const opened = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+      if (opened) {
+        return;
       }
-    } else {
-      navigator.clipboard.writeText(shareUrl);
+
+      // Если всплывающее окно заблокировано
+      if (navigator.share) {
+        await navigator.share({ title: event.name, text: `${event.name}`, url: shareUrl } as any);
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareUrl);
+    } catch (err) {
+      const fallbackUrl = `${window.location.origin}/events/${event._id}`;
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: event.name, text: `${event.name}`, url: fallbackUrl } as any);
+          return;
+        }
+      } catch {}
+      try {
+        await navigator.clipboard.writeText(fallbackUrl);
+      } catch {
+        // ignore
+      }
     }
-  }, [event.name, event.place, formattedTime]);
+  }, [event._id, event.name, formattedTime, event.place]);
+
+  const handleInviteFriend = useCallback(() => {
+    setIsMenuOpen(false);
+    setIsInviteFriendOpen(true);
+  }, []);
+
+  // Закрытие меню при клике вне его
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isMenuOpen]);
 
   // Обработчик клика на группу или пользователя
   const handleGroupClick = useCallback(() => {
@@ -292,9 +337,38 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           </div>
 
           <div className={styles.headerActions}>
-            <button className={styles.shareButton} onClick={handleShare} aria-label="Поделиться">
-              <Share />
-            </button>
+            <div className={styles.menuContainer} ref={menuRef}>
+              <button 
+                className={styles.navigationButton} 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Меню действий"
+                aria-expanded={isMenuOpen}
+              >
+                <Navigation size={18} />
+              </button>
+              {isMenuOpen && (
+                <div className={styles.menu}>
+                  <button 
+                    className={styles.menuItem}
+                    onClick={handleShare}
+                    aria-label="Поделиться"
+                  >
+                    <Share size={16} />
+                    <span>Поделиться</span>
+                  </button>
+                  {isLoggedIn && (
+                    <button 
+                      className={styles.menuItem}
+                      onClick={handleInviteFriend}
+                      aria-label="Пригласить друга"
+                    >
+                      <UserCheck size={16} />
+                      <span>Пригласить друга</span>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -442,6 +516,13 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           await queryClient.invalidateQueries({ queryKey: ['companyRequests', event._id] });
         }}
         eventId={event._id}
+      />
+
+      <InviteFriendModal
+        isOpen={isInviteFriendOpen}
+        onClose={() => setIsInviteFriendOpen(false)}
+        eventId={event._id}
+        eventName={event.name}
       />
     </motion.div>
   );
