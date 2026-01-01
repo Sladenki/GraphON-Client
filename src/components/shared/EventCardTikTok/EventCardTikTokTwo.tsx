@@ -236,7 +236,7 @@ export default function EventCardTikTokTwo({ event, isVisible = true }: EventCar
                 isAnimating={isAnimatingAvatar}
               />
             </div>
-            <span className={styles.participantCount}>{formattedCount}</span>
+            {/* <span className={styles.participantCount}>{formattedCount}</span> */}
           </div>
 
           {/* Right: Author Avatar + Name */}

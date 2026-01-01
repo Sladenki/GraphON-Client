@@ -237,7 +237,8 @@
 // Block 2: Content Area (Dark Glass)
 // ============================================
 .contentBlock {
-  background: rgba(18, 18, 23, 0.85);
+  // Светлое стекло с небольшим затемнением для светлой темы
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-top-left-radius: 32px;
@@ -259,6 +260,12 @@
   box-shadow: none; // Убрана тень
   box-sizing: border-box;
 
+  // Темное стекло для темной темы приложения
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(18, 18, 23, 0.65); // Прозрачное темное стекло с легким затемнением для читаемости текста
+  }
+
   // Mobile optimization - reduce blur for performance
   @media (max-width: 768px) {
     backdrop-filter: blur(20px) saturate(150%);
@@ -272,7 +279,7 @@
 // Tabs Navigation - Fixed at top
 .tabsContainer {
   display: flex;
-  gap: 8px;
+  // gap: 8px;
   margin-bottom: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 12px;
@@ -280,13 +287,13 @@
 
 .tab {
   flex: 1;
-  padding: 10px 16px;
+  padding: -5px 16px;
   background: transparent;
   border: none;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(0, 0, 0, 0.6); // Черный текст для светлой темы
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -296,17 +303,30 @@
     transform: scale(0.98);
   }
 
-  @media (hover: hover) {
-    &:hover:not(.tabActive) {
-      background: rgba(255, 255, 255, 0.05);
-      color: rgba(255, 255, 255, 0.7);
+  // @media (hover: hover) {
+  //   &:hover:not(.tabActive) {
+  //     background: rgba(0, 0, 0, 0.05); // Темный hover для светлой темы
+  //     color: rgba(0, 0, 0, 0.8);
+  //   }
+  // }
+
+  // Темная тема
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: rgba(255, 255, 255, 0.5);
+
+    @media (hover: hover) {
+      &:hover:not(.tabActive) {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.7);
+      }
     }
   }
 }
 
 .tabActive {
   background: transparent;
-  color: rgba(255, 255, 255, 0.95);
+  color: rgba(0, 0, 0, 0.95); // Черный текст для светлой темы
   font-weight: 600;
   position: relative;
 
@@ -321,6 +341,12 @@
     height: 2px;
     background: rgba(124, 106, 239, 0.9);
     border-radius: 2px;
+  }
+
+  // Темная тема
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: rgba(255, 255, 255, 0.95);
   }
 }
 
@@ -347,11 +373,23 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2); // Темный скроллбар для светлой темы
     border-radius: 2px;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  // Темная тема scrollbar
+  html[data-theme="dark"] &,
+  html.dark & {
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
     }
   }
 }
@@ -376,13 +414,13 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.06); // Темный фон для светлой темы
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1); // Темная граница для светлой темы
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(0, 0, 0, 0.85); // Черный текст для светлой темы
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   transition: all 0.2s ease;
   cursor: default;
@@ -404,9 +442,24 @@
 
   @media (hover: hover) {
     &:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.1); // Темный hover для светлой темы
       transform: translateY(-1px);
-      border-color: rgba(255, 255, 255, 0.2);
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  // Темная тема
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+
+    @media (hover: hover) {
+      &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
     }
   }
 
@@ -432,7 +485,7 @@
   font-size: 16px;
   line-height: 1.6;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(0, 0, 0, 0.85); // Черный текст для светлой темы
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -447,6 +500,12 @@
     &:active {
       text-decoration: underline;
     }
+  }
+
+  // Темная тема
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: rgba(255, 255, 255, 0.9);
   }
 
   @media (max-width: 480px) {
