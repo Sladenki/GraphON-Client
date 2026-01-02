@@ -10,6 +10,7 @@ import { useAuth } from '@/providers/AuthProvider'
 import { useRouter } from 'next/navigation'
 import styles from './GraphSwitcherIcon.module.scss'
 import { IGraphList } from '@/types/graph.interface'
+import { CITY_GRAPH_ID } from '@/constants/sidebar'
 
 const BASE_S3_URL = process.env.NEXT_PUBLIC_S3_URL
 
@@ -39,8 +40,8 @@ const GraphSwitcherIcon: React.FC = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
 
-  // Фильтруем графы: показываем только КБК и КГТУ для переключения между ними
-  // В отличие от GraphSwitcher, здесь всегда показываем оба варианта, независимо от universityGraphId
+  // Фильтруем графы: показываем КБК, КГТУ и Калининград для переключения между ними
+  // В отличие от GraphSwitcher, здесь всегда показываем все варианты, независимо от universityGraphId
   const globalGraphs = useMemo(() => {
     // Убеждаемся, что это массив
     let graphs: IGraphList[] = []
@@ -52,8 +53,10 @@ const GraphSwitcherIcon: React.FC = () => {
       graphs = Array.isArray((globalGraphsResp as any).data) ? (globalGraphsResp as any).data : []
     }
     
-    // Фильтруем только КБК и КГТУ (показываем оба для переключения)
-    return graphs.filter((graph: IGraphList) => graph._id === KBKK_ID || graph._id === KGTU_ID)
+    // Фильтруем КБК, КГТУ и Калининград (показываем все для переключения)
+    return graphs.filter((graph: IGraphList) => 
+      graph._id === KBKK_ID || graph._id === KGTU_ID || graph._id === CITY_GRAPH_ID
+    )
   }, [globalGraphsResp])
 
   const currentGraph = globalGraphs.find((g: IGraphList) => g._id === selectedGraphId)
