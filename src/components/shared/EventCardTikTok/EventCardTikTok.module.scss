@@ -51,6 +51,13 @@
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(0, 0, 0, 0.05);
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
 }
 
 .avatarImage {
@@ -71,6 +78,12 @@
   line-height: 1.45; // bodySmall lineHeight
   color: #5f5a6c;
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: rgba(255, 255, 255, 0.8);
+  }
 }
 
 .groupName {
@@ -81,6 +94,12 @@
   letter-spacing: 0; // bodySmall letterSpacing
   color: var(--main-text, #2f2d32);
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: rgba(255, 255, 255, 0.9);
+  }
 }
 
 .headerActions {
@@ -339,9 +358,17 @@
   html.dark & {
     color: rgba(255, 255, 255, 0.9);
     
+    svg {
+      color: #8A7AB8;
+    }
+    
     @media (hover: hover) {
       &:hover {
         background: rgba(150, 130, 238, 0.15);
+        
+        svg {
+          color: rgb(150, 130, 238);
+        }
       }
     }
   }
@@ -365,6 +392,12 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: rgba(255, 255, 255, 0.95);
+  }
 }
 
 // Адаптивность для маленьких экранов
@@ -402,6 +435,20 @@
       text-decoration: underline;
     }
   }
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: rgba(255, 255, 255, 0.85);
+
+    a {
+      color: rgb(150, 130, 238);
+
+      &:hover {
+        color: rgba(150, 130, 238, 0.8);
+      }
+    }
+  }
 }
 
 .readMoreButton {
@@ -422,6 +469,16 @@
 
   &:active {
     opacity: 0.7;
+  }
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: rgb(150, 130, 238);
+
+    &:hover {
+      color: rgba(150, 130, 238, 0.8);
+    }
   }
 }
 
@@ -444,6 +501,13 @@
   border-radius: 9999px; // Сильно закругленные края (pill shape)
   border: 1px solid rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
 }
 
 .timeInfo {
@@ -494,6 +558,12 @@
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   flex: 1;
   min-width: 0;
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    color: rgba(255, 255, 255, 0.9);
+  }
 }
 
 // Footer - орбиты участников и доминирующая кнопка регистрации
@@ -634,6 +704,13 @@
   pointer-events: none;
   opacity: 0.7;
 
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
   @media (max-width: 360px) {
     font-size: 14px; // bodySmall для маленьких экранов
     line-height: 1.45;
@@ -663,6 +740,19 @@
   justify-content: center;
   gap: 10px;
   transition: all 0.2s ease;
+
+  // Dark theme
+  html[data-theme="dark"] &,
+  html.dark & {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1;
