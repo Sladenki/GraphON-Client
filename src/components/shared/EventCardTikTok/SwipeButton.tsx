@@ -25,7 +25,7 @@ export default function SwipeButton({
   isLoading = false,
   isRegistered = false,
   onUnregister,
-  text = 'Свайп для регистрации',
+  text = 'Буду!',
   registeredText = 'Вы записаны',
 }: SwipeButtonProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -140,7 +140,15 @@ export default function SwipeButton({
           style={{
             scale: isDragging ? 1.1 : 1,
             opacity: thumbOpacity,
-          }}>
+          }}
+          animate={!isDragging && !hasCompleted && !isRegistered ? {
+            x: [0, 8, 0],
+          } : {}}
+          transition={!isDragging && !hasCompleted && !isRegistered ? {
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          } : {}}>
           {hasCompleted ? <Check size={24} /> : <ArrowRight size={24} />}
         </motion.div>
       </motion.div>

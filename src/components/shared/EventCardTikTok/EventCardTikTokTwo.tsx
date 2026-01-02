@@ -350,7 +350,7 @@ export default function EventCardTikTokTwo({ event, isVisible = true }: EventCar
             isLoading={isLoading}
             isRegistered={isRegistered}
             onUnregister={handleRegistration}
-            text="Свайп для регистрации"
+            text="Буду!"
             registeredText="Вы записаны"
           />
         )}

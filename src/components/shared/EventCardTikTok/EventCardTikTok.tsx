@@ -459,7 +459,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
               isLoading={isLoading}
               isRegistered={isRegistered}
               onUnregister={handleRegistration}
-              text="Свайп для регистрации"
+              text="Буду!"
               registeredText="Вы записаны"
             />
           )}
