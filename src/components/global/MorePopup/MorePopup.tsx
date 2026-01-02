@@ -10,6 +10,7 @@ import { Logo } from '../Logo/Logo'
 import styles from './MorePopup.module.scss'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/providers/AuthProvider'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface MorePopupProps {
   isOpen: boolean
@@ -20,7 +21,6 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   const [mounted, setMounted] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [dragTranslateY, setDragTranslateY] = useState(0)
-  const [animateOpen, setAnimateOpen] = useState(false)
   const dragStartYRef = useRef<number | null>(null)
   const sheetRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
@@ -38,17 +38,66 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
     return () => setMounted(false)
   }, [])
 
-  useEffect(() => {
-    if (isOpen) {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setAnimateOpen(true)
-        })
-      })
-    } else {
-      setAnimateOpen(false)
-    }
-  }, [isOpen])
+  // Premium animation variants - multi-stage, intentional motion
+  const overlayVariants = {
+    hidden: {
+      opacity: 0,
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.35,
+        ease: [0.16, 1, 0.3, 1], // Premium easing - Apple-like, calm
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0.25,
+        ease: [0.4, 0, 0.2, 1],
+      },
+    },
+  }
+
+  const sheetVariants = {
+    hidden: {
+      y: 24, // Slightly lower position
+      scale: 0.97, // Subtle scale reduction
+      opacity: 0.25, // Low but not zero opacity
+    },
+    visible: {
+      y: 0,
+      scale: 1,
+      opacity: 1,
+      transition: {
+        duration: 0.4, // 400ms - premium timing
+        ease: [0.16, 1, 0.3, 1], // Premium easing - weighty, intentional, no bounce
+        // Staggered timing for richness
+        opacity: {
+          duration: 0.35,
+          ease: [0.16, 1, 0.3, 1],
+          delay: 0.02, // Micro-delay for depth
+        },
+        scale: {
+          duration: 0.4,
+          ease: [0.16, 1, 0.3, 1],
+        },
+        y: {
+          duration: 0.4,
+          ease: [0.16, 1, 0.3, 1],
+        },
+      },
+    },
+    exit: {
+      y: 20,
+      scale: 0.97,
+      opacity: 0,
+      transition: {
+        duration: 0.25,
+        ease: [0.4, 0, 0.2, 1],
+      },
+    },
+  }
 
   // Карточки действий
   const actionCards = useMemo(() => {
@@ -129,7 +178,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen, onClose])
 
-  if (!isOpen || !mounted) return null
+  if (!mounted) return null
 
   const sheetStyle = {
     ...(isDragging && {
@@ -138,16 +187,26 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   } as React.CSSProperties
 
   const content = (
-    <div
-      className={`${styles.overlay} ${animateOpen ? styles.overlayVisible : ''}`}
-      onClick={onClose}
-    >
-      <div
-        ref={sheetRef}
-        className={`${styles.sheet} ${animateOpen ? styles.sheetOpen : ''}`}
-        style={sheetStyle}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <AnimatePresence mode="wait">
+      {isOpen && (
+        <motion.div
+          className={styles.overlay}
+          variants={overlayVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          onClick={onClose}
+        >
+          <motion.div
+            ref={sheetRef}
+            className={styles.sheet}
+            variants={sheetVariants}
+            initial="hidden"
+            animate={isDragging ? { y: dragTranslateY } : "visible"}
+            exit="exit"
+            style={sheetStyle}
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Handle для драга */}
         <div
           className={styles.sheetHandleArea}
@@ -253,8 +312,10 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
             </Link>
           </div>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 
   return createPortal(content, document.body)
