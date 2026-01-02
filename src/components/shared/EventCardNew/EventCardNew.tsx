@@ -158,7 +158,9 @@ export default function EventCardNew({ event }: EventCardNewProps) {
         ))}
       </div>
 
-      <div className={styles.countLabel}>{displayCount} участников</div>
+      <div className={styles.countLabel}>
+        {displayCount === 0 ? 'Стань первым!' : `${displayCount} участников`}
+      </div>
     </article>
   );
 }

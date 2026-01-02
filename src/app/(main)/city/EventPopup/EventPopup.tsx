@@ -280,16 +280,14 @@ export default function EventPopup({
               )}
 
               {/* Участники */}
-              {event.regedUsers > 0 && (
-                <div className={styles.infoItem}>
-                  <div className={styles.iconWrapper}>
-                    <Users size={16} />
-                  </div>
-                  <div className={styles.infoValue}>
-                    {event.regedUsers} участников
-                  </div>
+              <div className={styles.infoItem}>
+                <div className={styles.iconWrapper}>
+                  <Users size={16} />
                 </div>
-              )}
+                <div className={styles.infoValue}>
+                  {event.regedUsers === 0 ? 'Стань первым!' : `${event.regedUsers} участников`}
+                </div>
+              </div>
             </div>
 
             {/* Место на всю ширину */}

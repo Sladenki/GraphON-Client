@@ -279,9 +279,13 @@ const ParticipantOrbits: React.FC<ParticipantOrbitsProps> = ({
       </div>
       
       {/* Счетчик участников */}
-      {totalCount > 0 && (
+      {totalCount > 0 ? (
         <div className={styles.participantsCount}>
           {totalCount} {totalCount === 1 ? 'участник' : totalCount < 5 ? 'участника' : 'участников'}
+        </div>
+      ) : (
+        <div className={styles.participantsCount}>
+          Стань первым!
         </div>
       )}
     </div>

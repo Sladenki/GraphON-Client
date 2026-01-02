@@ -747,7 +747,7 @@ const EventCard: React.FC<EventProps> = ({
                 }
               } : undefined}
             >
-              {event.regedUsers} {participantsWord}
+              {event.regedUsers === 0 ? 'Стань первым!' : `${event.regedUsers} ${participantsWord}`}
             </span>
           </div>
         </div>
