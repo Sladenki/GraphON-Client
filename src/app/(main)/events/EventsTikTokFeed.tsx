@@ -224,12 +224,12 @@ export default function EventsTikTokFeed() {
       </div>
 
       {events.length === 0 ? (
-        <EmptyState message="Нет доступных событий" />
+        <EmptyState message="Нет доступных событий" subMessage={''} />
       ) : (
         <EventsTikTokContainer>
           <DynamicBackground theme={currentTheme} />
 
-          {events.map((event, index) => (
+          {events.map((event: any, index: any)=> (
             <EventSlide
               key={event._id}
               event={event}

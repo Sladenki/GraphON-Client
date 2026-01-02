@@ -4,12 +4,14 @@ import React, { useState, useEffect } from "react";
 import styles from "./MobileBottomNav.module.scss";
 import Link from "next/link";
 import { Newspaper, UserPlus, CircleUser, Plus, Settings } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import CentralActionButton from "../CentralActionButton/CentralActionButton";
 import MorePopup from "../MorePopup/MorePopup";
 import GraphSwitcherIcon from "../GraphSwitcherIcon/GraphSwitcherIcon";
+import { CITY_GRAPH_ID, CITY_ROUTE, GRAPHS_ROUTE } from '@/constants/sidebar';
+import { useSelectedGraphId } from "@/stores/useUIStore";
+import { Network, MapPinned } from 'lucide-react';
 
 const MobileBottomNav: React.FC = () => {
   const { isLoggedIn, user } = useAuth();
@@ -17,6 +19,8 @@ const MobileBottomNav: React.FC = () => {
   const isMobile = useMediaQuery('(max-width: 1000px)');
   const [isVisible, setIsVisible] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const storeSelectedGraphId = useSelectedGraphId();
+  const router = useRouter();
 
   useEffect(() => {
     // Запускаем анимацию после монтирования компонента
@@ -30,6 +34,24 @@ const MobileBottomNav: React.FC = () => {
   if (!isMobile) return null;
 
   const isActive = (path: string) => pathname === path || pathname.startsWith(path);
+
+  const normalizeGraphId = (raw: any): string | null => {
+    if (!raw) return null;
+    if (typeof raw === 'string') return raw;
+    if (typeof raw === 'object') {
+      return raw._id ?? raw.$oid ?? null;
+    }
+    return null;
+  };
+
+  const effectiveGraphId = storeSelectedGraphId || normalizeGraphId(user?.selectedGraphId);
+  const isCityGraph = effectiveGraphId === CITY_GRAPH_ID;
+  const targetPath = isCityGraph ? CITY_ROUTE : GRAPHS_ROUTE;
+  const isActiveCentral = pathname === targetPath;
+
+  const handleClick = () => {
+    router.push(targetPath);
+  };
 
   return (
     <>
@@ -68,9 +90,23 @@ const MobileBottomNav: React.FC = () => {
 
             {/* Центральная кнопка */}
             <li className={styles.navItem}>
-              <div className={styles.centralButtonWrapper}>
+              {/* <div className={styles.centralButtonWrapper}>
                 <CentralActionButton />
-              </div>
+              </div> */}
+
+              <button 
+                    className={`${styles.navLink} ${isActiveCentral ? styles.active : ''}`}
+                    onClick={handleClick}
+                    aria-label={isCityGraph ? 'Город' : 'Графы'}
+                  >
+                    <div className={styles.iconWrapper}>
+                      {isCityGraph ? (
+                        <MapPinned size={18} strokeWidth={1.5} />
+                      ) : (
+                        <Network size={18} strokeWidth={1.5} />
+                      )}
+                    </div>
+                  </button>
             </li>
 
             {/* НАСТРОЙКИ (крайняя правая кнопка в меню) */}

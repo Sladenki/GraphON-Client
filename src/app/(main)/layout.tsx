@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Sidebar from "@/components/global/Sidebar/Sidebar";
 import styles from './layout.module.scss'
-import BottomMenu from "@/components/global/BottomMenu/BottomMenu";
 import MobileBottomNav from "@/components/global/MobileBottomNav/MobileBottomNav";
 import MobileTopBar from "@/components/global/MobileTopBar/MobileTopBar";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -239,7 +238,7 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
 
                   {/* Bottom Navigation - только для мобильных, BottomMenu - для десктопа */}
                   <div className={styles.BottomMenu}>
-                    {small ? <MobileBottomNav /> : <BottomMenu />}
+                    {small && <MobileBottomNav />}
                   </div>
                 </div>
               );
@@ -343,7 +342,7 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
 
                 {/* Bottom Navigation - только для мобильных, BottomMenu - для десктопа */}
                 <div className={styles.BottomMenu}>
-                  {small ? <MobileBottomNav /> : <BottomMenu />}
+                  {small && <MobileBottomNav /> }
                 </div>
               </div>
             );
