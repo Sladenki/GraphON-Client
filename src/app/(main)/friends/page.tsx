@@ -13,6 +13,7 @@ import type { IUser } from '@/types/user.interface';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { Users, UserPlus, Send, Search } from 'lucide-react';
 import { getPastelTheme, type ThemeName } from '@/components/shared/EventCard/pastelTheme';
+import { useTheme } from 'next-themes';
 
 type TabKey = 'people' | 'incoming' | 'outgoing' | 'friends';
 
@@ -48,26 +49,53 @@ function fullNameFromUser(u: { firstName?: string; lastName?: string; username?:
 }
 
 // Функция для определения цвета фона карточки на основе интересов пользователя
-function getCardBackgroundColor(topInterests?: Array<{ name: string; _id: string; displayName?: string }>): string {
+function getCardBackgroundColor(
+  topInterests?: Array<{ name: string; _id: string; displayName?: string }>,
+  isDark: boolean = false
+): string {
   const interests = topInterests || [];
   
   if (interests.length === 0) {
     // Нет интересов - приятный пастельный фиолетовый фон
+    if (isDark) {
+      return 'linear-gradient(135deg, rgba(150, 130, 238, 0.12) 0%, rgba(130, 90, 200, 0.08) 100%)';
+    }
     return 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)'; // Мягкий пастельный фиолетовый градиент
   } else if (interests.length === 1) {
     // Один интерес - используем градиент этого интереса
     const themeName = interests[0].name as ThemeName;
     const theme = getPastelTheme(themeName);
-    return theme.headerBgLight;
+    return isDark ? theme.headerBgDark : theme.headerBgLight;
   } else {
     // Несколько интересов - создаем градиент из цветов интересов
     const gradients = interests.slice(0, 3).map((interest) => {
       const themeName = interest.name as ThemeName;
       const theme = getPastelTheme(themeName);
-      return theme.headerBgLight;
+      return isDark ? theme.headerBgDark : theme.headerBgLight;
     });
     
-    // Извлекаем цвета из градиентов
+    // Для темной темы используем градиенты напрямую (они уже в формате rgba)
+    if (isDark) {
+      // Извлекаем rgba цвета из градиентов для темной темы
+      const extractRgba = (gradient: string): string => {
+        const rgbaMatch = gradient.match(/rgba?\([^)]+\)/g);
+        if (rgbaMatch && rgbaMatch.length > 0) {
+          return rgbaMatch[0];
+        }
+        return 'rgba(150, 130, 238, 0.12)'; // fallback
+      };
+      
+      const colors = gradients.map(extractRgba);
+      
+      if (colors.length === 2) {
+        return `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 100%)`;
+      } else if (colors.length >= 3) {
+        return `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 50%, ${colors[2]} 100%)`;
+      }
+      return colors[0] || 'linear-gradient(135deg, rgba(150, 130, 238, 0.12) 0%, rgba(130, 90, 200, 0.08) 100%)';
+    }
+    
+    // Для светлой темы извлекаем hex цвета
     const extractColor = (gradient: string): string => {
       // Ищем hex цвета
       const hexMatch = gradient.match(/#[0-9a-fA-F]{6}/i);
@@ -82,7 +110,7 @@ function getCardBackgroundColor(topInterests?: Array<{ name: string; _id: string
         return `#${[r, g, b].map(x => x.toString(16).padStart(2, '0')).join('')}`;
       }
       
-      return 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)'; // fallback - приятный пастельный фиолетовый
+      return '#f5f3ff'; // fallback
     };
     
     const colors = gradients.map(extractColor);
@@ -93,7 +121,7 @@ function getCardBackgroundColor(topInterests?: Array<{ name: string; _id: string
     } else if (colors.length >= 3) {
       return `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 50%, ${colors[2]} 100%)`;
     }
-    return colors[0] || 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)';
+    return colors[0] ? `linear-gradient(135deg, ${colors[0]} 0%, ${colors[0]} 100%)` : 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)';
   }
 }
 
@@ -102,6 +130,8 @@ export default function FriendsPage() {
   const typedUser = user as IUser | null;
   const myUserId = typedUser?._id;
   const queryClient = useQueryClient();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark');
 
   const [activeTab, setActiveTab] = useState<TabKey>('people');
   const [peopleQuery, setPeopleQuery] = useState('');
@@ -439,8 +469,8 @@ export default function FriendsPage() {
     const hasIncoming = followersIds.has(u._id);
     const hasOutgoing = followingIds.has(u._id);
 
-    // Определяем цвет фона на основе интересов (без хуков, так как это внутри функции рендеринга)
-    const cardBackground = getCardBackgroundColor(u.topInterests);
+    // Определяем цвет фона на основе интересов
+    const cardBackground = getCardBackgroundColor(u.topInterests, isDark);
 
     const rowVariantClass =
       activeTab === 'people'

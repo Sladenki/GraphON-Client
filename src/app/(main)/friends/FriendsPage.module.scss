@@ -15,7 +15,25 @@
   margin: 0 auto;
   padding: 18px 16px 26px;
   position: relative;
-  color: var(--ink);
+  color: var(--main-text);
+  background-color: var(--background-color);
+}
+
+// Темная тема
+html[data-theme="dark"],
+html.dark {
+  .page {
+    --ink: var(--color-text-primary);
+    --ink-secondary: var(--color-text-secondary);
+    --ink-muted: var(--color-text-muted);
+    --surface: var(--block-color);
+    --surface-alt: rgba(255, 255, 255, 0.03);
+    --primary: var(--color-primary);
+    --primary-rgb: 168, 150, 240;
+    --pastel-mint: rgba(76, 175, 136, 0.12);
+    --pastel-peach: rgba(242, 183, 5, 0.12);
+    --pastel-lavender: rgba(150, 130, 238, 0.12);
+  }
 }
 
 .heroCard {
@@ -126,6 +144,21 @@
 
 .statsLavender {
   background: var(--pastel-lavender);
+}
+
+html[data-theme="dark"],
+html.dark {
+  .statsMint {
+    background: var(--pastel-mint);
+  }
+  
+  .statsPeach {
+    background: var(--pastel-peach);
+  }
+  
+  .statsLavender {
+    background: var(--pastel-lavender);
+  }
 }
 
 .statsIconBackground {
@@ -477,6 +510,34 @@
   }
 }
 
+html[data-theme="dark"],
+html.dark {
+  .rowPeople {
+    background: rgba(var(--primary-rgb), 0.08);
+    &:hover {
+      background: rgba(var(--primary-rgb), 0.12);
+    }
+  }
+  .rowFriends {
+    background: var(--pastel-mint);
+    &:hover {
+      background: rgba(76, 175, 136, 0.16);
+    }
+  }
+  .rowIncoming {
+    background: var(--pastel-peach);
+    &:hover {
+      background: rgba(242, 183, 5, 0.16);
+    }
+  }
+  .rowOutgoing {
+    background: var(--pastel-lavender);
+    &:hover {
+      background: rgba(150, 130, 238, 0.16);
+    }
+  }
+}
+
 .avatar {
   width: 56px; // Увеличенный размер аватарки
   height: 56px;
@@ -530,6 +591,17 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+html[data-theme="dark"],
+html.dark {
+  .fullName {
+    color: var(--main-text);
+  }
+  
+  .username {
+    color: var(--color-text-muted);
+  }
 }
 
 .meta {
