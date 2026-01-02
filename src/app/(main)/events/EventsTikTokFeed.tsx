@@ -16,8 +16,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { EventService } from '@/services/event.service';
 import { GraphSubsService } from '@/services/graphSubs.service';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { getThemeName } from '@/components/shared/EventCard/pastelTheme';
+import { getThemeName, getPastelThemeTikTok } from '@/components/shared/EventCard/pastelTheme';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { useTheme } from 'next-themes';
 import styles from './EventsTikTokFeed.module.scss';
 
 type EventsPillTab = 'groups' | 'students' | 'subs';

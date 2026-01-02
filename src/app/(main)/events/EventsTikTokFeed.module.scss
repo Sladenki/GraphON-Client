@@ -17,9 +17,9 @@
   z-index: 999; // Ниже MobileTopBar (z-index: 1000), но выше контента
   padding: 12px 16px;
   padding-top: max(12px, env(safe-area-inset-top)); // Учитываем safe-area для устройств с вырезами
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: transparent;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   width: 100%;
   box-sizing: border-box;
 }
