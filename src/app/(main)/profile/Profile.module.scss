@@ -176,13 +176,13 @@
 /* Навигационные карточки */
 .navigationCards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   max-width: 900px;
   width: 100%;
   
   @media (max-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
 }

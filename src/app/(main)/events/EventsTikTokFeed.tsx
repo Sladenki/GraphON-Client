@@ -25,6 +25,8 @@ type EventsPillTab = 'groups' | 'students' | 'subs';
 
 const EVENTS_PER_PAGE = 20;
 
+const CITY_GRAPH_ID = "690bfec3f371d05b325be7ad";
+
 export default function EventsTikTokFeed() {
   const { isLoggedIn, user } = useAuth();
   const selectedGraphId = useSelectedGraphId();
@@ -207,21 +209,25 @@ export default function EventsTikTokFeed() {
   return (
     <div className={styles.wrapper}>
       {/* Переключатель вкладок */}
-      <div className={styles.tabsContainer}>
-        <div className={styles.pillsWrapper}>
-          <PillTabs
-            options={[
-              { key: 'groups', label: 'События' },
-              { key: 'students', label: 'Студенчество' },
-              ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки', badge: subsCount }] : []),
-            ]}
-            activeKey={activeTab}
-            onChange={(key) => handleTabChange(key as EventsPillTab)}
-            className={styles.fullWidthRail}
-            aria-label="Фильтр событий"
-          />
-        </div>
-      </div>
+      {
+        selectedGraphId !== CITY_GRAPH_ID && (
+          <div className={styles.tabsContainer}>
+            <div className={styles.pillsWrapper}>
+              <PillTabs
+                options={[
+                  { key: 'groups', label: 'События' },
+                  { key: 'students', label: 'Студенчество' },
+                  ...(isLoggedIn ? [{ key: 'subs', label: 'Подписки', badge: subsCount }] : []),
+                ]}
+                activeKey={activeTab}
+                onChange={(key) => handleTabChange(key as EventsPillTab)}
+                className={styles.fullWidthRail}
+                aria-label="Фильтр событий"
+              />
+            </div>
+          </div>
+        )
+      }
 
       {events.length === 0 ? (
         <EmptyState message="Нет доступных событий" subMessage={''} />

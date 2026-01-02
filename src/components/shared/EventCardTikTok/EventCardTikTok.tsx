@@ -140,10 +140,10 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     return event.description;
   }, [event.description]);
 
-  const shouldTruncate = descriptionText.length > 300;
+  const shouldTruncate = descriptionText.length > 150;
   const truncatedText = useMemo(() => {
     if (!shouldTruncate || isDescriptionExpanded) return descriptionText;
-    return descriptionText.slice(0, 300);
+    return descriptionText.slice(0, 150);
   }, [descriptionText, shouldTruncate, isDescriptionExpanded]);
 
   // Проверка, является ли мероприятие созданным студентом
@@ -411,7 +411,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
       {/* Footer - орбиты участников и кнопка регистрации */}
       <div className={styles.cardFooter}>
         {/* Орбиты участников и кнопка компании */}
-        <div className={styles.participantsSection}>
+        {/* <div className={styles.participantsSection}>
           <div className={styles.participantsOrbits}>
             <ParticipantOrbits
               eventId={event._id}
@@ -441,7 +441,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
               )}
             </button>
           )}
-        </div>
+        </div> */}
 
         {/* Swipe-to-register кнопка */}
         <div className={styles.registerButtonWrapper}>

@@ -300,7 +300,7 @@ export default function Profile() {
 
                     {/* Навигационные карточки */}
                     <div className={styles.navigationCards}>
-                        <button
+                        {/* <button
                             type="button"
                             className={`${styles.navCard} ${activeSection === 'subs' ? styles.navCardActive : ''}`}
                             onClick={handleSubscriptionsClick}
@@ -310,7 +310,7 @@ export default function Profile() {
                                 <span className={styles.navCardTitle}>Мой путь</span>
                                 <span className={styles.navCardSubtitle}>Ваши подписки</span>
                             </div>
-                        </button>
+                        </button> */}
                         
                         <button
                             type="button"
