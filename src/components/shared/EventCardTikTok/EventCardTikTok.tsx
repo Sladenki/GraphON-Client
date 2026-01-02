@@ -25,6 +25,7 @@ import { CompanyRequestService } from '@/services/companyRequest.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { InviteFriendModal } from '@/components/shared/EventCard/InviteFriendModal/InviteFriendModal';
+import { useSelectedGraphId } from '@/stores/useUIStore';
 
 interface EventCardTikTokProps {
   event: EventItem;
@@ -61,10 +62,15 @@ const GroupAvatar: React.FC<{
  * EventCardTikTok - специализированная карточка события для TikTok-ленты
  * Упрощенная версия EventCard без редактирования
  */
+
+const CITY_GRAPH_ID = "690bfec3f371d05b325be7ad";
+
 export default function EventCardTikTok({ event, isVisible = true }: EventCardTikTokProps) {
   const router = useRouter();
   const { isLoggedIn, user } = useAuth();
   const queryClient = useQueryClient();
+
+  const selectedGraphId = useSelectedGraphId();
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isAnimatingAvatar, setIsAnimatingAvatar] = useState(false);
@@ -311,6 +317,9 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
   return (
     <motion.div
       className={styles.card}
+      style={{
+        marginBottom: selectedGraphId === CITY_GRAPH_ID ? '10%' : '',
+      }}
       initial={{ opacity: 0, y: 30, scale: 0.96 }}
       animate={
         isVisible
