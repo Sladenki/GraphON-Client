@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Sidebar from "@/components/global/Sidebar/Sidebar";
 import styles from './layout.module.scss'
 import MobileBottomNav from "@/components/global/MobileBottomNav/MobileBottomNav";
-import MobileTopBar from "@/components/global/MobileTopBar/MobileTopBar";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Toaster } from "sonner";
 import { HeroUIProvider } from "@heroui/react";
@@ -211,7 +210,6 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
               return (
                 <div className={styles.wrapper}>
                   {/* Top Bar - только для мобильных */}
-                  {small && <MobileTopBar />}
 
                   {/* Контент */}
                   {small ? (
@@ -281,7 +279,6 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
               return (
                 <div className={styles.wrapper}>
                   {/* Top Bar - только для мобильных */}
-                  {small && <MobileTopBar />}
 
                   {/* Контент */}
                   {small ? (
