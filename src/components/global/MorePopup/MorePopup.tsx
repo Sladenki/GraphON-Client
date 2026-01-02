@@ -55,7 +55,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
     return [
       {
         id: 'groups',
-        icon: <Users size={24} strokeWidth={1.8} />,
+        icon: <Users size={20} strokeWidth={1.8} />,
         title: 'Группы',
         path: '/groups',
         color: 'var(--main-Color)',
@@ -172,7 +172,6 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
               className={`${styles.profileLink} ${isProfileActive ? styles.profileLinkActive : ''}`}
               onClick={onClose}
             >
-              <span className={styles.profileText}>Профиль</span>
               <div className={styles.profileAvatar}>
                 {user?.avaPath ? (
                   <img
@@ -186,9 +185,14 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
                   </div>
                 )}
               </div>
+              <span className={styles.profileText}>
+                {user?.firstName && user?.lastName 
+                  ? `${user.firstName} ${user.lastName}`
+                  : user?.firstName || user?.lastName || user?.username || 'Профиль'}
+              </span>
             </Link>
 
-            {/* Блок уведомлений */}
+            {/* Блок уведомлений (круглый) */}
             <Link
               href="/notifications"
               className={`${styles.notificationsButton} ${isNotificationsActive ? styles.notificationsButtonActive : ''}`}
@@ -198,38 +202,36 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
             </Link>
           </div>
 
-          {/* Добавить событие */}
-          <Link
-            href="/admin"
-            className={`${styles.addEventLink} ${isAdminActive ? styles.addEventLinkActive : ''}`}
-            onClick={onClose}
-          >
-            <div className={styles.addEventIcon}>
-              <Plus size={20} strokeWidth={2} />
-            </div>
-            <span className={styles.addEventText}>Добавить событие</span>
-          </Link>
+          {/* Блок добавления события и группы (на одной строке) */}
+          <div className={styles.actionsRow}>
+            {/* Добавить событие */}
+            <Link
+              href="/admin"
+              className={`${styles.addEventLink} ${isAdminActive ? styles.addEventLinkActive : ''}`}
+              onClick={onClose}
+            >
+              <div className={styles.addEventIcon}>
+                <Plus size={20} strokeWidth={1.8} />
+              </div>
+              <span className={styles.addEventText}>Создать \ предложить событие</span>
+            </Link>
 
-          {/* Группы */}
-          {actionCards.length > 0 && (
-            <div className={styles.cardsSection}>
-              {actionCards.map((card) => (
-                <Link
-                  key={card.id}
-                  href={card.path}
-                  className={styles.actionCard}
-                  onClick={onClose}
-                >
-                  <div className={styles.cardIcon} style={{ color: `rgb(${card.color})` }}>
-                    {card.icon}
-                  </div>
-                  <div className={styles.cardContent}>
-                    <h3 className={styles.cardTitle}>{card.title}</h3>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
+            {/* Группы */}
+            {actionCards.length > 0 && (
+              <Link
+                href={actionCards[0].path}
+                className={styles.actionCard}
+                onClick={onClose}
+              >
+                <div className={styles.cardIcon} style={{ color: `rgb(${actionCards[0].color})` }}>
+                  {actionCards[0].icon}
+                </div>
+                <div className={styles.cardContent}>
+                  <h3 className={styles.cardTitle}>{actionCards[0].title}</h3>
+                </div>
+              </Link>
+            )}
+          </div>
 
           {/* Блок настроек темы */}
           <div className={styles.themeSection}>
