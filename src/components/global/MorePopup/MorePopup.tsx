@@ -25,7 +25,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
   const dragStartYRef = useRef<number | null>(null)
   const sheetRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
-  const { user } = useAuth()
+  const { user, isLoggedIn } = useAuth()
   const isNotificationsActive = pathname === '/notifications' || pathname.startsWith('/notifications')
   const isProfileActive = pathname === '/profile' || pathname.startsWith('/profile')
   const isAdminActive = pathname === '/admin' || pathname.startsWith('/admin')
@@ -253,30 +253,40 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
             </Link>
 
             {/* Блок уведомлений (круглый) */}
-            <Link
-              href="/notifications"
-              className={`${styles.notificationsButton} ${isNotificationsActive ? styles.notificationsButtonActive : ''}`}
-              onClick={onClose}
-            >
-              <Bell size={18} strokeWidth={1.8} />
-            </Link>
+            {
+              isLoggedIn && (
+                <Link
+                  href="/notifications"
+                  className={`${styles.notificationsButton} ${isNotificationsActive ? styles.notificationsButtonActive : ''}`}
+                  onClick={onClose}
+                >
+                  <Bell size={18} strokeWidth={1.8} />
+                </Link>
+              )
+            }
+
           </div>
 
           {/* Блок добавления события и группы (на одной строке) */}
           <div className={styles.actionsRow}>
             {/* Добавить событие */}
-            <Link
-              href="/admin"
-              className={`${styles.addEventLink} ${isAdminActive ? styles.addEventLinkActive : ''}`}
-              onClick={onClose}
-            >
-              <div className={styles.addEventIcon}>
-                <Plus size={20} strokeWidth={1.8} />
-              </div>
-              <span className={styles.addEventText}>
-                {user?.role === UserRole.User ? 'Создать \ предложить событие' : 'Админка'}
-              </span>
-            </Link>
+            {
+              isLoggedIn && (        
+                <Link
+                  href="/admin"
+                  className={`${styles.addEventLink} ${isAdminActive ? styles.addEventLinkActive : ''}`}
+                  onClick={onClose}
+                >
+                  <div className={styles.addEventIcon}>
+                    <Plus size={20} strokeWidth={1.8} />
+                  </div>
+                  <span className={styles.addEventText}>
+                    {user?.role === UserRole.User ? 'Создать \ предложить событие' : 'Админка'}
+                  </span>
+                </Link>  
+              )
+            }
+
 
             {/* Группы */}
             {actionCards.length > 0 && (
