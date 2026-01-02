@@ -341,7 +341,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
                 aria-label="Меню действий"
                 aria-expanded={isMenuOpen}
               >
-                <Navigation size={18} />
+                <Share size={18} />
               </button>
               {isMenuOpen && (
                 <div className={styles.menu}>

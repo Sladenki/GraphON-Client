@@ -440,32 +440,52 @@
 .placeInfo {
   display: flex;
   align-items: center;
-  gap: 16px; // Увеличенный gap между иконкой и текстом
+  gap: 12px;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
-  padding: 16px 20px; // Увеличенный padding для большей высоты
+  padding: 8px 14px; // Еще более уменьшенный padding для меньшей высоты
   border-radius: 9999px; // Сильно закругленные края (pill shape)
   border: 1px solid rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.timeInfo {
+  .metaIconWrapper {
+    background: linear-gradient(135deg, rgba(150, 130, 238, 0.08) 0%, rgba(238, 130, 200, 0.06) 100%);
+    border: 1px solid rgba(150, 130, 238, 0.15);
+  }
+  
+  .metaIcon {
+    color: rgba(150, 130, 238, 0.7);
+  }
+}
+
+.placeInfo {
+  .metaIconWrapper {
+    background: linear-gradient(135deg, rgba(255, 190, 120, 0.1) 0%, rgba(255, 200, 140, 0.08) 100%);
+    border: 1px solid rgba(255, 180, 100, 0.2);
+  }
+  
+  .metaIcon {
+    color: rgba(255, 150, 80, 0.7);
+  }
+}
+
 .metaIconWrapper {
-  width: 40px; // Размер круга для иконки
-  height: 40px;
+  width: 48px; // Увеличенный размер круга для иконки
+  height: 48px;
   border-radius: 50%; // Круглая форма
-  background: #FFFFFF; // Белый фон для круга
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
 }
 
 .metaIcon {
   flex-shrink: 0;
-  color: var(--main-text, #2f2d32);
-  width: 20px;
-  height: 20px;
+  width: 24px; // Увеличенный размер иконки
+  height: 24px;
 }
 
 .timeText,
