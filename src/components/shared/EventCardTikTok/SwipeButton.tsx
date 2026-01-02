@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion';
 import { ArrowRight, Check, Ticket } from 'lucide-react';
 import styles from './SwipeButton.module.scss';
@@ -15,6 +15,18 @@ interface SwipeButtonProps {
   registeredText?: string;
 }
 
+const RANDOM_TEXTS = [
+  'Залетаю!',
+  'Я в деле!',
+  'Бронирую место!',
+  'Я с вами!',
+  'Погнали!',
+  'Вписывай меня!',
+  'Я в теме!',
+  'Записывай, пока не передумал!',
+  'Готов к приключениям!',
+];
+
 /**
  * SwipeButton - кнопка с жестом свайпа для регистрации
  * Премиум UI компонент с плавной анимацией
@@ -25,7 +37,7 @@ export default function SwipeButton({
   isLoading = false,
   isRegistered = false,
   onUnregister,
-  text = 'Буду!',
+  text,
   registeredText = 'Вы записаны',
 }: SwipeButtonProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -36,6 +48,12 @@ export default function SwipeButton({
   const textOpacity = useTransform(progress, [0, 0.5, 1], [1, 0.5, 0]);
   const successOpacity = useTransform(progress, [0, 0.5, 1], [0, 0.5, 1]);
   const thumbOpacity = useTransform(progress, [0, 1], [1, 0.9]);
+
+  // Выбираем случайный текст из массива, если text не передан
+  const displayText = useMemo(() => {
+    if (text) return text;
+    return RANDOM_TEXTS[Math.floor(Math.random() * RANDOM_TEXTS.length)];
+  }, [text]);
 
   // Если зарегистрирован, показываем состояние успеха
   useEffect(() => {
@@ -158,7 +176,7 @@ export default function SwipeButton({
           style={{
             opacity: textOpacity,
           }}>
-          {text}
+          {displayText}
         </motion.span>
         <motion.span
           className={styles.successText}
