@@ -10,6 +10,7 @@ import { Logo } from '../Logo/Logo'
 import styles from './MorePopup.module.scss'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/providers/AuthProvider'
+import { UserRole } from '@/types/user.interface'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface MorePopupProps {
@@ -272,7 +273,9 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
               <div className={styles.addEventIcon}>
                 <Plus size={20} strokeWidth={1.8} />
               </div>
-              <span className={styles.addEventText}>Создать \ предложить событие</span>
+              <span className={styles.addEventText}>
+                {user?.role === UserRole.User ? 'Создать \ предложить событие' : 'Админка'}
+              </span>
             </Link>
 
             {/* Группы */}

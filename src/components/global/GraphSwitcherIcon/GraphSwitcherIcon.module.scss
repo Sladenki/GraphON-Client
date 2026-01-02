@@ -102,8 +102,7 @@
 .dropdown {
   position: absolute;
   bottom: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
+  right: 0;
   min-width: 280px;
   max-width: 90vw;
   background: var(--block-color);
