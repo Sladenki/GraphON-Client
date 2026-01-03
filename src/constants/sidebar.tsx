@@ -30,7 +30,7 @@ const createSidebarItem = (
 export const sidebar = [
   // createSidebarItem(1, <House color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Главная', false, '/'),
   createSidebarItem(5, <Newspaper color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'События', false, '/events/'),
-  createSidebarItem(4, <Users color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Группы', false, '/groups/'),
+  // createSidebarItem(4, <Users color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Группы', false, '/groups/'),
   createSidebarItem(7, <Network color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Графы', false, GRAPHS_ROUTE),
   createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Админка', true, '/admin/'),
 ];

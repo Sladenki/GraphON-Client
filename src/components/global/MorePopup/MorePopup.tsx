@@ -253,7 +253,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
             </Link>
 
             {/* Блок уведомлений (круглый) */}
-            {
+            {/* {
               isLoggedIn && (
                 <Link
                   href="/notifications"
@@ -263,7 +263,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
                   <Bell size={18} strokeWidth={1.8} />
                 </Link>
               )
-            }
+            } */}
 
           </div>
 
@@ -289,7 +289,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
 
 
             {/* Группы */}
-            {actionCards.length > 0 && (
+            {/* {actionCards.length > 0 && (
               <Link
                 href={actionCards[0].path}
                 className={styles.actionCard}
@@ -302,7 +302,7 @@ const MorePopup: React.FC<MorePopupProps> = ({ isOpen, onClose }) => {
                   <h3 className={styles.cardTitle}>{actionCards[0].title}</h3>
                 </div>
               </Link>
-            )}
+            )} */}
           </div>
 
           {/* Блок настроек темы */}
