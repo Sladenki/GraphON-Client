@@ -177,16 +177,16 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
   });
 
   // Определяем, есть ли активный запрос от текущего пользователя
-  const hasActiveRequest = useMemo(() => {
-    if (!isLoggedIn || !user?._id || !companyRequests) return false;
+  // const hasActiveRequest = useMemo(() => {
+  //   if (!isLoggedIn || !user?._id || !companyRequests) return false;
     
-    const userId = typeof user._id === 'string' ? user._id : (user._id as any)?._id;
-    const myRequest = companyRequests.find(r => {
-      const initiatorId = typeof r.initiator._id === 'string' ? r.initiator._id : (r.initiator._id as any)?._id;
-      return String(initiatorId) === String(userId);
-    });
-    return !!myRequest;
-  }, [isLoggedIn, user?._id, companyRequests]);
+  //   const userId = typeof user._id === 'string' ? user._id : (user._id as any)?._id;
+  //   const myRequest = companyRequests.find(r => {
+  //     const initiatorId = typeof r.initiator._id === 'string' ? r.initiator._id : (r.initiator._id as any)?._id;
+  //     return String(initiatorId) === String(userId);
+  //   });
+  //   return !!myRequest;
+  // }, [isLoggedIn, user?._id, companyRequests]);
 
   // Форматирование времени
   const formattedTime = useMemo(() => {
@@ -384,15 +384,15 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     }
   }, [isLoggedIn, router, event._id, queryClient]);
 
-  const handleViewCompanyRequests = useCallback(async () => {
-    if (!isLoggedIn) {
-      router.push('/signIn');
-      return;
-    }
-    // Обновляем кеш перед открытием модального окна
-    await queryClient.invalidateQueries({ queryKey: ['companyRequests', event._id] });
-    setIsCompanyRequestModalOpen(true);
-  }, [isLoggedIn, router, event._id, queryClient]);
+  // const handleViewCompanyRequests = useCallback(async () => {
+  //   if (!isLoggedIn) {
+  //     router.push('/signIn');
+  //     return;
+  //   }
+  //   // Обновляем кеш перед открытием модального окна
+  //   await queryClient.invalidateQueries({ queryKey: ['companyRequests', event._id] });
+  //   setIsCompanyRequestModalOpen(true);
+  // }, [isLoggedIn, router, event._id, queryClient]);
 
   if (!event || !event._id) {
     return null;
@@ -699,7 +699,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
 
 
         {/* Анимация перемещения аватарки от кнопки к списку */}
-        <AnimatePresence>
+        {/* <AnimatePresence>
           {isAnimatingAvatar && user && (
             <motion.div
               className={styles.animatedAvatar}
@@ -735,10 +735,10 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
               )}
             </motion.div>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
       </div>
 
-      <CompanyRequestModal
+      {/* <CompanyRequestModal
         isOpen={isCompanyRequestModalOpen}
         onClose={async () => {
           setIsCompanyRequestModalOpen(false);
@@ -746,7 +746,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           await queryClient.invalidateQueries({ queryKey: ['companyRequests', event._id] });
         }}
         eventId={event._id}
-      />
+      /> */}
 
       <InviteFriendModal
         isOpen={isInviteFriendOpen}
