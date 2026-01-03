@@ -507,13 +507,15 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
 
         <div className={styles.titleSection}>
           {isEditing ? (
-            <input
-              type="text"
-              value={editedEvent.name}
-              onChange={(e) => updateEditedEvent('name', e.target.value)}
-              className={styles.titleInput}
-              placeholder="Название мероприятия"
-            />
+            <div className={styles.editingTitleContainer}>
+              <input
+                type="text"
+                value={editedEvent.name}
+                onChange={(e) => updateEditedEvent('name', e.target.value)}
+                className={styles.titleInput}
+                placeholder="Название мероприятия"
+              />
+            </div>
           ) : (
             <h2 className={styles.eventTitle}>{event.name}</h2>
           )}
@@ -521,7 +523,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
       </div>
 
       {/* Description */}
-      <div className={styles.cardBody}>
+      <div className={isEditing ? styles.editingCardBody : styles.cardBody}>
         {isEditing ? (
           <div>
             <textarea
@@ -532,9 +534,9 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
               rows={3}
               maxLength={300}
             />
-            <div className={styles.characterCount}>
+            {/* <div className={styles.characterCount}>
               {editedEvent.description.length}/300
-            </div>
+            </div> */}
           </div>
         ) : (
           <div className={styles.description}>
@@ -554,7 +556,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
        {/* Important Info - время и место (компактные карточки) */}
        <div className={styles.importantInfo}>
          {isEditing ? (
-           <>
+           <div className={styles.editingInfoContainer}>
              <div className={styles.checkboxContainer}>
                <input
                  type="checkbox"
@@ -612,7 +614,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
                  placeholder="Место проведения"
                />
              </div>
-           </>
+           </div>
          ) : (
            <>
              <div className={styles.timeInfo}>
@@ -670,25 +672,31 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
         </div> */}
 
         {/* Swipe-to-register кнопка */}
-        <div className={styles.registerButtonWrapper}>
-          {isEventPast ? (
-            <div className={styles.pastEventButton}>Мероприятие завершено</div>
-          ) : !isLoggedIn ? (
-            <button className={styles.loginButton} onClick={handleRegistration}>
-              <LogIn size={20} />
-              <span>Войти для регистрации</span>
-            </button>
-          ) : (
-            <SwipeButton
-              onSwipeComplete={handleRegistration}
-              disabled={isLoading}
-              isLoading={isLoading}
-              isRegistered={isRegistered}
-              onUnregister={handleRegistration}
-              registeredText="Вы записаны"
-            />
-          )}
-      </div>
+
+        {
+          !isEditing && (
+            <div className={styles.registerButtonWrapper}>
+              {isEventPast ? (
+                <div className={styles.pastEventButton}>Мероприятие завершено</div>
+              ) : !isLoggedIn ? (
+                <button className={styles.loginButton} onClick={handleRegistration}>
+                  <LogIn size={20} />
+                  <span>Войти для регистрации</span>
+                </button>
+              ) : (
+                <SwipeButton
+                  onSwipeComplete={handleRegistration}
+                  disabled={isLoading}
+                  isLoading={isLoading}
+                  isRegistered={isRegistered}
+                  onUnregister={handleRegistration}
+                  registeredText="Вы записаны"
+                />
+              )}
+            </div>
+          )
+        }
+
 
         {/* Анимация перемещения аватарки от кнопки к списку */}
         <AnimatePresence>
@@ -772,3 +780,4 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
     </motion.div>
   );
 }
+

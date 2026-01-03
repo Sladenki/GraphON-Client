@@ -373,9 +373,7 @@
   }
 }
 
-.titleSection {
-  position: relative;
-}
+
 
 .eventTitle {
   // h1 from MODERN_EVENT.json typography
@@ -903,69 +901,66 @@
       box-shadow: 0 6px 16px rgba(92, 194, 170, 0.25);
     }
     
-    .descriptionInput {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      font-size: 16px;
-      line-height: 1.6;
-      font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      resize: vertical;
-      min-height: 80px;
-      max-height: 200px;
-      background: rgba(255, 255, 255, 0.9);
-      color: var(--main-text, #2f2d32);
-    
-      // Dark theme
-      html[data-theme="dark"] &,
-      html.dark & {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
-        color: rgba(255, 255, 255, 0.9);
-      }
-    }
+
     
     .characterCount {
       text-align: right;
       font-size: 12px;
-      color: var(--main-text, rgba(47, 45, 50, 0.6));
-      margin-top: 4px;
+      color: var(--main-text, rgba(47, 45, 50, 0.7));
+      margin-top: 8px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(124, 106, 239, 0.1);
+      display: inline-block;
+      margin-left: auto;
     
       // Dark theme
       html[data-theme="dark"] &,
       html.dark & {
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(150, 130, 238, 0.15);
       }
     }
     
     .titleInput {
       width: 100%;
-      padding: 8px 0;
-      border: none;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      background: transparent;
+      padding: 16px 20px;
+      border: 2px solid rgba(124, 106, 239, 0.5);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.95);
       font-size: 32px;
       font-weight: 700;
       letter-spacing: -0.4px;
       line-height: 1.15;
       color: var(--main-text, #2f2d32);
       font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      backdrop-filter: blur(10px);
+      box-sizing: border-box;
     
       &:focus {
         outline: none;
-        border-bottom-color: rgb(var(--main-Color, 124, 106, 239));
+        border-color: rgb(var(--main-Color, 124, 106, 239));
+        box-shadow: 0 0 0 3px rgba(var(--main-Color, 124, 106, 239), 0.3);
       }
     
       // Dark theme
       html[data-theme="dark"] &,
       html.dark & {
+        background: rgba(255, 255, 255, 0.25);
         color: rgba(255, 255, 255, 0.95);
-        border-bottom-color: rgba(255, 255, 255, 0.2);
+        border-color: rgba(150, 130, 238, 0.5);
     
         &:focus {
-          border-bottom-color: rgb(150, 130, 238);
+          border-color: rgb(150, 130, 238);
+          box-shadow: 0 0 0 3px rgba(150, 130, 238, 0.3);
         }
+      }
+    
+      @media (max-width: 360px) {
+        font-size: 24px; // h2 fontSizePx для маленьких экранов
+        line-height: 1.3; // h2 lineHeight
+        padding: 14px 18px;
       }
     }
     
@@ -989,11 +984,21 @@
         border: 1px solid var(--main-text, #2f2d32);
         border-radius: 4px;
         accent-color: rgb(var(--main-Color, 124, 106, 239));
+        cursor: pointer;
+    
+        &:focus {
+          outline: 2px solid rgba(var(--main-Color, 124, 106, 239), 0.5);
+          outline-offset: 1px;
+        }
     
         // Dark theme
         html[data-theme="dark"] &,
         html.dark & {
           border-color: rgba(255, 255, 255, 0.9);
+    
+          &:focus {
+            outline: 2px solid rgba(150, 130, 238, 0.5);
+          }
         }
       }
     
@@ -1002,6 +1007,7 @@
         font-weight: 500;
         color: var(--main-text, #2f2d32);
         font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        cursor: pointer;
     
         // Dark theme
         html[data-theme="dark"] &,
@@ -1028,6 +1034,24 @@
       html.dark & {
         background: rgba(255, 255, 255, 0.1);
         border-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+    
+    .editingInfoContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 20px;
+      border: 2px dashed rgba(124, 106, 239, 0.4);
+      backdrop-filter: blur(20px);
+    
+      // Dark theme
+      html[data-theme="dark"] &,
+      html.dark & {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(150, 130, 238, 0.4);
       }
     }
     
@@ -1087,9 +1111,70 @@
       }
     }
     
-    .dateInput,
+    .dateInput {
+      border: 1px solid rgba(124, 106, 239, 0.3);
+      border-radius: 8px;
+      padding: 6px 8px;
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--main-text, #2f2d32);
+      backdrop-filter: blur(10px);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.45;
+      font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    
+      &:focus {
+        outline: none;
+        border-color: rgb(var(--main-Color, 124, 106, 239));
+        box-shadow: 0 0 0 2px rgba(var(--main-Color, 124, 106, 239), 0.2);
+      }
+    
+      // Dark theme
+      html[data-theme="dark"] &,
+      html.dark & {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(150, 130, 238, 0.3);
+        color: rgba(255, 255, 255, 0.9);
+    
+        &:focus {
+          border-color: rgb(150, 130, 238);
+          box-shadow: 0 0 0 2px rgba(150, 130, 238, 0.2);
+        }
+      }
+    }
+    
     .timeInput,
     .placeInput {
+      border: 1px solid rgba(124, 106, 239, 0.3);
+      border-radius: 8px;
+      padding: 6px 8px;
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--main-text, #2f2d32);
+      backdrop-filter: blur(10px);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.45;
+      font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    
+      &:focus {
+        outline: none;
+        border-color: rgb(var(--main-Color, 124, 106, 239));
+        box-shadow: 0 0 0 2px rgba(var(--main-Color, 124, 106, 239), 0.2);
+      }
+    
+      // Dark theme
+      html[data-theme="dark"] &,
+      html.dark & {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(150, 130, 238, 0.3);
+        color: rgba(255, 255, 255, 0.9);
+    
+        &:focus {
+          border-color: rgb(150, 130, 238);
+          box-shadow: 0 0 0 2px rgba(150, 130, 238, 0.2);
+        }
+      }
+    }
       width: 100%;
       border: none;
       background: transparent;
@@ -1102,14 +1187,22 @@
     
       &:focus {
         outline: none;
+        box-shadow: 0 1px 0 0 rgb(var(--main-Color, 124, 106, 239));
       }
     
       // Dark theme
       html[data-theme="dark"] &,
       html.dark & {
         color: rgba(255, 255, 255, 0.9);
+    
+        &:focus {
+          box-shadow: 0 1px 0 0 rgb(150, 130, 238);
+        }
       }
     }
+    
+
+  
     
     .timeInputs {
       display: flex;
@@ -1118,6 +1211,31 @@
     
       .timeInput {
         flex: 1;
+        border: 1px solid rgba(124, 106, 239, 0.3);
+        border-radius: 8px;
+        padding: 6px 8px;
+        background: rgba(255, 255, 255, 0.85);
+        color: var(--main-text, #2f2d32);
+        backdrop-filter: blur(10px);
+    
+        &:focus {
+          outline: none;
+          border-color: rgb(var(--main-Color, 124, 106, 239));
+          box-shadow: 0 0 0 2px rgba(var(--main-Color, 124, 106, 239), 0.2);
+        }
+    
+        // Dark theme
+        html[data-theme="dark"] &,
+        html.dark & {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(150, 130, 238, 0.3);
+          color: rgba(255, 255, 255, 0.9);
+    
+          &:focus {
+            border-color: rgb(150, 130, 238);
+            box-shadow: 0 0 0 2px rgba(150, 130, 238, 0.2);
+          }
+        }
       }
     }
     
@@ -1229,12 +1347,83 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-  }
 
-  &:active:not(:disabled) {
+     &:active:not(:disabled) {
     background: rgba(92, 194, 170, 0.3);
   }
+  }
+
+  .titleSection {
+  position: relative;
+
+      .editingTitleContainer {
+      padding: 10px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid rgba(124, 106, 239, 0.5);
+      backdrop-filter: blur(10px);
+      width: 100%;
+    
+      // Dark theme
+      html[data-theme="dark"] &,
+      html.dark & {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(150, 130, 238, 0.5);
+      }
+    }
 }
+
+     .editingCardBody {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px dashed rgba(124, 106, 239, 0.4);
+      backdrop-filter: blur(10px);
+
+      .descriptionInput {
+        width: 100%;
+        padding: 16px;
+        border: 2px solid rgba(124, 106, 239, 0.5);
+        border-radius: 20px;
+        font-size: 16px;
+        line-height: 1.6;
+        font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        resize: vertical;
+        min-height: 120px;
+        max-height: 200px;
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--main-text, #2f2d32);
+        backdrop-filter: blur(10px);
+        box-sizing: border-box;
+      
+        &:focus {
+          outline: none;
+          border-color: rgb(var(--main-Color, 124, 106, 239));
+          box-shadow: 0 0 0 3px rgba(var(--main-Color, 124, 106, 239), 0.3);
+        }
+      
+        // Dark theme
+        html[data-theme="dark"] &,
+        html.dark & {
+          background: rgba(255, 255, 255, 0.25);
+          border-color: rgba(150, 130, 238, 0.5);
+          color: rgba(255, 255, 255, 0.9);
+      
+          &:focus {
+            border-color: rgb(150, 130, 238);
+            box-shadow: 0 0 0 3px rgba(150, 130, 238, 0.3);
+          }
+        }
+      }
+    
+      // Dark theme
+      html[data-theme="dark"] &,
+      html.dark & {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(150, 130, 238, 0.4);
+      }
+    }
+
 
 .justRegistered {
   animation: successPulse 0.9s ease;
