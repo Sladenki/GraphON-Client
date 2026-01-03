@@ -106,6 +106,28 @@
   display: flex;
   align-items: center;
   gap: 8px;
+
+  .actionButtons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+  .actionButton{
+    // width: 20px;
+    // height: 20px;
+    padding: 10px;
+    background-color: var(--block-color);
+    border-radius: 50%;
+  }
+
+  .saveButton{
+    background-color: var(--color-success)
+  }
+
+  .cancelButton{
+    background-color: var(--color-error)
+  }
+}
 }
 
 .viewCompanyRequestsButton {
@@ -1239,11 +1261,7 @@
       }
     }
     
-    .actionButtons {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+ 
     
     .actionButton {
       width: 44px;

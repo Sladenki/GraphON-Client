@@ -29,8 +29,8 @@ const createSidebarItem = (
 // ----- Для десктопа ----
 export const sidebar = [
   // createSidebarItem(1, <House color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Главная', false, '/'),
+  createSidebarItem(5, <Newspaper color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'События', false, '/events/'),
   createSidebarItem(4, <Users color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Группы', false, '/groups/'),
-  createSidebarItem(5, <Newspaper color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Мероприятия', false, '/events/'),
   createSidebarItem(7, <Network color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Графы', false, GRAPHS_ROUTE),
   createSidebarItem(3, <Pencil color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Админка', true, '/admin/'),
 ];
@@ -38,7 +38,7 @@ export const sidebar = [
 // Пункты, которые должны идти "под Профиль" в боковом меню
 export const profileSubMenu = [
   createSidebarItem(6, <UserPlus color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Друзья', true, '/friends'),
-  createSidebarItem(8, <Bell color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Уведомления', true, '/notifications'),
+  // createSidebarItem(8, <Bell color="rgb(var(--main-Color))" size={21} strokeWidth={1} />, 'Уведомления', true, '/notifications'),
 ];
 
 // --- Для BottomMenu (нижняя панель) ---

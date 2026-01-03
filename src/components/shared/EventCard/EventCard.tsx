@@ -794,7 +794,7 @@ const EventCard: React.FC<EventProps> = ({
       />
 
       {/* Viral Success Moment */}
-      <RegistrationSuccessModal
+      {/* <RegistrationSuccessModal
         isOpen={isSuccessModalOpen}
         onClose={() => setIsSuccessModalOpen(false)}
         event={{ id: event._id, name: event.name, description: event.description }}
@@ -806,7 +806,7 @@ const EventCard: React.FC<EventProps> = ({
           avatarUrl: user?.avaPath ? user.avaPath : undefined,
         }}
         theme={{ primary: decor.light, secondary: decor.dark, accent: '#EE82C8' }}
-      />
+      /> */}
     </div>
   );
 };
