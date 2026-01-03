@@ -11,17 +11,25 @@ import {
   Search,
   Navigation,
   UserCheck,
+  Edit3,
+  Trash2,
+  Save,
+  X,
 } from 'lucide-react';
 import { useEventRegistration } from '@/hooks/useEventRegistration';
 import { useAuth } from '@/providers/AuthProvider';
+import { useRoleAccess } from '@/hooks/useRoleAccess';
+import { UserRole } from '@/types/user.interface';
 import { EventItem } from '@/types/schedule.interface';
 import ParticipantOrbits from '@/components/shared/EventCard/ParticipantOrbits/ParticipantOrbits';
+import DeleteConfirmPopUp from '@/components/shared/EventCard/DeleteConfirmPopUp/DeleteConfirmPopUp';
 import styles from './EventCardTikTok.module.scss';
 import { linkifyText } from '@/lib/linkify';
 import { motion, AnimatePresence } from 'framer-motion';
 import SwipeButton from './SwipeButton';
 import CompanyRequestModal from '@/components/shared/CompanyRequestModal/CompanyRequestModal';
 import { CompanyRequestService } from '@/services/companyRequest.service';
+import { EventService } from '@/services/event.service';
 import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { InviteFriendModal } from '@/components/shared/EventCard/InviteFriendModal/InviteFriendModal';
@@ -69,6 +77,7 @@ const CITY_GRAPH_ID = "690bfec3f371d05b325be7ad";
 export default function EventCardTikTok({ event, isVisible = true }: EventCardTikTokProps) {
   const router = useRouter();
   const { isLoggedIn, user } = useAuth();
+  const { canAccessEditor } = useRoleAccess(user?.role as UserRole);
   const queryClient = useQueryClient();
 
   const selectedGraphId = useSelectedGraphId();
@@ -84,10 +93,79 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
   const [isCreatingRequest, setIsCreatingRequest] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isInviteFriendOpen, setIsInviteFriendOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedEvent, setEditedEvent] = useState(event);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Хуки
   const { isRegistered, toggleRegistration, isLoading } = useEventRegistration(event._id, (event as any).isAttended);
+
+  // Обработчики
+  const handleEdit = useCallback(async () => {
+    if (isSaving) return;
+    
+    setIsSaving(true);
+    try {
+      const updateData = {
+        graphId: typeof event.graphId === 'object' ? event.graphId._id : event.graphId,
+        name: editedEvent.name,
+        description: editedEvent.description,
+        place: editedEvent.place,
+        eventDate: editedEvent.eventDate,
+        ...(editedEvent.timeFrom && { timeFrom: editedEvent.timeFrom }),
+        ...(editedEvent.timeTo && { timeTo: editedEvent.timeTo }),
+      };
+
+      await EventService.updateEvent(event._id, updateData);
+      
+      // Обновляем исходное событие после успешного сохранения
+      Object.assign(event, editedEvent);
+      
+      notifySuccess('Успешно сохранено', 'Изменения мероприятия сохранены');
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating event:', error);
+      notifyError('Ошибка сохранения', 'Не удалось сохранить изменения');
+    } finally {
+      setIsSaving(false);
+    }
+  }, [event, editedEvent, isSaving]);
+
+  const handleCancel = useCallback(() => {
+    setEditedEvent(event);
+    setIsEditing(false);
+  }, [event]);
+
+  const handleStartEdit = useCallback(() => {
+    setIsEditing(true);
+  }, []);
+
+  const handleDelete = useCallback(() => {
+    setShowDeleteConfirm(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    try {
+      await EventService.deleteEvent(event._id);
+      notifySuccess('Мероприятие удалено', 'Мероприятие успешно удалено');
+      // Здесь можно вызвать функцию удаления из родительского компонента, если она передана
+      setShowDeleteConfirm(false);
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      notifyError('Ошибка удаления', 'Не удалось удалить мероприятие');
+      setShowDeleteConfirm(false);
+    }
+  }, [event._id]);
+
+  const handleCancelDelete = useCallback(() => {
+    setShowDeleteConfirm(false);
+  }, []);
+
+  const updateEditedEvent = useCallback((key: string, value: string | boolean) => {
+    setEditedEvent(prev => ({ ...prev, [key]: value }));
+  }, []);
 
   // Проверка активного запроса через React Query
   const { data: companyRequests } = useQuery({
@@ -349,77 +427,208 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           </div>
 
           <div className={styles.headerActions}>
-            <div className={styles.menuContainer} ref={menuRef}>
-              <button 
-                className={styles.navigationButton} 
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="Меню действий"
-                aria-expanded={isMenuOpen}
-              >
-                <Share size={18} />
-              </button>
-              {isMenuOpen && (
-                <div className={styles.menu}>
-                  <button 
-                    className={styles.menuItem}
-                    onClick={handleShare}
-                    aria-label="Поделиться"
-                  >
-                    <Share size={16} />
-                    <span>Поделиться</span>
-                  </button>
-                  {isLoggedIn && (
-                    <button 
+            {isEditing ? (
+              <div className={styles.actionButtons}>
+                <button
+                  className={`${styles.actionButton} ${styles.saveButton}`}
+                  onClick={handleEdit}
+                  disabled={isSaving}
+                  title="Сохранить изменения"
+                >
+                  {isSaving ? <div className={styles.spinner} /> : <Save size={16} />}
+                </button>
+                <button
+                  className={`${styles.actionButton} ${styles.cancelButton}`}
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                  title="Отменить редактирование"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className={styles.menuContainer} ref={menuRef}>
+                <button
+                  className={styles.navigationButton}
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  aria-label="Меню действий"
+                  aria-expanded={isMenuOpen}
+                >
+                  <Share size={18} />
+                </button>
+                {isMenuOpen && (
+                  <div className={styles.menu}>
+                    <button
                       className={styles.menuItem}
-                      onClick={handleInviteFriend}
-                      aria-label="Пригласить друга"
+                      onClick={handleShare}
+                      aria-label="Поделиться"
                     >
-                      <UserCheck size={16} />
-                      <span>Пригласить друга</span>
+                      <Share size={16} />
+                      <span>Поделиться</span>
                     </button>
-                  )}
-                </div>
-              )}
-            </div>
+                    {isLoggedIn && (
+                      <button
+                        className={styles.menuItem}
+                        onClick={handleInviteFriend}
+                        aria-label="Пригласить друга"
+                      >
+                        <UserCheck size={16} />
+                        <span>Пригласить друга</span>
+                      </button>
+                    )}
+                    {canAccessEditor && (
+                      <>
+                        <button
+                          className={styles.menuItem}
+                          onClick={handleStartEdit}
+                          aria-label="Редактировать мероприятие"
+                        >
+                          <Edit3 size={16} />
+                          <span>Редактировать</span>
+                        </button>
+                        <button
+                          className={styles.menuItem}
+                          onClick={handleDelete}
+                          aria-label="Удалить мероприятие"
+                        >
+                          <Trash2 size={16} />
+                          <span>Удалить</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
         <div className={styles.titleSection}>
-          <h2 className={styles.eventTitle}>{event.name}</h2>
+          {isEditing ? (
+            <input
+              type="text"
+              value={editedEvent.name}
+              onChange={(e) => updateEditedEvent('name', e.target.value)}
+              className={styles.titleInput}
+              placeholder="Название мероприятия"
+            />
+          ) : (
+            <h2 className={styles.eventTitle}>{event.name}</h2>
+          )}
         </div>
       </div>
 
       {/* Description */}
       <div className={styles.cardBody}>
-        <div className={styles.description}>
-          {linkifyText(truncatedText)}
-          {shouldTruncate && (
-            <button
-              className={styles.readMoreButton}
-              onClick={handleReadMoreClick}
-              type="button">
-              {'Читать дальше'}
-            </button>
-          )}
-        </div>
+        {isEditing ? (
+          <div>
+            <textarea
+              value={editedEvent.description}
+              onChange={(e) => updateEditedEvent('description', e.target.value)}
+              className={styles.descriptionInput}
+              placeholder="Описание мероприятия"
+              rows={3}
+              maxLength={300}
+            />
+            <div className={styles.characterCount}>
+              {editedEvent.description.length}/300
+            </div>
+          </div>
+        ) : (
+          <div className={styles.description}>
+            {linkifyText(truncatedText)}
+            {shouldTruncate && (
+              <button
+                className={styles.readMoreButton}
+                onClick={handleReadMoreClick}
+                type="button">
+                {'Читать дальше'}
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
        {/* Important Info - время и место (компактные карточки) */}
        <div className={styles.importantInfo}>
-         <div className={styles.timeInfo}>
-           <div className={styles.metaIconWrapper}>
-             <CalendarClock className={styles.metaIcon} size={20} />
-           </div>
-           <span className={styles.timeText}>{formattedTime}</span>
-         </div>
+         {isEditing ? (
+           <>
+             <div className={styles.checkboxContainer}>
+               <input
+                 type="checkbox"
+                 id="editIsDateTbd"
+                 checked={!!(editedEvent as any).isDateTbd}
+                 onChange={(e) => updateEditedEvent('isDateTbd', e.target.checked)}
+               />
+               <label htmlFor="editIsDateTbd">Дата и время уточняется</label>
+             </div>
 
-         {event.place && (
-         <div className={styles.placeInfo}>
-           <div className={styles.metaIconWrapper}>
-             <MapPinned className={styles.metaIcon} size={20} />
-           </div>
-           <span className={styles.placeText}>{event.place}</span>
-         </div>
+             {!(editedEvent as any).isDateTbd && (
+               <>
+                 <div className={styles.timeInfo}>
+                   <div className={styles.metaIconWrapper}>
+                     <CalendarClock className={styles.metaIcon} size={20} />
+                   </div>
+                   <input
+                     type="date"
+                     value={editedEvent.eventDate.substring(0, 10)} // Convert to YYYY-MM-DD format
+                     onChange={(e) => updateEditedEvent('eventDate', e.target.value)}
+                     className={styles.dateInput}
+                   />
+                 </div>
+                 <div className={styles.timeInfo}>
+                   <div className={styles.metaIconWrapper}>
+                     <CalendarClock className={styles.metaIcon} size={20} />
+                   </div>
+                   <div className={styles.timeInputs}>
+                     <input
+                       type="time"
+                       value={editedEvent.timeFrom || ''}
+                       onChange={(e) => updateEditedEvent('timeFrom', e.target.value)}
+                       className={styles.timeInput}
+                     />
+                     <input
+                       type="time"
+                       value={editedEvent.timeTo || ''}
+                       onChange={(e) => updateEditedEvent('timeTo', e.target.value)}
+                       className={styles.timeInput}
+                     />
+                   </div>
+                 </div>
+               </>
+             )}
+
+             <div className={styles.placeInfo}>
+               <div className={styles.metaIconWrapper}>
+                 <MapPinned className={styles.metaIcon} size={20} />
+               </div>
+               <input
+                 type="text"
+                 value={editedEvent.place}
+                 onChange={(e) => updateEditedEvent('place', e.target.value)}
+                 className={styles.placeInput}
+                 placeholder="Место проведения"
+               />
+             </div>
+           </>
+         ) : (
+           <>
+             <div className={styles.timeInfo}>
+               <div className={styles.metaIconWrapper}>
+                 <CalendarClock className={styles.metaIcon} size={20} />
+               </div>
+               <span className={styles.timeText}>{formattedTime}</span>
+             </div>
+
+             {event.place && (
+             <div className={styles.placeInfo}>
+               <div className={styles.metaIconWrapper}>
+                 <MapPinned className={styles.metaIcon} size={20} />
+               </div>
+               <span className={styles.placeText}>{event.place}</span>
+             </div>
+             )}
+           </>
          )}
        </div>
 
@@ -549,6 +758,15 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           </div>
         </PopUpWrapper>
       )}
+      
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmPopUp
+        isOpen={showDeleteConfirm}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        eventName={event.name}
+        isDeleting={false}
+      />
     </motion.div>
   );
 }
