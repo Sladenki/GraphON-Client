@@ -109,13 +109,21 @@ function getThemeGradientsTikTok(theme: ThemeName): string[] {
 export default function DynamicBackground({ theme, isDark = false }: DynamicBackgroundProps) {
   const { theme: appTheme } = useTheme();
   
+  // Add state to trigger re-render when theme changes
+  const [themeState, setThemeState] = React.useState(appTheme);
+  
+  // Update local state when theme changes
+  React.useEffect(() => {
+    setThemeState(appTheme);
+  }, [appTheme]);
+  
   // Определяем, активна ли темная тема приложения
   const isDarkTheme = useMemo(() => {
     if (typeof window === 'undefined') return false;
     const html = document.documentElement;
     const dataTheme = html.getAttribute('data-theme');
-    return appTheme === 'dark' || dataTheme === 'dark' || html.classList.contains('dark') || isDark;
-  }, [appTheme, isDark]);
+    return themeState === 'dark' || dataTheme === 'dark' || html.classList.contains('dark') || isDark;
+  }, [themeState, isDark]);
   
   // Используем более насыщенные цвета для TikTok версии
   const themeData = getPastelThemeTikTok(theme);

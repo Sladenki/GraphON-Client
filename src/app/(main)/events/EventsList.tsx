@@ -21,13 +21,16 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import SubsEventsList from './SubsEventsList'
 import { Search as SearchIcon } from 'lucide-react'
 import EventCard from '@/components/shared/EventCard/EventCard'
+import { useTheme } from 'next-themes'
 
 const EVENTS_PER_PAGE = 20
 
 type EventsPillTab = 'groups' | 'students' | 'subs'
 
+
 export default function EventsList() {
   const { isLoggedIn, user } = useAuth()
+  const { theme } = useTheme();
   const subsCount = user?.graphSubsNum ?? 0
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -49,6 +52,14 @@ export default function EventsList() {
   const [activeTab, setActiveTab] = useState<EventsPillTab>(initialTab)
   const queryClient = useQueryClient()
   const loadMoreRef = useRef<HTMLDivElement>(null)
+  
+  // Add theme state to trigger re-render on theme change
+  const [, setThemeState] = useState(theme);
+  
+  // Update local state when theme changes
+  useEffect(() => {
+    setThemeState(theme);
+  }, [theme]);
 
   // sync tab with auth and URL
   useEffect(() => {

@@ -37,6 +37,15 @@ export default function EventsTikTokFeed() {
 
   const [filterByTheme, setFilterByTheme] = useState<ThemeName | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Add theme state to trigger re-render on theme change
+  const { theme } = useTheme();
+  const [, setThemeState] = useState(theme);
+  
+  // Update local state when theme changes
+  useEffect(() => {
+    setThemeState(theme);
+  }, [theme]);
 
   const initialTab: EventsPillTab = useMemo(() => {
     const tab = searchParams.get('tab');
