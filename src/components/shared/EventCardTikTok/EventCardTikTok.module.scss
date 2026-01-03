@@ -89,16 +89,16 @@
 .groupName {
   // bodySmall from MODERN_EVENT.json typography
   font-size: 14px; // bodySmall fontSizePx (not 13px)
-  font-weight: 400; // bodySmall fontWeight (not 600)
+  font-weight: 500; // Medium weight for better visual hierarchy
   line-height: 1.45; // bodySmall lineHeight
-  letter-spacing: 0; // bodySmall letterSpacing
+  letter-spacing: 0.1px; // Slightly increased letter-spacing for better readability
   color: var(--main-text, #2f2d32);
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   // Dark theme
   html[data-theme="dark"] &,
   html.dark & {
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.85); // Slightly reduced contrast
   }
 }
 
@@ -380,10 +380,10 @@
 
 .eventTitle {
   // h1 from MODERN_EVENT.json typography
-  font-size: 28px; // h1 fontSizePx
+  font-size: 32px; // Increased size for better visual hierarchy
   font-weight: 700; // h1 fontWeight (not 800)
-  letter-spacing: -0.3px; // h1 letterSpacing
-  line-height: 1.25; // h1 lineHeight
+  letter-spacing: -0.4px; // Improved letter-spacing for better readability
+  line-height: 1.15; // Tighter line-height for more compact appearance
   color: var(--main-text, #2f2d32);
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   margin: 0;
@@ -418,10 +418,10 @@
 .description {
   // body from MODERN_EVENT.json typography
   font-size: 16px; // body fontSizePx (not 15px)
-  line-height: 1.5; // body lineHeight (not 1.65)
+  line-height: 1.6; // Increased line-height for better readability and comfort
   font-weight: 400; // body fontWeight
-  letter-spacing: 0; // body letterSpacing
-  color: var(--main-text, rgba(47, 45, 50, 0.8));
+  letter-spacing: 0.1px; // Slightly increased letter-spacing for better readability
+  color: var(--main-text, rgba(47, 45, 50, 0.85)); // Slightly increased contrast
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   word-wrap: break-word;
   white-space: pre-wrap;
@@ -553,7 +553,7 @@
   font-size: 14px; // bodySmall fontSizePx
   font-weight: 400; // bodySmall fontWeight (not 500)
   line-height: 1.45; // bodySmall lineHeight
-  letter-spacing: 0; // bodySmall letterSpacing
+  letter-spacing: 0.1px; // Slightly increased letter-spacing for better readability
   color: var(--main-text, #2f2d32);
   font-family: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   flex: 1;
@@ -562,7 +562,7 @@
   // Dark theme
   html[data-theme="dark"] &,
   html.dark & {
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.75); // Reduced contrast for secondary information
   }
 }
 
