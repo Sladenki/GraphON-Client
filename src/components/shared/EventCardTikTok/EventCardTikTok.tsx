@@ -427,79 +427,81 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           </div>
 
           <div className={styles.headerActions}>
-            {isEditing ? (
-              <div className={styles.actionButtons}>
-                <button
-                  className={`${styles.actionButton} ${styles.saveButton}`}
-                  onClick={handleEdit}
-                  disabled={isSaving}
-                  title="Сохранить изменения"
-                >
-                  {isSaving ? <div className={styles.spinner} /> : <Save size={16} />}
-                </button>
-                <button
-                  className={`${styles.actionButton} ${styles.cancelButton}`}
-                  onClick={handleCancel}
-                  disabled={isSaving}
-                  title="Отменить редактирование"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            ) : (
-              <div className={styles.menuContainer} ref={menuRef}>
-                <button
-                  className={styles.navigationButton}
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  aria-label="Меню действий"
-                  aria-expanded={isMenuOpen}
-                >
-                  <Share size={18} />
-                </button>
-                {isMenuOpen && (
-                  <div className={styles.menu}>
-                    <button
-                      className={styles.menuItem}
-                      onClick={handleShare}
-                      aria-label="Поделиться"
-                    >
-                      <Share size={16} />
-                      <span>Поделиться</span>
-                    </button>
-                    {isLoggedIn && (
+            <div className={styles.menuContainer} ref={menuRef}>
+              {isEditing ? (
+                <div className={styles.actionButtons}>
+                  <button
+                    className={`${styles.actionButton} ${styles.saveButton}`}
+                    onClick={handleEdit}
+                    disabled={isSaving}
+                    title="Сохранить изменения"
+                  >
+                    {isSaving ? <div className={styles.spinner} /> : <Save size={16} />}
+                  </button>
+                  <button
+                    className={`${styles.actionButton} ${styles.cancelButton}`}
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                    title="Отменить редактирование"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <button
+                    className={styles.navigationButton}
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    aria-label="Меню действий"
+                    aria-expanded={isMenuOpen}
+                  >
+                    <Share size={18} />
+                  </button>
+                  {isMenuOpen && (
+                    <div className={styles.menu}>
                       <button
                         className={styles.menuItem}
-                        onClick={handleInviteFriend}
-                        aria-label="Пригласить друга"
+                        onClick={handleShare}
+                        aria-label="Поделиться"
                       >
-                        <UserCheck size={16} />
-                        <span>Пригласить друга</span>
+                        <Share size={16} />
+                        <span>Поделиться</span>
                       </button>
-                    )}
-                    {canAccessEditor && (
-                      <>
+                      {isLoggedIn && (
                         <button
                           className={styles.menuItem}
-                          onClick={handleStartEdit}
-                          aria-label="Редактировать мероприятие"
+                          onClick={handleInviteFriend}
+                          aria-label="Пригласить друга"
                         >
-                          <Edit3 size={16} />
-                          <span>Редактировать</span>
+                          <UserCheck size={16} />
+                          <span>Пригласить друга</span>
                         </button>
-                        <button
-                          className={styles.menuItem}
-                          onClick={handleDelete}
-                          aria-label="Удалить мероприятие"
-                        >
-                          <Trash2 size={16} />
-                          <span>Удалить</span>
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
+                      )}
+                      {canAccessEditor && (
+                        <>
+                          <button
+                            className={styles.menuItem}
+                            onClick={handleStartEdit}
+                            aria-label="Редактировать мероприятие"
+                          >
+                            <Edit3 size={16} />
+                            <span>Редактировать</span>
+                          </button>
+                          <button
+                            className={styles.menuItem}
+                            onClick={handleDelete}
+                            aria-label="Удалить мероприятие"
+                          >
+                            <Trash2 size={16} />
+                            <span>Удалить</span>
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -571,7 +573,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
                    </div>
                    <input
                      type="date"
-                     value={editedEvent.eventDate.substring(0, 10)} // Convert to YYYY-MM-DD format
+                     value={editedEvent.eventDate ? editedEvent.eventDate.substring(0, 10) : ''}
                      onChange={(e) => updateEditedEvent('eventDate', e.target.value)}
                      className={styles.dateInput}
                    />
