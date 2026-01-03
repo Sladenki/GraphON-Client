@@ -231,7 +231,6 @@
 .menuContainer {
   position: relative;
 }
-
 .navigationButton {
   width: 44px;
   height: 44px;
@@ -450,6 +449,16 @@
     }
   }
 }
+
+.popupDescription{
+  padding: 20px;
+  padding-top: 40px;
+  color: var(--main-text, rgba(47, 45, 50, 0.85));
+   word-wrap: break-word;
+  white-space: pre-wrap;
+   line-height: 1.6;
+}
+
 
 .readMoreButton {
   display: inline-block;

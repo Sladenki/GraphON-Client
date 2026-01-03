@@ -26,6 +26,7 @@ import { notifyError, notifySuccess } from '@/lib/notifications';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { InviteFriendModal } from '@/components/shared/EventCard/InviteFriendModal/InviteFriendModal';
 import { useSelectedGraphId } from '@/stores/useUIStore';
+import PopUpWrapper from '@/components/global/PopUpWrapper/PopUpWrapper';
 
 interface EventCardTikTokProps {
   event: EventItem;
@@ -73,6 +74,11 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
   const selectedGraphId = useSelectedGraphId();
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isDescriptionPopupOpen, setIsDescriptionPopupOpen] = useState(false);
+
+  const handleReadMoreClick = useCallback(() => {
+    setIsDescriptionPopupOpen(true);
+  }, []);
   const [isAnimatingAvatar, setIsAnimatingAvatar] = useState(false);
   const [isCompanyRequestModalOpen, setIsCompanyRequestModalOpen] = useState(false);
   const [isCreatingRequest, setIsCreatingRequest] = useState(false);
@@ -390,9 +396,9 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
           {shouldTruncate && (
             <button
               className={styles.readMoreButton}
-              onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+              onClick={handleReadMoreClick}
               type="button">
-              {isDescriptionExpanded ? 'Свернуть' : 'Читать дальше'}
+              {'Читать дальше'}
             </button>
           )}
         </div>
@@ -529,6 +535,20 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
         eventId={event._id}
         eventName={event.name}
       />
+      
+      {/* Description Popup */}
+      {isDescriptionPopupOpen && (
+        <PopUpWrapper
+          isOpen={isDescriptionPopupOpen}
+          onClose={() => setIsDescriptionPopupOpen(false)}
+          width={500}
+        
+        >
+          <div className={styles.popupDescription}>
+            {linkifyText(event.description || '')}
+          </div>
+        </PopUpWrapper>
+      )}
     </motion.div>
   );
 }
