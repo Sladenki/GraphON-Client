@@ -119,17 +119,18 @@ export default function SwipeButton({
   }, [disabled, isLoading, isRegistered, hasCompleted, onSwipeComplete, onUnregister, x]);
 
   if (isRegistered && onUnregister) {
-    // Кнопка-билет после регистрации
+    // Кнопка после регистрации - тот же стиль что и до, но с галочкой и зеленым цветом
     return (
-      <button
-        className={styles.ticketButton}
-        onClick={onUnregister}
-        disabled={disabled || isLoading}>
-        <div className={styles.ticketContent}>
-          <Ticket size={22} />
-          <span className={styles.ticketText}>Билет</span>
+      <div className={styles.swipeButtonContainer} onClick={onUnregister}>
+        <div className={styles.swipeButtonTrack}>
+          <div className={styles.swipeButtonThumbSuccess}>
+            <Check size={24} />
+          </div>
         </div>
-      </button>
+        <div className={styles.swipeButtonText}>
+          <span className={styles.successText}>Вы записаны ✓</span>
+        </div>
+      </div>
     );
   }
 

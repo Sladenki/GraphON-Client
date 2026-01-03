@@ -699,7 +699,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
 
 
         {/* Анимация перемещения аватарки от кнопки к списку */}
-        {/* <AnimatePresence>
+        <AnimatePresence>
           {isAnimatingAvatar && user && (
             <motion.div
               className={styles.animatedAvatar}
@@ -735,7 +735,7 @@ export default function EventCardTikTok({ event, isVisible = true }: EventCardTi
               )}
             </motion.div>
           )}
-        </AnimatePresence> */}
+        </AnimatePresence>
       </div>
 
       {/* <CompanyRequestModal
